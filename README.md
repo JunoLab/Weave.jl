@@ -7,6 +7,8 @@ for Julia. It is based on [Pweave](http://mpastell.com/pweave) and
 resembles Knitr and Sweave. Actually JuliaReport relies on Pweave for
 document parsing and formatting.
 
+You'll need latest Pweave from Github: <https://github.com/mpastell/Pweave.>
+
 **Current features**
 
 * Pweave Noweb or script syntax for documents.
