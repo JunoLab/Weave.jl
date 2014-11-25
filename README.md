@@ -26,7 +26,7 @@ You'll need latest Pweave from Github: <https://github.com/mpastell/Pweave.>
 Run from julia:
 
     using JuliaReport
-    weave("examples/julia_sample.mdw")
+    weave(Pkg.dir("JuliaReport","examples","julia_sample.mdw")
 
 
 
