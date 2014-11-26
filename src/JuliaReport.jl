@@ -1,9 +1,8 @@
 module JuliaReport
 using PyCall
 using PyPlot
+@pyimport pweave #Output formatting uses Pweave
 
-#Parsing and formatting uses Pweave
-@pyimport pweave
 
 #Contains report global properties
 #Similar to pweave.PwebProcessor
@@ -18,7 +17,7 @@ type Report
 end
 
 
-global report = Report("", false, "", "",  {}, "", "")
+global const report = Report("", false, "", "",  {}, "", "")
 
 function listformats()
   pweave.listformats()
@@ -28,19 +27,27 @@ function weave(source ; doctype = "pandoc", informat="noweb", figdir = "figures"
     pweave.rcParams["chunk"]["defaultoptions"]["engine"] = "julia"
 
     doc = pweave.Pweb(source, doctype, shell="julia")
-    doc[:setreader](informat)
-    doc[:parse]()
+    #doc[:setreader](informat)
+    #doc[:parse]()
 
-    #Julia version of doc.run()
     cwd, fname = splitdir(abspath(source))
     basename = splitext(fname)[1]
     formatdict = doc[:formatter][:getformatdict]()
     figformat == nothing || (formatdict["figfmt"] = figformat)
     #println(formatdict["figfmt"])
-    global report = Report(source, false, cwd, basename, formatdict, "", figdir)
+    #report = Report(source, false, cwd, basename, formatdict, "", figdir)
+
+    report.source = source
+    report.cwd = cwd
+    report.basename = basename
+    report.figdir = figdir
+    report.formatdict = formatdict
+
+    parsed = read_noweb(source)
+    doc[:executed] = run(parsed)
 
     #Formatting with pweave
-    doc[:executed] = run(PyVector(doc["parsed"]))
+    #doc[:executed] = run(PyVector(doc["parsed"]))
     doc[:isexecuted] = true
     doc[:format]()
     doc[:write]()
@@ -93,11 +100,19 @@ function run(parsed)
         if chunk["type"] == "code"
             #print(chunk["content"])
             info("""Weaving chunk $(chunk["number"]) from line $(chunk["start_line"])""")
-            defaults = copy(pweave.rcParams["chunk"]["defaultoptions"])
-            merge!(defaults, chunk["options"])
-            merge!(chunk, defaults)
-            chunk["evaluate"] || (chunk["result"] = ""; continue) #Do nothing if eval is false
+            defaults = copy(rcParams["chunk"]["defaultoptions"])
+            options = copy(chunk["options"])
+            try
+              options = merge(rcParams["chunk"]["defaultoptions"], options)
+            catch
+              options = rcParams["chunk"]["defaultoptions"]
+              warn(string("Invalid format for chunk options line: ", chunk["start_line"]))
+            end
 
+            merge!(chunk, options)
+
+
+            chunk["evaluate"] || (chunk["result"] = ""; continue) #Do nothing if eval is false
             if chunk["term"]
                 chunk["result"] = run_term(chunk["content"])
             else
@@ -134,4 +149,6 @@ end
 
 export weave
 
+include("config.jl")
+include("readers.jl")
 end

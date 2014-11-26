@@ -3,7 +3,7 @@
 
 This a sample [Julia](http://julialang.org/) noweb document that can
 be executed using JuliaReport. Output from code chunks and PyPlot
-plots will be included in the weaved document. You also need to install Pweave from Github in order to use JuliaReport. 
+plots will be included in the weaved document. You also need to install Pweave from Github in order to use JuliaReport.
 
 This documented can be turned into Pandoc markdown with captured
 result from Julia prompt.
@@ -15,7 +15,7 @@ weave("examples/julia_sample.mdw")
 
 ## Terminal chunk
 
-<<term=True>>=
+<<"term"=>true>>=
 x = 1:10
 d = {"juliareport" => "testing"}
 y = [2, 4 ,8]
@@ -35,6 +35,6 @@ ylabel("sinc(x)")
 
 You can also include a plot with caption and hide the code:
 
-<<echo=False, caption="Random walk.", label="random">>=
+<<"echo"=>false, "caption"=>"Random walk.", "label"=>"random">>=
 plot(cumsum(randn(1000, 1)))
 @
