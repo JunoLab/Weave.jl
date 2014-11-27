@@ -24,7 +24,12 @@ function read_noweb(document)
       if strip(optionstring)==""
         options = Dict()
       else
-        options = eval(parse("{" * optionstring * "}"))
+          try
+              options = eval(parse("{" * optionstring * "}"))
+          catch
+              options = Dict()
+              warn(string("Invalid format for chunk options line: ", lineno))
+          end
       end
       haskey(options, "label") && (options["name"] = options["label"])
       haskey(options, "name") || (options["name"] = nothing)
@@ -47,7 +52,7 @@ function read_noweb(document)
       continue
     end
 
-    content *= "\n" * line  
+    content *= "\n" * line
   end
 
   #Remember the last chunk

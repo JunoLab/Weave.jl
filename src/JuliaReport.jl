@@ -110,6 +110,7 @@ function run(parsed)
             end
 
             merge!(chunk, options)
+            delete!(chunk, "options")
 
 
             chunk["evaluate"] || (chunk["result"] = ""; continue) #Do nothing if eval is false
