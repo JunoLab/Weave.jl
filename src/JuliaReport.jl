@@ -17,7 +17,7 @@ type Report
 end
 
 
-global const report = Report("", false, "", "",  {}, "", "")
+const report = Report("", false, "", "",  {}, "", "")
 
 function listformats()
   pweave.listformats()
