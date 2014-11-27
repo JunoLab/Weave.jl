@@ -11,15 +11,26 @@ You'll need latest Pweave from Github: <https://github.com/mpastell/Pweave.>
 
 **Current features**
 
-* Pweave Noweb or script syntax for documents.
+* Noweb syntax for documents.
 * Execute code as terminal or "script" chunks.
 * Capture PyPlot figures.
 * All Pweave output formats supported. Including, Latex, Markdown, Sphinx etc.
 
 **Not implemented**
 
+* Script reader
 * Inline code
 * Caching
+
+## Chunk options
+
+You can use the same chunk options as for Pweave, but the format is different.
+The syntax needs to be valid for creating a dictionary in Julia without the `{}`.
+
+  <<"term"=>true, "fig"=false>>=
+
+
+
 
 ## Usage
 
@@ -27,8 +38,3 @@ Run from julia:
 
     using JuliaReport
     weave(Pkg.dir("JuliaReport","examples","julia_sample.mdw")
-
-
-
-
-
