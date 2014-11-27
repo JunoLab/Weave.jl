@@ -25,11 +25,10 @@ You'll need latest Pweave from Github: <https://github.com/mpastell/Pweave.>
 ## Chunk options
 
 You can use the same chunk options as for Pweave, but the format is different.
-The syntax needs to be valid for creating a dictionary in Julia without the `{}`.
+The syntax needs to be valid for creating a dictionary in Julia
+without the `{}`. e.g:
 
-  <<"term"=>true, "fig"=false>>=
-
-
+    <<"term"=>true, "fig"=false>>=
 
 
 ## Usage
