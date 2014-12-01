@@ -1,4 +1,5 @@
 module JuliaReport
+using Compat
 using PyCall
 #using PyPlot
 @pyimport pweave #Output formatting uses Pweave
@@ -17,7 +18,7 @@ type Report
 end
 
 
-const report = Report("", false, "", "",  {}, "", "")
+const report = Report("", false, "", "",  Any[], "", "")
 
 function listformats()
   pweave.listformats()
@@ -199,6 +200,8 @@ end
 
 
 export weave
+
+typealias StrD Dict{ASCIIString,Any}
 
 include("config.jl")
 include("readers.jl")

@@ -22,19 +22,20 @@ function read_noweb(document)
       optionstring=m.captures[1]
       #println(m.captures[1])
       if strip(optionstring)==""
-        options = Dict()
+        options = StrD()
       else
           try
               options = eval(parse("{" * optionstring * "}"))
           catch
-              options = Dict()
+              options = StrD()
               warn(string("Invalid format for chunk options line: ", lineno))
           end
       end
       haskey(options, "label") && (options["name"] = options["label"])
       haskey(options, "name") || (options["name"] = nothing)
 
-      chunk = {"type" => "doc", "content"=> content, "number" =>  docno, "start_line"=>start_line}
+      chunk = @compat Dict{ASCIIString,Any}("type" => "doc", "content"=> content,
+                                            "number" =>  docno, "start_line"=>start_line)
       docno += 1
       start_line = lineno
       push!(parsed, chunk)
@@ -42,8 +43,10 @@ function read_noweb(document)
       continue
     end
     if ismatch(codeend, line) && state=="code"
-      chunk = {"type" => "code", "content" => content, "number" => codeno,
-      "options"=>options,"optionstring"=>optionstring, "start_line"=>start_line}
+      chunk = @compat Dict{ASCIIString,Any}("type" => "code", "content" => content,
+                                            "number" => codeno, "options" => options,
+                                            "optionstring" => optionstring,
+                                            "start_line" => start_line)
       codeno+=1
       start_line = lineno
       content = ""
@@ -57,7 +60,8 @@ function read_noweb(document)
 
   #Remember the last chunk
   if content != ""
-    chunk = {"type" => "doc", "content"=> content, "number" =>  docno, "start_line"=>lineno}
+    chunk = @compat Dict{ASCIIString,Any}("type" => "doc", "content" => content,
+                                          "number" =>  docno, "start_line" => lineno)
     push!(parsed, chunk)
   end
 
