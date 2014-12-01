@@ -17,7 +17,6 @@ type Report
   figdir::String
 end
 
-
 const report = Report("", false, "", "",  Any[], "", "")
 
 function listformats()
@@ -47,11 +46,11 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
     l_plotlib = lowercase(plotlib)
     if l_plotlib == "winston"
       eval(Expr(:using, :Winston))
-      rcParams["plotlib"] = "Winston"
+      rcParams[:plotlib] = "Winston"
     elseif l_plotlib == "pyplot"
       #eval(parse("import PyPlot.plt"))
       eval(Expr(:using, :PyPlot))
-      rcParams["plotlib"] = "PyPlot"
+      rcParams[:plotlib] = "PyPlot"
     end
 
 
@@ -107,42 +106,40 @@ end
 
 
 function run(parsed)
-    i = 1
-    for chunk = copy(parsed)
-        if chunk["type"] == "code"
-            #print(chunk["content"])
-            info("""Weaving chunk $(chunk["number"]) from line $(chunk["start_line"])""")
-            defaults = copy(rcParams["chunk"]["defaultoptions"])
-            options = copy(chunk["options"])
-            try
-              options = merge(rcParams["chunk"]["defaultoptions"], options)
-            catch
-              options = rcParams["chunk"]["defaultoptions"]
-              warn(string("Invalid format for chunk options line: ", chunk["start_line"]))
-            end
+  i = 1
+  for chunk in copy(parsed)
+    if chunk[:type] == "code"
+      #print(chunk["content"])
+      info("Weaving chunk $(chunk[:number]) from line $(chunk[:start_line])")
+      defaults = copy(rcParams[:chunk][:defaultoptions])
+      options = copy(chunk[:options])
+      try
+        options = merge(rcParams[:chunk][:defaultoptions], options)
+      catch
+        options = rcParams[:chunk][:defaultoptions]
+        warn("Invalid format for chunk options line: $(chunk[:start_line])")
+      end
 
-            merge!(chunk, options)
-            delete!(chunk, "options")
+      merge!(chunk, options)
+      delete!(chunk, :options)
 
+      chunk[:evaluate] || (chunk[:result] = ""; continue) #Do nothing if eval is false
+      if chunk[:term]
+        chunk[:result] = run_term(chunk[:content])
+      else
+        chunk[:result] = run_block(chunk[:content])
+      end
 
-            chunk["evaluate"] || (chunk["result"] = ""; continue) #Do nothing if eval is false
-            if chunk["term"]
-                chunk["result"] = run_term(chunk["content"])
-            else
-                chunk["result"] = run_block(chunk["content"])
-            end
-
-            chunk["fig"] && (chunk["figure"] = savefigs(chunk))
-
-        end
-        parsed[i] = copy(chunk)
-        i += 1
+      chunk[:fig] && (chunk[:figure] = savefigs(chunk))
     end
-  return parsed
+    parsed[i] = copy(chunk)
+    i += 1
+  end
+  parsed
 end
 
 function savefigs(chunk)
-    l_plotlib = lowercase(rcParams["plotlib"])
+    l_plotlib = lowercase(rcParams[:plotlib])
     if l_plotlib == "pyplot"
       return savefigs_pyplot(chunk)
     elseif l_plotlib == "winston"
@@ -156,7 +153,7 @@ function savefigs_pyplot(chunk)
     figpath = joinpath(report.cwd, report.figdir)
     isdir(figpath) || mkdir(figpath)
 
-    chunkid = ((chunk["name"] == nothing) ? chunk["number"] : chunk["name"])
+    chunkid = get(chunk,:name,chunk[:number]) #((chunk[:name] == nothing) ? chunk[:number] : chunk[:name])
     #Iterate over all open figures, save them and store names
     for fig = plt.get_fignums()
         full_name = joinpath(report.cwd, report.figdir, "$(report.basename)_$(chunkid)_$fig$ext")
@@ -175,7 +172,7 @@ function savefigs_winston(chunk)
     figpath = joinpath(report.cwd, report.figdir)
     isdir(figpath) || mkdir(figpath)
 
-    chunkid = ((chunk["name"] == nothing) ? chunk["number"] : chunk["name"])
+    chunkid = get(chunk,:name,chunk[:number])#((chunk[:name] == nothing) ? chunk[:number] : chunk[:name])
     #Iterate over all open figures, save them and store names
     #println(Winston._display.figs)
     #println(Winston._display.fig_order)
@@ -197,12 +194,10 @@ end
 #Saving Winston figures
 #savefig(Winston._display.figs[1].plot, "test.png")
 
-
-
 export weave
-
-typealias StrD Dict{ASCIIString,Any}
 
 include("config.jl")
 include("readers.jl")
 end
+
+

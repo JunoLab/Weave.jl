@@ -1,3 +1,5 @@
+pushopt(options::Dict,expr::Expr) = Base.Meta.isexpr(expr,:(=)) && (options[expr.args[1]] = expr.args[2])
+
 function read_noweb(document)
   #doctext = readall(open(document))
   lines = split(bytestring(open(document) do io
@@ -11,7 +13,6 @@ function read_noweb(document)
   docno = 1
   codeno = 1
   content = ""
-  lineno = 0
   start_line = 0
 
   options = Dict()
@@ -19,26 +20,21 @@ function read_noweb(document)
   parsed = Dict[]
   for lineno in 1:length(lines)
     line = lines[lineno]
-    if ismatch(codestart, line) && state=="doc"
+    if (m = match(codestart, line)) != nothing && state=="doc"
       state = "code"
-      m = match(codestart, line)
-      optionstring=m.captures[1]
-      #println(m.captures[1])
-      if strip(optionstring)==""
-        options = StrD()
-      else
-          try
-              options = eval(parse("{" * optionstring * "}"))
-          catch
-              options = StrD()
-              warn(string("Invalid format for chunk options line: ", lineno))
-          end
+      optionstring=strip(m.captures[1])
+      @show optionstring
+      options = Dict{Symbol,Any}()
+      if length(optionstring) > 0
+          expr = parse(optionstring)
+          Base.Meta.isexpr(expr,:(=)) && (options[expr.args[1]] = expr.args[2])
+          Base.Meta.isexpr(expr,:toplevel) && map(pushopt,fill(options,length(expr.args)),expr.args)
       end
-      haskey(options, "label") && (options["name"] = options["label"])
-      haskey(options, "name") || (options["name"] = nothing)
-
-      chunk = @compat Dict{ASCIIString,Any}("type" => "doc", "content"=> content,
-                                            "number" =>  docno, "start_line"=>start_line)
+      haskey(options, :label) && (options[:name] = options[:label])
+      haskey(options, :name) || (options[:name] = nothing)
+      @show options
+      chunk = @compat Dict{Symbol,Any}(:type => "doc", :content => content,
+                                       :number => docno,:start_line => start_line)
       docno += 1
       start_line = lineno
       push!(parsed, chunk)
@@ -46,10 +42,10 @@ function read_noweb(document)
       continue
     end
     if ismatch(codeend, line) && state=="code"
-      chunk = @compat Dict{ASCIIString,Any}("type" => "code", "content" => content,
-                                            "number" => codeno, "options" => options,
-                                            "optionstring" => optionstring,
-                                            "start_line" => start_line)
+      chunk = @compat Dict{Symbol,Any}(:type => "code", :content => content,
+                                       :number => codeno, :options => options,
+                                       :optionstring => optionstring,
+                                       :start_line => start_line)
       codeno+=1
       start_line = lineno
       content = ""
@@ -63,8 +59,8 @@ function read_noweb(document)
 
   #Remember the last chunk
   if content != ""
-    chunk = @compat Dict{ASCIIString,Any}("type" => "doc", "content" => content,
-                                          "number" =>  docno, "start_line" => lineno)
+    chunk = @compat Dict{Symbol,Any}(:type => "doc", :content => content,
+                                     :number =>  docno, :start_line => start_line)
     push!(parsed, chunk)
   end
 
