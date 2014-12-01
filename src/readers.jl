@@ -1,5 +1,8 @@
 function read_noweb(document)
-  doctext = readall(open(document))
+  #doctext = readall(open(document))
+  lines = split(bytestring(open(document) do io
+                             mmap_array(Uint8,(filesize(document),),io)
+                           end), "\n")
   #doctext = document #Replace with file...
   codestart = r"^<<(.*?)>>="
   codeend = r"^@(\s*)$"
@@ -14,8 +17,8 @@ function read_noweb(document)
   options = Dict()
   optionstring = ""
   parsed = Dict[]
-  for (lineno, line) in enumerate(split(doctext, "\n"))
-
+  for lineno in 1:length(lines)
+    line = lines[lineno]
     if ismatch(codestart, line) && state=="doc"
       state = "code"
       m = match(codestart, line)
