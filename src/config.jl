@@ -1,5 +1,5 @@
 const rcParams = {"figdir"=> "figures",
-                  "usematplotlib"=> true,
+                  "plotlib" => "Winston",
                   "storeresults"=> false,
                   "cachedir"=> "cache",
                   "chunk"=>

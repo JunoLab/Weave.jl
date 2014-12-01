@@ -1,6 +1,6 @@
 module JuliaReport
 using PyCall
-using PyPlot
+#using PyPlot
 @pyimport pweave #Output formatting uses Pweave
 
 
@@ -23,7 +23,7 @@ function listformats()
   pweave.listformats()
 end
 
-function weave(source ; doctype = "pandoc", informat="noweb", figdir = "figures", figformat = nothing)
+function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", figdir = "figures", figformat = nothing)
     pweave.rcParams["chunk"]["defaultoptions"]["engine"] = "julia"
 
     doc = pweave.Pweb(source, doctype, shell="julia")
@@ -42,6 +42,17 @@ function weave(source ; doctype = "pandoc", informat="noweb", figdir = "figures"
     report.basename = basename
     report.figdir = figdir
     report.formatdict = formatdict
+
+    l_plotlib = lowercase(plotlib)
+    if l_plotlib == "winston"
+      eval(Expr(:using, :Winston))
+      rcParams["plotlib"] = "Winston"
+    elseif l_plotlib == "pyplot"
+      #eval(parse("import PyPlot.plt"))
+      eval(Expr(:using, :PyPlot))
+      rcParams["plotlib"] = "PyPlot"
+    end
+
 
     parsed = read_noweb(source)
     doc[:executed] = run(parsed)
@@ -130,6 +141,15 @@ function run(parsed)
 end
 
 function savefigs(chunk)
+    l_plotlib = lowercase(rcParams["plotlib"])
+    if l_plotlib == "pyplot"
+      return savefigs_pyplot(chunk)
+    elseif l_plotlib == "winston"
+      return savefigs_winston(chunk)
+    end
+end
+
+function savefigs_pyplot(chunk)
     fignames = String[]
     ext = report.formatdict["figfmt"]
     figpath = joinpath(report.cwd, report.figdir)
@@ -147,6 +167,36 @@ function savefigs(chunk)
     end
     return fignames
 end
+
+function savefigs_winston(chunk)
+    fignames = String[]
+    ext = report.formatdict["figfmt"]
+    figpath = joinpath(report.cwd, report.figdir)
+    isdir(figpath) || mkdir(figpath)
+
+    chunkid = ((chunk["name"] == nothing) ? chunk["number"] : chunk["name"])
+    #Iterate over all open figures, save them and store names
+    #println(Winston._display.figs)
+    #println(Winston._display.fig_order)
+
+    for fig = copy(Winston._display.fig_order)
+        full_name = joinpath(report.cwd, report.figdir, "$(report.basename)_$(chunkid)_$fig$ext")
+        rel_name = "$(report.figdir)/$(report.basename)_$(chunkid)_$fig$ext" #Relative path is used in output
+        println(rel_name)
+        #figure(fig) #Calling figure clears the canvas!
+        #savefig(Winston._display.figs[gcf()].plot, full_name)
+        savefig(full_name)
+        closefig()
+        #savefig(full_name)
+        push!(fignames, rel_name)
+    end
+    return fignames
+end
+
+#Saving Winston figures
+#savefig(Winston._display.figs[1].plot, "test.png")
+
+
 
 export weave
 

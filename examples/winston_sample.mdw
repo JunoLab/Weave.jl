@@ -1,0 +1,42 @@
+
+# Introducion to JuliaReport
+
+This a sample [Julia](http://julialang.org/) noweb document that can
+be executed using JuliaReport. Output from code chunks and Winston
+plots will be included in the weaved document. You also need to install Pweave from Github in order to use JuliaReport.
+
+This documented can be turned into Pandoc markdown with captured
+result from Julia prompt.
+
+~~~~{.julia}
+using JuliaReport
+weave(Pkg.dir("JuliaReport","examples","winston_sample.mdw"), plotlib="Winston")
+~~~~
+
+## Terminal chunk
+
+<<"term"=>true>>=
+x = 1:10
+d = {"juliareport" => "testing"}
+y = [2, 4 ,8]
+@
+
+## Capturing figures
+
+The figures and code can be included in the output.
+
+<<>>=
+using Winston
+figure()
+t = linspace(0, 2*pi, 100)
+plot(t, sinc(t))
+xlabel("x")
+ylabel("sinc(x)")
+@
+
+You can also include a plot with caption and hide the code:
+
+<<"echo"=>false, "caption"=>"Random walk.", "label"=>"random">>=
+figure()
+plot(cumsum(randn(1000, 1)))
+@
