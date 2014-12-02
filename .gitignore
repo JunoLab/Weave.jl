@@ -3,5 +3,6 @@ test.jl
 examples/*/*.png
 examples/*.md
 examples/*.html
+tmp/
 .idea
 *.*~
