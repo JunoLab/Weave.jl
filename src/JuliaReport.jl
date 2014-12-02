@@ -1,9 +1,5 @@
 module JuliaReport
 using Compat
-using PyCall
-#using PyPlot
-@pyimport pweave #Output formatting uses Pweave
-
 
 #Contains report global properties
 #Similar to pweave.PwebProcessor
@@ -24,17 +20,11 @@ function listformats()
 end
 
 function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", figdir = "figures", figformat = nothing)
-    pweave.rcParams["chunk"]["defaultoptions"]["engine"] = "julia"
-
-    doc = pweave.Pweb(source, doctype, shell="julia")
-    #doc[:setreader](informat)
-    #doc[:parse]()
 
     cwd, fname = splitdir(abspath(source))
     basename = splitext(fname)[1]
-    formatdict = doc[:formatter][:getformatdict]()
-    figformat == nothing || (formatdict["figfmt"] = figformat)
-    #println(formatdict["figfmt"])
+    formatdict = formats[doctype].formatdict
+    figformat == nothing || (formatdict[:figfmt] = figformat)
     #report = Report(source, false, cwd, basename, formatdict, "", figdir)
 
     report.source = source
@@ -43,25 +33,29 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
     report.figdir = figdir
     report.formatdict = formatdict
 
-    l_plotlib = lowercase(plotlib)
-    if l_plotlib == "winston"
-      eval(Expr(:using, :Winston))
-      rcParams[:plotlib] = "Winston"
-    elseif l_plotlib == "pyplot"
-      #eval(parse("import PyPlot.plt"))
-      eval(Expr(:using, :PyPlot))
-      rcParams[:plotlib] = "PyPlot"
+    if plotlib == nothing
+        rcParams[:chunk][:defaultoptions][:fig] = false
+    else
+        l_plotlib = lowercase(plotlib)
+        if l_plotlib == "winston"
+            eval(Expr(:using, :Winston))
+            rcParams[:plotlib] = "Winston"
+        elseif l_plotlib == "pyplot"
+            eval(Expr(:using, :PyPlot))
+            rcParams[:plotlib] = "PyPlot"
+        end
     end
 
-
     parsed = read_noweb(source)
-    doc[:executed] = run(parsed)
+    executed = run(parsed)
+    formatted = format(executed, doctype)
 
-    #Formatting with pweave
-    #doc[:executed] = run(PyVector(doc["parsed"]))
-    doc[:isexecuted] = true
-    doc[:format]()
-    doc[:write]()
+    outname = "$(report.cwd)/$(report.basename).$(formatdict[:extension])"
+    @show outname
+    outfile = open(outname, "w")
+    write(outfile, join(formatted, "\n"))
+    info("Report weaved to $(report.basename).$(formatdict[:extension])")
+
 end
 
 
@@ -149,11 +143,10 @@ end
 
 function savefigs_pyplot(chunk)
     fignames = String[]
-    ext = report.formatdict["figfmt"]
+    ext = report.formatdict[:figfmt]
     figpath = joinpath(report.cwd, report.figdir)
     isdir(figpath) || mkdir(figpath)
-
-    chunkid = get(chunk,:name,chunk[:number]) #((chunk[:name] == nothing) ? chunk[:number] : chunk[:name])
+    chunkid = (chunk[:name] == nothing) ? chunk[:number] : chunk[:name]
     #Iterate over all open figures, save them and store names
     for fig = plt.get_fignums()
         full_name = joinpath(report.cwd, report.figdir, "$(report.basename)_$(chunkid)_$fig$ext")
@@ -167,15 +160,15 @@ function savefigs_pyplot(chunk)
 end
 
 #This currently only works if there is only one figure/chunk
-#Doesn't work with FramedPlots
-#Doesn't work with Julia 0.4
+#Doesn"t work with FramedPlots
+#Doesn"t work with Julia 0.4
 function savefigs_winston(chunk)
     fignames = String[]
-    ext = report.formatdict["figfmt"]
+    ext = report.formatdict[:figfmt]
     figpath = joinpath(report.cwd, report.figdir)
     isdir(figpath) || mkdir(figpath)
 
-    chunkid = get(chunk,:name,chunk[:number])#((chunk[:name] == nothing) ? chunk[:number] : chunk[:name])
+    chunkid = chunk[:name] == nothing ? chunk[:number] : chunk[:name]
 
     #println(Winston._display.figs)
     #println(Winston._display.fig_order)
@@ -184,7 +177,7 @@ function savefigs_winston(chunk)
     for fig = copy(Winston._display.fig_order)
         full_name = joinpath(report.cwd, report.figdir, "$(report.basename)_$(chunkid)_$fig$ext")
         rel_name = "$(report.figdir)/$(report.basename)_$(chunkid)_$fig$ext" #Relative path is used in output
-        @show rel_name
+        #@show rel_name
         #figure(fig) #Calling figure clears the canvas!
         #savefig(Winston._display.figs[gcf()].plot, full_name) #Produces empty figures
         savefig(full_name)
@@ -199,6 +192,7 @@ export weave
 
 include("config.jl")
 include("readers.jl")
+include("formatters.jl")
 end
 
 
