@@ -15,7 +15,7 @@ weave("examples/julia_sample.mdw")
 
 ## Terminal chunk
 
-<<"term"=>true>>=
+<<term=true>>=
 x = 1:10
 d = {"juliareport" => "testing"}
 y = [2, 4 ,8]
@@ -35,6 +35,6 @@ ylabel("sinc(x)")
 
 You can also include a plot with caption and hide the code:
 
-<<"echo"=>false, "caption"=>"Random walk.", "label"=>"random">>=
+<<echo=false; caption="Random walk."; label="random">>=
 plot(cumsum(randn(1000, 1)))
 @
