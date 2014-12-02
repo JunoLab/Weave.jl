@@ -166,6 +166,9 @@ function savefigs_pyplot(chunk)
     return fignames
 end
 
+#This currently only works if there is only one figure/chunk
+#Doesn't work with FramedPlots
+#Doesn't work with Julia 0.4
 function savefigs_winston(chunk)
     fignames = String[]
     ext = report.formatdict["figfmt"]
@@ -173,26 +176,24 @@ function savefigs_winston(chunk)
     isdir(figpath) || mkdir(figpath)
 
     chunkid = get(chunk,:name,chunk[:number])#((chunk[:name] == nothing) ? chunk[:number] : chunk[:name])
-    #Iterate over all open figures, save them and store names
+
     #println(Winston._display.figs)
     #println(Winston._display.fig_order)
 
+    #Iterate over all open figures, save them and store names
     for fig = copy(Winston._display.fig_order)
         full_name = joinpath(report.cwd, report.figdir, "$(report.basename)_$(chunkid)_$fig$ext")
         rel_name = "$(report.figdir)/$(report.basename)_$(chunkid)_$fig$ext" #Relative path is used in output
-        println(rel_name)
+        @show rel_name
         #figure(fig) #Calling figure clears the canvas!
-        #savefig(Winston._display.figs[gcf()].plot, full_name)
+        #savefig(Winston._display.figs[gcf()].plot, full_name) #Produces empty figures
         savefig(full_name)
         closefig()
-        #savefig(full_name)
         push!(fignames, rel_name)
     end
     return fignames
 end
 
-#Saving Winston figures
-#savefig(Winston._display.figs[1].plot, "test.png")
 
 export weave
 
