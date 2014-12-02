@@ -3,18 +3,16 @@
 [![Build Status](https://travis-ci.org/mpastell/JuliaReport.jl.svg?branch=master)](https://travis-ci.org/mpastell/JuliaReport.jl)
 
 JuliaReport is a scientific report generator/literate programming tool
-for Julia. It is based on [Pweave](http://mpastell.com/pweave) and
-resembles Knitr and Sweave. Actually JuliaReport relies on Pweave for
-document parsing and formatting.
+for Julia. It resembles [Pweave](http://mpastell.com/pweave) and, Knitr
+and Sweave.
 
-You'll need latest Pweave from Github: <https://github.com/mpastell/Pweave.>
 
 **Current features**
 
 * Noweb syntax for documents.
 * Execute code as terminal or "script" chunks.
-* Capture PyPlot figures.
-* All Pweave output formats supported. Including, Latex, Markdown, Sphinx etc.
+* Capture PyPlot or Winston figures.
+* Supports latex and pandoc markdown output
 
 **Not implemented**
 
@@ -40,6 +38,7 @@ Run from julia:
 
 Or using Winston for plots (Julia 0.3 only):
 
-    weave(Pkg.dir("JuliaReport","examples","winston_sample.mdw"), plotlib="Winston")
+    weave(Pkg.dir("JuliaReport","examples","winston_sample.mdw"),
+    plotlib="Winston", doctype="pandoc")
 
 
