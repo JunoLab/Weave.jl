@@ -49,11 +49,11 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
     parsed = read_noweb(source)
     executed = run(parsed)
     formatted = format(executed, doctype)
-
     outname = "$(report.cwd)/$(report.basename).$(formatdict[:extension])"
     @show outname
-    outfile = open(outname, "w")
-    write(outfile, join(formatted, "\n"))
+    open(outname, "w") do io
+        write(io, join(formatted, "\n"))
+    end
     info("Report weaved to $(report.basename).$(formatdict[:extension])")
 
 end
