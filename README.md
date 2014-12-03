@@ -1,6 +1,7 @@
 # JuliaReport
 
 [![Build Status](https://travis-ci.org/mpastell/JuliaReport.jl.svg?branch=master)](https://travis-ci.org/mpastell/JuliaReport.jl)
+
 JuliaReport is a scientific report generator/literate programming tool
 for Julia. It resembles [Pweave](http://mpastell.com/pweave) and, Knitr
 and Sweave.
@@ -33,7 +34,7 @@ using ";" and need to be valid Julia expressions. e.g.
 Run from julia:
 
     using JuliaReport
-    weave(Pkg.dir("JuliaReport","examples","julia_sample.mdw"))
+    weave(Pkg.dir("JuliaReport","examples","julia_sample.mdw")
 
 Or using Winston for plots (Julia 0.3 only):
 

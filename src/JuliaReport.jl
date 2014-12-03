@@ -12,11 +12,13 @@ type Report <: Display
   pending_code::String
   figdir::String
   executed::Array
+  cur_result::String
   fignum::Int
   figures::Array
+  cur_chunk::Dict
 
   function Report()
-        new("", false, "", "",  Any[], "", "", {}, 1, {})
+        new("", false, "", "",  Any[], "", "", {}, "", 1, {},  @compat Dict{Symbol, Any}())
   end
 
 end
@@ -75,7 +77,7 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
         elseif l_plotlib == "gadfly"
             println("GadFly")
             eval(parse("""include(Pkg.dir("JuliaReport","src","gadfly.jl"))"""))
-            rcParams[:plotlib] = "gadfly"
+            rcParams[:plotlib] = "Gadfly"
             #pushdisplay(doc)
         end
     end
@@ -119,11 +121,6 @@ function run_block(code_str)
 end
 
 function run_term(code_str)
-    oldSTDOUT = STDOUT
-    #If there is nothing to read code will hang
-    println()
-    rw, wr = redirect_stdout()
-
 
     #Emulate terminal
     n = length(code_str)
@@ -131,20 +128,15 @@ function run_term(code_str)
     while pos < n
         oldpos = pos
         code, pos = parse(code_str, pos)
-        println(string("\njulia> ", rstrip(code_str[oldpos:(pos-1)])))
-        display(string("\njulia> ", rstrip(code_str[oldpos:(pos-1)])))
+
+	      prompts = string("\n\njulia> ", rstrip(code_str[oldpos:(pos-1)]), "\n")
+	      report.cur_result *= prompts
+
         s = eval(ReportSandBox, code)
         s != nothing && display(s)
-        smime = nothing
-        s == nothing || (smime = reprmime(MIME("text/plain"), s))
-        smime == nothing || println(smime)
     end
 
-    redirect_stdout(oldSTDOUT)
-    close(wr)
-    result = readall(rw)
-    close(rw)
-    return string(result)
+    return string(report.cur_result)
 end
 
 
@@ -167,13 +159,22 @@ function run(parsed)
       delete!(chunk, :options)
 
       chunk[:evaluate] || (chunk[:result] = ""; continue) #Do nothing if eval is false
+
+      report.fignum = 1
+      report.cur_result = ""
+      report.figures = String[]
+      report.cur_chunk = chunk
+
       if chunk[:term]
         chunk[:result] = run_term(chunk[:content])
       else
         chunk[:result] = run_block(chunk[:content])
       end
-
-      chunk[:fig] && (chunk[:figure] = savefigs(chunk))
+      if rcParams[:plotlib] == "Gadfly"
+        chunk[:fig] && (chunk[:figure] = copy(report.figures))
+      else
+        chunk[:fig] && (chunk[:figure] = savefigs(chunk))
+      end
     end
     parsed[i] = copy(chunk)
     i += 1
@@ -242,6 +243,7 @@ end
 
 function display(report::Report, m::MIME"text/plain", data)
   s = reprmime(m, data)
+  report.cur_result *= s
   push!(report.executed, s)
 end
 

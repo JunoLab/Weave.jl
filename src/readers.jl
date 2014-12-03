@@ -5,7 +5,7 @@ function read_noweb(document)
   lines = split(bytestring(open(document) do io
                              mmap_array(Uint8,(filesize(document),),io)
                            end), "\n")
-  #doctext = document #Replace with file...
+
   codestart = r"^<<(.*?)>>="
   codeend = r"^@(\s*)$"
   state = "doc"

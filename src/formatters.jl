@@ -1,3 +1,4 @@
+using TextWrap
 
 #Format the executed document
 function format(executed, doctype)
@@ -9,9 +10,11 @@ function format(executed, doctype)
   get!(formatdict, :termend, formatdict[:codeend])
 
   for chunk in copy(executed)
+
       if chunk[:type] == "doc"
           push!(formatted, chunk[:content])
       else
+
           #Format code
           result = format_codechunk(chunk, formatdict)
           #Handle figures
@@ -29,6 +32,8 @@ end
 
 
 function format_codechunk(chunk, formatdict)
+
+
     if !chunk[:evaluate]
         if chunk[:echo]
             result = "$(formatdict[:codestart])$(chunk[:content])$(formatdict[:codeend])"
@@ -42,6 +47,10 @@ function format_codechunk(chunk, formatdict)
     if chunk[:term]
         result = format_termchunk(chunk, formatdict)
     else
+        if chunk[:wrap]
+          chunk[:result] = "\n" * wrap(chunk[:result])
+        end
+
         if chunk[:echo]
             result = "$(formatdict[:codestart])$(chunk[:content])\n$(formatdict[:codeend])\n"
         else
@@ -178,7 +187,7 @@ function formatfigures(chunk, docformat::Pandoc)
         end
     else
         for fig in fignames
-            result *= "![]($fig)\n"
+            result *= "![]($fig)\\\n"
         end
     end
     return result
