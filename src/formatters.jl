@@ -48,7 +48,7 @@ function format_codechunk(chunk, formatdict)
         result = format_termchunk(chunk, formatdict)
     else
         if chunk[:wrap]
-          chunk[:result] = "\n" * wrap(chunk[:result])
+          chunk[:result] = "\n" * wrap(chunk[:result], replace_whitespace=false)
         end
 
         if chunk[:echo]

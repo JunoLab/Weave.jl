@@ -18,7 +18,7 @@ type Report <: Display
   cur_chunk::Dict
 
   function Report()
-        new("", false, "", "",  Any[], "", "", {}, "", 1, {},  @compat Dict{Symbol, Any}())
+        new("", false, "", "",  Any[], "", "", Any[], "", 1, Any[],  @compat Dict{Symbol, Any}())
   end
 
 end
@@ -26,9 +26,8 @@ end
 const report = Report()
 
 const supported_mime_types =
-    {
-      MIME"image/png",
-      MIME"text/plain" }
+    [MIME"image/png",
+     MIME"text/plain"]
 
 function display(doc::Report, data)
     for m in supported_mime_types
