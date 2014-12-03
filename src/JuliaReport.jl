@@ -1,9 +1,9 @@
 module JuliaReport
 using Compat
+import Base: display
 
 #Contains report global properties
-#Similar to pweave.PwebProcessor
-type Report
+type Report <: Display
   source::String
   documentationmode::Bool
   cwd::String
@@ -11,9 +11,32 @@ type Report
   formatdict
   pending_code::String
   figdir::String
+  executed::Array
+  fignum::Int
+  figures::Array
+
+  function Report()
+        new("", false, "", "",  Any[], "", "", {}, 1, {})
+  end
+
 end
 
-const report = Report("", false, "", "",  Any[], "", "")
+const report = Report()
+
+const supported_mime_types =
+    {
+      MIME"image/png",
+      MIME"text/plain" }
+
+function display(doc::Report, data)
+    for m in supported_mime_types
+        if mimewritable(m(), data)
+            display(doc, m(), data)
+            brea
+        end
+    end
+end
+
 
 #function listformats()
   #pweave.listformats() TODO: implement
@@ -37,6 +60,7 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
     report.basename = basename
     report.figdir = figdir
     report.formatdict = formatdict
+    pushdisplay(report)
 
     if plotlib == nothing
         rcParams[:chunk][:defaultoptions][:fig] = false
@@ -48,17 +72,24 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
         elseif l_plotlib == "pyplot"
             eval(Expr(:using, :PyPlot))
             rcParams[:plotlib] = "PyPlot"
+        elseif l_plotlib == "gadfly"
+            println("GadFly")
+            eval(parse("""include(Pkg.dir("JuliaReport","src","gadfly.jl"))"""))
+            rcParams[:plotlib] = "gadfly"
+            #pushdisplay(doc)
         end
     end
 
     parsed = read_noweb(source)
     executed = run(parsed)
+    popdisplay(report)
     formatted = format(executed, doctype)
     outname = "$(report.cwd)/$(report.basename).$(formatdict[:extension])"
     @show outname
     open(outname, "w") do io
         write(io, join(formatted, "\n"))
     end
+
     info("Report weaved to $(report.basename).$(formatdict[:extension])")
 
 end
@@ -76,7 +107,8 @@ function run_block(code_str)
     while pos < n
         oldpos = pos
         code, pos = parse(code_str, pos)
-        eval(ReportSandBox, code)
+        s = eval(ReportSandBox, code)
+        s != nothing && display(s)
     end
 
     redirect_stdout(oldSTDOUT)
@@ -100,9 +132,12 @@ function run_term(code_str)
         oldpos = pos
         code, pos = parse(code_str, pos)
         println(string("\njulia> ", rstrip(code_str[oldpos:(pos-1)])))
+        display(string("\njulia> ", rstrip(code_str[oldpos:(pos-1)])))
         s = eval(ReportSandBox, code)
-        s == nothing || (smime = reprmime(MIME("text/plain"), s))  #display(s)
-        println(smime)
+        s != nothing && display(s)
+        smime = nothing
+        s == nothing || (smime = reprmime(MIME("text/plain"), s))
+        smime == nothing || println(smime)
     end
 
     redirect_stdout(oldSTDOUT)
@@ -152,6 +187,8 @@ function savefigs(chunk)
       return savefigs_pyplot(chunk)
     elseif l_plotlib == "winston"
       return savefigs_winston(chunk)
+    elseif l_plotlib == "gadfly"
+      return String[]
     end
 end
 
@@ -200,6 +237,14 @@ function savefigs_winston(chunk)
     end
     return fignames
 end
+
+
+
+function display(report::Report, m::MIME"text/plain", data)
+  s = reprmime(m, data)
+  push!(report.executed, s)
+end
+
 
 
 export weave
