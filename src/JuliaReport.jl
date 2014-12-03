@@ -15,9 +15,14 @@ end
 
 const report = Report("", false, "", "",  Any[], "", "")
 
-function listformats()
-  pweave.listformats()
+#function listformats()
+  #pweave.listformats() TODO: implement
+#end
+
+#Module for report scope, idea from Judo.jl
+module ReportSandBox
 end
+
 
 function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", figdir = "figures", figformat = nothing)
 
@@ -64,7 +69,16 @@ function run_block(code_str)
     #If there is nothing to read code will hang
     println()
     rw, wr = redirect_stdout()
-    include_string(code_str)
+    #include_string(code_str)
+
+    n = length(code_str)
+    pos = 2 #The first character is extra line end
+    while pos < n
+        oldpos = pos
+        code, pos = parse(code_str, pos)
+        eval(ReportSandBox, code)
+    end
+
     redirect_stdout(oldSTDOUT)
     close(wr)
     result = readall(rw)
@@ -86,7 +100,7 @@ function run_term(code_str)
         oldpos = pos
         code, pos = parse(code_str, pos)
         println(string("\njulia> ", rstrip(code_str[oldpos:(pos-1)])))
-        s = eval(code)
+        s = eval(ReportSandBox, code)
         s == nothing || (smime = reprmime(MIME("text/plain"), s))  #display(s)
         println(smime)
     end

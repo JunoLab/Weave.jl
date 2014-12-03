@@ -94,6 +94,7 @@ const tex = Tex(@compat Dict{Symbol,Any}(:codestart => "\\begin{juliacode}",
                                          :width => "\\linewidth",
                                          :doctype => "tex"
                                          ))
+
 const texminted = Tex(@compat Dict{Symbol,Any}(:codestart => "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}",
                                          :codeend => "\\end{minted}",
                                          :outputstart => "\\begin{minted}[fontsize=\\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}",
@@ -105,8 +106,6 @@ const texminted = Tex(@compat Dict{Symbol,Any}(:codestart => "\\begin{minted}[ma
                                          :width => "\\linewidth",
                                          :doctype => "texminted"
                                          ))
-
-
 
 type Pandoc
     formatdict::Dict{Symbol,Any}
