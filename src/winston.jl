@@ -1,9 +1,7 @@
-using Gadfly
+using Winston
 
-Gadfly.set_default_plot_format(:png)
-
-#Captures figures
 function display(report::Report, m::MIME"image/png", data)
+
     chunk = report.cur_chunk
     full_name, rel_name = get_figname(report, chunk)
 

@@ -1,6 +1,6 @@
 module JuliaReport
 using Compat
-import Base: display
+import Base: display, writemime
 
 #Contains report global properties
 type Report <: Display
@@ -68,7 +68,7 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
     else
         l_plotlib = lowercase(plotlib)
         if l_plotlib == "winston"
-            eval(Expr(:using, :Winston))
+            eval(parse("""include(Pkg.dir("JuliaReport","src","winston.jl"))"""))
             rcParams[:plotlib] = "Winston"
         elseif l_plotlib == "pyplot"
             eval(Expr(:using, :PyPlot))
@@ -169,10 +169,10 @@ function run(parsed)
       else
         chunk[:result] = run_block(chunk[:content])
       end
-      if rcParams[:plotlib] == "Gadfly"
-        chunk[:fig] && (chunk[:figure] = copy(report.figures))
-      else
+      if rcParams[:plotlib] == "PyPlot"
         chunk[:fig] && (chunk[:figure] = savefigs(chunk))
+      else
+        chunk[:fig] && (chunk[:figure] = copy(report.figures))
       end
     end
     parsed[i] = copy(chunk)
@@ -185,10 +185,6 @@ function savefigs(chunk)
     l_plotlib = lowercase(rcParams[:plotlib])
     if l_plotlib == "pyplot"
       return savefigs_pyplot(chunk)
-    elseif l_plotlib == "winston"
-      return savefigs_winston(chunk)
-    elseif l_plotlib == "gadfly"
-      return String[]
     end
 end
 
@@ -210,34 +206,6 @@ function savefigs_pyplot(chunk)
     return fignames
 end
 
-#This currently only works if there is only one figure/chunk
-#Doesn"t work with FramedPlots
-#Doesn"t work with Julia 0.4
-function savefigs_winston(chunk)
-    fignames = String[]
-    ext = report.formatdict[:figfmt]
-    figpath = joinpath(report.cwd, report.figdir)
-    isdir(figpath) || mkdir(figpath)
-
-    chunkid = chunk[:name] == nothing ? chunk[:number] : chunk[:name]
-
-    #println(Winston._display.figs)
-    #println(Winston._display.fig_order)
-
-    #Iterate over all open figures, save them and store names
-    for fig = copy(Winston._display.fig_order)
-        full_name = joinpath(report.cwd, report.figdir, "$(report.basename)_$(chunkid)_$fig$ext")
-        rel_name = "$(report.figdir)/$(report.basename)_$(chunkid)_$fig$ext" #Relative path is used in output
-        #@show rel_name
-        #figure(fig) #Calling figure clears the canvas!
-        #savefig(Winston._display.figs[gcf()].plot, full_name) #Produces empty figures
-        savefig(full_name)
-        closefig()
-        push!(fignames, rel_name)
-    end
-    return fignames
-end
-
 
 
 function display(report::Report, m::MIME"text/plain", data)
@@ -246,7 +214,18 @@ function display(report::Report, m::MIME"text/plain", data)
   push!(report.executed, s)
 end
 
+function get_figname(report::Report, chunk)
+    figpath = joinpath(report.cwd, report.figdir)
+    isdir(figpath) || mkdir(figpath)
+    ext = report.formatdict[:figfmt]
+    fig = report.fignum
+    chunk = report.cur_chunk
+    chunkid = (chunk[:name] == nothing) ? chunk[:number] : chunk[:name]
+    full_name = joinpath(report.cwd, report.figdir, "$(report.basename)_$(chunkid)_$fig$ext")
+    rel_name = "$(report.figdir)/$(report.basename)_$(chunkid)_$fig$ext" #Relative path is used in output
 
+    return full_name, rel_name
+end
 
 export weave
 

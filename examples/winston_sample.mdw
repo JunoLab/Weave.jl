@@ -27,7 +27,6 @@ The figures and code can be included in the output.
 
 <<>>=
 using Winston
-figure()
 t = linspace(0, 2*pi, 100)
 plot(t, sinc(t))
 xlabel("x")
@@ -37,6 +36,21 @@ ylabel("sinc(x)")
 You can also include a plot with caption and hide the code:
 
 <<echo=false; caption="Random walk."; label="random">>=
-figure()
 plot(cumsum(randn(1000, 1)))
+@
+
+<<>>=
+x = linspace(0, 3pi, 100)
+c = cos(x)
+s = sin(x)
+
+figure()
+p = FramedPlot(
+         title="title!",
+         xlabel="\\Sigma x^2_i",
+         ylabel="\\Theta_i")
+
+add(p, FillBetween(x, c, x, s))
+add(p, Curve(x, c, color="red"))
+add(p, Curve(x, s, color="blue"))
 @
