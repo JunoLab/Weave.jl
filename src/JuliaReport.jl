@@ -61,7 +61,7 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
     report.basename = basename
     report.figdir = figdir
     report.formatdict = formatdict
-    pushdisplay(report)
+
 
     if plotlib == nothing
         rcParams[:chunk][:defaultoptions][:fig] = false
@@ -74,13 +74,12 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
             eval(Expr(:using, :PyPlot))
             rcParams[:plotlib] = "PyPlot"
         elseif l_plotlib == "gadfly"
-            println("GadFly")
             eval(parse("""include(Pkg.dir("JuliaReport","src","gadfly.jl"))"""))
             rcParams[:plotlib] = "Gadfly"
-            #pushdisplay(doc)
         end
     end
 
+    pushdisplay(report)
     parsed = read_noweb(source)
     executed = run(parsed)
     popdisplay(report)
@@ -98,24 +97,32 @@ end
 
 function run_block(code_str)
     oldSTDOUT = STDOUT
+    result = ""
+
+    rw, wr = redirect_stdout()
     #If there is nothing to read code will hang
     println()
-    rw, wr = redirect_stdout()
-    #include_string(code_str)
 
-    n = length(code_str)
-    pos = 2 #The first character is extra line end
-    while pos < n
-        oldpos = pos
-        code, pos = parse(code_str, pos)
-        s = eval(ReportSandBox, code)
-        s != nothing && display(s)
+
+    try
+      n = length(code_str)
+      pos = 2 #The first character is extra line end
+      while pos < n
+          oldpos = pos
+          code, pos = parse(code_str, pos)
+          s = eval(ReportSandBox, code)
+          if rcParams[:plotlib] == "Gadfly"
+              s != nothing && display(s)
+          end
+      end
+    finally
+
+      redirect_stdout(oldSTDOUT)
+      close(wr)
+      result = readall(rw)
+      close(rw)
     end
 
-    redirect_stdout(oldSTDOUT)
-    close(wr)
-    result = readall(rw)
-    close(rw)
     return string("\n", result)
 end
 

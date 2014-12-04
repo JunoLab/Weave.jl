@@ -12,7 +12,7 @@ function display(report::Report, m::MIME"image/png", data)
       chunk[:figure] = [rel_name]
       report.cur_result *= "\n" * report.formatdict[:codeend]
       report.cur_result *= formatfigures(chunk, docformat)
-      report.cur_result *=  "\n\n" * report.formatdict[:codestart]
+      report.cur_result *=  "\n\n" * report.formatdict[:codestart] * "\n"
       chunk[:figure] = String[]
     else
       push!(report.figures, rel_name)
