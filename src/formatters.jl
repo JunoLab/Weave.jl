@@ -5,15 +5,27 @@ function format(executed, doctype)
   formatted = String[]
   docformat = formats[doctype]
   #@show docformat
+
+  #Complete format dictionaries with defaults
   formatdict = docformat.formatdict
   get!(formatdict, :termstart, formatdict[:codestart])
   get!(formatdict, :termend, formatdict[:codeend])
+  get!(formatdict, :out_width, nothing)
+  get!(formatdict, :out_height, nothing)
+  get!(formatdict, :fig_pos, nothing)
+  get!(formatdict, :fig_env, nothing)
+
 
   for chunk in copy(executed)
 
       if chunk[:type] == "doc"
           push!(formatted, chunk[:content])
       else
+          #Fill undefined options with format specific defaults
+          chunk[:out_width] == nothing && (chunk[:out_width] =  docformat.formatdict[:out_width])
+          chunk[:fig_env] == nothing && (chunk[:fig_env] =  docformat.formatdict[:fig_env])
+          chunk[:fig_pos] == nothing && (chunk[:fig_pos] =  docformat.formatdict[:fig_pos])
+
 
           #Format code
           result = format_codechunk(chunk, formatdict)
@@ -34,7 +46,7 @@ end
 function format_codechunk(chunk, formatdict)
 
 
-    if !chunk[:evaluate]
+    if !chunk[:eval]
         if chunk[:echo]
             result = "$(formatdict[:codestart])$(chunk[:content])$(formatdict[:codeend])"
             return result
@@ -59,10 +71,10 @@ function format_codechunk(chunk, formatdict)
 
         if (strip(chunk[:result])!= "") && (chunk[:results] != "hidden")
             #@show chunk
-            if chunk[:results] != "verbatim"
+            if chunk[:results] != "markup"
                 haskey(formatdict, :indent) && (chunk[:result] = indent(chunk[:result]))
                 result *= "$(chunk[:result])"
-            elseif chunk[:results] == "verbatim"
+            elseif chunk[:results] == "markup"
                 result *= "$(formatdict[:outputstart])$(chunk[:result])\n$(formatdict[:outputend])\n"
             end
         end
@@ -98,9 +110,11 @@ const tex = Tex(@compat Dict{Symbol,Any}(:codestart => "\\begin{juliacode}",
                                          :codeend => "\\end{juliacode}",
                                          :outputstart => "\\begin{juliaout}",
                                          :outputend => "\\end{juliaout}",
-                                         :figfmt => ".pdf",
+                                         :fig_ext => ".pdf",
                                          :extension =>"tex",
-                                         :width => "\\linewidth",
+                                         :out_width=> "\\linewidth",
+                                         :fig_env=> "figure",
+                                         :fig_pos => "htpb",
                                          :doctype => "tex"
                                          ))
 
@@ -110,9 +124,11 @@ const texminted = Tex(@compat Dict{Symbol,Any}(:codestart => "\\begin{minted}[ma
                                          :outputend => "\\end{minted}",
                                          :termstart=> "\\begin{minted}[fontsize=\\footnotesize, xleftmargin=0.5em, mathescape]{julia}",
                                          :termend => "\\end{minted}",
-                                         :figfmt => ".pdf",
+                                         :fig_ext => ".pdf",
                                          :extension =>"tex",
-                                         :width => "\\linewidth",
+                                         :out_width => "\\linewidth",
+                                         :fig_env=> "figure",
+                                         :fig_pos => "htpb",
                                          :doctype => "texminted"
                                          ))
 
@@ -124,25 +140,27 @@ const pandoc = Pandoc(@compat Dict{Symbol,Any}(:codestart => "~~~~{.julia}",
                                :codeend=>"~~~~~~~~~~~~~\n\n",
                                :outputstart=>"~~~~{.julia}",
                                :outputend=>"~~~~~~~~~~~~~\n\n",
-                               :figfmt=>".png",
+                               :fig_ext=>".png",
                                :extension=>"md",
-                               :width=>"15 cm",
                                :doctype=>"pandoc"
                                                ))
 
 
 function formatfigures(chunk, docformat::Tex)
     fignames = chunk[:figure]
-    caption = chunk[:caption]
-    width = get!(chunk, :width, docformat.formatdict[:width])
-    f_pos = chunk[:f_pos]
-    f_env = chunk[:f_env]
+    caption = chunk[:fig_cap]
+    width = chunk[:out_width]
+
+
+    f_pos = chunk[:fig_pos]
+    f_env = chunk[:fig_env]
     result = ""
     figstring = ""
 
     if f_env != nothing
         result *= """\\begin{$f_env}\n"""
     end
+
 
     for fig = fignames
         figstring *= "\\includegraphics[width= $width]{$fig}\n"
@@ -172,8 +190,7 @@ end
 
 function formatfigures(chunk, docformat::Pandoc)
     fignames = chunk[:figure]
-    caption = chunk[:caption]
-    width = get!(chunk, :width, docformat.formatdict[:width])
+    caption = chunk[:fig_cap]
     result = ""
     figstring = ""
 

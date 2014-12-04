@@ -3,8 +3,14 @@ using Gadfly
 Gadfly.set_default_plot_format(:png)
 
 #Captures figures
-function display(report::Report, m::MIME"image/png", data)
+function Base.display(report::Report, m::MIME"image/png", p::Plot)
     chunk = report.cur_chunk
+
+    if chunk[:fig_ext] != ".png"
+      chunk[:fig_ext]
+      warn("Saving figures as .png with Gadfly")
+    end
+
     full_name, rel_name = get_figname(report, chunk)
 
     docformat = formats[report.formatdict[:doctype]]
@@ -21,7 +27,11 @@ function display(report::Report, m::MIME"image/png", data)
     end
 
     report.fignum += 1
-    out = open(full_name, "w")
-    writemime(out, m, data)
-    close(out)
+
+    #TODO other formats
+    r = chunk[:dpi]/96 #Relative to Gadfly default 96dpi
+    draw(PNG(full_name, chunk[:fig_width]inch*r, chunk[:fig_height]inch*r ), p)
+    #out = open(full_name, "w")
+    #writemime(out, m, data)
+    #close(out)
 end

@@ -1,25 +1,70 @@
 const rcParams =
-    @compat Dict{Symbol,Any}(:figdir=> "figures",
+    @compat Dict{Symbol,Any}(
                              :plotlib => "PyPlot",
-                             :storeresults=> false,
-                             :cachedir=> "cache",
-                             :chunk=>
-                             Dict{Symbol,Any}(:defaultoptions=>
-                                              Dict{Symbol,Any}(:echo=> true,
-                                                               :results=> "verbatim",
+                             :storeresults => false,
+                             :chunk_defaults => Dict{Symbol,Any}(:echo=> true,
+                                                               :results=> "markup",
                                                                :fig=> true,
                                                                :include=> true,
-                                                               :evaluate=> true,
-                                                               :caption=> false,
+                                                               :eval => true,
+                                                               :fig_cap=> false,
+                                                               :fig_width => 8, #Size in inches
+                                                               :fig_height => 6,
+                                                               :fig_path=> "figures",
+                                                               :out_width=> nothing, #Defined separately for each format
+                                                               :out_height=> nothing,
+                                                               :fig_ext => ".png",
+                                                               :dpi => 200,
                                                                :term=> false,
                                                                :name=> nothing,
                                                                :wrap=> true,
-                                                               :f_pos=> "htpb",
-                                                               :f_size=> (8, 6),
-                                                               :f_env=> nothing,
-                                                               :f_spines=> true,
-                                                               :complete=> true,
+                                                               :fig_pos=> nothing,
+                                                               :fig_env=> nothing,
                                                                :engine=> "julia",
                                                                :option_string=> "")
                                               )
-                             )
+
+
+
+
+# Working towards Knitr compatible options, implemented options are added to defaultoptions dictionary above
+# and work in progress stays here, options from https://github.com/yihui/knitr/blob/master/R/defaults.R
+# If you need a particular options, consider implementing it and making a pull request.
+
+#tidy = FALSE,
+#tidy.opts = NULL,
+#collapse = FALSE
+#prompt = FALSE
+#highlight = TRUE
+#strip.white = TRUE
+#size = 'normalsize'
+#background = '#F7F7F7',
+#cache = FALSE
+#cache.path = 'cache/'
+#cache.vars = NULL
+#cache.lazy = TRUE,
+#dependson = NULL
+#autodep = FALSE,
+#fig.keep = 'high'
+#fig.show = 'asis'
+#fig.align = 'default'
+#dev = NULL
+#dev.args = NULL
+#fig.ext = NULL
+#fig.scap = NULL
+#fig.lp = 'fig:'
+#fig.subcap = NULL,
+#out.extra = NULL
+#fig.retina = 1,
+#external = TRUE
+#sanitize = FALSE
+#interval = 1
+#aniopts = 'controls,loop',
+#warning = TRUE
+#error = TRUE
+#message = TRUE,
+#render = NULL,
+#ref.label = NULL
+#child = NULL
+#split = FALSE
+#purl = TRUE

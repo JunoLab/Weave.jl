@@ -1,6 +1,5 @@
 module JuliaReport
 using Compat
-import Base: display, writemime
 
 #Contains report global properties
 type Report <: Display
@@ -10,15 +9,13 @@ type Report <: Display
   basename::String
   formatdict
   pending_code::String
-  figdir::String
-  executed::Array
   cur_result::String
   fignum::Int
   figures::Array
   cur_chunk::Dict
 
   function Report()
-        new("", false, "", "",  Any[], "", "", Any[], "", 1, Any[],  @compat Dict{Symbol, Any}())
+        new("", false, "", "",  Any[], "", "", 1, Any[],  @compat Dict{Symbol, Any}())
   end
 
 end
@@ -29,7 +26,7 @@ const supported_mime_types =
     [MIME"image/png",
      MIME"text/plain"]
 
-function display(doc::Report, data)
+function Base.display(doc::Report, data)
     for m in supported_mime_types
         if mimewritable(m(), data)
             display(doc, m(), data)
@@ -48,23 +45,25 @@ module ReportSandBox
 end
 
 
-function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", figdir = "figures", figformat = nothing)
+function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", fig_path = "figures", fig_ext = nothing)
 
     cwd, fname = splitdir(abspath(source))
     basename = splitext(fname)[1]
     formatdict = formats[doctype].formatdict
-    figformat == nothing || (formatdict[:figfmt] = figformat)
+    fig_ext == nothing || (rcParams[:chunk_defaults][:fig_ext] = fig_ext)
+
+
     #report = Report(source, false, cwd, basename, formatdict, "", figdir)
 
     report.source = source
     report.cwd = cwd
     report.basename = basename
-    report.figdir = figdir
+    rcParams[:chunk_defaults][:fig_path] = fig_path
     report.formatdict = formatdict
 
 
     if plotlib == nothing
-        rcParams[:chunk][:defaultoptions][:fig] = false
+        rcParams[:chunk_defaults][:fig] = false
     else
         l_plotlib = lowercase(plotlib)
         if l_plotlib == "winston"
@@ -76,6 +75,10 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
         elseif l_plotlib == "gadfly"
             eval(parse("""include(Pkg.dir("JuliaReport","src","gadfly.jl"))"""))
             rcParams[:plotlib] = "Gadfly"
+            if rcParams[:chunk_defaults][:fig_ext] != ".png"
+              rcParams[:chunk_defaults][:fig_ext] = ".png"
+              warn("Saving figures as .png with Gadfly")
+            end
         end
     end
 
@@ -152,19 +155,19 @@ function run(parsed)
     if chunk[:type] == "code"
       #print(chunk["content"])
       info("Weaving chunk $(chunk[:number]) from line $(chunk[:start_line])")
-      defaults = copy(rcParams[:chunk][:defaultoptions])
+      defaults = copy(rcParams[:chunk_defaults])
       options = copy(chunk[:options])
       try
-        options = merge(rcParams[:chunk][:defaultoptions], options)
+        options = merge(rcParams[:chunk_defaults], options)
       catch
-        options = rcParams[:chunk][:defaultoptions]
+        options = rcParams[:chunk_defaults]
         warn("Invalid format for chunk options line: $(chunk[:start_line])")
       end
 
       merge!(chunk, options)
       delete!(chunk, :options)
 
-      chunk[:evaluate] || (chunk[:result] = ""; continue) #Do nothing if eval is false
+      chunk[:eval] || (chunk[:result] = ""; continue) #Do nothing if eval is false
 
       report.fignum = 1
       report.cur_result = ""
@@ -197,15 +200,14 @@ end
 
 function savefigs_pyplot(chunk)
     fignames = String[]
-    ext = report.formatdict[:figfmt]
-    figpath = joinpath(report.cwd, report.figdir)
+    ext = report.formatdict[:fig_ext]
+    figpath = joinpath(report.cwd, chunk[:fig_path])
     isdir(figpath) || mkdir(figpath)
     chunkid = (chunk[:name] == nothing) ? chunk[:number] : chunk[:name]
     #Iterate over all open figures, save them and store names
     for fig = plt.get_fignums()
-        full_name = joinpath(report.cwd, report.figdir, "$(report.basename)_$(chunkid)_$fig$ext")
-        rel_name = "$(report.figdir)/$(report.basename)_$(chunkid)_$fig$ext" #Relative path is used in output
-        savefig(full_name)
+        full_name, rel_name = get_figname(report, chunk, fignum=fig)
+        savefig(full_name, dpi=chunk[:dpi])
         push!(fignames, rel_name)
         plt.draw()
         plt.close()
@@ -215,22 +217,20 @@ end
 
 
 
-function display(report::Report, m::MIME"text/plain", data)
+function Base.display(report::Report, m::MIME"text/plain", data)
   s = reprmime(m, data)
   report.cur_result *= s
-  push!(report.executed, s)
 end
 
-function get_figname(report::Report, chunk)
-    figpath = joinpath(report.cwd, report.figdir)
+function get_figname(report::Report, chunk; fignum = nothing)
+    figpath = joinpath(report.cwd, chunk[:fig_path])
     isdir(figpath) || mkdir(figpath)
-    ext = report.formatdict[:figfmt]
-    fig = report.fignum
-    chunk = report.cur_chunk
-    chunkid = (chunk[:name] == nothing) ? chunk[:number] : chunk[:name]
-    full_name = joinpath(report.cwd, report.figdir, "$(report.basename)_$(chunkid)_$fig$ext")
-    rel_name = "$(report.figdir)/$(report.basename)_$(chunkid)_$fig$ext" #Relative path is used in output
+    ext = chunk[:fig_ext]
+    fignum == nothing && (fignum = report.fignum)
 
+    chunkid = (chunk[:name] == nothing) ? chunk[:number] : chunk[:name]
+    full_name = joinpath(report.cwd, chunk[:fig_path], "$(report.basename)_$(chunkid)_$(fignum)$ext")
+    rel_name = "$(chunk[:fig_path])/$(report.basename)_$(chunkid)_$(fignum)$ext" #Relative path is used in output
     return full_name, rel_name
 end
 

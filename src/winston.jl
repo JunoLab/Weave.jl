@@ -1,6 +1,6 @@
 using Winston
 
-function display(report::Report, m::MIME"image/png", data)
+function Base.display(report::Report, m::MIME"image/png", data)
 
     chunk = report.cur_chunk
     full_name, rel_name = get_figname(report, chunk)
@@ -19,7 +19,7 @@ function display(report::Report, m::MIME"image/png", data)
     end
 
     #TODO get width and height from chunk options, after implementing Knitr compatible options
-    savefig(data, full_name, width=2000, height=800)
+    savefig(data, full_name, width=chunk[:fig_width]*chunk[:dpi], height=chunk[:fig_height]*chunk[:dpi])
     report.fignum += 1
     #out = open(full_name, "w")
     #writemime(out, m, data)

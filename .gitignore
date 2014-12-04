@@ -1,8 +1,12 @@
 
 test.jl
-examples/*/*.png
+examples/figures/
 examples/*.md
+examples/*.pdf
 examples/*.html
 tmp/
 .idea
 *.*~
+*.aux
+*.log
+*.out
