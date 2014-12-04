@@ -33,7 +33,7 @@ p = plot(t, sinc(t))
 
 You can also include a plot with caption and hide the code:
 
-<<echo=false; caption="Random walk."; label="random"; fig_width=8; fig_height=4>>=
+<<echo=false; fig_cap="Random walk."; label="random"; fig_width=8; fig_height=4>>=
 p = plot(cumsum(randn(1000, 1)))
 xlabel("x")
 ylabel("sinc(x)")

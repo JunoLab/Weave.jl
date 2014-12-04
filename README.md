@@ -22,11 +22,12 @@ and Sweave.
 
 ## Chunk options
 
-You can use the same chunk options as for Pweave, but the format is different. Options are separated
-using ";" and need to be valid Julia expressions. e.g.
+I've tried to follow [Knitr](http://yihui.name/knitr/options)'s naming for chunk options, but not all options are implemented.
+You can see [`src/config.jl`](https://github.com/mpastell/JuliaReport.jl/blob/master/src/config.jl) for the current situation.
 
+Options are separated using ";" and need to be valid Julia expressions. e.g.
 
-    <<term=true; fig=false>>=
+    <<term=true; fig_width=6; fig_height=4>>=
 
 
 ## Usage
