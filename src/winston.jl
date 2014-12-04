@@ -18,8 +18,10 @@ function display(report::Report, m::MIME"image/png", data)
       push!(report.figures, rel_name)
     end
 
+    #TODO get width and height from chunk options, after implementing Knitr compatible options
+    savefig(data, full_name, width=2000, height=800)
     report.fignum += 1
-    out = open(full_name, "w")
-    writemime(out, m, data)
-    close(out)
+    #out = open(full_name, "w")
+    #writemime(out, m, data)
+    #close(out)
 end
