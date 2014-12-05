@@ -8,7 +8,7 @@ const rcParams =
                                 :fig=> true,
                                 :include=> true,
                                 :eval => true,
-                                :fig_cap=> false,
+                                :fig_cap=> nothing,
                                 #Size in inches
                                 :fig_width => 6,
                                 :fig_height => 4,

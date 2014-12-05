@@ -46,6 +46,10 @@ end
 function format_codechunk(chunk, formatdict)
 
 
+    if haskey(formatdict, :indent)
+        chunk[:content] = indent(chunk[:content], formatdict[:indent])
+    end
+
     if !chunk[:eval]
         if chunk[:echo]
             result = "$(formatdict[:codestart])$(chunk[:content])$(formatdict[:codeend])"
@@ -72,9 +76,11 @@ function format_codechunk(chunk, formatdict)
         if (strip(chunk[:result])!= "") && (chunk[:results] != "hidden")
             #@show chunk
             if chunk[:results] != "markup"
-                haskey(formatdict, :indent) && (chunk[:result] = indent(chunk[:result]))
                 result *= "$(chunk[:result])"
             elseif chunk[:results] == "markup"
+                if haskey(formatdict, :indent)
+                    chunk[:result] = indent(chunk[:result], formatdict[:indent])
+                end
                 result *= "$(formatdict[:outputstart])$(chunk[:result])\n$(formatdict[:outputend])\n"
             end
         end
@@ -89,8 +95,6 @@ end
 
 function format_termchunk(chunk, formatdict)
   if chunk[:echo] && chunk[:results] != "hidden"
-    haskey(formatdict, :termindent) && (chunk[:result] = indent(chunk[:result]))
-
     result = "$(formatdict[:termstart])$(chunk[:result])\n"
     @show chunk[:term_state]
     chunk[:term_state] == :text && (result*= "$(formatdict[:termend])\n")
@@ -101,7 +105,8 @@ return result
 end
 
 function indent(text, nindent)
-    return text
+    return join(map(x->
+                    string(repeat(" ", nindent), x), split(text, "\n")), "\n")
 end
 
 
@@ -140,17 +145,19 @@ type Markdown
     formatdict::Dict{Symbol,Any}
 end
 
-const pandoc = Markdown(@compat Dict{Symbol,Any}(:codestart => "~~~~{.julia}",
-                               :codeend=>"~~~~~~~~~~~~~\n\n",
-                               :outputstart=>"~~~~{.julia}",
-                               :outputend=>"~~~~~~~~~~~~~\n\n",
-                               :fig_ext=>".png",
-                               :extension=>"md",
-                               :doctype=>"pandoc"
+const pandoc = Markdown(@compat Dict{Symbol,Any}(
+                                :codestart => "~~~~{.julia}",
+                                :codeend=>"~~~~~~~~~~~~~\n\n",
+                                :outputstart=>"~~~~{.julia}",
+                                :outputend=>"~~~~~~~~~~~~~\n\n",
+                                :fig_ext=>".png",
+                                :extension=>"md",
+                                :doctype=>"pandoc"
                                                ))
 
 
-const github = Markdown(@compat Dict{Symbol,Any}(:codestart => "````julia",
+const github = Markdown(@compat Dict{Symbol,Any}(
+                                :codestart => "````julia",
                                 :codeend=> "````\n\n",
                                 :outputstart=> "````julia",
                                 :outputend=> "````\n\n",
@@ -158,6 +165,23 @@ const github = Markdown(@compat Dict{Symbol,Any}(:codestart => "````julia",
                                 :extension=> "md",
                                 :doctype=> "github"
                                                ))
+
+
+type Rest
+    formatdict::Dict{Symbol,Any}
+end
+
+const rst = Rest(@compat Dict{Symbol,Any}(
+                                :codestart => ".. code-block:: julia\n",
+                                :codeend => "\n\n",
+                                :outputstart => "::\n",
+                                :outputend => "\n\n",
+                                :indent=> 4,
+                                :fig_ext => ".png",
+                                :extension => "rst",
+                                :out_width => "15 cm",
+                                :doctype => "rst"
+                                ))
 
 
 
@@ -178,7 +202,7 @@ function formatfigures(chunk, docformat::Tex)
 
 
     for fig = fignames
-        figstring *= "\\includegraphics[width= $width]{$fig}\n"
+        figstring *= "\\includegraphics[width=$width]{$fig}\n"
     end
 
     # Figure environment
@@ -211,7 +235,7 @@ function formatfigures(chunk, docformat::Markdown)
 
     length(fignames) > 0 || (return "")
 
-    if caption != false
+    if caption != nothing
         result *= "![$caption]($(fignames[1]))\n"
         for fig = fignames[2:end]
             result *= "![]($fig)\n"
@@ -226,9 +250,32 @@ function formatfigures(chunk, docformat::Markdown)
 end
 
 
+function formatfigures(chunk, docformat::Rest)
+    fignames = chunk[:figure]
+    caption = chunk[:fig_cap]
+    width = chunk[:out_width]
+    result = ""
+    figstring = ""
+
+    for fig=fignames
+        figstring *= @sprintf(".. image:: %s\n   :width: %s\n\n", fig, width)
+    end
+
+    if caption != nothing
+        result *= string(".. figure:: $(fignames[1])\n",
+                         "   :width: $width\n\n",
+                         "   $caption\n\n")
+    else
+        result *= figstring
+        return result
+    end
+end
+
+
 #Add new supported formats here
 const formats = @compat Dict{String, Any}("tex" => tex,
                                           "texminted" => texminted,
                                           "pandoc" => pandoc,
-                                          "github" => github
+                                          "github" => github,
+                                          "rst" => rst
                                           )

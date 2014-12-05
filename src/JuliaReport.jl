@@ -128,6 +128,12 @@ function run_block(code_str)
 end
 
 function run_term(code_str)
+    prompt = "\njulia> "
+    codestart = "\n\n"*report.formatdict[:codestart]
+
+    if haskey(report.formatdict, :indent)
+        prompt = indent(prompt, report.formatdict[:indent])
+    end
 
     #Emulate terminal
     n = length(code_str)
@@ -135,9 +141,11 @@ function run_term(code_str)
     while pos < n
         oldpos = pos
         code, pos = parse(code_str, pos)
-        report.term_state == :fig && (report.cur_result*="\n\n"*report.formatdict[:codestart])
-	      prompts = string("\njulia> ", rstrip(code_str[oldpos:(pos-1)]), "\n")
-	      report.cur_result *= prompts
+
+
+        report.term_state == :fig && (report.cur_result*= codestart)
+	    prompts = string(prompt, rstrip(code_str[oldpos:(pos-1)]), "\n")
+	    report.cur_result *= prompts
         report.term_state = :text
         s = eval(ReportSandBox, code)
         s != nothing && display(s)
@@ -172,6 +180,9 @@ function run(parsed)
       report.figures = String[]
       report.cur_chunk = chunk
       report.term_state = :text
+      if haskey(report.formatdict, :out_width) && chunk[:out_width] == nothing
+          chunk[:out_width] = report.formatdict[:out_width]
+      end
 
       if chunk[:term]
         chunk[:result] = run_term(chunk[:content])
@@ -222,6 +233,8 @@ function Base.display(report::Report, m::MIME"text/plain", data)
   end
 
   s = reprmime(m, data)
+  haskey(report.formatdict, :indent) && (s = indent(s, report.formatdict[:indent]))
+
   report.cur_result *= s * "\n"
 
   if report.term_state == :fig #Catch Winston plot command output

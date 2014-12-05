@@ -22,6 +22,7 @@ function Base.display(report::Report, m::MIME"image/png", p::Plot)
       if report.term_state == :text
         report.cur_result *= "\n" * report.formatdict[:codeend]
       end
+      
 
       report.cur_result *= formatfigures(chunk, docformat)
       report.term_state = :fig
