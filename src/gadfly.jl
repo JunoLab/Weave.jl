@@ -18,9 +18,13 @@ function Base.display(report::Report, m::MIME"image/png", p::Plot)
     #Add to results for term chunks and store otherwise
     if chunk[:term]
       chunk[:figure] = [rel_name]
-      report.cur_result *= "\n" * report.formatdict[:codeend]
+
+      if report.term_state == :text
+        report.cur_result *= "\n" * report.formatdict[:codeend]
+      end
+
       report.cur_result *= formatfigures(chunk, docformat)
-      report.cur_result *=  "\n\n" * report.formatdict[:codestart]
+      report.term_state = :fig
       chunk[:figure] = String[]
     else
       push!(report.figures, rel_name)

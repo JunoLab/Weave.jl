@@ -90,7 +90,10 @@ end
 function format_termchunk(chunk, formatdict)
   if chunk[:echo] && chunk[:results] != "hidden"
     haskey(formatdict, :termindent) && (chunk[:result] = indent(chunk[:result]))
-    result = "$(formatdict[:termstart])$(chunk[:result])\n$(formatdict[:termend])\n"
+
+    result = "$(formatdict[:termstart])$(chunk[:result])\n"
+    @show chunk[:term_state]
+    chunk[:term_state] == :text && (result*= "$(formatdict[:termend])\n")
   else
     result = ""
   end

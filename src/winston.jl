@@ -10,9 +10,13 @@ function Base.display(report::Report, m::MIME"image/png", data)
     #Add to results for term chunks and store otherwise
     if chunk[:term]
       chunk[:figure] = [rel_name]
-      report.cur_result *= "\n" * report.formatdict[:codeend]
+
+      if report.term_state == :text
+        report.cur_result *= "\n" * report.formatdict[:codeend]
+      end
+
       report.cur_result *= formatfigures(chunk, docformat)
-      report.cur_result *=  "\n\n" * report.formatdict[:codestart] * "\n"
+      report.term_state = :fig
       chunk[:figure] = String[]
     else
       push!(report.figures, rel_name)
@@ -21,7 +25,4 @@ function Base.display(report::Report, m::MIME"image/png", data)
     #TODO get width and height from chunk options, after implementing Knitr compatible options
     savefig(data, full_name, width=chunk[:fig_width]*chunk[:dpi], height=chunk[:fig_height]*chunk[:dpi])
     report.fignum += 1
-    #out = open(full_name, "w")
-    #writemime(out, m, data)
-    #close(out)
 end

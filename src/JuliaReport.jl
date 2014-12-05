@@ -12,10 +12,12 @@ type Report <: Display
   cur_result::String
   fignum::Int
   figures::Array
-  cur_chunk::Dict
+  term_state::Symbol
+  cur_chunk::Dict{Symbol, Any}
+
 
   function Report()
-        new("", false, "", "",  Any[], "", "", 1, Any[],  @compat Dict{Symbol, Any}())
+        new("", false, "", "",  Any[], "", "", 1, Any[], :text, @compat Dict{Symbol, Any}() )
   end
 
 end
@@ -133,10 +135,10 @@ function run_term(code_str)
     while pos < n
         oldpos = pos
         code, pos = parse(code_str, pos)
-
-	      prompts = string("\n\njulia> ", rstrip(code_str[oldpos:(pos-1)]), "\n")
+        report.term_state == :fig && (report.cur_result*="\n\n"*report.formatdict[:codestart])
+	      prompts = string("\njulia> ", rstrip(code_str[oldpos:(pos-1)]), "\n")
 	      report.cur_result *= prompts
-
+        report.term_state = :text
         s = eval(ReportSandBox, code)
         s != nothing && display(s)
     end
@@ -169,9 +171,11 @@ function run(parsed)
       report.cur_result = ""
       report.figures = String[]
       report.cur_chunk = chunk
+      report.term_state = :text
 
       if chunk[:term]
         chunk[:result] = run_term(chunk[:content])
+        chunk[:term_state] = report.term_state
       else
         chunk[:result] = run_block(chunk[:content])
       end
@@ -212,10 +216,17 @@ function savefigs_pyplot(chunk)
 end
 
 
-
 function Base.display(report::Report, m::MIME"text/plain", data)
+  if report.term_state == :fig #Catch Winston plot command output
+    report.cur_result *= "\n" * report.formatdict[:codestart] * "\n"
+  end
+
   s = reprmime(m, data)
-  report.cur_result *= s
+  report.cur_result *= s * "\n"
+
+  if report.term_state == :fig #Catch Winston plot command output
+    report.cur_result *= "\n" * report.formatdict[:codeend] * "\n"
+  end
 end
 
 function get_figname(report::Report, chunk; fignum = nothing)
