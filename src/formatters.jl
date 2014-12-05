@@ -132,11 +132,11 @@ const texminted = Tex(@compat Dict{Symbol,Any}(:codestart => "\\begin{minted}[ma
                                          :doctype => "texminted"
                                          ))
 
-type Pandoc
+type Markdown
     formatdict::Dict{Symbol,Any}
 end
 
-const pandoc = Pandoc(@compat Dict{Symbol,Any}(:codestart => "~~~~{.julia}",
+const pandoc = Markdown(@compat Dict{Symbol,Any}(:codestart => "~~~~{.julia}",
                                :codeend=>"~~~~~~~~~~~~~\n\n",
                                :outputstart=>"~~~~{.julia}",
                                :outputend=>"~~~~~~~~~~~~~\n\n",
@@ -144,6 +144,17 @@ const pandoc = Pandoc(@compat Dict{Symbol,Any}(:codestart => "~~~~{.julia}",
                                :extension=>"md",
                                :doctype=>"pandoc"
                                                ))
+
+
+const github = Markdown(@compat Dict{Symbol,Any}(:codestart => "````julia",
+                                :codeend=> "````\n\n",
+                                :outputstart=> "````julia",
+                                :outputend=> "````\n\n",
+                                :fig_ext=> ".png",
+                                :extension=> "md",
+                                :doctype=> "github"
+                                               ))
+
 
 
 function formatfigures(chunk, docformat::Tex)
@@ -188,7 +199,7 @@ function formatfigures(chunk, docformat::Tex)
    return result
 end
 
-function formatfigures(chunk, docformat::Pandoc)
+function formatfigures(chunk, docformat::Markdown)
     fignames = chunk[:figure]
     caption = chunk[:fig_cap]
     result = ""
@@ -204,7 +215,7 @@ function formatfigures(chunk, docformat::Pandoc)
         end
     else
         for fig in fignames
-            result *= "![]($fig)\\\n"
+            result *= "![]($fig)\n"
         end
     end
     return result
@@ -214,4 +225,6 @@ end
 #Add new supported formats here
 const formats = @compat Dict{String, Any}("tex" => tex,
                                           "texminted" => texminted,
-                                          "pandoc" => pandoc)
+                                          "pandoc" => pandoc,
+                                          "github" => github
+                                          )

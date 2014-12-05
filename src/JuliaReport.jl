@@ -75,10 +75,6 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
         elseif l_plotlib == "gadfly"
             eval(parse("""include(Pkg.dir("JuliaReport","src","gadfly.jl"))"""))
             rcParams[:plotlib] = "Gadfly"
-            if rcParams[:chunk_defaults][:fig_ext] != ".png"
-              rcParams[:chunk_defaults][:fig_ext] = ".png"
-              warn("Saving figures as .png with Gadfly")
-            end
         end
     end
 
@@ -240,5 +236,3 @@ include("config.jl")
 include("readers.jl")
 include("formatters.jl")
 end
-
-
