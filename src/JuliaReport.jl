@@ -54,7 +54,12 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
     cwd, fname = splitdir(abspath(source))
     basename = splitext(fname)[1]
     formatdict = formats[doctype].formatdict
-    fig_ext == nothing || (rcParams[:chunk_defaults][:fig_ext] = fig_ext)
+    if fig_ext == nothing
+        rcParams[:chunk_defaults][:fig_ext] = formatdict[:fig_ext]
+    else
+        rcParams[:chunk_defaults][:fig_ext] = fig_ext
+    end
+
 
 
     #report = Report(source, false, cwd, basename, formatdict, "", figdir)
@@ -83,7 +88,7 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
     end
 
     pushdisplay(report)
-    parsed = read_noweb(source)
+    parsed = read_document(source, informat)
     executed = run(parsed)
     popdisplay(report)
     formatted = format(executed, doctype)

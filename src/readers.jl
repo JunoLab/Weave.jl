@@ -1,13 +1,26 @@
 pushopt(options::Dict,expr::Expr) = Base.Meta.isexpr(expr,:(=)) && (options[expr.args[1]] = expr.args[2])
 
-function read_noweb(document)
+
+const input_formats = @compat Dict{String, Any}(
+        "noweb" => Dict{Symbol, Any}(
+                    :codestart => r"^<<(.*?)>>=\s*$",
+                    :codeend => r"^@(\s*)$"
+                    ),
+        "markdown" => Dict{Symbol, Any}(
+                    :codestart => r"^```{julia(.*)}",
+                    :codeend => r"^```+\s*$"
+                    )
+        )
+
+
+function read_document(document, format)
   #doctext = readall(open(document))
   lines = split(bytestring(open(document) do io
                              mmap_array(Uint8,(filesize(document),),io)
                            end), "\n")
 
-  codestart = r"^<<(.*?)>>="
-  codeend = r"^@(\s*)$"
+  codestart = input_formats[format][:codestart]
+  codeend = input_formats[format][:codeend]
   state = "doc"
 
   docno = 1
@@ -63,6 +76,5 @@ function read_noweb(document)
                                      :number =>  docno, :start_line => start_line)
     push!(parsed, chunk)
   end
-
   return parsed
 end
