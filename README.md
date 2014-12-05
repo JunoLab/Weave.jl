@@ -29,26 +29,47 @@ Options are separated using ";" and need to be valid Julia expressions. e.g.
 
     <<term=true; fig_width=6; fig_height=4>>=
 
+## File formats
+
+You can get a list of supported output formats:
+
+````julia
+julia> list_out_formats()
+pandoc: Pandoc markdown
+rst: reStructuredText and Sphinx
+texminted: Latex using minted for highlighting
+github: Github markdown
+tex: Latex with custom code environments
+````
+
 
 ## Usage
 
 Run from julia:
 
-    using JuliaReport
-    weave(Pkg.dir("JuliaReport","examples","julia_sample.mdw")
+````julia
+using JuliaReport
+weave(Pkg.dir("JuliaReport","examples","julia_sample.mdw")
+````
 
 Using Winston for plots (Julia 0.3 only):
 
-    weave(Pkg.dir("JuliaReport","examples","winston_sample.mdw"),
-    plotlib="Winston", doctype="pandoc")
+````julia
+weave(Pkg.dir("JuliaReport","examples","winston_sample.mdw"),
+plotlib="Winston", doctype="pandoc")
+````
 
 Using Gadfly (Julia 0.3 only):
 
-    weave(Pkg.dir("JuliaReport","examples","gadfly_sample.mdw"), plotlib="Gadfly")
+````julia
+weave(Pkg.dir("JuliaReport","examples","gadfly_sample.mdw"), plotlib="Gadfly")
+````
 
 The signature of weave functions is:
 
-    function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", fig_path = "figures", fig_ext = nothing)
+````julia
+function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", fig_path = "figures", fig_ext = nothing)
+````
 
 **Note:** Run JuliaReport from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 

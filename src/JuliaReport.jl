@@ -38,9 +38,11 @@ function Base.display(doc::Report, data)
 end
 
 
-#function listformats()
-  #pweave.listformats() TODO: implement
-#end
+function list_out_formats()
+  for format = keys(formats)
+      println(string(format,": ",  formats[format].description))
+  end
+end
 
 #Module for report scope, idea from Judo.jl
 module ReportSandBox
@@ -254,7 +256,7 @@ function get_figname(report::Report, chunk; fignum = nothing)
     return full_name, rel_name
 end
 
-export weave
+export weave, list_out_formats
 
 include("config.jl")
 include("readers.jl")

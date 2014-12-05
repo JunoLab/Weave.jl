@@ -111,10 +111,12 @@ end
 
 
 type Tex
+    description::String
     formatdict::Dict{Symbol,Any}
 end
 
-const tex = Tex(@compat Dict{Symbol,Any}(:codestart => "\\begin{juliacode}",
+const tex = Tex("Latex with custom code environments",
+                @compat Dict{Symbol,Any}(:codestart => "\\begin{juliacode}",
                                          :codeend => "\\end{juliacode}",
                                          :outputstart => "\\begin{juliaout}",
                                          :outputend => "\\end{juliaout}",
@@ -126,7 +128,8 @@ const tex = Tex(@compat Dict{Symbol,Any}(:codestart => "\\begin{juliacode}",
                                          :doctype => "tex"
                                          ))
 
-const texminted = Tex(@compat Dict{Symbol,Any}(
+const texminted = Tex("Latex using minted for highlighting",
+                      @compat Dict{Symbol,Any}(
                                          :codestart => "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}",
                                          :codeend => "\\end{minted}",
                                          :outputstart => "\\begin{minted}[fontsize=\\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}",
@@ -142,10 +145,12 @@ const texminted = Tex(@compat Dict{Symbol,Any}(
                                          ))
 
 type Markdown
+    description::String
     formatdict::Dict{Symbol,Any}
 end
 
-const pandoc = Markdown(@compat Dict{Symbol,Any}(
+const pandoc = Markdown("Pandoc markdown",
+                        @compat Dict{Symbol,Any}(
                                 :codestart => "~~~~{.julia}",
                                 :codeend=>"~~~~~~~~~~~~~\n\n",
                                 :outputstart=>"~~~~{.julia}",
@@ -156,7 +161,8 @@ const pandoc = Markdown(@compat Dict{Symbol,Any}(
                                                ))
 
 
-const github = Markdown(@compat Dict{Symbol,Any}(
+const github = Markdown("Github markdown",
+                        @compat Dict{Symbol,Any}(
                                 :codestart => "````julia",
                                 :codeend=> "````\n\n",
                                 :outputstart=> "````julia",
@@ -168,10 +174,12 @@ const github = Markdown(@compat Dict{Symbol,Any}(
 
 
 type Rest
+    description::String
     formatdict::Dict{Symbol,Any}
 end
 
-const rst = Rest(@compat Dict{Symbol,Any}(
+const rst = Rest("reStructuredText and Sphinx",
+                 @compat Dict{Symbol,Any}(
                                 :codestart => ".. code-block:: julia\n",
                                 :codeend => "\n\n",
                                 :outputstart => "::\n",
