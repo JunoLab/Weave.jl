@@ -29,8 +29,10 @@ function Base.display(report::Report, m::MIME"image/png", p::Plot)
     report.fignum += 1
 
     #TODO other formats
-    r = chunk[:dpi]/96 #Relative to Gadfly default 96dpi
-    draw(PNG(full_name, chunk[:fig_width]inch*r, chunk[:fig_height]inch*r ), p)
+    #r = chunk[:dpi]/96 #Relative to Gadfly default 96dpi
+    #TODO Look for a corre
+
+    draw(PNG(full_name, chunk[:fig_width]inch, chunk[:fig_height]inch), p)
     #out = open(full_name, "w")
     #writemime(out, m, data)
     #close(out)
