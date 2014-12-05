@@ -1,33 +1,33 @@
 const rcParams =
-    @compat Dict{Symbol,Any}(
-                             :plotlib => "PyPlot",
-                             :storeresults => false,
-                             :chunk_defaults =>
+    @compat Dict{Symbol,Any}(:plotlib => "PyPlot",
+                            :storeresults => false,
+                            :chunk_defaults =>
                                 Dict{Symbol,Any}(
-                                                :echo=> true,
-                                                :results=> "markup",
-                                                :fig=> true,
-                                                :include=> true,
-                                                :eval => true,
-                                                :fig_cap=> false,
-                                                #Size in inches
-                                                :fig_width => 6,
-                                                :fig_height => 4,
-                                                :fig_path=> "figures",
-                                                :dpi => 96,
-                                                :term=> false,
-                                                :name=> nothing,
-                                                :wrap=> true,
-                                                :engine=> "julia",
-                                                :option_string=> ""
-                                                #Defined in formats
-                                                :fig_ext => nothing,
-                                                :fig_pos=> nothing,
-                                                :fig_env=> nothing,
-                                                :out_width=> nothing,
-                                                :out_height=> nothing,
-                                                )
-                                              )
+                                :echo=> true,
+                                :results=> "markup",
+                                :fig=> true,
+                                :include=> true,
+                                :eval => true,
+                                :fig_cap=> false,
+                                #Size in inches
+                                :fig_width => 6,
+                                :fig_height => 4,
+                                :fig_path=> "figures",
+                                :dpi => 96,
+                                :term=> false,
+                                :name=> nothing,
+                                :wrap=> true,
+                                :engine=> "julia",
+                                :option_string=> "",
+                                #Defined in formats
+                                :fig_ext => nothing,
+                                :fig_pos=> nothing,
+                                :fig_env=> nothing,
+                                :out_width=> nothing,
+                                :out_height=> nothing,
+                                )
+                            )
+
 
 
 

@@ -46,4 +46,16 @@ Using Gadfly (Julia 0.3 only):
 
     weave(Pkg.dir("JuliaReport","examples","gadfly_sample.mdw"), plotlib="Gadfly")
 
+The signature of weave functions is:
 
+    function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", fig_path = "figures", fig_ext = nothing)
+
+**Note:** Run JuliaReport from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
+
+## Contributing
+
+I will probably add new features to JuliaReport when I need them myself or if they are requested and not too difficult to implement. You can contribute by opening issues on Github or implementing things yourself and making a pull request. I'd also appreciate example documents written using JuliaReport to add to examples.
+
+## Contributors
+
+Douglas Bates has contributed a number of important fixes and comments.
