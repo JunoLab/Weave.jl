@@ -2,34 +2,41 @@ const rcParams =
     @compat Dict{Symbol,Any}(
                              :plotlib => "PyPlot",
                              :storeresults => false,
-                             :chunk_defaults => Dict{Symbol,Any}(:echo=> true,
-                                                               :results=> "markup",
-                                                               :fig=> true,
-                                                               :include=> true,
-                                                               :eval => true,
-                                                               :fig_cap=> false,
-                                                               :fig_width => 6, #Size in inches
-                                                               :fig_height => 4,
-                                                               :fig_path=> "figures",
-                                                               :out_width=> nothing, #Defined separately for each format
-                                                               :out_height=> nothing,
-                                                               :fig_ext => ".png",
-                                                               :dpi => 96,
-                                                               :term=> false,
-                                                               :name=> nothing,
-                                                               :wrap=> true,
-                                                               :fig_pos=> nothing,
-                                                               :fig_env=> nothing,
-                                                               :engine=> "julia",
-                                                               :option_string=> "")
+                             :chunk_defaults =>
+                                Dict{Symbol,Any}(
+                                                :echo=> true,
+                                                :results=> "markup",
+                                                :fig=> true,
+                                                :include=> true,
+                                                :eval => true,
+                                                :fig_cap=> false,
+                                                #Size in inches
+                                                :fig_width => 6,
+                                                :fig_height => 4,
+                                                :fig_path=> "figures",
+                                                :dpi => 96,
+                                                :term=> false,
+                                                :name=> nothing,
+                                                :wrap=> true,
+                                                :engine=> "julia",
+                                                :option_string=> ""
+                                                #Defined in formats
+                                                :fig_ext => nothing,
+                                                :fig_pos=> nothing,
+                                                :fig_env=> nothing,
+                                                :out_width=> nothing,
+                                                :out_height=> nothing,
+                                                )
                                               )
 
 
 
 
-# Working towards Knitr compatible options, implemented options are added to defaultoptions dictionary above
-# and work in progress stays here, options from https://github.com/yihui/knitr/blob/master/R/defaults.R
-# If you need a particular options, consider implementing it and making a pull request.
+# Working towards Knitr compatible options, implemented options are
+# added to defaultoptions dictionary above and work in progress stays here,
+# options from https://github.com/yihui/knitr/blob/master/R/defaults.R
+# If you need a particular options, consider implementing it and making a
+# pull request.
 
 #tidy = FALSE,
 #tidy.opts = NULL,

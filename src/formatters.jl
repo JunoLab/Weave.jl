@@ -121,7 +121,8 @@ const tex = Tex(@compat Dict{Symbol,Any}(:codestart => "\\begin{juliacode}",
                                          :doctype => "tex"
                                          ))
 
-const texminted = Tex(@compat Dict{Symbol,Any}(:codestart => "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}",
+const texminted = Tex(@compat Dict{Symbol,Any}(
+                                         :codestart => "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}",
                                          :codeend => "\\end{minted}",
                                          :outputstart => "\\begin{minted}[fontsize=\\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}",
                                          :outputend => "\\end{minted}",
