@@ -1,4 +1,5 @@
 
+src/*.cov
 test.jl
 examples/figures/
 examples/*.md
