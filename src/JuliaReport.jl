@@ -93,7 +93,6 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
     popdisplay(report)
     formatted = format(executed, doctype)
     outname = "$(report.cwd)/$(report.basename).$(formatdict[:extension])"
-    @show outname
     open(outname, "w") do io
         write(io, join(formatted, "\n"))
     end

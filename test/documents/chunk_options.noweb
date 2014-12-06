@@ -1,0 +1,26 @@
+
+<<term=true>>=
+y= [2, 5, 12]
+@
+
+<<>>=
+x = [12, 10]
+println(y)
+@
+
+
+<<echo=false>>=
+println(x)
+@
+
+
+<<eval=false>>=
+y = randn(5)
+println(y)
+@
+
+
+<<results="hidden">>=
+a = "Some string"
+println(a)
+@

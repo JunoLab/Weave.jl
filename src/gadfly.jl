@@ -22,7 +22,7 @@ function Base.display(report::Report, m::MIME"image/png", p::Plot)
       if report.term_state == :text
         report.cur_result *= "\n" * report.formatdict[:codeend]
       end
-      
+
 
       report.cur_result *= formatfigures(chunk, docformat)
       report.term_state = :fig
@@ -38,7 +38,6 @@ function Base.display(report::Report, m::MIME"image/png", p::Plot)
     w = chunk[:fig_width]inch
     h = chunk[:fig_height]inch
     format = chunk[:fig_ext]
-    @show format
 
     #This is probably not the correct way to handle different formats, but it works.
     if format == ".png"

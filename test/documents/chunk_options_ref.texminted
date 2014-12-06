@@ -1,0 +1,42 @@
+
+
+\begin{minted}[fontsize=\footnotesize, xleftmargin=0.5em, mathescape]{julia}
+julia> y= [2, 5, 12]
+3-element Array{Int64,1}:
+  2
+  5
+ 12
+
+\end{minted}
+
+
+
+\begin{minted}[mathescape, fontsize=\small, xleftmargin=0.5em]{julia}
+x = [12, 10]
+println(y)
+\end{minted}
+\begin{minted}[fontsize=\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}
+[2,5,12]
+\end{minted}
+
+
+
+
+\begin{minted}[fontsize=\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}
+[12,10]
+\end{minted}
+
+
+
+
+
+
+
+\begin{minted}[mathescape, fontsize=\small, xleftmargin=0.5em]{julia}
+a = "Some string"
+println(a)
+\end{minted}
+
+
+
+

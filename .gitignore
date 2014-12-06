@@ -6,6 +6,10 @@ examples/*.pdf
 examples/*.html
 examples/*.rst
 examples/*.tex
+test/documents/figures
+test/documents/*.tex
+test/documents/*.md
+test/documents/*.rst
 
 tmp/
 .idea

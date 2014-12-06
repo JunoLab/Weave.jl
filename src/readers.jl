@@ -7,7 +7,7 @@ const input_formats = @compat Dict{String, Any}(
                     :codeend => r"^@\s*$"
                     ),
         "markdown" => Dict{Symbol, Any}(
-                    :codestart => r"(?:^`|~{3,}\s*(?:\{|\{\.|)julia(?:;|\s)(.*)\}\s*$)|(?:^`|~{3,}\s*julia\s*$)",
+                    :codestart => r"(?:^(?:`|~){3,}\s*(?:\{|\{\.|)julia(?:;|\s)(.*)\}\s*$)|(?:^(?:`|~){3,}\s*julia\s*$)",
                     :codeend => r"^`|~{3,}\s*$"
                     )
         )
