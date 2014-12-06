@@ -15,3 +15,5 @@ before_install:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
 script:
   - julia -e 'Pkg.init(); Pkg.clone(pwd()); Pkg.test("JuliaReport")'
+after_success:
+  - julia -e 'cd(Pkg.dir("JuliaReport")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
