@@ -4,11 +4,11 @@ pushopt(options::Dict,expr::Expr) = Base.Meta.isexpr(expr,:(=)) && (options[expr
 const input_formats = @compat Dict{String, Any}(
         "noweb" => Dict{Symbol, Any}(
                     :codestart => r"^<<(.*?)>>=\s*$",
-                    :codeend => r"^@(\s*)$"
+                    :codeend => r"^@\s*$"
                     ),
         "markdown" => Dict{Symbol, Any}(
-                    :codestart => r"^```{julia(.*)}",
-                    :codeend => r"^```+\s*$"
+                    :codestart => r"(?:^`|~{3,}\s*(?:\{|\{\.|)julia(?:;|\s)(.*)\}\s*$)|(?:^`|~{3,}\s*julia\s*$)",
+                    :codeend => r"^`|~{3,}\s*$"
                     )
         )
 
@@ -35,7 +35,11 @@ function read_document(document, format)
     line = lines[lineno]
     if (m = match(codestart, line)) != nothing && state=="doc"
       state = "code"
-      optionstring=strip(m.captures[1])
+      if m.captures[1] == nothing
+          optionstring = ""
+      else
+          optionstring=strip(m.captures[1])
+      end
       @show optionstring
       options = Dict{Symbol,Any}()
       if length(optionstring) > 0

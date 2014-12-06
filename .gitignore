@@ -4,6 +4,9 @@ examples/figures/
 examples/*.md
 examples/*.pdf
 examples/*.html
+examples/*.rst
+examples/*.tex
+
 tmp/
 .idea
 *.*~

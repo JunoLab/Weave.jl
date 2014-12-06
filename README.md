@@ -68,7 +68,8 @@ weave(Pkg.dir("JuliaReport","examples","gadfly_sample.mdw"), plotlib="Gadfly")
 The signature of weave functions is:
 
 ````julia
-function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", fig_path = "figures", fig_ext = nothing)
+function weave(source ; doctype = "pandoc",
+    plotlib="PyPlot", informat="noweb", fig_path = "figures", fig_ext = nothing)
 ````
 
 **Note:** Run JuliaReport from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
