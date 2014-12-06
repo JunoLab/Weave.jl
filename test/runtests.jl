@@ -29,9 +29,10 @@ ref = readall(open("documents/chunk_options_ref.rst"))
 @test result == ref
 
 
-#Test Gadfly and markdown reader
-weave("documents/gadfly_markdown_test.jmd", doctype="github",plotlib="gadfly", informat="markdown")
-result = readall(open("documents/gadfly_markdown_test.md"))
-ref = readall(open("documents/gadfly_markdown_test_ref.md"))
-
-@test result == ref
+#Test Gadfly and markdown reader, Gadfly only works with 0.3
+if VERSION.minor == 3
+    weave("documents/gadfly_markdown_test.jmd", doctype="github",plotlib="gadfly", informat="markdown")
+    result = readall(open("documents/gadfly_markdown_test.md"))
+    ref = readall(open("documents/gadfly_markdown_test_ref.md"))
+    @test result == ref
+end
