@@ -1,6 +1,6 @@
 # JuliaReport
 
-[![Build Status](https://travis-ci.org/mpastell/JuliaReport.jl.svg?branch=master)](https://travis-ci.org/mpastell/JuliaReport.jl)
+[![Build Status](https://travis-ci.org/mpastell/JuliaReport.jl.svg?branch=master)](https://travis-ci.org/mpastell/JuliaReport.jl)[![Coverage Status](https://img.shields.io/coveralls/mpastell/JuliaReport.jl.svg)](https://coveralls.io/r/mpastell/JuliaReport.jl?branch=master)
 
 JuliaReport is a scientific report generator/literate programming tool
 for Julia. It resembles [Pweave](http://mpastell.com/pweave) and, Knitr
