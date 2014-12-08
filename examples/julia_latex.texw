@@ -1,6 +1,12 @@
 \documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{textgreek}
+\usepackage{graphicx}
+\usepackage{fancyvrb}
 \usepackage{hyperref}
-\usepackage{Jweave} % Required to convert custom envs: juliacode & juliaout
+
+\DefineVerbatimEnvironment{juliaout}{Verbatim}{}
+\DefineVerbatimEnvironment{juliacode}{Verbatim}{fontshape=sl}
 
 \title{Introduction to Julia Weave}
 
