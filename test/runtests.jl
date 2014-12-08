@@ -1,4 +1,4 @@
-using JuliaReport
+using Weave
 using Base.Test
 
 

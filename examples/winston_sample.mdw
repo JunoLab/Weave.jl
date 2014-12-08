@@ -1,23 +1,23 @@
 
-# Introducion to JuliaReport
+# Introducion to Weave
 
 This a sample [Julia](http://julialang.org/) noweb document that can
-be executed using JuliaReport. Output from code chunks and Winston
-plots will be included in the weaved document. You also need to install Pweave from Github in order to use JuliaReport.
+be executed using Weave. Output from code chunks and Winston
+plots will be included in the weaved document. You also need to install Pweave from Github in order to use Weave.
 
 This documented can be turned into Pandoc markdown with captured
 result from Julia prompt.
 
 ~~~~{.julia}
-using JuliaReport
-weave(Pkg.dir("JuliaReport","examples","winston_sample.mdw"), plotlib="Winston")
+using Weave
+weave(Pkg.dir("Weave","examples","winston_sample.mdw"), plotlib="Winston")
 ~~~~
 
 ## Terminal chunk
 
 <<term=true>>=
 x = 1:10
-d = {"juliareport" => "testing"}
+d = {"Weave" => "testing"}
 y = [2, 4 ,8]
 @
 

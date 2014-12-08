@@ -1,4 +1,4 @@
-The JuliaReport.jl package is licensed under the MIT "Expat" License:
+The Weave.jl package is licensed under the MIT "Expat" License:
 
 > Copyright (c) 2014: Matti Pastell.
 >

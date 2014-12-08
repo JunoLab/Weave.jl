@@ -1,4 +1,4 @@
-module JuliaReport
+module Weave
 using Compat
 
 #Contains report global properties
@@ -76,13 +76,13 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
     else
         l_plotlib = lowercase(plotlib)
         if l_plotlib == "winston"
-            eval(parse("""include(Pkg.dir("JuliaReport","src","winston.jl"))"""))
+            eval(parse("""include(Pkg.dir("Weave","src","winston.jl"))"""))
             rcParams[:plotlib] = "Winston"
         elseif l_plotlib == "pyplot"
             eval(Expr(:using, :PyPlot))
             rcParams[:plotlib] = "PyPlot"
         elseif l_plotlib == "gadfly"
-            eval(parse("""include(Pkg.dir("JuliaReport","src","gadfly.jl"))"""))
+            eval(parse("""include(Pkg.dir("Weave","src","gadfly.jl"))"""))
             rcParams[:plotlib] = "Gadfly"
         end
     end
