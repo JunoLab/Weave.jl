@@ -7,6 +7,8 @@
 
 \DefineVerbatimEnvironment{juliaout}{Verbatim}{}
 \DefineVerbatimEnvironment{juliacode}{Verbatim}{fontshape=sl}
+\DefineVerbatimEnvironment{juliaterm}{Verbatim}{}
+
 
 \title{Introduction to Julia Weave}
 
