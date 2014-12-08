@@ -44,8 +44,6 @@ end
 
 
 function format_codechunk(chunk, formatdict)
-
-
     if haskey(formatdict, :indent)
         chunk[:content] = indent(chunk[:content], formatdict[:indent])
     end
@@ -91,17 +89,15 @@ function format_codechunk(chunk, formatdict)
 
 end
 
-
-
 function format_termchunk(chunk, formatdict)
-  if chunk[:echo] && chunk[:results] != "hidden"
-    result = "$(formatdict[:termstart])$(chunk[:result])\n"
-    #@show chunk[:term_state]
-    chunk[:term_state] == :text && (result*= "$(formatdict[:termend])\n")
-  else
-    result = ""
-  end
-return result
+    if chunk[:echo] && chunk[:results] != "hidden"
+        result = "$(formatdict[:termstart])$(chunk[:result])\n"
+        #@show chunk[:term_state]
+        chunk[:term_state] == :text && (result*= "$(formatdict[:termend])\n")
+    else
+        result = ""
+    end
+    return result
 end
 
 function indent(text, nindent)
@@ -205,7 +201,7 @@ function formatfigures(chunk, docformat::Tex)
     figstring = ""
 
     if f_env != nothing
-        result *= """\\begin{$f_env}\n"""
+        result *= """\\begin{$f_env}[$f_pos]\n"""
     end
 
 
@@ -215,21 +211,21 @@ function formatfigures(chunk, docformat::Tex)
 
     # Figure environment
     if caption != nothing
-        result *= string("\\begin{figure}[$f_pos]\n",
-                         "\\center\n",
+        result *= string("\\center\n",
                          "$figstring",
                          "\\caption{$caption}\n")
-        if chunk[:name] != nothing
-            label = chunk[:name]
-            result *= "\label{fig:$label}\n"
-            result *= "\\end{figure}\n"
-        end
     else
         result *= figstring
     end
 
+    if chunk[:name] != nothing
+        label = chunk[:name]
+        result *= "\\label{fig:$label}\n"
+    end
+
+
     if f_env != nothing
-        result += "\\end{$f_env}\n"
+        result *= "\\end{$f_env}\n"
     end
 
    return result
