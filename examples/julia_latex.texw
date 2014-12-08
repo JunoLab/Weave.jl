@@ -1,0 +1,43 @@
+\documentclass[12pt]{article}
+\usepackage{hyperref}
+\usepackage{Jweave} % Required to convert custom envs: juliacode & juliaout
+
+\title{Introduction to Julia Weave}
+
+\begin{document}
+\maketitle
+
+This a sample \href{http://julialang.org/}{Julia} latex document that can
+be executed using Weave. Output from code chunks and Gadfly
+plots will be included in the weaved document.
+
+This documented can be turned into Latex document with captured
+result from Julia prompt.
+
+\section*{Terminal chunk}
+<<term=true>>=
+x = 1:10
+d = {"Weave" => "testing"}
+y = [2, 4 ,8]
+@
+
+\section*{Capturing figures}
+
+The figures and code can be included in the output.
+
+<<fig_cap="sin(x) function."; label="sin_fun"; fig_pos="ht">>=
+using Gadfly
+x = linspace(0, 2π, 200)
+plot(x=x, y = sin(x), Geom.line)
+@
+
+<<echo=false; fig_cap="cos(x) function.">>=
+plot(x=x, y = cos(x), Geom.line)
+@
+
+<<echo=false; label="cos2_fun">>=
+plot(x=x, y = cos(2x), Geom.line)
+@
+
+
+\end{document}
