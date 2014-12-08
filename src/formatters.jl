@@ -26,7 +26,6 @@ function format(executed, doctype)
           chunk[:fig_env] == nothing && (chunk[:fig_env] =  docformat.formatdict[:fig_env])
           chunk[:fig_pos] == nothing && (chunk[:fig_pos] =  docformat.formatdict[:fig_pos])
 
-
           #Format code
           result = format_codechunk(chunk, formatdict)
           #Handle figures

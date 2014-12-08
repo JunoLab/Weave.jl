@@ -20,7 +20,7 @@ function Base.display(report::Report, m::MIME"image/png", p::Plot)
       chunk[:figure] = [rel_name]
 
       if report.term_state == :text
-        report.cur_result *= "\n" * report.formatdict[:codeend]
+        report.cur_result *= "\n" * report.formatdict[:codeend] * "\n"
       end
 
 

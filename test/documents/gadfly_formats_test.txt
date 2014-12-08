@@ -1,0 +1,29 @@
+
+
+<<fig_cap="sin(x) function."; label="sin_fun"; fig_pos="ht">>=
+using Gadfly
+x = linspace(0, 2π, 200)
+plot(x=x, y = sin(x), Geom.line)
+@
+
+<<echo=false; fig_cap="cos(x) function.">>=
+plot(x=x, y = cos(x), Geom.line)
+@
+
+<<echo=false; label="cos2_fun">>=
+plot(x=x, y = cos(2x), Geom.line)
+@
+
+<<term=true;fig_width=5>>=
+x = linspace(0, 2π, 200)
+plot(x=x, y = sin(x), Geom.line)
+y = 20
+plot(x=x, y = cos(x), Geom.line)
+@
+
+<<out_width="15cm">>=
+x = linspace(0, 2π, 200)
+plot(x=x, y = sin(x), Geom.line)
+y = 20
+plot(x=x, y = cos(x), Geom.line)
+@

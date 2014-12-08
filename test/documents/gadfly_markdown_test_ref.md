@@ -32,6 +32,7 @@ julia> plot(x=x, y = sin(x), Geom.line)
 
 ````
 
+
 ![](figures/gadfly_markdown_test_1_1.png)
 
 
@@ -42,6 +43,7 @@ julia> y = 20
 julia> plot(x=x, y = cos(x), Geom.line)
 
 ````
+
 
 ![](figures/gadfly_markdown_test_1_2.png)
 
@@ -119,6 +121,7 @@ julia> plot(x=x, y = sin(x), Geom.line)
 
 ````
 
+
 ![](figures/gadfly_markdown_test_3_1.png)
 
 
@@ -129,6 +132,7 @@ julia> y = 20
 julia> plot(x=x, y = cos(x), Geom.line)
 
 ````
+
 
 ![](figures/gadfly_markdown_test_3_2.png)
 

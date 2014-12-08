@@ -75,6 +75,7 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
         rcParams[:chunk_defaults][:fig] = false
     else
         l_plotlib = lowercase(plotlib)
+        rcParams[:chunk_defaults][:fig] = true
         if l_plotlib == "winston"
             eval(parse("""include(Pkg.dir("Weave","src","winston.jl"))"""))
             rcParams[:plotlib] = "Winston"
@@ -196,6 +197,7 @@ function run(parsed)
       else
         chunk[:result] = run_block(chunk[:content])
       end
+
       if rcParams[:plotlib] == "PyPlot"
         chunk[:fig] && (chunk[:figure] = savefigs(chunk))
       else
