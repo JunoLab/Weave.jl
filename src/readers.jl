@@ -40,7 +40,7 @@ function read_document(document, format)
       else
           optionstring=strip(m.captures[1])
       end
-      @show optionstring
+      #@show optionstring
       options = Dict{Symbol,Any}()
       if length(optionstring) > 0
           expr = parse(optionstring)
@@ -49,7 +49,7 @@ function read_document(document, format)
       end
       haskey(options, :label) && (options[:name] = options[:label])
       haskey(options, :name) || (options[:name] = nothing)
-      @show options
+      #@show options
       chunk = @compat Dict{Symbol,Any}(:type => "doc", :content => content,
                                        :number => docno,:start_line => start_line)
       docno += 1
