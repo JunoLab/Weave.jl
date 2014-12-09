@@ -56,7 +56,7 @@ function format_codechunk(chunk, formatdict)
 
     if !chunk[:eval]
         if chunk[:echo]
-            result = "$(formatdict[:codestart])$(chunk[:content])$(formatdict[:codeend])"
+            result = "$(formatdict[:codestart])$(chunk[:content])\n$(formatdict[:codeend])"
             return result
         else
             r = ""

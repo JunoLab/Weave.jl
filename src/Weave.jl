@@ -182,7 +182,12 @@ function run(parsed)
             merge!(chunk, options)
             delete!(chunk, :options)
 
-            chunk[:eval] || (chunk[:result] = ""; continue) #Do nothing if eval is false
+            if !chunk[:eval]
+                chunk[:result] = ""
+                parsed[i] = copy(chunk)
+                i += 1
+                continue #Do nothing if eval is false
+            end
 
             report.fignum = 1
             report.cur_result = ""

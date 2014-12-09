@@ -14,11 +14,6 @@ and Sweave.
 * Capture PyPlot, Gadfly or Winston figures.
 * Supports LaTex, Pandoc and Github markdown and reStructuredText output
 
-**Not implemented**
-
-* Script reader
-* Inline code
-* Caching
 
 ## Chunk options
 
