@@ -14,29 +14,51 @@ julia> y= [2, 5, 12]
 \begin{juliacode}
 x = [12, 10]
 println(y)
+println(x)
 \end{juliacode}
 \begin{juliaout}
 [2,5,12]
-\end{juliaout}
-
-
-
-
-\begin{juliaout}
 [12,10]
 \end{juliaout}
 
 
 
 
+\begin{juliaout}
+Results without code
+[12,10]
+\end{juliaout}
+
 
 
 
 \begin{juliacode}
-a = "Some string"
+y = randn(5)
+println("Don't eval, but show code")
+\end{juliacode}
+
+
+
+\begin{juliacode}
+y = 1:5
+println(y)
+\end{juliacode}
+\begin{juliaout}
+1:5
+\end{juliaout}
+
+
+
+\begin{juliacode}
+a = "Don't print me"
 println(a)
 \end{juliacode}
 
 
 
+\begin{juliacode}
+println("No markup for results.")
+\end{juliacode}
+
+No markup for results.
 

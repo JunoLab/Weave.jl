@@ -14,29 +14,51 @@ julia> y= [2, 5, 12]
 \begin{minted}[mathescape, fontsize=\small, xleftmargin=0.5em]{julia}
 x = [12, 10]
 println(y)
+println(x)
 \end{minted}
 \begin{minted}[fontsize=\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}
 [2,5,12]
-\end{minted}
-
-
-
-
-\begin{minted}[fontsize=\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}
 [12,10]
 \end{minted}
 
 
 
 
+\begin{minted}[fontsize=\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}
+Results without code
+[12,10]
+\end{minted}
+
 
 
 
 \begin{minted}[mathescape, fontsize=\small, xleftmargin=0.5em]{julia}
-a = "Some string"
+y = randn(5)
+println("Don't eval, but show code")
+\end{minted}
+
+
+
+\begin{minted}[mathescape, fontsize=\small, xleftmargin=0.5em]{julia}
+y = 1:5
+println(y)
+\end{minted}
+\begin{minted}[fontsize=\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}
+1:5
+\end{minted}
+
+
+
+\begin{minted}[mathescape, fontsize=\small, xleftmargin=0.5em]{julia}
+a = "Don't print me"
 println(a)
 \end{minted}
 
 
 
+\begin{minted}[mathescape, fontsize=\small, xleftmargin=0.5em]{julia}
+println("No markup for results.")
+\end{minted}
+
+No markup for results.
 

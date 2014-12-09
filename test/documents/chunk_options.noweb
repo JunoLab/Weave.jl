@@ -6,21 +6,32 @@ y= [2, 5, 12]
 <<>>=
 x = [12, 10]
 println(y)
+println(x)
 @
 
 
 <<echo=false>>=
+println("Results without code")
 println(x)
 @
 
 
 <<eval=false>>=
 y = randn(5)
-println(y)
+println("Don't eval, but show code")
 @
 
 
+<<>>=
+y = 1:5
+println(y)
+@
+
 <<results="hidden">>=
-a = "Some string"
+a = "Don't print me"
 println(a)
+@
+
+<<results="as_is">>=
+println("No markup for results.")
 @
