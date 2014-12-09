@@ -1,4 +1,4 @@
-using Winston
+import Winston
 
 function Base.display(report::Report, m::MIME"image/png", data)
 
@@ -26,9 +26,9 @@ function Base.display(report::Report, m::MIME"image/png", data)
 
     #Don't use dpi for vector formats
     if chunk[:fig_ext] in vector_fmts
-        savefig(data, full_name, width=chunk[:fig_width]*100, height=chunk[:fig_height]*100)
+        Winston.savefig(data, full_name, width=chunk[:fig_width]*100, height=chunk[:fig_height]*100)
     else
-        savefig(data, full_name, width=chunk[:fig_width]*chunk[:dpi], height=chunk[:fig_height]*chunk[:dpi])
+        Winston.savefig(data, full_name, width=chunk[:fig_width]*chunk[:dpi], height=chunk[:fig_height]*chunk[:dpi])
     end
 
     report.fignum += 1

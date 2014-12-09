@@ -33,5 +33,6 @@ if VERSION.minor == 3
     ref = readall(open("documents/gadfly_markdown_test_ref.md"))
     @test result == ref
 
-   include("gadfly_formats.jl")
+    include("winston_formats.jl")
+    include("gadfly_formats.jl")
 end
