@@ -9,10 +9,10 @@ and Sweave.
 
 **Current features**
 
-* Noweb syntax for documents.
+* Noweb or markdown syntax for input documents.
 * Execute code as terminal or "script" chunks.
 * Capture PyPlot, Gadfly or Winston figures.
-* Supports latex and pandoc markdown output
+* Supports LaTex, Pandoc and Github markdown and reStructuredText output
 
 **Not implemented**
 
