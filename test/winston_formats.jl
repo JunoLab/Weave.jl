@@ -1,7 +1,6 @@
 using Weave
 using Base.Test
 
-
 weave("documents/winston_formats.txt", plotlib="Winston", doctype="tex")
 result = readall(open("documents/winston_formats.tex"))
 ref = readall(open("documents/winston_formats_ref.tex"))

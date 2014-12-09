@@ -1,9 +1,12 @@
 using Weave
 using Base.Test
+Pkg.add("Gadfly")
+Pkg.add("Cairo")
+Pkg.add("Winston")
 
 
 include("chunk_options.jl")
-include("pyplot_formats.jl")
+#include("pyplot_formats.jl") cause segfaults, but OK if run by itself
 
 
 #Test Gadfly and markdown reader, Gadfly only works with 0.3

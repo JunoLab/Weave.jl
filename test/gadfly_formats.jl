@@ -2,6 +2,7 @@
 using Weave
 using Base.Test
 
+
 weave("documents/gadfly_formats_test.txt", doctype="tex", plotlib="gadfly")
 result = readall(open("documents/gadfly_formats_test.tex"))
 ref = readall(open("documents/gadfly_formats_test_ref.tex"))
