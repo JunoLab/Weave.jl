@@ -44,9 +44,8 @@ function list_out_formats()
   end
 end
 
-#Module for report scope, idea from Judo.jl
-module ReportSandBox
-end
+#module ReportSandBox
+#end
 
 
 function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", fig_path = "figures", fig_ext = nothing)
@@ -61,8 +60,6 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
     end
 
 
-
-    #report = Report(source, false, cwd, basename, formatdict, "", figdir)
 
     report.source = source
     report.cwd = cwd
@@ -163,51 +160,56 @@ end
 
 
 function run(parsed)
-  i = 1
-  for chunk in copy(parsed)
-    if chunk[:type] == "code"
-      #print(chunk["content"])
-      info("Weaving chunk $(chunk[:number]) from line $(chunk[:start_line])")
-      defaults = copy(rcParams[:chunk_defaults])
-      options = copy(chunk[:options])
-      try
-        options = merge(rcParams[:chunk_defaults], options)
-      catch
-        options = rcParams[:chunk_defaults]
-        warn("Invalid format for chunk options line: $(chunk[:start_line])")
-      end
+    #Clear sandbox for each document
+    #Raises a warning, couldn't find a "cleaner"
+    #way to do it.
+    eval(parse("module ReportSandBox\nend"))
 
-      merge!(chunk, options)
-      delete!(chunk, :options)
+    i = 1
+    for chunk in copy(parsed)
+        if chunk[:type] == "code"
+            #print(chunk["content"])
+            info("Weaving chunk $(chunk[:number]) from line $(chunk[:start_line])")
+            defaults = copy(rcParams[:chunk_defaults])
+            options = copy(chunk[:options])
+            try
+                options = merge(rcParams[:chunk_defaults], options)
+            catch
+                options = rcParams[:chunk_defaults]
+                warn("Invalid format for chunk options line: $(chunk[:start_line])")
+            end
 
-      chunk[:eval] || (chunk[:result] = ""; continue) #Do nothing if eval is false
+            merge!(chunk, options)
+            delete!(chunk, :options)
 
-      report.fignum = 1
-      report.cur_result = ""
-      report.figures = String[]
-      report.cur_chunk = chunk
-      report.term_state = :text
-      if haskey(report.formatdict, :out_width) && chunk[:out_width] == nothing
-          chunk[:out_width] = report.formatdict[:out_width]
-      end
+            chunk[:eval] || (chunk[:result] = ""; continue) #Do nothing if eval is false
 
-      if chunk[:term]
-        chunk[:result] = run_term(chunk[:content])
-        chunk[:term_state] = report.term_state
-      else
-        chunk[:result] = run_block(chunk[:content])
-      end
+            report.fignum = 1
+            report.cur_result = ""
+            report.figures = String[]
+            report.cur_chunk = chunk
+            report.term_state = :text
+            if haskey(report.formatdict, :out_width) && chunk[:out_width] == nothing
+                chunk[:out_width] = report.formatdict[:out_width]
+            end
 
-      if rcParams[:plotlib] == "PyPlot"
-        chunk[:fig] && (chunk[:figure] = savefigs(chunk))
-      else
-        chunk[:fig] && (chunk[:figure] = copy(report.figures))
-      end
+            if chunk[:term]
+                chunk[:result] = run_term(chunk[:content])
+                chunk[:term_state] = report.term_state
+            else
+                chunk[:result] = run_block(chunk[:content])
+            end
+
+            if rcParams[:plotlib] == "PyPlot"
+                chunk[:fig] && (chunk[:figure] = savefigs(chunk))
+            else
+                chunk[:fig] && (chunk[:figure] = copy(report.figures))
+            end
+        end
+        parsed[i] = copy(chunk)
+        i += 1
     end
-    parsed[i] = copy(chunk)
-    i += 1
-  end
-  parsed
+    parsed
 end
 
 function savefigs(chunk)
