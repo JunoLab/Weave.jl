@@ -8,12 +8,18 @@ env:
     - JULIAVERSION="juliareleases"
     - JULIAVERSION="julianightlies"
 before_install:
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b
+  - export PATH=/home/travis/miniconda/bin:$PATH
+  - conda update --yes conda
+  - conda install --yes matplotlib
   - sudo add-apt-repository ppa:staticfloat/julia-deps -y
   - sudo add-apt-repository ppa:staticfloat/${JULIAVERSION} -y
   - sudo apt-get update -qq -y
   - sudo apt-get install libpcre3-dev julia -y
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
 script:
-  - xvfb-run julia -e 'Pkg.init(); Pkg.add("Winston"); Pkg.add("Cairo"); Pkg.add("Gadfly"); Pkg.clone(pwd()); Pkg.test("Weave", coverage=true)'
+  - xvfb-run julia -e 'Pkg.init(); Pkg.add("PyPlot"); Pkg.add("Winston"); Pkg.add("Cairo"); Pkg.add("Gadfly"); Pkg.clone(pwd()); Pkg.test("Weave", coverage=true)'
 after_success:
   - julia -e 'cd(Pkg.dir("Weave")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'

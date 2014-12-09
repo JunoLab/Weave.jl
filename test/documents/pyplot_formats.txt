@@ -1,0 +1,29 @@
+
+
+
+
+<<fig_cap="sin(x) function."; label="sin_fun"; fig_pos="ht">>=
+using PyPlot
+x = linspace(0, 2π, 200)
+plot(x, sin(x))
+@
+
+<<echo=false; fig_cap="cos(x) function.">>=
+plot(x, cos(x))
+@
+
+<<echo=false; label="cos2_fun">>=
+plot(x, cos(2x))
+@
+
+<<term=true;fig_width=5>>=
+x = linspace(0, 2π, 200)
+plot(x, sin(x))
+y = 20
+plot(x, cos(x))
+@
+
+<<out_width="15cm">>=
+x = randn(100, 100)
+contourf(x)
+@

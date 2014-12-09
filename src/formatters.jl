@@ -226,7 +226,7 @@ function formatfigures(chunk, docformat::Tex)
         result *= figstring
     end
 
-    if chunk[:name] != nothing
+    if chunk[:name] != nothing && f_env !=nothing
         label = chunk[:name]
         result *= "\\label{fig:$label}\n"
     end

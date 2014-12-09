@@ -3,7 +3,7 @@ using Base.Test
 
 
 include("chunk_options.jl")
-
+include("pyplot_formats.jl")
 
 
 #Test Gadfly and markdown reader, Gadfly only works with 0.3

@@ -108,10 +108,9 @@ function run_block(code_str)
     #If there is nothing to read code will hang
     println()
 
-
     try
       n = length(code_str)
-      pos = 2 #The first character is extra line end
+      pos = 1 #The first character is extra line end
       while pos < n
           oldpos = pos
           code, pos = parse(code_str, pos)
@@ -145,7 +144,6 @@ function run_term(code_str)
     while pos < n
         oldpos = pos
         code, pos = parse(code_str, pos)
-
 
         report.term_state == :fig && (report.cur_result*= codestart)
 	    prompts = string(prompt, rstrip(code_str[oldpos:(pos-1)]), "\n")
