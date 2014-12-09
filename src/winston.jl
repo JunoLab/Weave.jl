@@ -12,7 +12,7 @@ function Base.display(report::Report, m::MIME"image/png", data)
       chunk[:figure] = [rel_name]
 
       if report.term_state == :text
-        report.cur_result *= "\n" * report.formatdict[:codeend]
+        report.cur_result *= "\n" * report.formatdict[:codeend] * "\n"
       end
 
       report.cur_result *= formatfigures(chunk, docformat)
@@ -22,7 +22,14 @@ function Base.display(report::Report, m::MIME"image/png", data)
       push!(report.figures, rel_name)
     end
 
-    #TODO get width and height from chunk options, after implementing Knitr compatible options
-    savefig(data, full_name, width=chunk[:fig_width]*chunk[:dpi], height=chunk[:fig_height]*chunk[:dpi])
+    vector_fmts = [".pdf", ".svg"]
+
+    #Don't use dpi for vector formats
+    if chunk[:fig_ext] in vector_fmts
+        savefig(data, full_name, width=chunk[:fig_width]*100, height=chunk[:fig_height]*100)
+    else
+        savefig(data, full_name, width=chunk[:fig_width]*chunk[:dpi], height=chunk[:fig_height]*chunk[:dpi])
+    end
+
     report.fignum += 1
 end

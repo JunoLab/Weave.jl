@@ -23,8 +23,15 @@ function format(executed, doctype)
       else
           #Fill undefined options with format specific defaults
           chunk[:out_width] == nothing && (chunk[:out_width] =  docformat.formatdict[:out_width])
-          chunk[:fig_env] == nothing && (chunk[:fig_env] =  docformat.formatdict[:fig_env])
           chunk[:fig_pos] == nothing && (chunk[:fig_pos] =  docformat.formatdict[:fig_pos])
+
+          #Only use floats if chunk has caption or sets fig_env
+          if chunk[:fig_cap] != nothing && chunk[:fig_env] == nothing
+              (chunk[:fig_env] =  docformat.formatdict[:fig_env])
+          end
+
+
+
 
           #Format code
           result = format_codechunk(chunk, formatdict)
@@ -194,12 +201,12 @@ function formatfigures(chunk, docformat::Tex)
     fignames = chunk[:figure]
     caption = chunk[:fig_cap]
     width = chunk[:out_width]
-
-
     f_pos = chunk[:fig_pos]
     f_env = chunk[:fig_env]
     result = ""
     figstring = ""
+
+
 
     if f_env != nothing
         result *= """\\begin{$f_env}[$f_pos]\n"""
