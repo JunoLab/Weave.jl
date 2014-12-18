@@ -6,11 +6,6 @@ Gadfly.set_default_plot_format(:png)
 function Base.display(report::Report, m::MIME"image/png", p::Plot)
     chunk = report.cur_chunk
 
-    #if chunk[:fig_ext] != ".png"
-    #  chunk[:fig_ext]
-    #  warn("Saving figures as .png with Gadfly")
-    #end
-
     full_name, rel_name = get_figname(report, chunk)
 
     docformat = formats[report.formatdict[:doctype]]
@@ -33,15 +28,18 @@ function Base.display(report::Report, m::MIME"image/png", p::Plot)
 
     report.fignum += 1
 
-    #TODO other formats
-    #Can't specify dpi in Gadfly? Opened Gadfly issue #504
     w = chunk[:fig_width]inch
     h = chunk[:fig_height]inch
     format = chunk[:fig_ext]
+    dpi = chunk[:dpi]
 
     #This is probably not the correct way to handle different formats, but it works.
     if format == ".png"
-        draw(PNG(full_name, w, h), p)
+        try
+          draw(PNG(full_name, w, h, dpi=dpi), p)
+        catch
+          draw(PNG(full_name, w, h), p) #Compose < 0.3.1, Gadfly < 0.3.1
+        end
     elseif format == ".pdf"
         draw(PDF(full_name, w, h), p)
     elseif format == ".ps"

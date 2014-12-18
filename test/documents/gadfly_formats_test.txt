@@ -6,7 +6,7 @@ x = linspace(0, 2π, 200)
 plot(x=x, y = sin(x), Geom.line)
 @
 
-<<echo=false; fig_cap="cos(x) function.">>=
+<<echo=false; fig_cap="cos(x) function."; dpi=200>>=
 plot(x=x, y = cos(x), Geom.line)
 @
 
