@@ -3,6 +3,7 @@
 
 ### Changes in master
 
+* Added AsciiDoc formatter
 * Default plotting library changed to Gadfly
 * New option: `out_path` for controlling where weaved documents and figures are saved
 * Command line script `bin/weave.jl` for calling weave from command line
