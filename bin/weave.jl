@@ -11,7 +11,7 @@ ap = ArgParseSettings("Weave Julia documents using Weave.jl",
 @add_arg_table ap begin
     "source"
         nargs = '+'
-        help = "source document"
+        help = "source document(s)"
         required = true
     "--doctype"
         arg_type = String
