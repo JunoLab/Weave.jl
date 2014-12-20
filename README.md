@@ -63,9 +63,17 @@ weave(Pkg.dir("Weave","examples","gadfly_sample.mdw"), plotlib="Gadfly")
 The signature of weave functions is:
 
 ````julia
-function weave(source ; doctype = "pandoc",
-    plotlib="PyPlot", informat="noweb", fig_path = "figures", fig_ext = nothing)
+function weave(source ; doctype = "pandoc", plotlib="Gadfly", informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)
 ````
+* `doctype`: see `list_out_formats()`
+* `plotlib`: `"PyPlot"`, `"Gadfly"`, or `"Winston"`
+* `informat`: `"noweb"` of `"markdown"`
+* `out_path`: Path where the output is generated:
+    - `:doc`: Path of the source document.
+    - `:pwd`: Julia working directory
+    - `"somepath"`: Path as a string e.g `"/home/mpastell/weaveout"`
+* `fig_path`: where figures will be generated, relative to out_path
+* `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
 
 **Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 

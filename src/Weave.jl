@@ -48,7 +48,7 @@ end
 #end
 
 
-function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)
+function weave(source ; doctype = "pandoc", plotlib="Gadfly", informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)
 
 
 
