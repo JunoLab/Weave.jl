@@ -48,7 +48,9 @@ end
 #end
 
 
-function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", fig_path = "figures", fig_ext = nothing)
+function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)
+
+
 
     cwd, fname = splitdir(abspath(source))
     basename = splitext(fname)[1]
@@ -59,10 +61,18 @@ function weave(source ; doctype = "pandoc", plotlib="PyPlot", informat="noweb", 
         rcParams[:chunk_defaults][:fig_ext] = fig_ext
     end
 
+    #Set the output directory
+    if out_path == :doc
+        report.cwd = cwd
+    elseif out_path == :pwd
+        report.cwd = pwd()
+    else
+        report.cwd = out_path
+    end
+
 
 
     report.source = source
-    report.cwd = cwd
     report.basename = basename
     rcParams[:chunk_defaults][:fig_path] = fig_path
     report.formatdict = formatdict
