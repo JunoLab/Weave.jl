@@ -50,8 +50,6 @@ end
 
 function weave(source ; doctype = "pandoc", plotlib="Gadfly", informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)
 
-
-
     cwd, fname = splitdir(abspath(source))
     basename = splitext(fname)[1]
     formatdict = formats[doctype].formatdict
