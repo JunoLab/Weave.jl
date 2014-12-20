@@ -195,6 +195,23 @@ const rst = Rest("reStructuredText and Sphinx",
                                 :doctype => "rst"
                                 ))
 
+type AsciiDoc
+    description::String
+    formatdict::Dict{Symbol,Any}
+end
+
+#asciidoc -b html5 -a source-highlighter=pygments ...
+const adoc = AsciiDoc("AsciiDoc",
+        @compat Dict{Symbol,Any}(
+        :codestart => "[source,julia]\n--------------------------------------",
+        :codeend => "--------------------------------------\n\n",
+        :outputstart => "--------------------------------------",
+        :outputend => "--------------------------------------\n\n",
+        :fig_ext => ".png",
+        :extension => "txt",
+        :out_width => "600",
+        :doctype => "asciidoc"
+))
 
 
 function formatfigures(chunk, docformat::Tex)
@@ -284,10 +301,35 @@ function formatfigures(chunk, docformat::Rest)
 end
 
 
+function formatfigures(chunk, docformat::AsciiDoc)
+    fignames = chunk[:figure]
+    caption = chunk[:fig_cap]
+    width = chunk[:out_width]
+    result = ""
+    figstring = ""
+
+
+    for fig=fignames
+        figstring *= @sprintf("image::%s[width=%s]\n", fig, width)
+    end
+
+
+    if caption != nothing
+        result *= string("image::$(fignames[1])",
+        "[width=$width,",
+        "title=\"$caption\"]")
+    else
+        result *= figstring
+        return result
+    end
+end
+
+
 #Add new supported formats here
 const formats = @compat Dict{String, Any}("tex" => tex,
                                           "texminted" => texminted,
                                           "pandoc" => pandoc,
                                           "github" => github,
-                                          "rst" => rst
+                                          "rst" => rst,
+                                          "asciidoc" => adoc
                                           )
