@@ -47,6 +47,28 @@ end
 #module ReportSandBox
 #end
 
+function tangle(source ; out_path=:doc, informat="noweb")
+    cwd, fname = splitdir(abspath(source))
+    basename = splitext(fname)[1]
+
+    #Set the output directory
+    if out_path == :pwd
+        cwd = pwd()
+    elseif out_path != :doc
+        cwd = out_path
+    end
+
+    outname = "$(cwd)/$(basename).jl"
+    open(outname, "w") do io
+        for chunk in read_document(source, informat)
+            if chunk[:type] == "code"
+                write(io, chunk[:content]*"\n")
+            end
+        end
+    end
+
+    info("Writing to file $(basename).jl")
+end
 
 function weave(source ; doctype = "pandoc", plotlib="Gadfly", informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)
 
@@ -275,7 +297,7 @@ function get_figname(report::Report, chunk; fignum = nothing)
     return full_name, rel_name
 end
 
-export weave, list_out_formats
+export weave, list_out_formats, tangle
 
 include("config.jl")
 include("readers.jl")
