@@ -21,3 +21,8 @@ weave("documents/chunk_options.noweb", doctype="rst", plotlib=nothing)
 result = readall(open("documents/chunk_options.rst"))
 ref = readall(open("documents/chunk_options_ref.rst"))
 @test result == ref
+
+tangle("documents/chunk_options.noweb")
+result = readall(open("documents/chunk_options.jl"))
+ref = readall(open("documents/chunk_options_ref.jl"))
+@test result == ref
