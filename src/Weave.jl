@@ -212,6 +212,7 @@ function run(parsed)
 
             if !chunk[:eval]
                 chunk[:result] = ""
+                chunk[:fig] = false
                 parsed[i] = copy(chunk)
                 i += 1
                 continue #Do nothing if eval is false
