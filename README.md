@@ -40,11 +40,11 @@ tex: Latex with custom code environments
 
 ## Usage
 
-Run from julia:
+Run from julia using Gadfly for plots:
 
 ````julia
 using Weave
-weave(Pkg.dir("Weave","examples","julia_sample.mdw")
+weave(Pkg.dir("Weave","examples","gadfly_sample.mdw"))
 ````
 
 Using Winston for plots (Julia 0.3 only):
@@ -54,10 +54,10 @@ weave(Pkg.dir("Weave","examples","winston_sample.mdw"),
 plotlib="Winston", doctype="pandoc")
 ````
 
-Using Gadfly:
+Using PyPlot:
 
 ````julia
-weave(Pkg.dir("Weave","examples","gadfly_sample.mdw"), plotlib="Gadfly")
+weave(Pkg.dir("Weave","examples","julia_sample.mdw"), plotlib="PyPlot")
 ````
 
 The signature of weave functions is:
