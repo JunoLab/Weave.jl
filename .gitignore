@@ -13,7 +13,9 @@ test/documents/*.md
 test/documents/*.rst
 test/documents/*.html
 test/documents/*.pdf
+test/documents/chunk_options.jl
 !test/documents/*ref.*
+
 
 
 tmp/
