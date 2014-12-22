@@ -83,4 +83,4 @@ I will probably add new features to Weave when I need them myself or if they are
 
 ## Contributors
 
-Douglas Bates has contributed a number of important fixes and comments.
+You can see the list of contributors on Github: https://github.com/mpastell/Weave.jl/graphs/contributors. Thanks for the important additions, fixes and comments.
