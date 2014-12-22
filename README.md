@@ -54,7 +54,7 @@ weave(Pkg.dir("Weave","examples","winston_sample.mdw"),
 plotlib="Winston", doctype="pandoc")
 ````
 
-Using Gadfly (Julia 0.3 only):
+Using Gadfly:
 
 ````julia
 weave(Pkg.dir("Weave","examples","gadfly_sample.mdw"), plotlib="Gadfly")
