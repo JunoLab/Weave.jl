@@ -51,17 +51,29 @@ end
 
 @doc md"""
 Tangle source code from input document to .jl file.
+
+**parameters:**
+```julia
+tangle(source ; out_path=:doc, informat="noweb")
+```
+
+* `informat`: `"noweb"` of `"markdown"`
+* `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
+`"somepath"`: Path as a string e.g `"/home/mpastell/weaveout"`
 """->
 function tangle(source ; out_path=:doc, informat="noweb")
     cwd, fname = splitdir(abspath(source))
     basename = splitext(fname)[1]
 
     #Set the output directory
-    if out_path == :pwd
+    if out_path == :doc
+        cwd = cwd
+    elseif out_path == :pwd
         cwd = pwd()
-    elseif out_path != :doc
+    else
         cwd = out_path
     end
+
 
     outname = "$(cwd)/$(basename).jl"
     open(outname, "w") do io
@@ -87,7 +99,7 @@ weave(source ; doctype = "pandoc", plotlib="Gadfly",
 * `doctype`: see `list_out_formats()`
 * `plotlib`: `"PyPlot"`, `"Gadfly"`, or `"Winston"`
 * `informat`: `"noweb"` of `"markdown"`
-* `out_path`: Path where the output is generated: `:doc`: Path of the source document, `:pwd`: Julia working directory,
+* `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
     `"somepath"`: Path as a string e.g `"/home/mpastell/weaveout"`
 * `fig_path`: where figures will be generated, relative to out_path
 * `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
