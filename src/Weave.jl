@@ -1,5 +1,7 @@
 module Weave
 using Compat
+using Docile
+@docstrings
 
 #Contains report global properties
 type Report <: Display
@@ -37,7 +39,7 @@ function Base.display(doc::Report, data)
     end
 end
 
-
+@doc "List supported output formats" ->
 function list_out_formats()
   for format = keys(formats)
       println(string(format,": ",  formats[format].description))
@@ -47,6 +49,9 @@ end
 #module ReportSandBox
 #end
 
+@doc md"""
+Tangle source code from input document to .jl file.
+"""->
 function tangle(source ; out_path=:doc, informat="noweb")
     cwd, fname = splitdir(abspath(source))
     basename = splitext(fname)[1]
@@ -70,6 +75,25 @@ function tangle(source ; out_path=:doc, informat="noweb")
     info("Writing to file $(basename).jl")
 end
 
+@doc md"""
+Weave an input document to output file.
+
+**parameters:**
+```julia
+weave(source ; doctype = "pandoc", plotlib="Gadfly",
+    informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)
+```
+
+* `doctype`: see `list_out_formats()`
+* `plotlib`: `"PyPlot"`, `"Gadfly"`, or `"Winston"`
+* `informat`: `"noweb"` of `"markdown"`
+* `out_path`: Path where the output is generated: `:doc`: Path of the source document, `:pwd`: Julia working directory,
+    `"somepath"`: Path as a string e.g `"/home/mpastell/weaveout"`
+* `fig_path`: where figures will be generated, relative to out_path
+* `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
+
+**Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
+""" ->
 function weave(source ; doctype = "pandoc", plotlib="Gadfly", informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)
 
     cwd, fname = splitdir(abspath(source))
@@ -128,6 +152,9 @@ function weave(source ; doctype = "pandoc", plotlib="Gadfly", informat="noweb", 
     info("Report weaved to $(report.basename).$(formatdict[:extension])")
 
 end
+
+
+
 
 
 function run_block(code_str)
