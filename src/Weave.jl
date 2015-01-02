@@ -1,7 +1,8 @@
 module Weave
 using Compat
 using Docile
-@docstrings
+
+@docstrings(manual = ["../doc/manual.md"])
 
 #Contains report global properties
 type Report <: Display
