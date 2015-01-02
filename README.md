@@ -6,6 +6,7 @@ Weave is a scientific report generator/literate programming tool
 for Julia. It resembles [Pweave](http://mpastell.com/pweave) and, Knitr
 and Sweave.
 
+You can write your documentation and code in input document using Nowed or Markdown syntax and use `weave` function to execute to document to capture results and figures.
 
 **Current features**
 
@@ -13,29 +14,6 @@ and Sweave.
 * Execute code as terminal or "script" chunks.
 * Capture PyPlot, Gadfly or Winston figures.
 * Supports LaTex, Pandoc and Github markdown and reStructuredText output
-
-
-## Chunk options
-
-I've tried to follow [Knitr](http://yihui.name/knitr/options)'s naming for chunk options, but not all options are implemented.
-You can see [`src/config.jl`](https://github.com/mpastell/Weave.jl/blob/master/src/config.jl) for the current situation.
-
-Options are separated using ";" and need to be valid Julia expressions. e.g.
-
-    <<term=true; fig_width=6; fig_height=4>>=
-
-## File formats
-
-You can get a list of supported output formats:
-
-````julia
-julia> list_out_formats()
-pandoc: Pandoc markdown
-rst: reStructuredText and Sphinx
-texminted: Latex using minted for highlighting
-github: Github markdown
-tex: Latex with custom code environments
-````
 
 
 ## Usage
@@ -47,35 +25,9 @@ using Weave
 weave(Pkg.dir("Weave","examples","gadfly_sample.mdw"))
 ````
 
-Using Winston for plots (Julia 0.3 only):
+## Documentation
 
-````julia
-weave(Pkg.dir("Weave","examples","winston_sample.mdw"),
-plotlib="Winston", doctype="pandoc")
-````
-
-Using PyPlot:
-
-````julia
-weave(Pkg.dir("Weave","examples","julia_sample.mdw"), plotlib="PyPlot")
-````
-
-The signature of weave functions is:
-
-````julia
-function weave(source ; doctype = "pandoc", plotlib="Gadfly", informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)
-````
-* `doctype`: see `list_out_formats()`
-* `plotlib`: `"PyPlot"`, `"Gadfly"`, or `"Winston"`
-* `informat`: `"noweb"` of `"markdown"`
-* `out_path`: Path where the output is generated:
-    - `:doc`: Path of the source document.
-    - `:pwd`: Julia working directory
-    - `"somepath"`: Path as a string e.g `"/home/mpastell/weaveout"`
-* `fig_path`: where figures will be generated, relative to out_path
-* `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
-
-**Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
+Lexicon.jl generated documentation for [master](http://mpastell.github.io/Weave.jl/master/).
 
 ## Contributing
 
