@@ -3,6 +3,11 @@
 
 ### Changes in master
 
+
+### 0.0.4
+
+4th January 2015
+
 * Added AsciiDoc formatter
 * Default plotting library changed to Gadfly
 * New option: `out_path` for controlling where weaved documents and figures are saved
