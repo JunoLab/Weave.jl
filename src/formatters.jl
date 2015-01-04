@@ -2,61 +2,54 @@ using TextWrap
 
 #Format the executed document
 function format(executed, doctype)
-  formatted = String[]
-  docformat = formats[doctype]
-  #@show docformat
+    formatted = String[]
+    docformat = formats[doctype]
+    #@show docformat
 
-  #Complete format dictionaries with defaults
-  formatdict = docformat.formatdict
-  get!(formatdict, :termstart, formatdict[:codestart])
-  get!(formatdict, :termend, formatdict[:codeend])
-  get!(formatdict, :out_width, nothing)
-  get!(formatdict, :out_height, nothing)
-  get!(formatdict, :fig_pos, nothing)
-  get!(formatdict, :fig_env, nothing)
-
-
-  for chunk in copy(executed)
-
-      if chunk[:type] == "doc"
-          push!(formatted, chunk[:content])
-      else
-          #Fill undefined options with format specific defaults
-          chunk[:out_width] == nothing && (chunk[:out_width] =  docformat.formatdict[:out_width])
-          chunk[:fig_pos] == nothing && (chunk[:fig_pos] =  docformat.formatdict[:fig_pos])
-
-          #Only use floats if chunk has caption or sets fig_env
-          if chunk[:fig_cap] != nothing && chunk[:fig_env] == nothing
-              (chunk[:fig_env] =  docformat.formatdict[:fig_env])
-          end
+    #Complete format dictionaries with defaults
+    formatdict = docformat.formatdict
+    get!(formatdict, :termstart, formatdict[:codestart])
+    get!(formatdict, :termend, formatdict[:codeend])
+    get!(formatdict, :out_width, nothing)
+    get!(formatdict, :out_height, nothing)
+    get!(formatdict, :fig_pos, nothing)
+    get!(formatdict, :fig_env, nothing)
 
 
+    for chunk in copy(executed)
+        result = format_chunk(chunk, formatdict)
+        push!(formatted, result)
+    end
 
-
-          #Format code
-          result = format_codechunk(chunk, formatdict)
-          #Handle figures
-          if chunk[:fig] && length(chunk[:figure]) > 0
-              if chunk[:include]
-                  result *= formatfigures(chunk, docformat)
-              end
-          end
-          push!(formatted, result)
-      end
-  end
-
- return formatted
+    return formatted
 end
 
 
-function format_codechunk(chunk, formatdict)
-    if haskey(formatdict, :indent)
-        chunk[:content] = indent(chunk[:content], formatdict[:indent])
+function format_chunk(chunk::DocChunk, formatdict)
+    return chunk.content
+end
+
+
+function format_chunk(chunk::CodeChunk, formatdict)
+    #Fill undefined options with format specific defaults
+    chunk.options[:out_width] == nothing &&
+        (chunk.options[:out_width] =  formatdict[:out_width])
+    chunk.options[:fig_pos] == nothing &&
+        (chunk.options[:fig_pos] =  formatdict[:fig_pos])
+
+    #Only use floats if chunk has caption or sets fig_env
+    if chunk.options[:fig_cap] != nothing && chunk.options[:fig_env] == nothing
+        (chunk.options[:fig_env] =  formatdict[:fig_env])
     end
 
-    if !chunk[:eval]
-        if chunk[:echo]
-            result = "$(formatdict[:codestart])$(chunk[:content])\n$(formatdict[:codeend])"
+
+    if haskey(formatdict, :indent)
+        chunk.content = indent(chunk.content, formatdict[:indent])
+    end
+
+    if !chunk.options[:eval]
+        if chunk.options[:echo]
+            result = "$(formatdict[:codestart])$(chunk.content)\n$(formatdict[:codeend])"
             return result
         else
             r = ""
@@ -64,42 +57,48 @@ function format_codechunk(chunk, formatdict)
         end
     end
 
-    if chunk[:term]
+    if chunk.options[:term]
         result = format_termchunk(chunk, formatdict)
     else
-        if chunk[:wrap]
-          chunk[:result] = "\n" * wrap(chunk[:result], replace_whitespace=false)
+        if chunk.options[:wrap]
+          chunk.output = "\n" * wrap(chunk.output, replace_whitespace=false)
         end
 
-        if chunk[:echo]
-            result = "$(formatdict[:codestart])$(chunk[:content])\n$(formatdict[:codeend])\n"
+        if chunk.options[:echo]
+            result = "$(formatdict[:codestart])$(chunk.content)\n$(formatdict[:codeend])\n"
         else
             result = ""
         end
 
-        if (strip(chunk[:result])!= "") && (chunk[:results] != "hidden")
+        if (strip(chunk.output)!= "") && (chunk.options[:results] != "hidden")
             #@show chunk
-            if chunk[:results] != "markup"
-                result *= "$(chunk[:result])"
-            elseif chunk[:results] == "markup"
+            if chunk.options[:results] != "markup"
+                result *= "$(chunk.output)"
+            elseif chunk.options[:results] == "markup"
                 if haskey(formatdict, :indent)
-                    chunk[:result] = indent(chunk[:result], formatdict[:indent])
+                    chunk.output = indent(chunk.output, formatdict[:indent])
                 end
-                result *= "$(formatdict[:outputstart])$(chunk[:result])\n$(formatdict[:outputend])\n"
+                result *= "$(formatdict[:outputstart])$(chunk.output)\n$(formatdict[:outputend])\n"
             end
         end
 
     end
 
-    return result
+    #Handle figures
+    if chunk.options[:fig] && length(chunk.figures) > 0
+        if chunk.options[:include]
+            result *= formatfigures(chunk, docformat)
+        end
+    end
 
+    return result
 end
 
 function format_termchunk(chunk, formatdict)
-    if chunk[:echo] && chunk[:results] != "hidden"
-        result = "$(formatdict[:termstart])$(chunk[:result])\n"
+    if chunk.options[:echo] && chunk.options[:results] != "hidden"
+        result = "$(formatdict[:termstart])$(chunk.output)\n"
         #@show chunk[:term_state]
-        chunk[:term_state] == :text && (result*= "$(formatdict[:termend])\n")
+        chunk.options[:term_state] == :text && (result*= "$(formatdict[:termend])\n")
     else
         result = ""
     end
