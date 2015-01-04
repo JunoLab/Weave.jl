@@ -27,7 +27,7 @@ weave(Pkg.dir("Weave","examples","gadfly_sample.mdw"))
 
 ## Documentation
 
-Lexicon.jl generated documentation for [master](http://mpastell.github.io/Weave.jl/master/).
+Lexicon.jl generated documentation for [v0.0.4](http://mpastell.github.io/Weave.jl/v0.0.4/) and [master](http://mpastell.github.io/Weave.jl/master/).
 
 ## Contributing
 
