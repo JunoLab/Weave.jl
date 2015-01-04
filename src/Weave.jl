@@ -339,7 +339,7 @@ function get_figname(report::Report, chunk; fignum = nothing)
 end
 
 export weave, list_out_formats, tangle
-
+include("chunks.jl")
 include("config.jl")
 include("readers.jl")
 include("formatters.jl")

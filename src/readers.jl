@@ -12,8 +12,8 @@ const input_formats = @compat Dict{String, Any}(
                     )
         )
 
-
-function read_document(document, format)
+@doc "Read input document" ->
+function read_document(document, format="noweb")
   #doctext = readall(open(document))
   lines = split(bytestring(open(document) do io
                              mmap_array(Uint8,(filesize(document),),io)
@@ -30,7 +30,7 @@ function read_document(document, format)
 
   options = Dict()
   optionstring = ""
-  parsed = Dict[]
+  parsed = Any[]
   for lineno in 1:length(lines)
     line = lines[lineno]
     if (m = match(codestart, line)) != nothing && state=="doc"
@@ -50,8 +50,9 @@ function read_document(document, format)
       haskey(options, :label) && (options[:name] = options[:label])
       haskey(options, :name) || (options[:name] = nothing)
       #@show options
-      chunk = @compat Dict{Symbol,Any}(:type => "doc", :content => content,
-                                       :number => docno,:start_line => start_line)
+      chunk = DocChunk(content, docno, start_line)
+      #chunk = @compat Dict{Symbol,Any}(:type => "doc", :content => content,
+      #                                 :number => docno,:start_line => start_line)
       docno += 1
       start_line = lineno
       push!(parsed, chunk)
@@ -59,10 +60,13 @@ function read_document(document, format)
       continue
     end
     if ismatch(codeend, line) && state=="code"
-      chunk = @compat Dict{Symbol,Any}(:type => "code", :content => content,
-                                       :number => codeno, :options => options,
-                                       :optionstring => optionstring,
-                                       :start_line => start_line)
+
+      chunk = CodeChunk(content, codeno, start_line, optionstring, options)
+      #chunk = @compat Dict{Symbol,Any}(:type => "code", :content => content,
+#                                   :number => codeno, :options => options,
+#                                       :optionstring => optionstring,
+#                                       :start_line => start_line)
+
       codeno+=1
       start_line = lineno
       content = ""
@@ -75,9 +79,10 @@ function read_document(document, format)
   end
 
   #Remember the last chunk
-  if content != ""
-    chunk = @compat Dict{Symbol,Any}(:type => "doc", :content => content,
-                                     :number =>  docno, :start_line => start_line)
+  if strip(content) != ""
+    chunk = DocChunk(content, docno, start_line)
+    #chunk = @compat Dict{Symbol,Any}(:type => "doc", :content => content,
+    #                                 :number =>  docno, :start_line => start_line)
     push!(parsed, chunk)
   end
   return parsed
