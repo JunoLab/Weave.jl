@@ -16,7 +16,7 @@ type Report <: Display
   fignum::Int
   figures::Array
   term_state::Symbol
-  cur_chunk::Dict{Symbol, Any}
+  cur_chunk
 
 
   function Report()
@@ -232,58 +232,12 @@ function run(parsed)
     #Raises a warning, couldn't find a "cleaner"
     #way to do it.
     eval(parse("module ReportSandBox\nend"))
-
-    i = 1
+    executed = Any[]
     for chunk in copy(parsed)
-        if chunk[:type] == "code"
-            #print(chunk["content"])
-            info("Weaving chunk $(chunk[:number]) from line $(chunk[:start_line])")
-            defaults = copy(rcParams[:chunk_defaults])
-            options = copy(chunk[:options])
-            try
-                options = merge(rcParams[:chunk_defaults], options)
-            catch
-                options = rcParams[:chunk_defaults]
-                warn("Invalid format for chunk options line: $(chunk[:start_line])")
-            end
-
-            merge!(chunk, options)
-            delete!(chunk, :options)
-
-            if !chunk[:eval]
-                chunk[:result] = ""
-                chunk[:fig] = false
-                parsed[i] = copy(chunk)
-                i += 1
-                continue #Do nothing if eval is false
-            end
-
-            report.fignum = 1
-            report.cur_result = ""
-            report.figures = String[]
-            report.cur_chunk = chunk
-            report.term_state = :text
-            if haskey(report.formatdict, :out_width) && chunk[:out_width] == nothing
-                chunk[:out_width] = report.formatdict[:out_width]
-            end
-
-            if chunk[:term]
-                chunk[:result] = run_term(chunk[:content])
-                chunk[:term_state] = report.term_state
-            else
-                chunk[:result] = run_block(chunk[:content])
-            end
-
-            if rcParams[:plotlib] == "PyPlot"
-                chunk[:fig] && (chunk[:figure] = savefigs(chunk))
-            else
-                chunk[:fig] && (chunk[:figure] = copy(report.figures))
-            end
-        end
-        parsed[i] = copy(chunk)
-        i += 1
+        result_chunk = eval_chunk(chunk)
+        push!(executed, result_chunk)
     end
-    parsed
+    executed
 end
 
 function savefigs(chunk)
@@ -339,7 +293,9 @@ function get_figname(report::Report, chunk; fignum = nothing)
 end
 
 export weave, list_out_formats, tangle
+
 include("chunks.jl")
+include("run.jl")
 include("config.jl")
 include("readers.jl")
 include("formatters.jl")

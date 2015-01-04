@@ -18,7 +18,7 @@ const rcParams =
                                 :name=> nothing,
                                 :wrap=> true,
                                 :engine=> "julia",
-                                :option_string=> "",
+                                #:option_string=> "",
                                 #Defined in formats
                                 :fig_ext => nothing,
                                 :fig_pos=> nothing,
