@@ -60,9 +60,6 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
     if chunk.options[:term]
         result = format_termchunk(chunk, formatdict)
     else
-        if chunk.options[:wrap]
-          chunk.output = "\n" * wrap(chunk.output, replace_whitespace=false)
-        end
 
         if chunk.options[:echo]
             result = "$(formatdict[:codestart])$(chunk.content)\n$(formatdict[:codeend])\n"
@@ -71,10 +68,14 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
         end
 
         if (strip(chunk.output)!= "") && (chunk.options[:results] != "hidden")
-            #@show chunk
             if chunk.options[:results] != "markup"
-                result *= "$(chunk.output)\n" 
+                result *= "$(chunk.output)\n"
             elseif chunk.options[:results] == "markup"
+                if chunk.options[:wrap]
+                    chunk.output = "\n" * wrap(chunk.output,
+                            replace_whitespace=false)
+                end
+
                 if haskey(formatdict, :indent)
                     chunk.output = indent(chunk.output, formatdict[:indent])
                 end
@@ -97,7 +98,6 @@ end
 function format_termchunk(chunk, formatdict)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"
         result = "$(formatdict[:termstart])$(chunk.output)\n"
-        #@show chunk[:term_state]
         chunk.options[:term_state] == :text && (result*= "$(formatdict[:termend])\n")
     else
         result = ""
