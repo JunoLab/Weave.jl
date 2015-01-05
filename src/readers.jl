@@ -12,12 +12,19 @@ const input_formats = @compat Dict{String, Any}(
                     )
         )
 
-@doc "Read input document" ->
-function read_document(document, format="noweb")
+
+@doc "Read and parse input document" ->
+function Base.read(document, format="noweb")
+    document = bytestring(open(document) do io
+        mmap_array(Uint8,(filesize(document),),io)
+    end)
+    return parse(document, format)
+end
+
+@doc "Parse document from string" ->
+function Base.parse(document, format="noweb")
   #doctext = readall(open(document))
-  lines = split(bytestring(open(document) do io
-                             mmap_array(Uint8,(filesize(document),),io)
-                           end), "\n")
+  lines = split(document, "\n")
 
   codestart = input_formats[format][:codestart]
   codeend = input_formats[format][:codeend]

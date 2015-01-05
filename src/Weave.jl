@@ -78,7 +78,7 @@ function tangle(source ; out_path=:doc, informat="noweb")
 
     outname = "$(cwd)/$(basename).jl"
     open(outname, "w") do io
-        for chunk in read_document(source, informat)
+        for chunk in read(source, informat)
             if typeof(chunk) == CodeChunk
                 write(io, chunk.content*"\n")
             end
@@ -153,7 +153,7 @@ function weave(source ; doctype = "pandoc", plotlib="Gadfly", informat="noweb", 
     end
 
     pushdisplay(report)
-    parsed = read_document(source, informat)
+    parsed = read(source, informat)
     executed = run(parsed)
     popdisplay(report)
     formatted = format(executed, doctype)
