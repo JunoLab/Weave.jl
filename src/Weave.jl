@@ -79,8 +79,8 @@ function tangle(source ; out_path=:doc, informat="noweb")
     outname = "$(cwd)/$(basename).jl"
     open(outname, "w") do io
         for chunk in read_document(source, informat)
-            if chunk[:type] == "code"
-                write(io, chunk[:content]*"\n")
+            if typeof(chunk) == CodeChunk
+                write(io, chunk.content*"\n")
             end
         end
     end
@@ -250,13 +250,13 @@ end
 function savefigs_pyplot(chunk)
     fignames = String[]
     ext = report.formatdict[:fig_ext]
-    figpath = joinpath(report.cwd, chunk[:fig_path])
+    figpath = joinpath(report.cwd, chunk.options[:fig_path])
     isdir(figpath) || mkdir(figpath)
-    chunkid = (chunk[:name] == nothing) ? chunk[:number] : chunk[:name]
+    chunkid = (chunk.options[:name] == nothing) ? chunk.number : chunk.options[:name]
     #Iterate over all open figures, save them and store names
     for fig = plt.get_fignums()
         full_name, rel_name = get_figname(report, chunk, fignum=fig)
-        savefig(full_name, dpi=chunk[:dpi])
+        savefig(full_name, dpi=chunk.options[:dpi])
         push!(fignames, rel_name)
         plt.draw()
         plt.close()
@@ -281,14 +281,15 @@ function Base.display(report::Report, m::MIME"text/plain", data)
 end
 
 function get_figname(report::Report, chunk; fignum = nothing)
-    figpath = joinpath(report.cwd, chunk[:fig_path])
+    figpath = joinpath(report.cwd, chunk.options[:fig_path])
     isdir(figpath) || mkdir(figpath)
-    ext = chunk[:fig_ext]
+    ext = chunk.options[:fig_ext]
     fignum == nothing && (fignum = report.fignum)
 
-    chunkid = (chunk[:name] == nothing) ? chunk[:number] : chunk[:name]
-    full_name = joinpath(report.cwd, chunk[:fig_path], "$(report.basename)_$(chunkid)_$(fignum)$ext")
-    rel_name = "$(chunk[:fig_path])/$(report.basename)_$(chunkid)_$(fignum)$ext" #Relative path is used in output
+    chunkid = (chunk.options[:name] == nothing) ? chunk.number : chunk.options[:name]
+    full_name = joinpath(report.cwd, chunk.options[:fig_path],
+                                "$(report.basename)_$(chunkid)_$(fignum)$ext")
+    rel_name = "$(chunk.options[:fig_path])/$(report.basename)_$(chunkid)_$(fignum)$ext" #Relative path is used in output
     return full_name, rel_name
 end
 

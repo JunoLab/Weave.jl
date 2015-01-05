@@ -12,7 +12,7 @@ function eval_chunk(chunk::CodeChunk)
 
     merge!(chunk.options, options)
     #delete!(chunk.options, :options)
-    @show chunk.options
+    #@show chunk.options
 
     if !chunk.options[:eval]
         chunk.output = ""

@@ -17,8 +17,8 @@ ref = replace(ref, r"\s*PyObject.*\n", "")
 
 
 weave("documents/pyplot_formats.txt", plotlib="pyplot", doctype="rst", fig_ext=".svg")
-result = readall(open("documents/pyplot_formats.tex"))
-ref = readall(open("documents/pyplot_formats_ref.tex"))
+result = readall(open("documents/pyplot_formats.rst"))
+ref = readall(open("documents/pyplot_formats_ref.rst"))
 result = replace(result, r"\s*PyObject.*\n", "")
 ref = replace(ref, r"\s*PyObject.*\n", "")
 @test result == ref

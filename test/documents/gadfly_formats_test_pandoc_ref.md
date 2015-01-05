@@ -76,5 +76,3 @@ plot(x=x, y = cos(x), Geom.line)
 
 ![](figures/gadfly_formats_test_5_1.png)
 ![](figures/gadfly_formats_test_5_2.png)
-
-

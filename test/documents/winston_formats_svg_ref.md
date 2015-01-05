@@ -113,5 +113,3 @@ display(p)
 
 ![](figures/winston_formats_3_1.svg)
 ![](figures/winston_formats_3_2.svg)
-
-

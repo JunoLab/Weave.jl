@@ -6,7 +6,7 @@ type CodeChunk
     option_string::String
     options::Dict{Symbol, Any}
     output::String
-    figures::Array
+    figures::Array{String}
     function CodeChunk(content, number, start_line, option_string, options)
         new(content, number, start_line, option_string, options, "", String[])
     end

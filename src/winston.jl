@@ -8,8 +8,8 @@ function Base.display(report::Report, m::MIME"image/png", data)
     docformat = formats[report.formatdict[:doctype]]
 
     #Add to results for term chunks and store otherwise
-    if chunk[:term]
-      chunk[:figure] = [rel_name]
+    if chunk.options[:term]
+      chunk.figures = [rel_name]
 
       if report.term_state == :text
         report.cur_result *= "\n" * report.formatdict[:codeend] * "\n"
@@ -17,7 +17,7 @@ function Base.display(report::Report, m::MIME"image/png", data)
 
       report.cur_result *= formatfigures(chunk, docformat)
       report.term_state = :fig
-      chunk[:figure] = String[]
+      chunk.figures = String[]
     else
       push!(report.figures, rel_name)
     end
@@ -25,10 +25,13 @@ function Base.display(report::Report, m::MIME"image/png", data)
     vector_fmts = [".pdf", ".svg"]
 
     #Don't use dpi for vector formats
-    if chunk[:fig_ext] in vector_fmts
-        Winston.savefig(data, full_name, width=chunk[:fig_width]*100, height=chunk[:fig_height]*100)
+    if chunk.options[:fig_ext] in vector_fmts
+        Winston.savefig(data, full_name, width=chunk.options[:fig_width]*100,
+            height=chunk.options[:fig_height]*100)
     else
-        Winston.savefig(data, full_name, width=chunk[:fig_width]*chunk[:dpi], height=chunk[:fig_height]*chunk[:dpi])
+        Winston.savefig(data, full_name,
+            width=chunk.options[:fig_width]*chunk.options[:dpi],
+            height=chunk.options[:fig_height]*chunk.options[:dpi])
     end
 
     report.fignum += 1

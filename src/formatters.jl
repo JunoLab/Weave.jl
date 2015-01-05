@@ -17,7 +17,7 @@ function format(executed, doctype)
 
 
     for chunk in copy(executed)
-        result = format_chunk(chunk, formatdict)
+        result = format_chunk(chunk, formatdict, docformat)
         push!(formatted, result)
     end
 
@@ -25,12 +25,12 @@ function format(executed, doctype)
 end
 
 
-function format_chunk(chunk::DocChunk, formatdict)
+function format_chunk(chunk::DocChunk, formatdict, docformat)
     return chunk.content
 end
 
 
-function format_chunk(chunk::CodeChunk, formatdict)
+function format_chunk(chunk::CodeChunk, formatdict, docformat)
     #Fill undefined options with format specific defaults
     chunk.options[:out_width] == nothing &&
         (chunk.options[:out_width] =  formatdict[:out_width])
@@ -73,7 +73,7 @@ function format_chunk(chunk::CodeChunk, formatdict)
         if (strip(chunk.output)!= "") && (chunk.options[:results] != "hidden")
             #@show chunk
             if chunk.options[:results] != "markup"
-                result *= "$(chunk.output)"
+                result *= "$(chunk.output)\n" 
             elseif chunk.options[:results] == "markup"
                 if haskey(formatdict, :indent)
                     chunk.output = indent(chunk.output, formatdict[:indent])
@@ -214,11 +214,11 @@ const adoc = AsciiDoc("AsciiDoc",
 
 
 function formatfigures(chunk, docformat::Tex)
-    fignames = chunk[:figure]
-    caption = chunk[:fig_cap]
-    width = chunk[:out_width]
-    f_pos = chunk[:fig_pos]
-    f_env = chunk[:fig_env]
+    fignames = chunk.figures
+    caption = chunk.options[:fig_cap]
+    width = chunk.options[:out_width]
+    f_pos = chunk.options[:fig_pos]
+    f_env = chunk.options[:fig_env]
     result = ""
     figstring = ""
 
@@ -242,8 +242,8 @@ function formatfigures(chunk, docformat::Tex)
         result *= figstring
     end
 
-    if chunk[:name] != nothing && f_env !=nothing
-        label = chunk[:name]
+    if chunk.options[:name] != nothing && f_env !=nothing
+        label = chunk.options[:name]
         result *= "\\label{fig:$label}\n"
     end
 
@@ -256,8 +256,8 @@ function formatfigures(chunk, docformat::Tex)
 end
 
 function formatfigures(chunk, docformat::Markdown)
-    fignames = chunk[:figure]
-    caption = chunk[:fig_cap]
+    fignames = chunk.figures
+    caption = chunk.options[:fig_cap]
     result = ""
     figstring = ""
 
@@ -279,9 +279,9 @@ end
 
 
 function formatfigures(chunk, docformat::Rest)
-    fignames = chunk[:figure]
-    caption = chunk[:fig_cap]
-    width = chunk[:out_width]
+    fignames = chunk.figures
+    caption = chunk.options[:fig_cap]
+    width = chunk.options[:out_width]
     result = ""
     figstring = ""
 
@@ -301,9 +301,9 @@ end
 
 
 function formatfigures(chunk, docformat::AsciiDoc)
-    fignames = chunk[:figure]
-    caption = chunk[:fig_cap]
-    width = chunk[:out_width]
+    fignames = chunk.figures
+    caption = chunk.options[:fig_cap]
+    width = chunk.options[:out_width]
     result = ""
     figstring = ""
 

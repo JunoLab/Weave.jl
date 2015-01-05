@@ -60,14 +60,14 @@
     
     julia> plot(x, sin(x))
     1-element Array{Any,1}:
-     PyObject <matplotlib.lines.Line2D object at 0x7fb1d635b790>
+     PyObject <matplotlib.lines.Line2D object at 0x7f702b4e15d0>
     
     julia> y = 20
     20
     
     julia> plot(x, cos(x))
     1-element Array{Any,1}:
-     PyObject <matplotlib.lines.Line2D object at 0x7fb1d635ba10>
+     PyObject <matplotlib.lines.Line2D object at 0x7f702b4e1850>
 
 
 
@@ -87,6 +87,4 @@
 
 .. image:: figures/pyplot_formats_5_1.svg
    :width: 15cm
-
-
 

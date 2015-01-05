@@ -130,5 +130,3 @@
 .. image:: figures/winston_formats_3_2.png
    :width: 15 cm
 
-
-

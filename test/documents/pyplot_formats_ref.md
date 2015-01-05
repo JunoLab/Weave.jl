@@ -48,14 +48,14 @@ julia> x = linspace(0, 2π, 200)
 
 julia> plot(x, sin(x))
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7fb1d5b0c7d0>
+ PyObject <matplotlib.lines.Line2D object at 0x7f702c979c10>
 
 julia> y = 20
 20
 
 julia> plot(x, cos(x))
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7fb1d5b0ca50>
+ PyObject <matplotlib.lines.Line2D object at 0x7f702c979e90>
 
 ````
 
@@ -71,5 +71,3 @@ contourf(x)
 
 
 ![](figures/pyplot_formats_5_1.png)
-
-

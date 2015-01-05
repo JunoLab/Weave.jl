@@ -98,5 +98,3 @@
 .. image:: figures/gadfly_formats_test_5_2.png
    :width: 15cm
 
-
-
