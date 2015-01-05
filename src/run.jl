@@ -1,5 +1,5 @@
 
-function eval_chunk(chunk::CodeChunk)
+function eval_chunk(chunk::CodeChunk, report::Report)
     info("Weaving chunk $(chunk.number) from line $(chunk.start_line)")
     defaults = copy(rcParams[:chunk_defaults])
     options = copy(chunk.options)
@@ -30,20 +30,20 @@ function eval_chunk(chunk::CodeChunk)
     end
 
     if chunk.options[:term]
-        chunk.output = run_term(chunk.content)
+        chunk.output = run_term(chunk.content, report::Report)
         chunk.options[:term_state] = report.term_state
     else
-        chunk.output = run_block(chunk.content)
+        chunk.output = run_block(chunk.content, report::Report)
     end
 
     if rcParams[:plotlib] == "PyPlot"
-        chunk.options[:fig] && (chunk.figures = savefigs(chunk))
+        chunk.options[:fig] && (chunk.figures = savefigs(chunk, report::Report))
     else
         chunk.options[:fig] && (chunk.figures = copy(report.figures))
     end
     chunk
 end
 
-function eval_chunk(chunk::DocChunk)
+function eval_chunk(chunk::DocChunk, report::Report)
     chunk
 end

@@ -25,7 +25,7 @@ type Report <: Display
 
 end
 
-const report = Report()
+#const report = Report()
 
 const supported_mime_types =
     [MIME"image/png",
@@ -78,7 +78,7 @@ function tangle(source ; out_path=:doc, informat="noweb")
 
     outname = "$(cwd)/$(basename).jl"
     open(outname, "w") do io
-        for chunk in read(source, informat)
+        for chunk in read_doc(source, informat)
             if typeof(chunk) == CodeChunk
                 write(io, chunk.content*"\n")
             end
@@ -109,6 +109,7 @@ weave(source ; doctype = "pandoc", plotlib="Gadfly",
 """ ->
 function weave(source ; doctype = "pandoc", plotlib="Gadfly", informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)
 
+    report = Report()
     cwd, fname = splitdir(abspath(source))
     basename = splitext(fname)[1]
     formatdict = formats[doctype].formatdict
@@ -153,8 +154,8 @@ function weave(source ; doctype = "pandoc", plotlib="Gadfly", informat="noweb", 
     end
 
     pushdisplay(report)
-    parsed = read(source, informat)
-    executed = run(parsed)
+    parsed = read_doc(source, informat)
+    executed = run(parsed, report)
     popdisplay(report)
     formatted = format(executed, doctype)
     outname = "$(report.cwd)/$(report.basename).$(formatdict[:extension])"
@@ -170,7 +171,7 @@ end
 
 
 
-function run_block(code_str)
+function run_block(code_str, report::Report)
     oldSTDOUT = STDOUT
     result = ""
 
@@ -200,7 +201,7 @@ function run_block(code_str)
     return string("\n", result)
 end
 
-function run_term(code_str)
+function run_term(code_str, report::Report)
     prompt = "\njulia> "
     codestart = "\n\n"*report.formatdict[:codestart]
 
@@ -227,27 +228,27 @@ function run_term(code_str)
 end
 
 
-function run(parsed)
+function run(parsed, report::Report)
     #Clear sandbox for each document
     #Raises a warning, couldn't find a "cleaner"
     #way to do it.
     eval(parse("module ReportSandBox\nend"))
     executed = Any[]
     for chunk in copy(parsed)
-        result_chunk = eval_chunk(chunk)
+        result_chunk = eval_chunk(chunk, report::Report)
         push!(executed, result_chunk)
     end
     executed
 end
 
-function savefigs(chunk)
+function savefigs(chunk, report::Report)
     l_plotlib = lowercase(rcParams[:plotlib])
     if l_plotlib == "pyplot"
-      return savefigs_pyplot(chunk)
+      return savefigs_pyplot(chunk, report::Report)
     end
 end
 
-function savefigs_pyplot(chunk)
+function savefigs_pyplot(chunk, report::Report)
     fignames = String[]
     ext = report.formatdict[:fig_ext]
     figpath = joinpath(report.cwd, chunk.options[:fig_path])

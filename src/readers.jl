@@ -14,15 +14,15 @@ const input_formats = @compat Dict{String, Any}(
 
 
 @doc "Read and parse input document" ->
-function Base.read(document, format="noweb")
+function read_doc(document::String, format="noweb"::String)
     document = bytestring(open(document) do io
         mmap_array(Uint8,(filesize(document),),io)
     end)
-    return parse(document, format)
+    return parse_doc(document, format)
 end
 
 @doc "Parse document from string" ->
-function Base.parse(document, format="noweb")
+function parse_doc(document::String, format="noweb"::String)
   #doctext = readall(open(document))
   lines = split(document, "\n")
 
