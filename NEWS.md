@@ -3,6 +3,11 @@
 
 ### Changes in master
 
+* New chunk option: `line_width`.
+* Bug fix in wrapping output lines.
+* Internal changes
+    - Chunks are now represented with their own type. Allows multiple dispatch
+      and easier implementation of new chunks.
 
 ### 0.0.4
 

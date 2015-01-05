@@ -57,7 +57,8 @@ Weave currently supports the following chunk options with the following defaults
 * `eval = true`. Evaluate the code chunk. If false the chunk won’t be executed.
 * `term=false`. If true the output emulates a REPL session. Otherwise only stdout and figures will be included in output.
 * `label`. Chunk label, will be used for figure labels in Latex as fig:label
-* `wrap=true`. Wrap long lines from output.
+* `wrap = true`. Wrap long lines from output.
+* `line_width = 75`. Line width for wrapped lines.
 
 **Options for figures**
 

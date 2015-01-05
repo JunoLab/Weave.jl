@@ -35,3 +35,17 @@ println(a)
 <<results="as_is">>=
 println("No markup for results.")
 @
+
+Test wrapping:
+
+<<>>=
+println(linspace(0,1000))
+@
+
+<<wrap=false>>=
+println(linspace(0,1000))
+@
+
+<<line_width=60>>=
+println(linspace(0,1000))
+@

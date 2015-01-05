@@ -1,4 +1,3 @@
-using TextWrap
 
 #Format the executed document
 function format(executed, doctype)
@@ -72,8 +71,8 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
                 result *= "$(chunk.output)\n"
             elseif chunk.options[:results] == "markup"
                 if chunk.options[:wrap]
-                    chunk.output = "\n" * wrap(chunk.output,
-                            replace_whitespace=false)
+                    chunk.output = "\n" * wraplines(chunk.output,
+                                            chunk.options[:line_width])
                 end
 
                 if haskey(formatdict, :indent)
@@ -108,6 +107,31 @@ end
 function indent(text, nindent)
     return join(map(x->
                     string(repeat(" ", nindent), x), split(text, "\n")), "\n")
+end
+
+
+function wraplines(text, line_width=75)
+    result = String[]
+    lines = split(text, "\n")
+    for line in lines
+        if length(line) > line_width
+            push!(result, wrapline(line, line_width))
+        else
+            push!(result, line)
+        end
+    end
+
+    #return result
+    return strip(join(result, "\n"))
+end
+
+function wrapline(text, line_width=75)
+result = ""
+    while length(text) > line_width
+        result*= text[1:line_width] * "\n"
+        text = text[(line_width+1):end]
+    end
+result *= text
 end
 
 

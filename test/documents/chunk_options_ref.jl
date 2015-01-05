@@ -18,3 +18,9 @@ a = "Don't print me"
 println(a)
 
 println("No markup for results.")
+
+println(linspace(0,1000))
+
+println(linspace(0,1000))
+
+println(linspace(0,1000))

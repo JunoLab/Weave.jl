@@ -17,6 +17,7 @@ const rcParams =
                                 :term=> false,
                                 :name=> nothing,
                                 :wrap=> true,
+                                :line_width => 75,
                                 :engine=> "julia",
                                 #:option_string=> "",
                                 #Defined in formats
