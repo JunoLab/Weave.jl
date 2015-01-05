@@ -15,6 +15,7 @@ before_install:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
 script:
   - julia -e 'Pkg.init(); Pkg.clone(pwd()); Pkg.resolve();'
+  - xvfb-run julia --code-coverage=all -e 'include("winston_formats.jl")'
   - xvfb-run julia -e 'Pkg.test("Weave", coverage=true)'
 after_success:
   - julia -e 'cd(Pkg.dir("Weave")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
