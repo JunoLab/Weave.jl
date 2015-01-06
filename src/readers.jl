@@ -14,14 +14,15 @@ const input_formats = @compat Dict{String, Any}(
 
 
 @doc "Read and parse input document" ->
-function read_doc(document::String, format="noweb"::String)
-    document = bytestring(open(document) do io
-        mmap_array(Uint8,(filesize(document),),io)
+function read_doc(source::String, format="noweb"::String)
+    document = bytestring(open(source) do io
+        mmap_array(Uint8,(filesize(source),),io)
     end)
-    return parse_doc(document, format)
+    parsed = parse_doc(document, format)
+    doc = WeaveDoc(source, parsed)
 end
 
-@doc "Parse document from string" ->
+@doc "Parse chunks from string" ->
 function parse_doc(document::String, format="noweb"::String)
   #doctext = readall(open(document))
   lines = split(document, "\n")

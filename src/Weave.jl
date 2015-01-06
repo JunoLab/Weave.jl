@@ -6,21 +6,18 @@ using Docile
 
 #Contains report global properties
 type Report <: Display
-  source::String
-  documentationmode::Bool
   cwd::String
   basename::String
-  formatdict
+  formatdict::Dict{Symbol,Any}
   pending_code::String
   cur_result::String
   fignum::Int
-  figures::Array
+  figures::Array{String}
   term_state::Symbol
   cur_chunk
 
-
-  function Report()
-        new("", false, "", "",  Any[], "", "", 1, Any[], :text, @compat Dict{Symbol, Any}() )
+  function Report(cwd, basename, formatdict)
+        new(cwd, basename, formatdict, "", "", 1, String[], :text, nothing)
   end
 
 end
@@ -63,22 +60,12 @@ tangle(source ; out_path=:doc, informat="noweb")
 `"somepath"`: Path as a string e.g `"/home/mpastell/weaveout"`
 """->
 function tangle(source ; out_path=:doc, informat="noweb")
-    cwd, fname = splitdir(abspath(source))
-    basename = splitext(fname)[1]
+    doc = read_doc(source, informat)
+    cwd = get_cwd(doc, out_path)
 
-    #Set the output directory
-    if out_path == :doc
-        cwd = cwd
-    elseif out_path == :pwd
-        cwd = pwd()
-    else
-        cwd = out_path
-    end
-
-
-    outname = "$(cwd)/$(basename).jl"
+    outname = "$(cwd)/$(doc.basename).jl"
     open(outname, "w") do io
-        for chunk in read_doc(source, informat)
+        for chunk in doc.chunks
             if typeof(chunk) == CodeChunk
                 write(io, chunk.content*"\n")
             end
@@ -107,139 +94,23 @@ weave(source ; doctype = "pandoc", plotlib="Gadfly",
 
 **Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """ ->
-function weave(source ; doctype = "pandoc", plotlib="Gadfly", informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)
+function weave(source ; doctype = "pandoc", plotlib="Gadfly",
+    informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)
 
-    report = Report()
-    cwd, fname = splitdir(abspath(source))
-    basename = splitext(fname)[1]
-    formatdict = formats[doctype].formatdict
-    if fig_ext == nothing
-        rcParams[:chunk_defaults][:fig_ext] = formatdict[:fig_ext]
-    else
-        rcParams[:chunk_defaults][:fig_ext] = fig_ext
-    end
+    doc = read_doc(source, informat) #Reader toimii, muuten kesken...
+    doc = run(doc, doctype = doctype, plotlib=plotlib,
+            informat = informat, out_path=out_path, fig_path = fig_path, fig_ext = fig_ext)
+    formatted = format(doc)
 
-    #Set the output directory
-    if out_path == :doc
-        report.cwd = cwd
-    elseif out_path == :pwd
-        report.cwd = pwd()
-    else
-        report.cwd = out_path
-    end
-
-
-
-    report.source = source
-    report.basename = basename
-    rcParams[:chunk_defaults][:fig_path] = fig_path
-    report.formatdict = formatdict
-
-
-    if plotlib == nothing
-        rcParams[:chunk_defaults][:fig] = false
-    else
-        l_plotlib = lowercase(plotlib)
-        rcParams[:chunk_defaults][:fig] = true
-        if l_plotlib == "winston"
-            eval(parse("""include(Pkg.dir("Weave","src","winston.jl"))"""))
-            rcParams[:plotlib] = "Winston"
-        elseif l_plotlib == "pyplot"
-            eval(Expr(:using, :PyPlot))
-            rcParams[:plotlib] = "PyPlot"
-        elseif l_plotlib == "gadfly"
-            eval(parse("""include(Pkg.dir("Weave","src","gadfly.jl"))"""))
-            rcParams[:plotlib] = "Gadfly"
-        end
-    end
-
-    pushdisplay(report)
-    parsed = read_doc(source, informat)
-    executed = run(parsed, report)
-    popdisplay(report)
-    formatted = format(executed, doctype)
-    outname = "$(report.cwd)/$(report.basename).$(formatdict[:extension])"
+    outname = "$(doc.cwd)/$(doc.basename).$(doc.format.formatdict[:extension])"
     open(outname, "w") do io
         write(io, join(formatted, "\n"))
     end
 
-    info("Report weaved to $(report.basename).$(formatdict[:extension])")
-
+    info("Report weaved to $(doc.basename).$(doc.format.formatdict[:extension])")
 end
 
 
-
-
-
-function run_block(code_str, report::Report)
-    oldSTDOUT = STDOUT
-    result = ""
-
-    rw, wr = redirect_stdout()
-    #If there is nothing to read code will hang
-    println()
-
-    try
-      n = length(code_str)
-      pos = 1 #The first character is extra line end
-      while pos < n
-          oldpos = pos
-          code, pos = parse(code_str, pos)
-          s = eval(ReportSandBox, code)
-          if rcParams[:plotlib] == "Gadfly"
-              s != nothing && display(s)
-          end
-      end
-    finally
-
-      redirect_stdout(oldSTDOUT)
-      close(wr)
-      result = readall(rw)
-      close(rw)
-    end
-
-    return string("\n", result)
-end
-
-function run_term(code_str, report::Report)
-    prompt = "\njulia> "
-    codestart = "\n\n"*report.formatdict[:codestart]
-
-    if haskey(report.formatdict, :indent)
-        prompt = indent(prompt, report.formatdict[:indent])
-    end
-
-    #Emulate terminal
-    n = length(code_str)
-    pos = 2 #The first character is extra line end
-    while pos < n
-        oldpos = pos
-        code, pos = parse(code_str, pos)
-
-        report.term_state == :fig && (report.cur_result*= codestart)
-	    prompts = string(prompt, rstrip(code_str[oldpos:(pos-1)]), "\n")
-	    report.cur_result *= prompts
-        report.term_state = :text
-        s = eval(ReportSandBox, code)
-        s != nothing && display(s)
-    end
-
-    return string(report.cur_result)
-end
-
-
-function run(parsed, report::Report)
-    #Clear sandbox for each document
-    #Raises a warning, couldn't find a "cleaner"
-    #way to do it.
-    eval(parse("module ReportSandBox\nend"))
-    executed = Any[]
-    for chunk in copy(parsed)
-        result_chunk = eval_chunk(chunk, report::Report)
-        push!(executed, result_chunk)
-    end
-    executed
-end
 
 function savefigs(chunk, report::Report)
     l_plotlib = lowercase(rcParams[:plotlib])

@@ -1,4 +1,19 @@
 
+type WeaveDoc
+    source::String
+    basename::String
+    path::String
+    chunks::Array
+    cwd::String
+    format
+    function WeaveDoc(source, chunks)
+        path, fname = splitdir(abspath(source))
+        basename = splitext(fname)[1]
+        new(source, basename, path, chunks, "", nothing)
+    end
+end
+
+
 type CodeChunk
     content::String
     number::Int

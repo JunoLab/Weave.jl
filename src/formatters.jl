@@ -1,8 +1,7 @@
 
-#Format the executed document
-function format(executed, doctype)
+function format(doc::WeaveDoc)
     formatted = String[]
-    docformat = formats[doctype]
+    docformat = doc.format
     #@show docformat
 
     #Complete format dictionaries with defaults
@@ -15,7 +14,7 @@ function format(executed, doctype)
     get!(formatdict, :fig_env, nothing)
 
 
-    for chunk in copy(executed)
+    for chunk in copy(doc.chunks)
         result = format_chunk(chunk, formatdict, docformat)
         push!(formatted, result)
     end
