@@ -61,6 +61,7 @@ function tangle(source ; out_path=:doc, informat="noweb")
     doc = read_doc(source, informat)
     cwd = get_cwd(doc, out_path)
 
+
     outname = "$(cwd)/$(doc.basename).jl"
     open(outname, "w") do io
         for chunk in doc.chunks
@@ -70,7 +71,7 @@ function tangle(source ; out_path=:doc, informat="noweb")
         end
     end
 
-    info("Writing to file $(basename).jl")
+    info("Writing to file $(doc.basename).jl")
 end
 
 @doc md"""
@@ -93,11 +94,13 @@ weave(source ; doctype = "pandoc", plotlib="Gadfly",
 **Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """ ->
 function weave(source ; doctype = "pandoc", plotlib="Gadfly",
-    informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)
+        informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing,
+        cache_path = "cache")
 
     doc = read_doc(source, informat) #Reader toimii, muuten kesken...
     doc = run(doc, doctype = doctype, plotlib=plotlib,
-            informat = informat, out_path=out_path, fig_path = fig_path, fig_ext = fig_ext)
+            informat = informat, out_path=out_path,
+            fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path)    
     formatted = format(doc)
 
     outname = "$(doc.cwd)/$(doc.basename).$(doc.format.formatdict[:extension])"

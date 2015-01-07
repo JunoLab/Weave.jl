@@ -1,12 +1,18 @@
-function run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly", informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)
+
+
+
+function run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly", informat="noweb",
+        out_path=:doc, fig_path = "figures", fig_ext = nothing, cache_path = "cache")
     doc.cwd = get_cwd(doc, out_path)
     doc.format = formats[doctype]
     set_rc_params(doc.format.formatdict, fig_path, fig_ext)
 
-    #Clear sandbox for each document
-    #Raises a warning, couldn't find a "cleaner"
-    #way to do it.
-    eval(parse("module ReportSandBox\nend"))
+
+    #New sandbox for each document
+    sandbox = "ReportSandBox$(rcParams[:doc_number])"
+    eval(parse("module $sandbox\nend"))
+    SandBox = eval(parse(sandbox))
+    rcParams[:doc_number] += 1
 
     init_plotting(plotlib)
     report = Report(doc.cwd, doc.basename, doc.format.formatdict)
@@ -14,16 +20,18 @@ function run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly", informat="nowe
 
     executed = Any[]
     for chunk in copy(doc.chunks)
-        result_chunk = eval_chunk(chunk, report::Report)
+        result_chunk = eval_chunk(chunk, report, SandBox)
         push!(executed, result_chunk)
     end
     popdisplay(report)
 
+    #Clear variables from used sandbox
+    clear_sandbox(SandBox)
     doc.chunks = executed
     return doc
 end
 
-function run_block(code_str, report::Report)
+function run_block(code_str, report::Report, SandBox::Module)
     oldSTDOUT = STDOUT
     result = ""
 
@@ -37,7 +45,7 @@ function run_block(code_str, report::Report)
         while pos < n
             oldpos = pos
             code, pos = parse(code_str, pos)
-            s = eval(ReportSandBox, code)
+            s = eval(SandBox, code)
             if rcParams[:plotlib] == "Gadfly"
                 s != nothing && display(s)
             end
@@ -53,7 +61,7 @@ function run_block(code_str, report::Report)
     return string("\n", result)
 end
 
-function run_term(code_str, report::Report)
+function run_term(code_str, report::Report, SandBox::Module)
     prompt = "\njulia> "
     codestart = "\n\n"*report.formatdict[:codestart]
 
@@ -72,14 +80,14 @@ function run_term(code_str, report::Report)
         prompts = string(prompt, rstrip(code_str[oldpos:(pos-1)]), "\n")
         report.cur_result *= prompts
         report.term_state = :text
-        s = eval(ReportSandBox, code)
+        s = eval(SandBox, code)
         s != nothing && display(s)
     end
 
     return string(report.cur_result)
 end
 
-function eval_chunk(chunk::CodeChunk, report::Report)
+function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     info("Weaving chunk $(chunk.number) from line $(chunk.start_line)")
     defaults = copy(rcParams[:chunk_defaults])
     options = copy(chunk.options)
@@ -110,10 +118,10 @@ function eval_chunk(chunk::CodeChunk, report::Report)
     end
 
     if chunk.options[:term]
-        chunk.output = run_term(chunk.content, report::Report)
+        chunk.output = run_term(chunk.content, report, SandBox)
         chunk.options[:term_state] = report.term_state
     else
-        chunk.output = run_block(chunk.content, report::Report)
+        chunk.output = run_block(chunk.content, report, SandBox)
     end
 
     if rcParams[:plotlib] == "PyPlot"
@@ -124,9 +132,19 @@ function eval_chunk(chunk::CodeChunk, report::Report)
     chunk
 end
 
-function eval_chunk(chunk::DocChunk, report::Report)
+function eval_chunk(chunk::DocChunk, report::Report, SandBox)
     chunk
 end
+
+#Set all variables to nothing
+function clear_sandbox(SandBox::Module)
+    for name = names(SandBox, true)
+        if name != :eval && name != names(SandBox)[1]
+            eval(SandBox, parse(string(string(name), "=nothing")))
+        end
+    end
+end
+
 
 function get_figname(report::Report, chunk; fignum = nothing)
     figpath = joinpath(report.cwd, chunk.options[:fig_path])

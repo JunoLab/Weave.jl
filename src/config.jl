@@ -1,6 +1,8 @@
+
 const rcParams =
     @compat Dict{Symbol,Any}(:plotlib => "PyPlot",
                             :storeresults => false,
+                            :doc_number => 0,
                             :chunk_defaults =>
                                 Dict{Symbol,Any}(
                                 :echo=> true,
