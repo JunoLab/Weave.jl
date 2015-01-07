@@ -13,7 +13,7 @@ include("gadfly_formats.jl")
 
 
 #These segfault on Travis, but run without problems on my Fedora 21
-# You should run both files wjem testing
+# You should run both files when testing
 
 #include("winston_formats.jl")
 #include("pyplot_formats.jl") cause segfaults, but OK if run by itself
