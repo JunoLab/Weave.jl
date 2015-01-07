@@ -2,8 +2,13 @@
 
 
 function run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly", informat="noweb",
-        out_path=:doc, fig_path = "figures", fig_ext = nothing, cache_path = "cache")
+        out_path=:doc, fig_path = "figures", fig_ext = nothing,
+        cache_path = "cache", cache = :off)
+    #cache :all, :user, :off
+
+
     doc.cwd = get_cwd(doc, out_path)
+    doc.doctype = doctype
     doc.format = formats[doctype]
     set_rc_params(doc.format.formatdict, fig_path, fig_ext)
 
@@ -18,12 +23,31 @@ function run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly", informat="nowe
     report = Report(doc.cwd, doc.basename, doc.format.formatdict)
     pushdisplay(report)
 
+    if cache != :off
+        cached = read_cache(doc, cache_path)
+        cached == nothing && info("No cached results found, running code")
+    else
+        cached = nothing
+    end
+
     executed = Any[]
-    for chunk in copy(doc.chunks)
-        result_chunk = eval_chunk(chunk, report, SandBox)
+    n = length(doc.chunks)
+
+    for i = 1:n
+        chunk = doc.chunks[i]
+        if cached != nothing && (cache == :all || (cache ==:user && chunk.options.cache))
+            result_chunk = cached.chunks[i]
+        else
+            result_chunk = eval_chunk(chunk, report, SandBox)
+        end
         push!(executed, result_chunk)
     end
+
     popdisplay(report)
+
+    if cache != :off
+        write_cache(doc, cache_path)
+    end
 
     #Clear variables from used sandbox
     clear_sandbox(SandBox)
@@ -135,6 +159,8 @@ end
 function eval_chunk(chunk::DocChunk, report::Report, SandBox)
     chunk
 end
+
+
 
 #Set all variables to nothing
 function clear_sandbox(SandBox::Module)

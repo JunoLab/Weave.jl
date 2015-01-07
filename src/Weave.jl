@@ -100,7 +100,7 @@ function weave(source ; doctype = "pandoc", plotlib="Gadfly",
     doc = read_doc(source, informat) #Reader toimii, muuten kesken...
     doc = run(doc, doctype = doctype, plotlib=plotlib,
             informat = informat, out_path=out_path,
-            fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path)    
+            fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path)
     formatted = format(doc)
 
     outname = "$(doc.cwd)/$(doc.basename).$(doc.format.formatdict[:extension])"
@@ -131,9 +131,10 @@ end
 
 export weave, list_out_formats, tangle
 
-include("chunks.jl")
-include("run.jl")
 include("config.jl")
+include("chunks.jl")
 include("readers.jl")
+include("run.jl")
+include("cache.jl")
 include("formatters.jl")
 end
