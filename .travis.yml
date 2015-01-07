@@ -1,21 +1,23 @@
-language: cpp
-compiler:
-  - clang
+#language: cpp
+#compiler:
+#  - clang
+language: julia
+julia:
+  - release
+  - nightly
 notifications:
   email: false
-env:
-  matrix:
-#    - JULIAVERSION="juliareleases"
-    - JULIAVERSION="julianightlies"
-before_install:
-  - sudo add-apt-repository ppa:staticfloat/julia-deps -y
-  - sudo add-apt-repository ppa:staticfloat/${JULIAVERSION} -y
-  - sudo apt-get update -qq -y
-  - sudo apt-get install libpcre3-dev julia python-matplotlib -y
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+#before_install:
+#  - sudo add-apt-repository ppa:staticfloat/julia-deps -y
+#  - sudo add-apt-repository ppa:staticfloat/${JULIAVERSION} -y
+#  - sudo apt-get update -qq -y
+#  - sudo apt-get install libpcre3-dev julia python-matplotlib -y
+#
 script:
-  - julia -e 'Pkg.init(); Pkg.clone(pwd()); Pkg.resolve(); Pkg.add("Winston")'
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  #- julia -e 'Pkg.init(); Pkg.clone(pwd()); Pkg.resolve(); Pkg.add("Winston")'
   #- xvfb-run julia --code-coverage=all -e 'cd(Pkg.dir("Weave", "test")); include("winston_formats.jl")'
+  - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.build("Weave")'
   - xvfb-run julia -e 'Pkg.test("Weave", coverage=true)'
 after_success:
   - julia -e 'cd(Pkg.dir("Weave")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
