@@ -4,7 +4,7 @@
 language: julia
 julia:
   - release
-  - nightly
+# - nightly
 notifications:
   email: false
 #before_install:
