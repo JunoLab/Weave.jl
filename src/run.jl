@@ -117,7 +117,7 @@ function eval_chunk(chunk::CodeChunk, report::Report)
     end
 
     if rcParams[:plotlib] == "PyPlot"
-        chunk.options[:fig] && (chunk.figures = savefigs(chunk, report::Report))
+        chunk.options[:fig] && (chunk.figures = savefigs_pyplot(chunk, report::Report))
     else
         chunk.options[:fig] && (chunk.figures = copy(report.figures))
     end
@@ -127,6 +127,20 @@ end
 function eval_chunk(chunk::DocChunk, report::Report)
     chunk
 end
+
+function get_figname(report::Report, chunk; fignum = nothing)
+    figpath = joinpath(report.cwd, chunk.options[:fig_path])
+    isdir(figpath) || mkdir(figpath)
+    ext = chunk.options[:fig_ext]
+    fignum == nothing && (fignum = report.fignum)
+
+    chunkid = (chunk.options[:name] == nothing) ? chunk.number : chunk.options[:name]
+    full_name = joinpath(report.cwd, chunk.options[:fig_path],
+    "$(report.basename)_$(chunkid)_$(fignum)$ext")
+    rel_name = "$(chunk.options[:fig_path])/$(report.basename)_$(chunkid)_$(fignum)$ext" #Relative path is used in output
+    return full_name, rel_name
+end
+
 
 function init_plotting(plotlib)
     if plotlib == nothing
@@ -139,7 +153,7 @@ function init_plotting(plotlib)
             eval(parse("""include(Pkg.dir("Weave","src","winston.jl"))"""))
             rcParams[:plotlib] = "Winston"
         elseif l_plotlib == "pyplot"
-            eval(Expr(:using, :PyPlot))
+            eval(parse("""include(Pkg.dir("Weave","src","pyplot.jl"))"""))
             rcParams[:plotlib] = "PyPlot"
         elseif l_plotlib == "gadfly"
             eval(parse("""include(Pkg.dir("Weave","src","gadfly.jl"))"""))

@@ -44,8 +44,6 @@ function list_out_formats()
   end
 end
 
-#module ReportSandBox
-#end
 
 @doc md"""
 Tangle source code from input document to .jl file.
@@ -111,32 +109,6 @@ function weave(source ; doctype = "pandoc", plotlib="Gadfly",
 end
 
 
-
-function savefigs(chunk, report::Report)
-    l_plotlib = lowercase(rcParams[:plotlib])
-    if l_plotlib == "pyplot"
-      return savefigs_pyplot(chunk, report::Report)
-    end
-end
-
-function savefigs_pyplot(chunk, report::Report)
-    fignames = String[]
-    ext = report.formatdict[:fig_ext]
-    figpath = joinpath(report.cwd, chunk.options[:fig_path])
-    isdir(figpath) || mkdir(figpath)
-    chunkid = (chunk.options[:name] == nothing) ? chunk.number : chunk.options[:name]
-    #Iterate over all open figures, save them and store names
-    for fig = plt.get_fignums()
-        full_name, rel_name = get_figname(report, chunk, fignum=fig)
-        savefig(full_name, dpi=chunk.options[:dpi])
-        push!(fignames, rel_name)
-        plt.draw()
-        plt.close()
-    end
-    return fignames
-end
-
-
 function Base.display(report::Report, m::MIME"text/plain", data)
   if report.term_state == :fig #Catch Winston plot command output
     report.cur_result *= "\n" * report.formatdict[:codestart] * "\n"
@@ -152,18 +124,7 @@ function Base.display(report::Report, m::MIME"text/plain", data)
   end
 end
 
-function get_figname(report::Report, chunk; fignum = nothing)
-    figpath = joinpath(report.cwd, chunk.options[:fig_path])
-    isdir(figpath) || mkdir(figpath)
-    ext = chunk.options[:fig_ext]
-    fignum == nothing && (fignum = report.fignum)
 
-    chunkid = (chunk.options[:name] == nothing) ? chunk.number : chunk.options[:name]
-    full_name = joinpath(report.cwd, chunk.options[:fig_path],
-                                "$(report.basename)_$(chunkid)_$(fignum)$ext")
-    rel_name = "$(chunk.options[:fig_path])/$(report.basename)_$(chunkid)_$(fignum)$ext" #Relative path is used in output
-    return full_name, rel_name
-end
 
 export weave, list_out_formats, tangle
 
