@@ -90,17 +90,20 @@ weave(source ; doctype = "pandoc", plotlib="Gadfly",
     `"somepath"`: Path as a string e.g `"/home/mpastell/weaveout"`
 * `fig_path`: where figures will be generated, relative to out_path
 * `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
+* `cache_path`: where of cached output will be saved.
+* `cache`: controls caching of code: `:off` = no caching, `:all` = cache everything,
+  `:user` = cache based on chunk options, `:refresh`, run all code chunks and save new cache.
 
 **Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """ ->
 function weave(source ; doctype = "pandoc", plotlib="Gadfly",
         informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing,
-        cache_path = "cache")
+        cache_path = "cache", cache=:off)
 
     doc = read_doc(source, informat) #Reader toimii, muuten kesken...
     doc = run(doc, doctype = doctype, plotlib=plotlib,
             informat = informat, out_path=out_path,
-            fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path)    
+            fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache)
     formatted = format(doc)
 
     outname = "$(doc.cwd)/$(doc.basename).$(doc.format.formatdict[:extension])"
@@ -131,9 +134,10 @@ end
 
 export weave, list_out_formats, tangle
 
-include("chunks.jl")
-include("run.jl")
 include("config.jl")
+include("chunks.jl")
 include("readers.jl")
+include("run.jl")
+include("cache.jl")
 include("formatters.jl")
 end

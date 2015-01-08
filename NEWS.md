@@ -3,6 +3,7 @@
 
 ### Changes in master
 
+* Simple caching of code chunks
 * Each document is executed in separate sandbox module instead of redefining the          same one. Fixes warnings and occasional segfaults.
 * New chunk option: `line_width`.
 * Bug fix in wrapping output lines.

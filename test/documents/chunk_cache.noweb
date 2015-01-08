@@ -1,0 +1,35 @@
+
+<<term=true>>=
+y= [2, 5, 12]
+@
+
+
+<<term=true; cache=true>>=
+y= [2, 5, 12]
+@
+
+
+<<>>=
+x = [12, 10]
+println(y)
+println(x)
+@
+
+<<cache=true>>=
+x = [12, 10]
+println(y)
+println(x)
+@
+
+<<>>=
+y = 1:5
+println(y)
+@
+
+
+<<cache=true>>=
+y = 1:5
+println(y)
+@
+
+Some text in the end

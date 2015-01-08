@@ -6,10 +6,18 @@ type WeaveDoc
     chunks::Array
     cwd::String
     format
+    doctype::String
     function WeaveDoc(source, chunks)
         path, fname = splitdir(abspath(source))
         basename = splitext(fname)[1]
-        new(source, basename, path, chunks, "", nothing)
+        new(source, basename, path, chunks, "", nothing, "")
+    end
+
+    function WeaveDoc(source, chunks, cwd, doctype)
+        path, fname = splitdir(abspath(source))
+        basename = splitext(fname)[1]
+        format = formats[doctype]
+        new(source, basename, path, chunks, cwd, format, doctype)
     end
 end
 

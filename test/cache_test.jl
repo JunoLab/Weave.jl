@@ -1,0 +1,37 @@
+using Weave
+using Base.Test
+
+#Test if running document with and without cache works
+isdir("documents/cache") && rm("documents/cache", recursive = true)
+weave("documents/chunk_options.noweb", plotlib=nothing, cache=:all)
+ctime1 = ctime("documents/chunk_options.md")
+result = readall(open("documents/chunk_options.md"))
+weave("documents/chunk_options.noweb", plotlib=nothing, cache=:all)
+ctime2 = ctime("documents/chunk_options.md")
+cached_result = readall(open("documents/chunk_options.md"))
+@test result == cached_result
+@test ctime1 != ctime2
+
+# cache = :user
+isdir("documents/cache") && rm("documents/cache", recursive = true)
+out = "documents/chunk_cache.md"
+Weave.weave("documents/chunk_cache.noweb", plotlib=nothing, cache=:user);
+result = readall(open(out))
+ctime1 = ctime(out)
+Weave.weave("documents/chunk_cache.noweb", plotlib=nothing, cache=:user);
+cached_result = readall(open(out))
+ctime2 = ctime(out)
+@test result == cached_result
+@test ctime1 != ctime2
+
+using Gadfly
+isdir("documents/cache") && rm("documents/cache", recursive = true)
+#Caching with Gadfly
+weave("documents/gadfly_formats_test.txt", doctype="tex", plotlib="gadfly", cache=:all)
+result = readall(open("documents/gadfly_formats_test.tex"))
+ctime1 = ctime("documents/gadfly_formats_test.tex")
+weave("documents/gadfly_formats_test.txt", doctype="tex", plotlib="gadfly", cache=:all)
+ctime2 = ctime("documents/gadfly_formats_test.tex")
+cached_result = readall(open("documents/gadfly_formats_test.tex"))
+@test result == cached_result
+@test ctime1 != ctime2

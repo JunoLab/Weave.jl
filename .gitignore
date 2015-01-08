@@ -8,6 +8,7 @@ examples/*.html
 examples/*.rst
 examples/*.tex
 test/documents/figures
+test/documents/cache
 test/documents/output/figures
 test/documents/output/gadfly_formats_test.txt
 test/documents/*.tex

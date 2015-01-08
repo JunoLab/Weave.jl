@@ -9,7 +9,10 @@ using Base.Test
 info("Test: Chunk options")
 include("chunk_options.jl")
 
-info("Testing: Weaving with Winston")
+info("Test: Caching")
+include("cache_test.jl")
+
+info("Test: Weaving with Winston")
 include("winston_formats.jl")
 
 info("Test: Weaving with Gadfly")
