@@ -253,7 +253,11 @@ function formatfigures(chunk, docformat::Tex)
 
 
     for fig = fignames
-        figstring *= "\\includegraphics[width=$width]{$fig}\n"
+        if splitext(fig)[2] == ".tex" #Tikz figures
+            figstring *= "\\resizebox{$width}{!}{\\input{$fig}}\n"
+        else
+            figstring *= "\\includegraphics[width=$width]{$fig}\n"
+        end
     end
 
     # Figure environment

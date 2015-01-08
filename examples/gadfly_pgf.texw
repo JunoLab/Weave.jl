@@ -1,0 +1,24 @@
+\documentclass{article}
+\usepackage{pgfplots}
+\usepackage{minted}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage[active,tightpage]{preview}
+\begin{document}
+
+<<>>=
+using Gadfly
+Gadfly.default_theme.major_label_font = "Tex Gyre Pagella"
+Gadfly.default_theme.minor_label_font = "Tex Gyre Pagella"
+x = 1:10
+plot(x=x, y=x)
+@
+
+<<fig_cap="Nice Gadfly figure">>=
+plot([sin, cos], 0, 25)
+@
+
+
+
+
+\end{document}

@@ -8,11 +8,20 @@ result = readall(open("documents/gadfly_formats_test.tex"))
 ref = readall(open("documents/gadfly_formats_test_ref.tex"))
 @test result == ref
 
+weave("documents/gadfly_formats_test.txt", doctype="tex", fig_ext=".tex", plotlib="gadfly")
+result = readall(open("documents/gadfly_formats_test.tex"))
+ref = readall(open("documents/gadfly_formats_test_tikz_ref.tex"))
+@test result == ref
+
+weave("documents/gadfly_formats_test.txt", doctype="tex", fig_ext=".ps", plotlib="gadfly")
+result = readall(open("documents/gadfly_formats_test.tex"))
+ref = readall(open("documents/gadfly_formats_test_ps_ref.tex"))
+@test result == ref
+
 weave("documents/gadfly_formats_test.txt", doctype="pandoc", plotlib="gadfly")
 result = readall(open("documents/gadfly_formats_test.md"))
 ref = readall(open("documents/gadfly_formats_test_pandoc_ref.md"))
 @test result == ref
-
 
 weave("documents/gadfly_formats_test.txt", doctype="pandoc", plotlib="gadfly", fig_ext=".svg")
 result = readall(open("documents/gadfly_formats_test.md"))

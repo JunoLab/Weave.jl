@@ -40,15 +40,17 @@ function Base.display(report::Report, m::MIME"image/png", p::Plot)
         catch
             draw(PNG(full_name, w, h), p) #Compose < 0.3.1, Gadfly < 0.3.1
         end
-        elseif format == ".pdf"
-            draw(PDF(full_name, w, h), p)
-        elseif format == ".ps"
-            draw(PS(full_name, w, h), p)
-        elseif format == ".svg"
-            draw(SVG(full_name, w, h), p)
-        elseif format == ".js.svg"
-            draw(SVGJS(full_name, w, h), p)
-        else:
-            warn("Can't save figure. Unsupported format")
+    elseif format == ".pdf"
+        draw(PDF(full_name, w, h), p)
+    elseif format == ".ps"
+        draw(PS(full_name, w, h), p)
+    elseif format == ".svg"
+        draw(SVG(full_name, w, h), p)
+    elseif format == ".js.svg"
+        draw(SVGJS(full_name, w, h), p)
+    elseif format == ".tex"
+        draw(PGF(full_name, w, h, true ), p)
+    else:
+        warn("Can't save figure. Unsupported format")
     end
 end
