@@ -2,4 +2,4 @@ julia 0.3
 Compat
 ArgParse
 Docile
-HDF5
+JSON
