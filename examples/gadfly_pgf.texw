@@ -1,24 +1,83 @@
 \documentclass{article}
-\usepackage{pgfplots}
+
+%Minted for syntax hightlighting
 \usepackage{minted}
+
+%These are for plots
+\usepackage{pgfplots}
 \usepackage{fontspec}
+\setmainfont{TeX Gyre Pagella}
 \usepackage{amsmath}
 \usepackage[active,tightpage]{preview}
+
+%Hyperlinks
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, urlcolor=blue}
+%Some style changes
+\setlength{\parindent}{0in}
+\setlength{\parskip}{12pt}
+
+
+\author{Matti Pastell}
+\title{Using PGF plots with Weave and Gadfly}
+
 \begin{document}
+
+
+\maketitle
+
+\section{Intro}
+
+This is a minimal example on using PGF format with Gadfly plots in
+\href{https://github.com/mpastell/Weave.jl}{Weave.jl} document.
+The source is in github:
+
+\url{https://github.com/mpastell/Weave.jl/blob/master/examples/gadfly_pgf.texw}.
+
+You can run this example with first weaving it from Julia using:
+
+<<eval=false>>=
+using Weave
+weave(Pkg.dir("Weave", "examples", "gadfly_pgf.texw"),
+    doctype="texminted", out_path=:pwd, fig_ext=".tex")
+@
+
+which will save the generated output in your working directory and use minted
+package for syntax hightlighting. You'll need to use either xetex or luatex with
+\texttt{-shell-escape} flag to get pdf e.g.
+
+\begin{minted}{bash}
+$ lualatex -shell-escape gadfly_pgf.tex
+\end{minted}
+
+\section{Sample code}
+
+You can set the default font in Gadfly to match the font in the document.
+Use the \texttt{fontspec} latex package (see preamble) and define the
+defaults to Gadfly as follows.
+
+If you want you can hide the chunk using the \texttt{echo=false} chunk option.
 
 <<>>=
 using Gadfly
 Gadfly.default_theme.major_label_font = "Tex Gyre Pagella"
 Gadfly.default_theme.minor_label_font = "Tex Gyre Pagella"
+Gadfly.default_theme.major_label_color = color("black")
+Gadfly.default_theme.minor_label_color = color("black")
+@
+
+Let's create a simple plot:
+
+<<>>=
 x = 1:10
 plot(x=x, y=x)
 @
 
+And a figure with a caption
+
 <<fig_cap="Nice Gadfly figure">>=
 plot([sin, cos], 0, 25)
 @
-
-
 
 
 \end{document}

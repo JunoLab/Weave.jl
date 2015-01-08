@@ -42,7 +42,7 @@ function Base.run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly", informat=
     report = Report(doc.cwd, doc.basename, doc.format.formatdict)
     pushdisplay(report)
 
-    if cache != :off || cache != :refresh
+    if cache != :off && cache != :refresh
         cached = read_cache(doc, cache_path)
         cached == nothing && info("No cached results found, running code")
     else
