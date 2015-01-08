@@ -1,6 +1,5 @@
 import JSON
 
-
 function write_cache(doc::WeaveDoc, cache_path)
     cache_dir = "$(doc.cwd)/$cache_path"
     isdir(cache_dir) || mkpath(cache_dir)
@@ -33,6 +32,7 @@ function restore_chunk(chunk::CodeChunk, cached, idx)
     return chunk
 end
 
-function restore_chunk(chunk::DocChunk, cached, idx)
-    chunk
-end
+#Could be used to restore inline code in future
+#function restore_chunk(chunk::DocChunk, cached, idx)
+#    chunk
+#end

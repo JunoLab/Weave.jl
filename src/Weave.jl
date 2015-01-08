@@ -15,12 +15,12 @@ type Report <: Display
   figures::Array{String}
   term_state::Symbol
   cur_chunk
-
-  function Report(cwd, basename, formatdict)
-        new(cwd, basename, formatdict, "", "", 1, String[], :text, nothing)
-  end
-
 end
+
+function Report(cwd, basename, formatdict)
+    Report(cwd, basename, formatdict, "", "", 1, String[], :text, nothing)
+end
+
 
 #const report = Report()
 
