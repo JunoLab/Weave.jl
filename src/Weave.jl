@@ -130,7 +130,9 @@ function Base.display(report::Report, m::MIME"text/plain", data)
   end
 end
 
-
+function weave(doc::String, doctype::String)
+    weave(doc, doctype=doctype)
+end
 
 export weave, list_out_formats, tangle
 

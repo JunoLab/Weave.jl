@@ -71,18 +71,8 @@ function Base.run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly", informat=
 end
 
 function run_chunk(chunk::CodeChunk, report::Report, SandBox::Module, cached, cache, idx)
-    defaults = copy(rcParams[:chunk_defaults])
-    options = copy(chunk.options)
-    try
-        options = merge(rcParams[:chunk_defaults], options)
-    catch
-        options = rcParams[:chunk_defaults]
-        warn("Invalid format for chunk options line: $(chunk.start_line)")
-    end
-
+    options = merge(rcParams[:chunk_defaults], chunk.options)
     merge!(chunk.options, options)
-
-    delete!(chunk.options, :options)
 
     if cached != nothing && (cache == :all || (cache ==:user && chunk.options[:cache]))
         result_chunk = restore_chunk(chunk, cached, idx)
