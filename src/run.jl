@@ -184,7 +184,7 @@ end
 function clear_sandbox(SandBox::Module)
     for name = names(SandBox, true)
         if name != :eval && name != names(SandBox)[1]
-            eval(SandBox, parse(string(string(name), "=nothing")))
+            try eval(SandBox, parse(string(string(name), "=nothing"))) end
         end
     end
 end
