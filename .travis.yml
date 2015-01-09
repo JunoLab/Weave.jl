@@ -1,22 +1,24 @@
-#language: cpp
-#compiler:
-#  - clang
+
 language: julia
 julia:
   - release
-# - nightly
+  - nightly
+matrix:
+  allow_failures:
+    - julia: nightly
 notifications:
   email: false
 before_install:
-#  - sudo add-apt-repository ppa:staticfloat/julia-deps -y
-#  - sudo add-apt-repository ppa:staticfloat/${JULIAVERSION} -y
-  - sudo apt-get update -qq -y
-  - sudo apt-get install python-matplotlib -y
-#
+  #- sudo apt-get update -qq -y
+  #- sudo apt-get install python-matplotlib -y
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b
+  - export PATH=/home/travis/miniconda/bin:$PATH
+  - conda update --yes conda
+  - conda install --yes matplotlib
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  #- julia -e 'Pkg.init(); Pkg.clone(pwd()); Pkg.resolve(); Pkg.add("Winston")'
-  #- xvfb-run julia --code-coverage=all -e 'cd(Pkg.dir("Weave", "test")); include("winston_formats.jl")'
   - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.build("Weave")'
   - xvfb-run julia -e 'Pkg.test("Weave", coverage=true)'
 after_success:

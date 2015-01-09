@@ -44,3 +44,8 @@ weave("documents/gadfly_formats_test.txt", doctype="asciidoc", plotlib="gadfly",
 result = readall(open("documents/output/gadfly_formats_test.txt"))
 ref = readall(open("documents/output/gadfly_formats_test_ref.txt"))
 @test result == ref
+
+weave("documents/gadfly_markdown_test.jmd", doctype="github",plotlib="gadfly", informat="markdown")
+result = readall(open("documents/gadfly_markdown_test.md"))
+ref = readall(open("documents/gadfly_markdown_test_ref.md"))
+@test result == ref

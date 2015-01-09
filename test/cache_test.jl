@@ -20,12 +20,14 @@ Weave.weave("documents/chunk_cache.noweb", plotlib=nothing, cache=:user);
 cached_result = readall(open(out))
 @test result == cached_result
 
-using Gadfly
-isdir("documents/cache") && rm("documents/cache", recursive = true)
-#Caching with Gadfly
-weave("documents/gadfly_formats_test.txt", doctype="tex", plotlib="gadfly", cache=:all)
-result = readall(open("documents/gadfly_formats_test.tex"))
-rm("documents/gadfly_formats_test.tex")
-weave("documents/gadfly_formats_test.txt", doctype="tex", plotlib="gadfly", cache=:all)
-cached_result = readall(open("documents/gadfly_formats_test.tex"))
-@test result == cached_result
+if VERSION.minor == 3
+  using Gadfly
+  isdir("documents/cache") && rm("documents/cache", recursive = true)
+  #Caching with Gadfly
+  weave("documents/gadfly_formats_test.txt", doctype="tex", plotlib="gadfly", cache=:all)
+  result = readall(open("documents/gadfly_formats_test.tex"))
+  rm("documents/gadfly_formats_test.tex")
+  weave("documents/gadfly_formats_test.txt", doctype="tex", plotlib="gadfly", cache=:all)
+  cached_result = readall(open("documents/gadfly_formats_test.tex"))
+  @test result == cached_result
+end

@@ -12,16 +12,14 @@ include("chunk_options.jl")
 info("Test: Caching")
 include("cache_test.jl")
 
-info("Test: Weaving with Winston")
-include("winston_formats.jl")
 
-info("Test: Weaving with Gadfly")
-include("gadfly_formats.jl")
+if VERSION.minor == 3
+  info("Test: Weaving with Winston")
+  include("winston_formats.jl")
 
-weave("documents/gadfly_markdown_test.jmd", doctype="github",plotlib="gadfly", informat="markdown")
-result = readall(open("documents/gadfly_markdown_test.md"))
-ref = readall(open("documents/gadfly_markdown_test_ref.md"))
-@test result == ref
+  info("Test: Weaving with Gadfly")
+  include("gadfly_formats.jl")
+end
 
 info("Test: Weaving with PyPlot")
 include("pyplot_formats.jl")
