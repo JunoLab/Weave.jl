@@ -22,3 +22,6 @@ weave("documents/gadfly_markdown_test.jmd", doctype="github",plotlib="gadfly", i
 result = readall(open("documents/gadfly_markdown_test.md"))
 ref = readall(open("documents/gadfly_markdown_test_ref.md"))
 @test result == ref
+
+info("Test: Weaving with PyPlot")
+include("pyplot_formats.jl")

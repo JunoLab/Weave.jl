@@ -1,3 +1,4 @@
+using PyPlot
 
 function savefigs_pyplot(chunk, report::Report)
     fignames = String[]
