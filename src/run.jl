@@ -123,8 +123,10 @@ function run_term(code_str, report::Report, SandBox::Module)
         prompt = indent(prompt, report.formatdict[:indent])
     end
 
+    parsed = parse_input(code_str)
+
     #Emulate terminal
-    n = length(code_str)
+    n = length(parsed)
     pos = 2 #The first character is extra line end
     while pos < n
         oldpos = pos
@@ -141,6 +143,56 @@ function run_term(code_str, report::Report, SandBox::Module)
     return string(report.cur_result)
 end
 
+function catch_output(expr::Expr, SandBox::Module)
+    oldSTDOUT = STDOUT
+    out = nothing
+    obj = nothing
+    rw, wr = redirect_stdout()
+    try
+        obj = eval(SandBox, expr)
+    finally
+        redirect_stdout(oldSTDOUT)
+        close(wr)
+        out = readall(rw)
+        close(rw)
+    end
+    return (obj, out)
+end
+
+#Catch  output of an expression
+#function catch_output(expr::Expr, SandBox::Module, d)
+#      oldSTDOUT = STDOUT
+#    disp = nothing
+#   out = nothing
+#  rw, wr = redirect_stdout()
+#    try
+#        s = eval(SandBox, expr)
+#       if s != nothing
+#              disp = reprmime(MIME("text/plain"),  s)
+#        end
+#        s != nothing && display(s)
+ #   finally
+#      redirect_stdout(oldSTDOUT)
+#     close(wr)
+#       out = readall(rw)
+    #close(rw)
+    #end
+    #return (disp, out)
+#end
+
+#Parse chunk input to array of expressions
+function parse_input(input::String)
+    parsed = (String, Expr)[]
+     n = length(code_str)
+    pos = 2 #The first character is extra line end
+    while pos < n
+        oldpos = pos
+        code, pos = parse(code_str, pos)
+        push!(parsed, (code_str, code ))
+    end
+    parsed
+end
+
 function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     info("Weaving chunk $(chunk.number) from line $(chunk.start_line)")
 
@@ -149,7 +201,6 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
         chunk.options[:fig] = false
         return chunk
     end
-
 
     report.fignum = 1
     report.cur_result = ""
@@ -175,6 +226,7 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     end
     chunk
 end
+
 
 #function eval_chunk(chunk::DocChunk, report::Report, SandBox)
 #    chunk
