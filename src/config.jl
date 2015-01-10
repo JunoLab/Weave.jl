@@ -1,6 +1,6 @@
 
 const rcParams =
-    @compat Dict{Symbol,Any}(:plotlib => "PyPlot",
+    @compat Dict{Symbol,Any}(:plotlib => "Gadfly",
                             :storeresults => false,
                             :doc_number => 0,
                             :chunk_defaults =>

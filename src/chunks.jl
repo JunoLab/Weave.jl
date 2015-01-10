@@ -18,13 +18,14 @@ end
 type CodeChunk
     content::String
     number::Int
+    result_no::Int
     start_line::Int
     option_string::String
     options::Dict{Symbol, Any}
     output::String
     figures::Array{String}
     function CodeChunk(content, number, start_line, option_string, options)
-        new(content, number, start_line, option_string, options, "", String[])
+        new(content, number, 0, start_line, option_string, options, "", String[])
     end
 end
 

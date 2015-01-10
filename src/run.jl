@@ -54,8 +54,9 @@ function Base.run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly", informat=
 
     for i = 1:n
         chunk = doc.chunks[i]
-        result_chunk = run_chunk(chunk, report, SandBox, cached, cache, i)
-        push!(executed, result_chunk)
+        result_chunks = run_chunk(chunk, report, SandBox, cached, cache, i)
+        #push!(executed, result_chunk)
+        executed = [executed; result_chunks]
     end
 
     popdisplay(report)
@@ -85,34 +86,47 @@ function run_chunk(chunk::DocChunk, report::Report, SandBox::Module, cached, cac
     return chunk
 end
 
-function run_block(code_str, report::Report, SandBox::Module)
-    oldSTDOUT = STDOUT
-    result = ""
+function reset_report(report::Report)
+    report.cur_result = ""
+    report.figures = String[]
+    report.term_state = :text
+end
 
-    rw, wr = redirect_stdout()
-    #If there is nothing to read code will hang
-    println()
+using Gadfly #Remember to remove!
+function run_block(chunk::CodeChunk, report::Report, SandBox::Module)
+    expressions = parse_input(chunk.content)
+    #@show expressions
+    result_no = 1
+    result_chunks = CodeChunk[ ]
+    input = ""
+    for (str_expr, expr) = expressions
+        reset_report(report)
+        (obj, out) = capture_output(expr, SandBox)
 
-    try
-        n = length(code_str)
-        pos = 1 #The first character is extra line end
-        while pos < n
-            oldpos = pos
-            code, pos = parse(code_str, pos)
-            s = eval(SandBox, code)
-            if rcParams[:plotlib] == "Gadfly"
-                s != nothing && display(s)
-            end
+
+        @show typeof(obj)
+        if rcParams[:plotlib] == "Gadfly" && typeof(obj) == Gadfly.Plot
+
+            obj != nothing && display(obj)
         end
-    finally
 
-        redirect_stdout(oldSTDOUT)
-        close(wr)
-        result = readall(rw)
-        close(rw)
+        displayed = report.cur_result #Catch output to text display
+        figures = report.figures #Captured figures
+        if strip(out) == "" && isempty(figures)  && displayed == ""
+            input *= str_expr
+        else
+            @show input
+            content = input * str_expr
+            rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_string, copy(chunk.options))
+            input = ""
+            rchunk.result_no = result_no
+            result_no *=1
+            rchunk.figures = report.figures
+            rchunk.output = out * displayed
+            push!(result_chunks, rchunk)
+        end
     end
-
-    return string("\n", result)
+    return result_chunks
 end
 
 function run_term(code_str, report::Report, SandBox::Module)
@@ -124,7 +138,6 @@ function run_term(code_str, report::Report, SandBox::Module)
     end
 
     parsed = parse_input(code_str)
-
     #Emulate terminal
     n = length(parsed)
     pos = 2 #The first character is extra line end
@@ -143,7 +156,7 @@ function run_term(code_str, report::Report, SandBox::Module)
     return string(report.cur_result)
 end
 
-function catch_output(expr::Expr, SandBox::Module)
+function capture_output(expr::Expr, SandBox::Module)
     oldSTDOUT = STDOUT
     out = nothing
     obj = nothing
@@ -159,39 +172,20 @@ function catch_output(expr::Expr, SandBox::Module)
     return (obj, out)
 end
 
-#Catch  output of an expression
-#function catch_output(expr::Expr, SandBox::Module, d)
-#      oldSTDOUT = STDOUT
-#    disp = nothing
-#   out = nothing
-#  rw, wr = redirect_stdout()
-#    try
-#        s = eval(SandBox, expr)
-#       if s != nothing
-#              disp = reprmime(MIME("text/plain"),  s)
-#        end
-#        s != nothing && display(s)
- #   finally
-#      redirect_stdout(oldSTDOUT)
-#     close(wr)
-#       out = readall(rw)
-    #close(rw)
-    #end
-    #return (disp, out)
-#end
 
 #Parse chunk input to array of expressions
 function parse_input(input::String)
     parsed = (String, Expr)[]
-     n = length(code_str)
+     n = length(input)
     pos = 2 #The first character is extra line end
     while pos < n
         oldpos = pos
-        code, pos = parse(code_str, pos)
-        push!(parsed, (code_str, code ))
+        code,  pos = parse(input, pos)
+        push!(parsed, (input[oldpos:pos-1] , code ))
     end
     parsed
 end
+
 
 function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     info("Weaving chunk $(chunk.number) from line $(chunk.start_line)")
@@ -203,10 +197,7 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     end
 
     report.fignum = 1
-    report.cur_result = ""
-    report.figures = String[]
     report.cur_chunk = chunk
-    report.term_state = :text
 
     if haskey(report.formatdict, :out_width) && chunk.options[:out_width] == nothing
         chunk.options[:out_width] = report.formatdict[:out_width]
@@ -215,16 +206,17 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     if chunk.options[:term]
         chunk.output = run_term(chunk.content, report, SandBox)
         chunk.options[:term_state] = report.term_state
+        chunks = [chunk]
     else
-        chunk.output = run_block(chunk.content, report, SandBox)
+        chunks = run_block(chunk, report, SandBox)
     end
 
-    if rcParams[:plotlib] == "PyPlot"
-        chunk.options[:fig] && (chunk.figures = savefigs_pyplot(chunk, report::Report))
-    else
-        chunk.options[:fig] && (chunk.figures = copy(report.figures))
-    end
-    chunk
+    #if rcParams[:plotlib] == "PyPlot"
+     #   chunk.options[:fig] && (chunk.figures = savefigs_pyplot(chunk, report::Report))
+    #else
+     #   chunk.options[:fig] && (chunk.figures = copy(report.figures))
+    #end
+    chunks
 end
 
 

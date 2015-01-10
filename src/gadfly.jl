@@ -9,7 +9,7 @@ function Base.display(report::Report, m::MIME"image/png", p::Plot)
     full_name, rel_name = get_figname(report, chunk)
 
     docformat = formats[report.formatdict[:doctype]]
-
+    @show "Plotting"
     #Add to results for term chunks and store otherwise
     if chunk.options[:term]
         chunk.figures = [rel_name]
