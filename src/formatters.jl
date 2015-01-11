@@ -66,9 +66,9 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
         end
 
         if (strip(chunk.output)!= "") && (chunk.options[:results] != "hidden")
-            if chunk.options[:results] != "markup"
+            if chunk.options[:results] != "markup" && chunk.options[:results] != "hold"
                 result *= "$(chunk.output)\n"
-            elseif chunk.options[:results] == "markup"
+            else
                 if chunk.options[:wrap]
                     chunk.output = "\n" * wraplines(chunk.output,
                                             chunk.options[:line_width])
@@ -95,8 +95,8 @@ end
 
 function format_termchunk(chunk, formatdict)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"
-        result = "$(formatdict[:termstart])$(chunk.output)\n"
-        chunk.options[:term_state] == :text && (result*= "$(formatdict[:termend])\n")
+        result = "$(formatdict[:termstart])$(chunk.output)\n" * "$(formatdict[:termend])\n"
+        #chunk.options[:term_state] == :text && (result*= "$(formatdict[:termend])\n")
     else
         result = ""
     end

@@ -6,21 +6,7 @@ function Base.display(report::Report, m::MIME"image/png", data)
     full_name, rel_name = get_figname(report, chunk)
 
     docformat = formats[report.formatdict[:doctype]]
-
-    #Add to results for term chunks and store otherwise
-    if chunk.options[:term]
-      chunk.figures = [rel_name]
-
-      if report.term_state == :text
-        report.cur_result *= "\n" * report.formatdict[:codeend] * "\n"
-      end
-
-      report.cur_result *= formatfigures(chunk, docformat)
-      report.term_state = :fig
-      chunk.figures = String[]
-    else
-      push!(report.figures, rel_name)
-    end
+    push!(report.figures, rel_name)
 
     vector_fmts = [".pdf", ".svg"]
 

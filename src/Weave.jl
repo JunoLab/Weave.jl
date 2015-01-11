@@ -116,18 +116,9 @@ end
 
 
 function Base.display(report::Report, m::MIME"text/plain", data)
-    if report.term_state == :fig #Catch Winston plot command output
-        report.cur_result *= "\n" * report.formatdict[:codestart] * "\n"
-    end
-
     s = reprmime(m, data)
-    haskey(report.formatdict, :indent) && (s = indent(s, report.formatdict[:indent]))
-
-    report.cur_result *= s * "\n"
-
-    if report.term_state == :fig #Catch Winston plot command output
-        report.cur_result *= "\n" * report.formatdict[:codeend] * "\n"
-    end
+    print("\n" * s)
+    #report.cur_result *= "\n" * s
 end
 
 function weave(doc::String, doctype::String)

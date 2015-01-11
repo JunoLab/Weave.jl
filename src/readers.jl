@@ -57,6 +57,7 @@ function parse_doc(document::String, format="noweb"::String)
       end
       haskey(options, :label) && (options[:name] = options[:label])
       haskey(options, :name) || (options[:name] = nothing)
+      #options = merge(rcParams[:chunk_defaults], options)
       #@show options
       chunk = DocChunk(content, docno, start_line)
       #chunk = @compat Dict{Symbol,Any}(:type => "doc", :content => content,

@@ -72,6 +72,7 @@ function Base.run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly", informat=
 end
 
 function run_chunk(chunk::CodeChunk, report::Report, SandBox::Module, cached, cache, idx)
+    #Defaults, already merged before, this merges format specific things
     options = merge(rcParams[:chunk_defaults], chunk.options)
     merge!(chunk.options, options)
 
@@ -92,7 +93,24 @@ function reset_report(report::Report)
     report.term_state = :text
 end
 
-using Gadfly #Remember to remove!
+function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
+    expressions = parse_input(chunk.content)
+    #@show expressions
+    result_no = 1
+    results = ChunkOutput[ ]
+
+    for (str_expr, expr) = expressions
+        reset_report(report)
+        (obj, out) = capture_output(expr, SandBox, chunk.options[:term], rcParams[:plotlib])
+        displayed = report.cur_result #Not needed?
+        figures = report.figures #Captured figures
+        result = ChunkOutput(str_expr, out, displayed, figures)
+        push!(results, result)
+    end
+    return results
+end
+
+
 function run_block(chunk::CodeChunk, report::Report, SandBox::Module)
     expressions = parse_input(chunk.content)
     #@show expressions
@@ -102,11 +120,7 @@ function run_block(chunk::CodeChunk, report::Report, SandBox::Module)
     for (str_expr, expr) = expressions
         reset_report(report)
         (obj, out) = capture_output(expr, SandBox)
-
-
-        @show typeof(obj)
         if rcParams[:plotlib] == "Gadfly" && typeof(obj) == Gadfly.Plot
-
             obj != nothing && display(obj)
         end
 
@@ -116,7 +130,7 @@ function run_block(chunk::CodeChunk, report::Report, SandBox::Module)
             input *= str_expr
         else
             @show input
-            content = input * str_expr
+            content = "\n" * input * str_expr
             rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_string, copy(chunk.options))
             input = ""
             rchunk.result_no = result_no
@@ -129,7 +143,40 @@ function run_block(chunk::CodeChunk, report::Report, SandBox::Module)
     return result_chunks
 end
 
-function run_term(code_str, report::Report, SandBox::Module)
+
+function run_term(chunk::CodeChunk, report::Report, SandBox::Module)
+    expressions = parse_input(chunk.content)
+    #@show expressions
+    result_no = 1
+    result_chunks = CodeChunk[ ]
+    output = ""
+    prompt = "\njulia> "
+    for (str_expr, expr) = expressions
+        reset_report(report)
+        (obj, out) = capture_output(expr, SandBox)
+        obj != nothing && display(obj)
+        displayed = report.cur_result #Catch output to text display
+        figures = report.figures #Captured figures
+
+        if strip(out) == "" && isempty(figures)  && displayed == ""
+            output *=  prompt * str_expr
+        else
+            content = prompt * output * str_expr
+            rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_string, copy(chunk.options))
+            rchunk.output = content * out * displayed
+            @show rchunk.output
+            output = ""
+            rchunk.result_no = result_no
+            result_no *=1
+            rchunk.figures = report.figures
+            push!(result_chunks, rchunk)
+        end
+    end
+    return result_chunks
+end
+
+
+function run_term2(code_str, report::Report, SandBox::Module)
     prompt = "\njulia> "
     codestart = "\n\n"*report.formatdict[:codestart]
 
@@ -140,7 +187,7 @@ function run_term(code_str, report::Report, SandBox::Module)
     parsed = parse_input(code_str)
     #Emulate terminal
     n = length(parsed)
-    pos = 2 #The first character is extra line end
+    pos = 1 #The first character is extra line end
     while pos < n
         oldpos = pos
         code, pos = parse(code_str, pos)
@@ -156,13 +203,18 @@ function run_term(code_str, report::Report, SandBox::Module)
     return string(report.cur_result)
 end
 
-function capture_output(expr::Expr, SandBox::Module)
+function capture_output(expr::Expr, SandBox::Module, term, plotlib)
     oldSTDOUT = STDOUT
     out = nothing
     obj = nothing
     rw, wr = redirect_stdout()
     try
         obj = eval(SandBox, expr)
+         if term
+            obj != nothing && display(obj)
+        elseif plotlib == "Gadfly" && typeof(obj) == Gadfly.Plot
+            obj != nothing && display(obj)
+        end
     finally
         redirect_stdout(oldSTDOUT)
         close(wr)
@@ -203,12 +255,13 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
         chunk.options[:out_width] = report.formatdict[:out_width]
     end
 
+    chunk.result = run_code(chunk, report, SandBox)
     if chunk.options[:term]
-        chunk.output = run_term(chunk.content, report, SandBox)
-        chunk.options[:term_state] = report.term_state
-        chunks = [chunk]
+        chunks = collect_results(chunk, TermResult())
+    elseif chunk.options[:results] == "hold"
+        chunks = collect_results(chunk, CollectResult())
     else
-        chunks = run_block(chunk, report, SandBox)
+        chunks = collect_results(chunk, ScriptResult())
     end
 
     #if rcParams[:plotlib] == "PyPlot"
@@ -289,4 +342,65 @@ function set_rc_params(formatdict, fig_path, fig_ext)
     end
     rcParams[:chunk_defaults][:fig_path] = fig_path
     return nothing
+end
+
+function collect_results(chunk::CodeChunk, fmt::ScriptResult)
+    content = ""
+    result_no = 1
+    result_chunks = CodeChunk[ ]
+    for r =chunk.result
+        if strip(r.stdout) == "" && isempty(r.figures)  && r.displayed == ""
+            content *= r.code
+        else
+            content = "\n" * content * r.code
+            rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_string, copy(chunk.options))
+            content = ""
+            rchunk.result_no = result_no
+            result_no *=1
+            rchunk.figures = r.figures
+            rchunk.output = r.stdout * r.displayed
+            push!(result_chunks, rchunk)
+        end
+    end
+    if content != ""
+         rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_string, copy(chunk.options))
+        push!(result_chunks, rchunk)
+    end
+
+    return result_chunks
+end
+
+function collect_results(chunk::CodeChunk, fmt::TermResult)
+    output = ""
+    result_no = 1
+    prompt = "\njulia> "
+    result_chunks = CodeChunk[ ]
+    for r =chunk.result
+        output *= prompt * r.code
+        output *=  r.displayed * r.stdout
+        if !isempty(r.figures)
+            rchunk = CodeChunk("", chunk.number, chunk.start_line, chunk.option_string, copy(chunk.options))
+            rchunk.output = output
+            output = ""
+            rchunk.figures = r.figures
+            push!(result_chunks, rchunk)
+        end
+    end
+    if output != ""
+         rchunk = CodeChunk("", chunk.number, chunk.start_line, chunk.option_string, copy(chunk.options))
+         rchunk.output = output
+        push!(result_chunks, rchunk)
+    end
+
+    return result_chunks
+end
+
+function collect_results(chunk::CodeChunk, fmt::CollectResult)
+    result_no = 1
+    for r =chunk.result
+        chunk.output *=  r.stdout
+        chunk.figures = [chunk.figures, r.figures]
+    end
+
+    return [chunk]
 end
