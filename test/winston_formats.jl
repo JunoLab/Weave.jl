@@ -1,6 +1,8 @@
 using Weave
 using Base.Test
 
+cleanup = true
+
 weave("documents/winston_formats.txt", plotlib="Winston", doctype="tex")
 result = readall(open("documents/winston_formats.tex"))
 ref = readall(open("documents/winston_formats_ref.tex"))
@@ -21,3 +23,10 @@ weave("documents/winston_formats.txt", plotlib="Winston", doctype="rst")
 result = readall(open("documents/winston_formats.rst"))
 ref = readall(open("documents/winston_formats_ref.rst"))
 @test result == ref
+
+if cleanup
+    rm("documents/winston_formats.tex")
+    rm("documents/winston_formats.rst")
+    rm("documents/winston_formats.md")
+    rm("documents/figures", recursive = true)
+end

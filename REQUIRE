@@ -1,5 +1,3 @@
-julia 0.3
-Compat
+julia 0.4
 ArgParse
-Docile
 JSON

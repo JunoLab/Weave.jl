@@ -1,36 +1,35 @@
 
-const rcParams =
-    @compat Dict{Symbol,Any}(:plotlib => "PyPlot",
-                            :storeresults => false,
-                            :doc_number => 0,
-                            :chunk_defaults =>
-                                Dict{Symbol,Any}(
-                                :echo=> true,
-                                :results=> "markup",
-                                :fig=> true,
-                                :include=> true,
-                                :eval => true,
-                                :cache => false,
-                                :fig_cap=> nothing,
-                                #Size in inches
-                                :fig_width => 6,
-                                :fig_height => 4,
-                                :fig_path=> "figures",
-                                :dpi => 96,
-                                :term=> false,
-                                :name=> nothing,
-                                :wrap=> true,
-                                :line_width => 75,
-                                :engine=> "julia",
-                                #:option_string=> "",
-                                #Defined in formats
-                                :fig_ext => nothing,
-                                :fig_pos=> nothing,
-                                :fig_env=> nothing,
-                                :out_width=> nothing,
-                                :out_height=> nothing,
+const rcParams=Dict{Symbol,Any}(:plotlib => "PyPlot",
+                                :storeresults => false,
+                                :doc_number => 0,
+                                :chunk_defaults =>
+                                    Dict{Symbol,Any}(
+                                    :echo=> true,
+                                    :results=> "markup",
+                                    :fig=> true,
+                                    :include=> true,
+                                    :eval => true,
+                                    :cache => false,
+                                    :fig_cap=> nothing,
+                                    #Size in inches
+                                    :fig_width => 6,
+                                    :fig_height => 4,
+                                    :fig_path=> "figures",
+                                    :dpi => 96,
+                                    :term=> false,
+                                    :name=> nothing,
+                                    :wrap=> true,
+                                    :line_width => 75,
+                                    :engine=> "julia",
+                                    #:option_string=> "",
+                                    #Defined in formats
+                                    :fig_ext => nothing,
+                                    :fig_pos=> nothing,
+                                    :fig_env=> nothing,
+                                    :out_width=> nothing,
+                                    :out_height=> nothing,
+                                    )
                                 )
-                            )
 
 
 

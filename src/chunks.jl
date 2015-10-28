@@ -1,12 +1,12 @@
 
 type WeaveDoc
-    source::String
-    basename::String
-    path::String
+    source::AbstractString
+    basename::AbstractString
+    path::AbstractString
     chunks::Array
-    cwd::String
+    cwd::AbstractString
     format
-    doctype::String
+    doctype::AbstractString
     function WeaveDoc(source, chunks)
         path, fname = splitdir(abspath(source))
         basename = splitext(fname)[1]
@@ -16,20 +16,20 @@ end
 
 
 type CodeChunk
-    content::String
+    content::AbstractString
     number::Int
     start_line::Int
-    option_string::String
+    option_string::AbstractString
     options::Dict{Symbol, Any}
-    output::String
-    figures::Array{String}
+    output::AbstractString
+    figures::Array{AbstractString}
     function CodeChunk(content, number, start_line, option_string, options)
-        new(content, number, start_line, option_string, options, "", String[])
+        new(content, number, start_line, option_string, options, "", AbstractString[])
     end
 end
 
 type DocChunk
-    content::String
+    content::AbstractString
     number::Int
     start_line::Int
 end

@@ -1,6 +1,6 @@
 
 function format(doc::WeaveDoc)
-    formatted = String[]
+    formatted = AbstractString[]
     docformat = doc.format
     #@show docformat
 
@@ -32,6 +32,8 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
     #Fill undefined options with format specific defaults
     chunk.options[:out_width] == nothing &&
         (chunk.options[:out_width] =  formatdict[:out_width])
+    chunk.options[:out_height] == nothing &&
+        (chunk.options[:out_height] =  formatdict[:out_height])
     chunk.options[:fig_pos] == nothing &&
         (chunk.options[:fig_pos] =  formatdict[:fig_pos])
 
@@ -110,7 +112,7 @@ end
 
 
 function wraplines(text, line_width=75)
-    result = String[]
+    result = AbstractString[]
     lines = split(text, "\n")
     for line in lines
         if length(line) > line_width
@@ -135,12 +137,12 @@ end
 
 
 type Tex
-    description::String
+    description::AbstractString
     formatdict::Dict{Symbol,Any}
 end
 
 const tex = Tex("Latex with custom code environments",
-                @compat Dict{Symbol,Any}(:codestart => "\\begin{juliacode}",
+                Dict{Symbol,Any}(:codestart => "\\begin{juliacode}",
                                          :codeend => "\\end{juliacode}",
                                          :outputstart => "\\begin{juliaout}",
                                          :outputend => "\\end{juliaout}",
@@ -155,7 +157,7 @@ const tex = Tex("Latex with custom code environments",
                                          ))
 
 const texminted = Tex("Latex using minted for highlighting",
-                      @compat Dict{Symbol,Any}(
+                      Dict{Symbol,Any}(
                                          :codestart => "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}",
                                          :codeend => "\\end{minted}",
                                          :outputstart => "\\begin{minted}[fontsize=\\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}",
@@ -171,12 +173,12 @@ const texminted = Tex("Latex using minted for highlighting",
                                          ))
 
 type Markdown
-    description::String
+    description::AbstractString
     formatdict::Dict{Symbol,Any}
 end
 
 const pandoc = Markdown("Pandoc markdown",
-                        @compat Dict{Symbol,Any}(
+                        Dict{Symbol,Any}(
                                 :codestart => "~~~~{.julia}",
                                 :codeend=>"~~~~~~~~~~~~~\n\n",
                                 :outputstart=>"~~~~{.julia}",
@@ -188,7 +190,7 @@ const pandoc = Markdown("Pandoc markdown",
 
 
 const github = Markdown("Github markdown",
-                        @compat Dict{Symbol,Any}(
+                        Dict{Symbol,Any}(
                                 :codestart => "````julia",
                                 :codeend=> "````\n\n",
                                 :outputstart=> "````julia",
@@ -200,12 +202,12 @@ const github = Markdown("Github markdown",
 
 
 type Rest
-    description::String
+    description::AbstractString
     formatdict::Dict{Symbol,Any}
 end
 
 const rst = Rest("reStructuredText and Sphinx",
-                 @compat Dict{Symbol,Any}(
+                 Dict{Symbol,Any}(
                                 :codestart => ".. code-block:: julia\n",
                                 :codeend => "\n\n",
                                 :outputstart => "::\n",
@@ -218,13 +220,13 @@ const rst = Rest("reStructuredText and Sphinx",
                                 ))
 
 type AsciiDoc
-    description::String
+    description::AbstractString
     formatdict::Dict{Symbol,Any}
 end
 
 #asciidoc -b html5 -a source-highlighter=pygments ...
 const adoc = AsciiDoc("AsciiDoc",
-        @compat Dict{Symbol,Any}(
+        Dict{Symbol,Any}(
         :codestart => "[source,julia]\n--------------------------------------",
         :codeend => "--------------------------------------\n\n",
         :outputstart => "--------------------------------------",
@@ -240,6 +242,7 @@ function formatfigures(chunk, docformat::Tex)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
     width = chunk.options[:out_width]
+    height = chunk.options[:out_height]
     f_pos = chunk.options[:fig_pos]
     f_env = chunk.options[:fig_env]
     result = ""
@@ -256,7 +259,11 @@ function formatfigures(chunk, docformat::Tex)
         if splitext(fig)[2] == ".tex" #Tikz figures
             figstring *= "\\resizebox{$width}{!}{\\input{$fig}}\n"
         else
-            figstring *= "\\includegraphics[width=$width]{$fig}\n"
+            if height === nothing
+                figstring *= "\\includegraphics[width=$width]{$fig}\n"
+            else
+                figstring *= "\\includegraphics[width=$width, height=$height]{$fig}\n"
+            end
         end
     end
 
@@ -352,7 +359,7 @@ end
 
 
 #Add new supported formats here
-const formats = @compat Dict{String, Any}("tex" => tex,
+const formats = Dict{AbstractString, Any}("tex" => tex,
                                           "texminted" => texminted,
                                           "pandoc" => pandoc,
                                           "github" => github,

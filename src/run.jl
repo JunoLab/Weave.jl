@@ -153,7 +153,7 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
 
     report.fignum = 1
     report.cur_result = ""
-    report.figures = String[]
+    report.figures = AbstractString[]
     report.cur_chunk = chunk
     report.term_state = :text
 
@@ -210,17 +210,19 @@ function init_plotting(plotlib)
     else
         l_plotlib = lowercase(plotlib)
         rcParams[:chunk_defaults][:fig] = true
+        srcpath = dirname(@__FILE__)
 
         if l_plotlib == "winston"
-            eval(parse("""include(Pkg.dir("Weave","src","winston.jl"))"""))
+            pluginpath = joinpath(srcpath,"winston.jl")
             rcParams[:plotlib] = "Winston"
         elseif l_plotlib == "pyplot"
-            eval(parse("""include(Pkg.dir("Weave","src","pyplot.jl"))"""))
+            pluginpath = joinpath(srcpath,"pyplot.jl")
             rcParams[:plotlib] = "PyPlot"
         elseif l_plotlib == "gadfly"
-            eval(parse("""include(Pkg.dir("Weave","src","gadfly.jl"))"""))
+            pluginpath = joinpath(srcpath,"gadfly.jl")
             rcParams[:plotlib] = "Gadfly"
         end
+        !isempty(pluginpath) && eval(parse("include(\"$pluginpath\")"))
     end
     return nothing
 end
