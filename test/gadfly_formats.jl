@@ -55,6 +55,5 @@ if cleanup
     rm("documents/gadfly_formats_test.txt")
     rm("documents/gadfly_formats_test.rst")
     rm("documents/gadfly_markdown_test.md")
-    rm("documents/output", recursive = true)
     rm("documents/figures", recursive = true)
 end

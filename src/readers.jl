@@ -1,7 +1,7 @@
 pushopt(options::Dict,expr::Expr) = Base.Meta.isexpr(expr,:(=)) && (options[expr.args[1]] = expr.args[2])
 
 
-const input_formats = @compat Dict{AbstractString, Any}(
+const input_formats = Dict{AbstractString, Any}(
         "noweb" => Dict{Symbol, Any}(
                     :codestart => r"^<<(.*?)>>=\s*$",
                     :codeend => r"^@\s*$"
@@ -13,7 +13,7 @@ const input_formats = @compat Dict{AbstractString, Any}(
         )
 
 
-@doc "Read and parse input document" ->
+"Read and parse input document"
 function read_doc(source::AbstractString, format="noweb"::AbstractString)
     document = bytestring(open(source) do io
         # mmap_array(UInt8,(filesize(source),),io)
@@ -23,7 +23,7 @@ function read_doc(source::AbstractString, format="noweb"::AbstractString)
     doc = WeaveDoc(source, parsed)
 end
 
-@doc "Parse chunks from string" ->
+"Parse chunks from string"
 function parse_doc(document::AbstractString, format="noweb"::AbstractString)
   #doctext = readall(open(document))
   lines = split(document, "\n")

@@ -29,7 +29,6 @@ if cleanup
     rm("documents/pyplot_formats.tex")
     rm("documents/pyplot_formats.rst")
     rm("documents/pyplot_formats.md")
-    rm("documents/output", recursive = true)
     rm("documents/figures", recursive = true)
 end
 

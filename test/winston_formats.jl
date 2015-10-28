@@ -28,6 +28,5 @@ if cleanup
     rm("documents/winston_formats.tex")
     rm("documents/winston_formats.rst")
     rm("documents/winston_formats.md")
-    rm("documents/output", recursive = true)
     rm("documents/figures", recursive = true)
 end
