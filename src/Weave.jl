@@ -1,24 +1,21 @@
 module Weave
 using Compat
-using Docile
-
-@docstrings(manual = ["../doc/manual.md"])
 
 #Contains report global properties
 type Report <: Display
-  cwd::String
-  basename::String
+  cwd::AbstractString
+  basename::AbstractString
   formatdict::Dict{Symbol,Any}
-  pending_code::String
-  cur_result::String
+  pending_code::AbstractString
+  cur_result::AbstractString
   fignum::Int
-  figures::Array{String}
+  figures::Array{AbstractString}
   term_state::Symbol
   cur_chunk
 end
 
 function Report(cwd, basename, formatdict)
-    Report(cwd, basename, formatdict, "", "", 1, String[], :text, nothing)
+    Report(cwd, basename, formatdict, "", "", 1, AbstractString[], :text, nothing)
 end
 
 
@@ -45,7 +42,7 @@ function list_out_formats()
 end
 
 
-@doc md"""
+@doc """
 Tangle source code from input document to .jl file.
 
 **parameters:**
@@ -74,7 +71,7 @@ function tangle(source ; out_path=:doc, informat="noweb")
     info("Writing to file $(doc.basename).jl")
 end
 
-@doc md"""
+@doc """
 Weave an input document to output file.
 
 **parameters:**
@@ -130,7 +127,7 @@ function Base.display(report::Report, m::MIME"text/plain", data)
   end
 end
 
-function weave(doc::String, doctype::String)
+function weave(doc::AbstractString, doctype::AbstractString)
     weave(doc, doctype=doctype)
 end
 

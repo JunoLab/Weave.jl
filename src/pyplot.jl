@@ -1,7 +1,7 @@
 using PyPlot
 
 function savefigs_pyplot(chunk, report::Report)
-    fignames = String[]
+    fignames = AbstractString[]
     ext = report.formatdict[:fig_ext]
     figpath = joinpath(report.cwd, chunk.options[:fig_path])
     isdir(figpath) || mkdir(figpath)

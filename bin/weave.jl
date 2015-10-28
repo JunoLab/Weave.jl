@@ -3,6 +3,7 @@
 
 using Weave
 using ArgParse
+using Compat
 
 ap = ArgParseSettings("Weave Julia documents using Weave.jl",
                 version = string(Pkg.installed("Weave")),
@@ -14,23 +15,23 @@ ap = ArgParseSettings("Weave Julia documents using Weave.jl",
         help = "source document(s)"
         required = true
     "--doctype"
-        arg_type = String
+        arg_type = AbstractString
         default = "pandoc"
         help = "output format"
     "--plotlib"
-        arg_type = String
+        arg_type = AbstractString
         default = "Gadfly"
         help = "output format"
     "--informat"
-        arg_type = String
+        arg_type = AbstractString
         default = "noweb"
         help = "output format"
     "--out_path"
-        arg_type = String
+        arg_type = AbstractString
         default = ":doc"
         help = "output directory"
     "--fig_path"
-        arg_type = String
+        arg_type = AbstractString
         default = "figures"
         help = "figure output directory"
     "--fig_ext"
@@ -41,7 +42,7 @@ end
 args = ArgParse.parse_args(ap)
 source = args["source"]
 delete!(args, "source")
-args_col = {}
+args_col = Dict{Symbol,Any}()
 
 #Check for special values of out_path
 if args["out_path"] == ":doc"
@@ -51,7 +52,7 @@ elseif args["out_path"] == ":pwd"
 end
 
 for (key, val) in args
-    push!(args_col, (parse(key), val))
+    args_col[parse(key)] = val
 end
 
 for s=source
