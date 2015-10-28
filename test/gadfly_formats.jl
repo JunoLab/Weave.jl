@@ -2,6 +2,7 @@
 using Weave
 using Base.Test
 
+cleanup = true
 
 weave("documents/gadfly_formats_test.txt", "tex")
 result = readall(open("documents/gadfly_formats_test.tex"))
@@ -33,7 +34,6 @@ result = readall(open("documents/gadfly_formats_test.md"))
 ref = readall(open("documents/gadfly_formats_test_jssvg_ref.md"))
 @test result == ref
 
-
 weave("documents/gadfly_formats_test.txt", doctype="rst", plotlib="gadfly")
 result = readall(open("documents/gadfly_formats_test.rst"))
 ref = readall(open("documents/gadfly_formats_test_ref.rst"))
@@ -49,3 +49,12 @@ weave("documents/gadfly_markdown_test.jmd", doctype="github",plotlib="gadfly", i
 result = readall(open("documents/gadfly_markdown_test.md"))
 ref = readall(open("documents/gadfly_markdown_test_ref.md"))
 @test result == ref
+
+if cleanup
+    rm("documents/gadfly_formats_test.tex")
+    rm("documents/gadfly_formats_test.txt")
+    rm("documents/gadfly_formats_test.rst")
+    rm("documents/gadfly_markdown_test.md")
+    rm("documents/output", recursive = true)
+    rm("documents/figures", recursive = true)
+end

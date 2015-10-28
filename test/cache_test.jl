@@ -1,6 +1,8 @@
 using Weave
 using Base.Test
 
+cleanup = true
+
 #Test if running document with and without cache works
 isdir("documents/cache") && rm("documents/cache", recursive = true)
 weave("documents/chunk_options.noweb", plotlib=nothing, cache=:all)
@@ -9,6 +11,7 @@ rm("documents/chunk_options.md")
 weave("documents/chunk_options.noweb", plotlib=nothing, cache=:all)
 cached_result = readall(open("documents/chunk_options.md"))
 @test result == cached_result
+cleanup && rm("documents/chunk_options.md")
 
 # cache = :user
 isdir("documents/cache") && rm("documents/cache", recursive = true)
@@ -19,6 +22,7 @@ rm(out)
 Weave.weave("documents/chunk_cache.noweb", plotlib=nothing, cache=:user);
 cached_result = readall(open(out))
 @test result == cached_result
+cleanup && rm(out)
 
 if VERSION.minor == 3
   using Gadfly
@@ -30,4 +34,7 @@ if VERSION.minor == 3
   weave("documents/gadfly_formats_test.txt", doctype="tex", plotlib="gadfly", cache=:all)
   cached_result = readall(open("documents/gadfly_formats_test.tex"))
   @test result == cached_result
+  cleanup && rm("documents/gadfly_formats_test.tex")
 end
+
+cleanup && rm("documents/cache", recursive = true)

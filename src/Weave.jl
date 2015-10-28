@@ -1,5 +1,6 @@
+VERSION >= v"0.4.0" && __precompile__()
+
 module Weave
-using Compat
 
 #Contains report global properties
 type Report <: Display
@@ -42,7 +43,7 @@ function list_out_formats()
 end
 
 
-@doc """
+"""
 Tangle source code from input document to .jl file.
 
 **parameters:**
@@ -53,7 +54,7 @@ tangle(source ; out_path=:doc, informat="noweb")
 * `informat`: `"noweb"` of `"markdown"`
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
 `"somepath"`: Path as a string e.g `"/home/mpastell/weaveout"`
-"""->
+"""
 function tangle(source ; out_path=:doc, informat="noweb")
     doc = read_doc(source, informat)
     cwd = get_cwd(doc, out_path)
@@ -71,7 +72,7 @@ function tangle(source ; out_path=:doc, informat="noweb")
     info("Writing to file $(doc.basename).jl")
 end
 
-@doc """
+"""
 Weave an input document to output file.
 
 **parameters:**
@@ -92,7 +93,7 @@ weave(source ; doctype = "pandoc", plotlib="Gadfly",
   `:user` = cache based on chunk options, `:refresh`, run all code chunks and save new cache.
 
 **Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
-""" ->
+"""
 function weave(source ; doctype = "pandoc", plotlib="Gadfly",
         informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache=:off)
