@@ -103,9 +103,9 @@ function format_termchunk(chunk, formatdict)
     return result
 end
 
-function indent(text::ASCIIString, nindent)
+function indent(text, nindent)
     return join(map(x->
-                    (repeat(" ", nindent), x), split(text, "\n")), "\n")
+                    string(repeat(" ", nindent), x), split(text, "\n")), "\n")
 end
 
 
@@ -243,7 +243,7 @@ function formatfigures(chunk, docformat::Tex)
     f_pos = chunk.options[:fig_pos]
     f_env = chunk.options[:fig_env]
     result = ""
-    figAbstractString = ""
+    figstring = ""
 
 
 
@@ -254,19 +254,19 @@ function formatfigures(chunk, docformat::Tex)
 
     for fig = fignames
         if splitext(fig)[2] == ".tex" #Tikz figures
-            figAbstractString *= "\\resizebox{$width}{!}{\\input{$fig}}\n"
+            figstring *= "\\resizebox{$width}{!}{\\input{$fig}}\n"
         else
-            figAbstractString *= "\\includegraphics[width=$width]{$fig}\n"
+            figstring *= "\\includegraphics[width=$width]{$fig}\n"
         end
     end
 
     # Figure environment
     if caption != nothing
-        result *= AbstractString("\\center\n",
-                         "$figAbstractString",
+        result *= string("\\center\n",
+                         "$figstring",
                          "\\caption{$caption}\n")
     else
-        result *= figAbstractString
+        result *= figstring
     end
 
     if chunk.options[:name] != nothing && f_env !=nothing
@@ -286,7 +286,7 @@ function formatfigures(chunk, docformat::Markdown)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
     result = ""
-    figAbstractString = ""
+    figstring = ""
 
     length(fignames) > 0 || (return "")
 
@@ -310,18 +310,18 @@ function formatfigures(chunk, docformat::Rest)
     caption = chunk.options[:fig_cap]
     width = chunk.options[:out_width]
     result = ""
-    figAbstractString = ""
+    figstring = ""
 
     for fig=fignames
-        figAbstractString *= @sprintf(".. image:: %s\n   :width: %s\n\n", fig, width)
+        figstring *= @sprintf(".. image:: %s\n   :width: %s\n\n", fig, width)
     end
 
     if caption != nothing
-        result *= AbstractString(".. figure:: $(fignames[1])\n",
+        result *= string(".. figure:: $(fignames[1])\n",
                          "   :width: $width\n\n",
                          "   $caption\n\n")
     else
-        result *= figAbstractString
+        result *= figstring
         return result
     end
 end
@@ -332,20 +332,20 @@ function formatfigures(chunk, docformat::AsciiDoc)
     caption = chunk.options[:fig_cap]
     width = chunk.options[:out_width]
     result = ""
-    figAbstractString = ""
+    figstring = ""
 
 
     for fig=fignames
-        figAbstractString *= @sprintf("image::%s[width=%s]\n", fig, width)
+        figstring *= @sprintf("image::%s[width=%s]\n", fig, width)
     end
 
 
     if caption != nothing
-        result *= AbstractString("image::$(fignames[1])",
+        result *= string("image::$(fignames[1])",
         "[width=$width,",
         "title=\"$caption\"]")
     else
-        result *= figAbstractString
+        result *= figstring
         return result
     end
 end

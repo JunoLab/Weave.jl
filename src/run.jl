@@ -227,7 +227,6 @@ end
 
 #Parse chunk input to array of expressions
 function parse_input(input::AbstractString)
-    info(input)
     parsed = Tuple{AbstractString, Expr}[]
     n = length(input)
     pos = 2 #The first character is extra line end
