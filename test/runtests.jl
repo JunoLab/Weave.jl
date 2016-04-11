@@ -22,6 +22,5 @@ end
 info("Test: Weaving with Gadfly")
 include("gadfly_formats.jl")
 
-
-info("Test: Weaving with PyPlot")
-include("pyplot_formats.jl")
+#info("Test: Weaving with PyPlot")
+#include("pyplot_formats.jl")

@@ -103,7 +103,7 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
         reset_report(report)
         (obj, out) = capture_output(expr, SandBox, chunk.options[:term], rcParams[:plotlib])
 
-        if lowercase(rcParams[:plotlib]) == "pyplot"
+        if rcParams[:plotlib] == "pyplot"
             savefigs_pyplot(chunk, report::Report)
         end
 
