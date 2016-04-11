@@ -102,6 +102,11 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
     for (str_expr, expr) = expressions
         reset_report(report)
         (obj, out) = capture_output(expr, SandBox, chunk.options[:term], rcParams[:plotlib])
+
+        if lowercase(rcParams[:plotlib]) == "pyplot"
+            savefigs_pyplot(chunk, report::Report)
+        end
+
         displayed = report.cur_result #Not needed?
         figures = report.figures #Captured figures
         result = ChunkOutput(str_expr, out, displayed, figures)
@@ -120,6 +125,7 @@ function run_block(chunk::CodeChunk, report::Report, SandBox::Module)
     for (str_expr, expr) = expressions
         reset_report(report)
         (obj, out) = capture_output(expr, SandBox)
+
         if rcParams[:plotlib] == "Gadfly" && typeof(obj) == Gadfly.Plot
             obj != nothing && display(obj)
         end
@@ -215,6 +221,7 @@ function capture_output(expr::Expr, SandBox::Module, term, plotlib)
         elseif plotlib == "Gadfly" && typeof(obj) == Gadfly.Plot
             obj != nothing && display(obj)
         end
+
     finally
         redirect_stdout(oldSTDOUT)
         close(wr)
@@ -264,9 +271,7 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
         chunks = collect_results(chunk, ScriptResult())
     end
 
-    #if rcParams[:plotlib] == "PyPlot"
-     #   chunk.options[:fig] && (chunk.figures = savefigs_pyplot(chunk, report::Report))
-    #else
+      #else
      #   chunk.options[:fig] && (chunk.figures = copy(report.figures))
     #end
     chunks

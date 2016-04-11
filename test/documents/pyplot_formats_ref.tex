@@ -3,54 +3,37 @@
 
 
 
-\begin{juliacode}
-using PyPlot
+\begin{juliacode}using PyPlot
 x = linspace(0, 2π, 200)
 plot(x, sin(x))
 \end{juliacode}
-\begin{figure}[ht]
-\center
-\includegraphics[width=\linewidth]{figures/pyplot_formats_sin_fun_1.pdf}
-\caption{sin(x) function.}
-\label{fig:sin_fun}
-\end{figure}
 
 
 
-\begin{figure}[htpb]
-\center
-\includegraphics[width=\linewidth]{figures/pyplot_formats_2_1.pdf}
-\caption{cos(x) function.}
-\end{figure}
 
 
 
-\includegraphics[width=\linewidth]{figures/pyplot_formats_cos2_fun_1.pdf}
 
 
 
 \begin{juliaterm}
 julia> x = linspace(0, 2π, 200)
+
 linspace(0.0,6.283185307179586,200)
-
 julia> plot(x, sin(x))
+
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7f573878f9d0>
-
+ PyObject <matplotlib.lines.Line2D object at 0x7f2eac1dca90>
 julia> y = 20
-20
 
+20
 julia> plot(x, cos(x))
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7f573878fc50>
-
+ PyObject <matplotlib.lines.Line2D object at 0x7f2eac1f3650>
 \end{juliaterm}
-\includegraphics[width=\linewidth]{figures/pyplot_formats_4_1.pdf}
 
 
 
-\begin{juliacode}
-x = randn(100, 100)
+\begin{juliacode}x = randn(100, 100)
 contourf(x)
 \end{juliacode}
-\includegraphics[width=15cm]{figures/pyplot_formats_5_1.pdf}
