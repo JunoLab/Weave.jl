@@ -103,9 +103,9 @@ function format_termchunk(chunk, formatdict)
     return result
 end
 
-function indent(text, nindent)
+function indent(text::ASCIIString, nindent)
     return join(map(x->
-                    AbstractString(repeat(" ", nindent), x), split(text, "\n")), "\n")
+                    (repeat(" ", nindent), x), split(text, "\n")), "\n")
 end
 
 
