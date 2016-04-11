@@ -6,19 +6,19 @@ using Docile
 
 #Contains report global properties
 type Report <: Display
-  cwd::String
-  basename::String
+  cwd::AbstractString
+  basename::AbstractString
   formatdict::Dict{Symbol,Any}
-  pending_code::String
-  cur_result::String
+  pending_code::AbstractString
+  cur_result::AbstractString
   fignum::Int
-  figures::Array{String}
+  figures::Array{AbstractString}
   term_state::Symbol
   cur_chunk
 end
 
 function Report(cwd, basename, formatdict)
-    Report(cwd, basename, formatdict, "", "", 1, String[], :text, nothing)
+    Report(cwd, basename, formatdict, "", "", 1, AbstractString[], :text, nothing)
 end
 
 
@@ -40,7 +40,7 @@ end
 @doc "List supported output formats" ->
 function list_out_formats()
   for format = keys(formats)
-      println(string(format,": ",  formats[format].description))
+      println(AbstractString(format,": ",  formats[format].description))
   end
 end
 
@@ -55,7 +55,7 @@ tangle(source ; out_path=:doc, informat="noweb")
 
 * `informat`: `"noweb"` of `"markdown"`
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
-`"somepath"`: Path as a string e.g `"/home/mpastell/weaveout"`
+`"somepath"`: Path as a AbstractString e.g `"/home/mpastell/weaveout"`
 """->
 function tangle(source ; out_path=:doc, informat="noweb")
     doc = read_doc(source, informat)
@@ -87,7 +87,7 @@ weave(source ; doctype = "pandoc", plotlib="Gadfly",
 * `plotlib`: `"PyPlot"`, `"Gadfly"`, or `"Winston"`
 * `informat`: `"noweb"` of `"markdown"`
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
-    `"somepath"`: Path as a string e.g `"/home/mpastell/weaveout"`
+    `"somepath"`: Path as a AbstractString e.g `"/home/mpastell/weaveout"`
 * `fig_path`: where figures will be generated, relative to out_path
 * `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
 * `cache_path`: where of cached output will be saved.
@@ -121,7 +121,7 @@ function Base.display(report::Report, m::MIME"text/plain", data)
     #report.cur_result *= "\n" * s
 end
 
-function weave(doc::String, doctype::String)
+function weave(doc::AbstractString, doctype::AbstractString)
     weave(doc, doctype=doctype)
 end
 

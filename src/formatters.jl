@@ -1,6 +1,6 @@
 
 function format(doc::WeaveDoc)
-    formatted = String[]
+    formatted = AbstractString[]
     docformat = doc.format
     #@show docformat
 
@@ -105,12 +105,12 @@ end
 
 function indent(text, nindent)
     return join(map(x->
-                    string(repeat(" ", nindent), x), split(text, "\n")), "\n")
+                    AbstractString(repeat(" ", nindent), x), split(text, "\n")), "\n")
 end
 
 
 function wraplines(text, line_width=75)
-    result = String[]
+    result = AbstractString[]
     lines = split(text, "\n")
     for line in lines
         if length(line) > line_width
@@ -135,7 +135,7 @@ end
 
 
 type Tex
-    description::String
+    description::AbstractString
     formatdict::Dict{Symbol,Any}
 end
 
@@ -171,7 +171,7 @@ const texminted = Tex("Latex using minted for highlighting",
                                          ))
 
 type Markdown
-    description::String
+    description::AbstractString
     formatdict::Dict{Symbol,Any}
 end
 
@@ -200,7 +200,7 @@ const github = Markdown("Github markdown",
 
 
 type Rest
-    description::String
+    description::AbstractString
     formatdict::Dict{Symbol,Any}
 end
 
@@ -218,7 +218,7 @@ const rst = Rest("reStructuredText and Sphinx",
                                 ))
 
 type AsciiDoc
-    description::String
+    description::AbstractString
     formatdict::Dict{Symbol,Any}
 end
 
@@ -243,7 +243,7 @@ function formatfigures(chunk, docformat::Tex)
     f_pos = chunk.options[:fig_pos]
     f_env = chunk.options[:fig_env]
     result = ""
-    figstring = ""
+    figAbstractString = ""
 
 
 
@@ -254,19 +254,19 @@ function formatfigures(chunk, docformat::Tex)
 
     for fig = fignames
         if splitext(fig)[2] == ".tex" #Tikz figures
-            figstring *= "\\resizebox{$width}{!}{\\input{$fig}}\n"
+            figAbstractString *= "\\resizebox{$width}{!}{\\input{$fig}}\n"
         else
-            figstring *= "\\includegraphics[width=$width]{$fig}\n"
+            figAbstractString *= "\\includegraphics[width=$width]{$fig}\n"
         end
     end
 
     # Figure environment
     if caption != nothing
-        result *= string("\\center\n",
-                         "$figstring",
+        result *= AbstractString("\\center\n",
+                         "$figAbstractString",
                          "\\caption{$caption}\n")
     else
-        result *= figstring
+        result *= figAbstractString
     end
 
     if chunk.options[:name] != nothing && f_env !=nothing
@@ -286,7 +286,7 @@ function formatfigures(chunk, docformat::Markdown)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
     result = ""
-    figstring = ""
+    figAbstractString = ""
 
     length(fignames) > 0 || (return "")
 
@@ -310,18 +310,18 @@ function formatfigures(chunk, docformat::Rest)
     caption = chunk.options[:fig_cap]
     width = chunk.options[:out_width]
     result = ""
-    figstring = ""
+    figAbstractString = ""
 
     for fig=fignames
-        figstring *= @sprintf(".. image:: %s\n   :width: %s\n\n", fig, width)
+        figAbstractString *= @sprintf(".. image:: %s\n   :width: %s\n\n", fig, width)
     end
 
     if caption != nothing
-        result *= string(".. figure:: $(fignames[1])\n",
+        result *= AbstractString(".. figure:: $(fignames[1])\n",
                          "   :width: $width\n\n",
                          "   $caption\n\n")
     else
-        result *= figstring
+        result *= figAbstractString
         return result
     end
 end
@@ -332,27 +332,27 @@ function formatfigures(chunk, docformat::AsciiDoc)
     caption = chunk.options[:fig_cap]
     width = chunk.options[:out_width]
     result = ""
-    figstring = ""
+    figAbstractString = ""
 
 
     for fig=fignames
-        figstring *= @sprintf("image::%s[width=%s]\n", fig, width)
+        figAbstractString *= @sprintf("image::%s[width=%s]\n", fig, width)
     end
 
 
     if caption != nothing
-        result *= string("image::$(fignames[1])",
+        result *= AbstractString("image::$(fignames[1])",
         "[width=$width,",
         "title=\"$caption\"]")
     else
-        result *= figstring
+        result *= figAbstractString
         return result
     end
 end
 
 
 #Add new supported formats here
-const formats = @compat Dict{String, Any}("tex" => tex,
+const formats = @compat Dict{AbstractString, Any}("tex" => tex,
                                           "texminted" => texminted,
                                           "pandoc" => pandoc,
                                           "github" => github,

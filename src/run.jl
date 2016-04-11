@@ -11,7 +11,7 @@ function run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly", informat="nowe
 * `plotlib`: `"PyPlot"`, `"Gadfly"`, or `"Winston"`
 * `informat`: `"noweb"` of `"markdown"`
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
-`"somepath"`: Path as a string e.g `"/home/mpastell/weaveout"`
+`"somepath"`: Path as a AbstractString e.g `"/home/mpastell/weaveout"`
 * `fig_path`: where figures will be generated, relative to out_path
 * `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
 * `cache_path`: where of cached output will be saved.
@@ -89,7 +89,7 @@ end
 
 function reset_report(report::Report)
     report.cur_result = ""
-    report.figures = String[]
+    report.figures = AbstractString[]
     report.term_state = :text
 end
 
@@ -131,7 +131,7 @@ function run_block(chunk::CodeChunk, report::Report, SandBox::Module)
         else
             @show input
             content = "\n" * input * str_expr
-            rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_string, copy(chunk.options))
+            rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_AbstractString, copy(chunk.options))
             input = ""
             rchunk.result_no = result_no
             result_no *=1
@@ -162,7 +162,7 @@ function run_term(chunk::CodeChunk, report::Report, SandBox::Module)
             output *=  prompt * str_expr
         else
             content = prompt * output * str_expr
-            rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_string, copy(chunk.options))
+            rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_AbstractString, copy(chunk.options))
             rchunk.output = content * out * displayed
             @show rchunk.output
             output = ""
@@ -193,14 +193,14 @@ function run_term2(code_str, report::Report, SandBox::Module)
         code, pos = parse(code_str, pos)
 
         report.term_state == :fig && (report.cur_result*= codestart)
-        prompts = string(prompt, rstrip(code_str[oldpos:(pos-1)]), "\n")
+        prompts = AbstractString(prompt, rstrip(code_str[oldpos:(pos-1)]), "\n")
         report.cur_result *= prompts
         report.term_state = :text
         s = eval(SandBox, code)
         s != nothing && display(s)
     end
 
-    return string(report.cur_result)
+    return AbstractString(report.cur_result)
 end
 
 function capture_output(expr::Expr, SandBox::Module, term, plotlib)
@@ -226,8 +226,8 @@ end
 
 
 #Parse chunk input to array of expressions
-function parse_input(input::String)
-    parsed = (String, Expr)[]
+function parse_input(input::AbstractString)
+    parsed = (AbstractString, Expr)[]
      n = length(input)
     pos = 2 #The first character is extra line end
     while pos < n
@@ -281,7 +281,7 @@ end
 function clear_sandbox(SandBox::Module)
     for name = names(SandBox, true)
         if name != :eval && name != names(SandBox)[1]
-            try eval(SandBox, parse(string(string(name), "=nothing"))) end
+            try eval(SandBox, parse(AbstractString(AbstractString(name), "=nothing"))) end
         end
     end
 end
@@ -354,7 +354,7 @@ function collect_results(chunk::CodeChunk, fmt::ScriptResult)
             content *= r.code
         else
             content = "\n" * content * r.code
-            rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_string, copy(chunk.options))
+            rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_AbstractString, copy(chunk.options))
             content = ""
             rchunk.result_no = result_no
             result_no *=1
@@ -364,7 +364,7 @@ function collect_results(chunk::CodeChunk, fmt::ScriptResult)
         end
     end
     if content != ""
-         rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_string, copy(chunk.options))
+         rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_AbstractString, copy(chunk.options))
         push!(result_chunks, rchunk)
     end
 
@@ -380,7 +380,7 @@ function collect_results(chunk::CodeChunk, fmt::TermResult)
         output *= prompt * r.code
         output *=  r.displayed * r.stdout
         if !isempty(r.figures)
-            rchunk = CodeChunk("", chunk.number, chunk.start_line, chunk.option_string, copy(chunk.options))
+            rchunk = CodeChunk("", chunk.number, chunk.start_line, chunk.option_AbstractString, copy(chunk.options))
             rchunk.output = output
             output = ""
             rchunk.figures = r.figures
@@ -388,7 +388,7 @@ function collect_results(chunk::CodeChunk, fmt::TermResult)
         end
     end
     if output != ""
-         rchunk = CodeChunk("", chunk.number, chunk.start_line, chunk.option_string, copy(chunk.options))
+         rchunk = CodeChunk("", chunk.number, chunk.start_line, chunk.option_AbstractString, copy(chunk.options))
          rchunk.output = output
         push!(result_chunks, rchunk)
     end

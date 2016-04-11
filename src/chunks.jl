@@ -1,12 +1,12 @@
 
 type WeaveDoc
-    source::String
-    basename::String
-    path::String
+    source::AbstractString
+    basename::AbstractString
+    path::AbstractString
     chunks::Array
-    cwd::String
+    cwd::AbstractString
     format
-    doctype::String
+    doctype::AbstractString
     function WeaveDoc(source, chunks)
         path, fname = splitdir(abspath(source))
         basename = splitext(fname)[1]
@@ -15,29 +15,29 @@ type WeaveDoc
 end
 
 immutable ChunkOutput
-    code::String
-    stdout::String
-    displayed::String
-    figures::Array{String}
+    code::AbstractString
+    stdout::AbstractString
+    displayed::AbstractString
+    figures::Array{AbstractString}
 end
 
 type CodeChunk
-    content::String
+    content::AbstractString
     number::Int
     result_no::Int
     start_line::Int
-    option_string::String
+    option_AbstractString::AbstractString
     options::Dict{Symbol, Any}
-    output::String
-    figures::Array{String}
+    output::AbstractString
+    figures::Array{AbstractString}
     result::Array{ChunkOutput}
-    function CodeChunk(content, number, start_line, option_string, options)
-        new(content, number, 0, start_line, option_string, options, "", String[], ChunkOutput[])
+    function CodeChunk(content, number, start_line, option_AbstractString, options)
+        new(content, number, 0, start_line, option_AbstractString, options, "", AbstractString[], ChunkOutput[])
     end
 end
 
 type DocChunk
-    content::String
+    content::AbstractString
     number::Int
     start_line::Int
 end

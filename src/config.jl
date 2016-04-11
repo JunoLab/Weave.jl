@@ -22,7 +22,7 @@ const rcParams =
                                 :wrap=> true,
                                 :line_width => 75,
                                 :engine=> "julia",
-                                #:option_string=> "",
+                                #:option_AbstractString=> "",
                                 #Defined in formats
                                 :fig_ext => nothing,
                                 :fig_pos=> nothing,

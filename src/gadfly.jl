@@ -20,7 +20,7 @@ function Base.display(report::Report, m::MIME"image/png", p::Plot)
 
         #report.cur_result *= formatfigures(chunk, docformat)
         #report.term_state = :fig
-    #    chunk.figures = String[]
+    #    chunk.figures = AbstractString[]
     #else
         push!(report.figures, rel_name)
     #end

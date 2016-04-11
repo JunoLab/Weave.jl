@@ -1,7 +1,7 @@
 pushopt(options::Dict,expr::Expr) = Base.Meta.isexpr(expr,:(=)) && (options[expr.args[1]] = expr.args[2])
 
 
-const input_formats = @compat Dict{String, Any}(
+const input_formats = @compat Dict{AbstractString, Any}(
         "noweb" => Dict{Symbol, Any}(
                     :codestart => r"^<<(.*?)>>=\s*$",
                     :codeend => r"^@\s*$"
@@ -14,7 +14,7 @@ const input_formats = @compat Dict{String, Any}(
 
 
 @doc "Read and parse input document" ->
-function read_doc(source::String, format="noweb"::String)
+function read_doc(source::AbstractString, format="noweb"::AbstractString)
     document = bytestring(open(source) do io
         mmap_array(Uint8,(filesize(source),),io)
     end)
@@ -22,8 +22,8 @@ function read_doc(source::String, format="noweb"::String)
     doc = WeaveDoc(source, parsed)
 end
 
-@doc "Parse chunks from string" ->
-function parse_doc(document::String, format="noweb"::String)
+@doc "Parse chunks from AbstractString" ->
+function parse_doc(document::AbstractString, format="noweb"::AbstractString)
   #doctext = readall(open(document))
   lines = split(document, "\n")
 
@@ -37,21 +37,21 @@ function parse_doc(document::String, format="noweb"::String)
   start_line = 0
 
   options = Dict()
-  optionstring = ""
+  optionAbstractString = ""
   parsed = Any[]
   for lineno in 1:length(lines)
     line = lines[lineno]
     if (m = match(codestart, line)) != nothing && state=="doc"
       state = "code"
       if m.captures[1] == nothing
-          optionstring = ""
+          optionAbstractString = ""
       else
-          optionstring=strip(m.captures[1])
+          optionAbstractString=strip(m.captures[1])
       end
-      #@show optionstring
+      #@show optionAbstractString
       options = Dict{Symbol,Any}()
-      if length(optionstring) > 0
-          expr = parse(optionstring)
+      if length(optionAbstractString) > 0
+          expr = parse(optionAbstractString)
           Base.Meta.isexpr(expr,:(=)) && (options[expr.args[1]] = expr.args[2])
           Base.Meta.isexpr(expr,:toplevel) && map(pushopt,fill(options,length(expr.args)),expr.args)
       end
@@ -70,10 +70,10 @@ function parse_doc(document::String, format="noweb"::String)
     end
     if ismatch(codeend, line) && state=="code"
 
-      chunk = CodeChunk(content, codeno, start_line, optionstring, options)
+      chunk = CodeChunk(content, codeno, start_line, optionAbstractString, options)
       #chunk = @compat Dict{Symbol,Any}(:type => "code", :content => content,
 #                                   :number => codeno, :options => options,
-#                                       :optionstring => optionstring,
+#                                       :optionAbstractString => optionAbstractString,
 #                                       :start_line => start_line)
 
       codeno+=1
