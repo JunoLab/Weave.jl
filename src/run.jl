@@ -304,6 +304,7 @@ end
 function init_plotting(plotlib)
     if plotlib == nothing
         rcParams[:chunk_defaults][:fig] = false
+        rcParams[:plotlib] = nothing
     else
         l_plotlib = lowercase(plotlib)
         rcParams[:chunk_defaults][:fig] = true
