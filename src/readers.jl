@@ -15,9 +15,7 @@ const input_formats = @compat Dict{AbstractString, Any}(
 
 @doc "Read and parse input document" ->
 function read_doc(source::AbstractString, format="noweb"::AbstractString)
-    document = bytestring(open(source) do io
-        mmap_array(Uint8,(filesize(source),),io)
-    end)
+    document = readall(source)
     parsed = parse_doc(document, format)
     doc = WeaveDoc(source, parsed)
 end
