@@ -6,8 +6,8 @@ cleanup = true
 weave("documents/pyplot_formats.txt", plotlib="pyplot", doctype="tex")
 result = readall(open("documents/pyplot_formats.tex"))
 ref = readall(open("documents/pyplot_formats_ref.tex"))
-result = replace(result, r"\s*PyObject.*\n", "") #Remove PyObjects, because they change
-ref = replace(ref, r"\s*PyObject.*\n", "")
+result = replace(result, r"\s*PyObject.*\n", "\n") #Remove PyObjects, because they change
+ref = replace(ref, r"\s*PyObject.*\n", "\n")
 @test result == ref
 
 weave("documents/pyplot_formats.txt", plotlib="pyplot", doctype="github")
@@ -31,4 +31,3 @@ if cleanup
     rm("documents/pyplot_formats.md")
     rm("documents/figures", recursive = true)
 end
-

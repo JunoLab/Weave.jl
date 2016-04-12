@@ -24,19 +24,18 @@ plot(x, sin(x))
 
 ````julia
 julia> x = linspace(0, 2π, 200)
+
 linspace(0.0,6.283185307179586,200)
-
 julia> plot(x, sin(x))
+
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7f702c979c10>
-
+ PyObject <matplotlib.lines.Line2D object at 0x7f11ccf03a10>
 julia> y = 20
-20
 
+20
 julia> plot(x, cos(x))
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7f702c979e90>
-
+ PyObject <matplotlib.lines.Line2D object at 0x7f11ccf03410>
 ````
 
 

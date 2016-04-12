@@ -102,16 +102,17 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
     for (str_expr, expr) = expressions
         reset_report(report)
         (obj, out) = capture_output(expr, SandBox, chunk.options[:term], rcParams[:plotlib])
-
-        if rcParams[:plotlib] == "pyplot"
-            savefigs_pyplot(chunk, report::Report)
-        end
-
         displayed = report.cur_result #Not needed?
         figures = report.figures #Captured figures
         result = ChunkOutput(str_expr, out, displayed, figures)
         push!(results, result)
     end
+
+    #Save figures only in the end of chunk for PyPlot
+    if rcParams[:plotlib] == "PyPlot"
+        savefigs_pyplot(report::Report)
+    end
+
     return results
 end
 
@@ -354,7 +355,7 @@ function collect_results(chunk::CodeChunk, fmt::ScriptResult)
     content = ""
     result_no = 1
     result_chunks = CodeChunk[ ]
-    for r =chunk.result
+    for r = chunk.result
         if strip(r.stdout) == "" && isempty(r.figures)  && r.displayed == ""
             content *= r.code
         else
@@ -369,7 +370,8 @@ function collect_results(chunk::CodeChunk, fmt::ScriptResult)
         end
     end
     if content != ""
-         rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_AbstractString, copy(chunk.options))
+        startswith(content, "\n") || (content = "\n" * content)
+        rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_AbstractString, copy(chunk.options))
         push!(result_chunks, rchunk)
     end
 
