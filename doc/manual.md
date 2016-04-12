@@ -59,7 +59,7 @@ Weave currently supports the following chunk options with the following defaults
 * `label`. Chunk label, will be used for figure labels in Latex as fig:label
 * `wrap = true`. Wrap long lines from output.
 * `line_width = 75`. Line width for wrapped lines.
-* `cache = false`. Cache results, depends on `cache` parameter on `weave` function. 
+* `cache = false`. Cache results, depends on `cache` parameter on `weave` function.
 
 **Options for figures**
 
@@ -83,7 +83,7 @@ using Weave
 weave(Pkg.dir("Weave","examples","gadfly_sample.mdw"))
 ```
 
-Using Winston for plots (Julia 0.3 only):
+Using Winston for plots (Julia 0.3 and Weave.jl 0.04 only):
 
 ```julia
 weave(Pkg.dir("Weave","examples","winston_sample.mdw"),

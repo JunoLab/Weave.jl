@@ -62,8 +62,8 @@ If you want you can hide the chunk using the \texttt{echo=false} chunk option.
 using Gadfly
 Gadfly.default_theme.major_label_font = "Tex Gyre Pagella"
 Gadfly.default_theme.minor_label_font = "Tex Gyre Pagella"
-Gadfly.default_theme.major_label_color = color("black")
-Gadfly.default_theme.minor_label_color = color("black")
+Gadfly.default_theme.major_label_color = colorant"black"
+Gadfly.default_theme.minor_label_color = colorant"black"
 @
 
 Let's create a simple plot:

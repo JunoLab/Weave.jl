@@ -8,7 +8,7 @@ and Sweave.
 
 You can write your documentation and code in input document using Nowed or Markdown syntax and use `weave` function to execute to document to capture results and figures.
 
-**Master branch has now been ported to Julia 0.4, caching doesn't work and PyPlot output tests need to be checked**.
+**Master branch has now been updated for Julia 0.4x, caching doesn't work and PyPlot output tests need to be checked**.
 
 **Current features**
 

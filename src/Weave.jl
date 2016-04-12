@@ -40,12 +40,12 @@ end
 @doc "List supported output formats" ->
 function list_out_formats()
   for format = keys(formats)
-      println(AbstractString(format,": ",  formats[format].description))
+      println(string(format,": ",  formats[format].description))
   end
 end
 
 
-@doc md"""
+@doc """
 Tangle source code from input document to .jl file.
 
 **parameters:**
@@ -74,7 +74,7 @@ function tangle(source ; out_path=:doc, informat="noweb")
     info("Writing to file $(doc.basename).jl")
 end
 
-@doc md"""
+@doc """
 Weave an input document to output file.
 
 **parameters:**
