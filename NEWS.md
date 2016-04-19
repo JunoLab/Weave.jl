@@ -1,11 +1,17 @@
 
 # Release notes for Weave.jl
 
-### Changes in master
+### v0.1.0
 
-* Simple caching of code chunks
-* Each document is executed in separate sandbox module instead of redefining the          same one. Fixes warnings and occasional segfaults.
+19th April 2016
+
+* Updated for Julia 0.4x, drop 0.3x support
+* Each document is executed in separate sandbox module instead of redefining the same one. Fixes warnings and occasional segfaults.
+* Change the output of chunks:
+  - Output will be added to the output directly where they are created (default).
+  - Use "results = :hold" to push all output after the chunk.
 * New chunk option: `line_width`.
+* Winston support is not implemented yet for this version.
 * Bug fix in wrapping output lines.
 * Internal changes
     - Chunks are now represented with their own type. Allows multiple dispatch
