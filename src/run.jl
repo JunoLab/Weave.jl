@@ -1,11 +1,9 @@
-@doc """
-Run code chunks and capture output from parsed document.
-
-```julia
-function run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly", informat="noweb",
+"""
+run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly", informat="noweb",
     out_path=:doc, fig_path = "figures", fig_ext = nothing,
     cache_path = "cache", cache = :off)
-```
+
+Run code chunks and capture output from parsed document.
 
 * `doctype`: see `list_out_formats()`
 * `plotlib`: `"PyPlot"`, `"Gadfly"`, or `"Winston"`
@@ -19,7 +17,7 @@ function run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly", informat="nowe
  `:user` = cache based on chunk options, `:refresh`, run all code chunks and save new cache.
 
 **Note:** Run command from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
-""" ->
+"""
 function Base.run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly", informat="noweb",
         out_path=:doc, fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache = :off)

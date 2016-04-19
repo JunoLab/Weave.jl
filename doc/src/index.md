@@ -1,4 +1,6 @@
 
+# Intro
+
 This is the documentation of [Weave.jl](http://github.com/mpastell/weave.jl). Weave is a scientific report generator/literate programming tool
 for Julia. It resembles [Pweave](http://mpastell.com/pweave) and, Knitr
 and Sweave.
@@ -9,8 +11,12 @@ You can write your documentation and code in input document using Nowed or Markd
 
 * Noweb or markdown syntax for input documents.
 * Execute code as terminal or "script" chunks.
-* Capture PyPlot, Gadfly or Winston figures.
+* Capture PyPlot or Gadfly figures.
 * Supports LaTex, Pandoc and Github markdown and reStructuredText output
+
+    {contents}
+
+
 
 # Document syntax
 
@@ -76,18 +82,13 @@ Weave currently supports the following chunk options with the following defaults
 
 # Usage
 
+## Weave
+
 Run from julia using Gadfly for plots:
 
 ```julia
 using Weave
 weave(Pkg.dir("Weave","examples","gadfly_sample.mdw"))
-```
-
-Using Winston for plots (Julia 0.3 and Weave.jl 0.04 only):
-
-```julia
-weave(Pkg.dir("Weave","examples","winston_sample.mdw"),
-plotlib="Winston", doctype="pandoc")
 ```
 
 Using PyPlot:
@@ -96,15 +97,32 @@ Using PyPlot:
 weave(Pkg.dir("Weave","examples","julia_sample.mdw"), plotlib="PyPlot")
 ```
 
-## File formats
+    {docs}
+      weave(source)
+
+## Tangle
+
+Tangling extracts the code from document:
+
+    {docs}
+      tangle(source)
+
+
+
+## Supported formats
 
 You can get a list of supported output formats:
 
-```julia
+```
 julia> list_out_formats()
 pandoc: Pandoc markdown
 rst: reStructuredText and Sphinx
 texminted: Latex using minted for highlighting
 github: Github markdown
+asciidoc: AsciiDoc
 tex: Latex with custom code environments
 ```
+
+# Index
+
+    {index}

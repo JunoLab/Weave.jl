@@ -13,14 +13,14 @@ const input_formats = @compat Dict{AbstractString, Any}(
         )
 
 
-@doc "Read and parse input document" ->
+"""Read and parse input document"""
 function read_doc(source::AbstractString, format="noweb"::AbstractString)
     document = readall(source)
     parsed = parse_doc(document, format)
     doc = WeaveDoc(source, parsed)
 end
 
-@doc "Parse chunks from AbstractString" ->
+"""Parse chunks from AbstractString"""
 function parse_doc(document::AbstractString, format="noweb"::AbstractString)
   #doctext = readall(open(document))
   lines = split(document, "\n")

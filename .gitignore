@@ -19,7 +19,9 @@ test/documents/*.pdf
 test/documents/chunk_options.jl
 !test/documents/*ref.*
 
-
+doc/build
+doc/site
+stable/
 
 tmp/
 .idea
