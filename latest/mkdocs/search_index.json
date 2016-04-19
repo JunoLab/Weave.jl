@@ -1,0 +1,69 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "Intro\n\n\nThis is the documentation of \nWeave.jl\n. Weave is a scientific report generator/literate programming tool for Julia. It resembles \nPweave\n and, Knitr and Sweave.\n\n\nYou can write your documentation and code in input document using Nowed or Markdown syntax and use \nweave\n function to execute to document to capture results and figures.\n\n\nCurrent features\n\n\n\n\nNoweb or markdown syntax for input documents.\n\n\nExecute code as terminal or \"script\" chunks.\n\n\nCapture PyPlot or Gadfly figures.\n\n\n\n\nSupports LaTex, Pandoc and Github markdown and reStructuredText output\n\n\n\n\n\n\nIntro\n\n\n\n\nDocument syntax\n\n\nNoweb\n\n\nMarkdown\n\n\n\n\n\n\nChunk options\n\n\nUsage\n\n\nWeave\n\n\nTangle\n\n\nSupported formats\n\n\n\n\n\n\nIndex\n\n\n\n\n\n\nDocument syntax\n\n\nWeave uses noweb or markdown syntax for defining the code chunks and documentation chunks.\n\n\n\n\nNoweb\n\n\n\n\nCode chunks\n\n\nstart with a line marked with \n=\n or \noptions\n=\n and end with line marked with \n@\n. The code between the start and end markers is executed and the output is captured to the output document. See for options below.\n\n\n\n\nDocumentation chunks\n\n\nAre the rest of the document (between \n@\n and \n=\n lines and the first chunk be default) and can be written with several different markup languages.\n\n\nSample document\n\n\n\n\nMarkdown\n\n\nMarkdown code chunks are defined using fenced code blocks. \nSee sample document:\n\n\n\n\nChunk options\n\n\nI've tried to follow \nKnitr\n's naming for chunk options, but not all options are implemented.\n\n\nOptions are separated using \";\" and need to be valid Julia expressions.  Example: A code chunk that saves and displays a 12 cm wide image and hides the source code:\n\n\nfig_width=5; echo=false \n=\nusing Gadfly\nx = linspace(0, 2\u03c0, 200)\nplot(x=x, y = sin(x), Geom.line)\n@\n\n\n\n\nWeave currently supports the following chunk options with the following defaults:\n\n\nOptions for code\n\n\n\n\necho = true\n. Echo the code in the output document. If \nfalse\n the source code will be hidden.\n\n\nresults = \"markup\"\n. The output format of the printed results. \"markup\" for literal block, \"hidden\" for hidden results or anything else for raw output (I tend to use \u2018tex\u2019 for Latex and \u2018rst\u2019 for rest. Raw output is useful if you wan\u2019t to e.g. create tables from code chunks.\n\n\neval = true\n. Evaluate the code chunk. If false the chunk won\u2019t be executed.\n\n\nterm=false\n. If true the output emulates a REPL session. Otherwise only stdout and figures will be included in output.\n\n\nlabel\n. Chunk label, will be used for figure labels in Latex as fig:label\n\n\nwrap = true\n. Wrap long lines from output.\n\n\nline_width = 75\n. Line width for wrapped lines.\n\n\ncache = false\n. Cache results, depends on \ncache\n parameter on \nweave\n function.\n\n\nhold = false\n. Hold all results until the end of the chunk.\n\n\n\n\nOptions for figures\n\n\n\n\nfig_width\n. Figure width defined in markup, default depends on the output format.\n\n\nout_width\n. Width of saved figure.\n\n\nout_height\n. Height of saved figure.\n\n\ndpi\n=96. Resolution of saved figures.\n\n\nfig_cap\n. Figure caption.\n\n\nlabel\n. Chunk label, will be used for figure labels in Latex as fig:label\n\n\nfig_ext\n. File extension (format) of saved figures.\n\n\nfig_pos=\"htpb\"\n. Figure position in Latex.  \n\n\nfig_env=\"figure\"\n. Figure environment in Latex.\n\n\n\n\n\n\nUsage\n\n\n\n\nWeave\n\n\nRun from julia using Gadfly for plots:\n\n\nusing Weave\nweave(Pkg.dir(\nWeave\n,\nexamples\n,\ngadfly_sample.mdw\n))\n\n\n\n\nUsing PyPlot:\n\n\nweave(Pkg.dir(\nWeave\n,\nexamples\n,\njulia_sample.mdw\n), plotlib=\nPyPlot\n)\n\n\n\n\n#\n\n\nWeave.weave\n \n \nMethod\n.\n\n\n\n\nweave(source ; doctype = \"pandoc\", plotlib=\"Gadfly\",     informat=\"noweb\", out_path=:doc, fig_path = \"figures\", fig_ext = nothing)\n\n\nWeave an input document to output file.\n\n\n\n\ndoctype\n: see \nlist_out_formats()\n\n\nplotlib\n: \n\"PyPlot\"\n, \n\"Gadfly\"\n or \nnothing\n\n\ninformat\n: \n\"noweb\"\n of \n\"markdown\"\n\n\nout_path\n: Path where the output is generated. Can be: \n:doc\n: Path of the source document, \n:pwd\n: Julia working directory,     \n\"somepath\"\n: Path as a String e.g \n\"/home/mpastell/weaveout\"\n\n\nfig_path\n: where figures will be generated, relative to out_path\n\n\nfig_ext\n: Extension for saved figures e.g. \n\".pdf\"\n, \n\".png\"\n. Default setting depends on \ndoctype\n.\n\n\ncache_path\n: where of cached output will be saved.\n\n\ncache\n: controls caching of code: \n:off\n = no caching, \n:all\n = cache everything,   \n:user\n = cache based on chunk options, \n:refresh\n, run all code chunks and save new cache.\n\n\n\n\nNote:\n Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.\n\n\n\n\nTangle\n\n\nTangling extracts the code from document:\n\n\n#\n\n\nWeave.tangle\n \n \nMethod\n.\n\n\n\n\ntangle(source ; out_path=:doc, informat=\"noweb\")\n\n\nTangle source code from input document to .jl file.\n\n\n\n\ninformat\n: \n\"noweb\"\n of \n\"markdown\"\n\n\nout_path\n: Path where the output is generated. Can be: \n:doc\n: Path of the source document, \n:pwd\n: Julia working directory, \n\"somepath\"\n: Path as a AbstractString e.g \n\"/home/mpastell/weaveout\"\n\n\n\n\n\n\nSupported formats\n\n\nYou can get a list of supported output formats:\n\n\njulia\n list_out_formats()\npandoc: Pandoc markdown\nrst: reStructuredText and Sphinx\ntexminted: Latex using minted for highlighting\ngithub: Github markdown\nasciidoc: AsciiDoc\ntex: Latex with custom code environments\n\n\n\n\n\n\nIndex\n\n\n\n\nWeave.tangle\n\n\nWeave.weave", 
+            "title": "Home"
+        }, 
+        {
+            "location": "/#intro", 
+            "text": "This is the documentation of  Weave.jl . Weave is a scientific report generator/literate programming tool for Julia. It resembles  Pweave  and, Knitr and Sweave.  You can write your documentation and code in input document using Nowed or Markdown syntax and use  weave  function to execute to document to capture results and figures.  Current features   Noweb or markdown syntax for input documents.  Execute code as terminal or \"script\" chunks.  Capture PyPlot or Gadfly figures.   Supports LaTex, Pandoc and Github markdown and reStructuredText output    Intro   Document syntax  Noweb  Markdown    Chunk options  Usage  Weave  Tangle  Supported formats    Index", 
+            "title": "Intro"
+        }, 
+        {
+            "location": "/#document-syntax", 
+            "text": "Weave uses noweb or markdown syntax for defining the code chunks and documentation chunks.", 
+            "title": "Document syntax"
+        }, 
+        {
+            "location": "/#noweb", 
+            "text": "", 
+            "title": "Noweb"
+        }, 
+        {
+            "location": "/#code-chunks", 
+            "text": "start with a line marked with  =  or  options =  and end with line marked with  @ . The code between the start and end markers is executed and the output is captured to the output document. See for options below.", 
+            "title": "Code chunks"
+        }, 
+        {
+            "location": "/#documentation-chunks", 
+            "text": "Are the rest of the document (between  @  and  =  lines and the first chunk be default) and can be written with several different markup languages.  Sample document", 
+            "title": "Documentation chunks"
+        }, 
+        {
+            "location": "/#markdown", 
+            "text": "Markdown code chunks are defined using fenced code blocks.  See sample document:", 
+            "title": "Markdown"
+        }, 
+        {
+            "location": "/#chunk-options", 
+            "text": "I've tried to follow  Knitr 's naming for chunk options, but not all options are implemented.  Options are separated using \";\" and need to be valid Julia expressions.  Example: A code chunk that saves and displays a 12 cm wide image and hides the source code:  fig_width=5; echo=false  =\nusing Gadfly\nx = linspace(0, 2\u03c0, 200)\nplot(x=x, y = sin(x), Geom.line)\n@  Weave currently supports the following chunk options with the following defaults:  Options for code   echo = true . Echo the code in the output document. If  false  the source code will be hidden.  results = \"markup\" . The output format of the printed results. \"markup\" for literal block, \"hidden\" for hidden results or anything else for raw output (I tend to use \u2018tex\u2019 for Latex and \u2018rst\u2019 for rest. Raw output is useful if you wan\u2019t to e.g. create tables from code chunks.  eval = true . Evaluate the code chunk. If false the chunk won\u2019t be executed.  term=false . If true the output emulates a REPL session. Otherwise only stdout and figures will be included in output.  label . Chunk label, will be used for figure labels in Latex as fig:label  wrap = true . Wrap long lines from output.  line_width = 75 . Line width for wrapped lines.  cache = false . Cache results, depends on  cache  parameter on  weave  function.  hold = false . Hold all results until the end of the chunk.   Options for figures   fig_width . Figure width defined in markup, default depends on the output format.  out_width . Width of saved figure.  out_height . Height of saved figure.  dpi =96. Resolution of saved figures.  fig_cap . Figure caption.  label . Chunk label, will be used for figure labels in Latex as fig:label  fig_ext . File extension (format) of saved figures.  fig_pos=\"htpb\" . Figure position in Latex.    fig_env=\"figure\" . Figure environment in Latex.", 
+            "title": "Chunk options"
+        }, 
+        {
+            "location": "/#usage", 
+            "text": "", 
+            "title": "Usage"
+        }, 
+        {
+            "location": "/#weave", 
+            "text": "Run from julia using Gadfly for plots:  using Weave\nweave(Pkg.dir( Weave , examples , gadfly_sample.mdw ))  Using PyPlot:  weave(Pkg.dir( Weave , examples , julia_sample.mdw ), plotlib= PyPlot )  #  Weave.weave     Method .   weave(source ; doctype = \"pandoc\", plotlib=\"Gadfly\",     informat=\"noweb\", out_path=:doc, fig_path = \"figures\", fig_ext = nothing)  Weave an input document to output file.   doctype : see  list_out_formats()  plotlib :  \"PyPlot\" ,  \"Gadfly\"  or  nothing  informat :  \"noweb\"  of  \"markdown\"  out_path : Path where the output is generated. Can be:  :doc : Path of the source document,  :pwd : Julia working directory,      \"somepath\" : Path as a String e.g  \"/home/mpastell/weaveout\"  fig_path : where figures will be generated, relative to out_path  fig_ext : Extension for saved figures e.g.  \".pdf\" ,  \".png\" . Default setting depends on  doctype .  cache_path : where of cached output will be saved.  cache : controls caching of code:  :off  = no caching,  :all  = cache everything,    :user  = cache based on chunk options,  :refresh , run all code chunks and save new cache.   Note:  Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.", 
+            "title": "Weave"
+        }, 
+        {
+            "location": "/#tangle", 
+            "text": "Tangling extracts the code from document:  #  Weave.tangle     Method .   tangle(source ; out_path=:doc, informat=\"noweb\")  Tangle source code from input document to .jl file.   informat :  \"noweb\"  of  \"markdown\"  out_path : Path where the output is generated. Can be:  :doc : Path of the source document,  :pwd : Julia working directory,  \"somepath\" : Path as a AbstractString e.g  \"/home/mpastell/weaveout\"", 
+            "title": "Tangle"
+        }, 
+        {
+            "location": "/#supported-formats", 
+            "text": "You can get a list of supported output formats:  julia  list_out_formats()\npandoc: Pandoc markdown\nrst: reStructuredText and Sphinx\ntexminted: Latex using minted for highlighting\ngithub: Github markdown\nasciidoc: AsciiDoc\ntex: Latex with custom code environments", 
+            "title": "Supported formats"
+        }, 
+        {
+            "location": "/#index", 
+            "text": "Weave.tangle  Weave.weave", 
+            "title": "Index"
+        }
+    ]
+}
