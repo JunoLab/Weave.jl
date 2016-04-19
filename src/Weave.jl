@@ -82,7 +82,7 @@ Weave an input document to output file.
 * `plotlib`: `"PyPlot"`, `"Gadfly"` or `nothing`
 * `informat`: `"noweb"` of `"markdown"`
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
-    `"somepath"`: Path as a AbstractString e.g `"/home/mpastell/weaveout"`
+    `"somepath"`: Path as a String e.g `"/home/mpastell/weaveout"`
 * `fig_path`: where figures will be generated, relative to out_path
 * `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
 * `cache_path`: where of cached output will be saved.

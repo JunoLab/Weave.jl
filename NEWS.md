@@ -3,6 +3,7 @@
 
 ### In master
 
+* Change pandoc output to use inline images if there is no caption
 * Use Documenter.jl for documentation
 * Add chunk option `hold`, replaces results = "hold". This way you can use e.g. `hold = true, results=raw`.
 

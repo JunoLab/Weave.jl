@@ -170,12 +170,14 @@ const texminted = Tex("Latex using minted for highlighting",
                                          :doctype => "texminted"
                                          ))
 
-type Markdown
-    description::AbstractString
-    formatdict::Dict{Symbol,Any}
+
+type Pandoc
+  description::AbstractString
+  formatdict::Dict{Symbol,Any}
 end
 
-const pandoc = Markdown("Pandoc markdown",
+
+const pandoc = Pandoc("Pandoc markdown",
                         @compat Dict{Symbol,Any}(
                                 :codestart => "~~~~{.julia}",
                                 :codeend=>"~~~~~~~~~~~~~\n\n",
@@ -185,6 +187,11 @@ const pandoc = Markdown("Pandoc markdown",
                                 :extension=>"md",
                                 :doctype=>"pandoc"
                                                ))
+
+type Markdown
+   description::AbstractString
+   formatdict::Dict{Symbol,Any}
+end
 
 
 const github = Markdown("Github markdown",
@@ -303,6 +310,31 @@ function formatfigures(chunk, docformat::Markdown)
     end
     return result
 end
+
+function formatfigures(chunk, docformat::Pandoc)
+    fignames = chunk.figures
+    caption = chunk.options[:fig_cap]
+    result = ""
+    figstring = ""
+
+    length(fignames) > 0 || (return "")
+
+    if caption != nothing
+        result *= "![$caption]($(fignames[1]))\n"
+        for fig = fignames[2:end]
+            result *= "![]($fig)\n"
+            println("Warning, only the first figure gets a caption\n")
+        end
+    else
+        for fig in fignames
+            result *= "![]($fig)\\ \n\n"
+        end
+    end
+    return result
+end
+
+
+
 
 
 function formatfigures(chunk, docformat::Rest)
