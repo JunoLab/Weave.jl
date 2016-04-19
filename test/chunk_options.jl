@@ -34,7 +34,7 @@ ref = readall(open("documents/chunk_options_ref.jl"))
 @test result == ref
 cleanup && rm("documents/chunk_options.jl")
 
-#Test chunk options and output formats
+#Test functions and sandbox clearing
 weave("documents/chunk_func.noweb", plotlib=nothing)
 result = readall(open("documents/chunk_func.md"))
 ref = readall(open("documents/chunk_func_ref.md"))

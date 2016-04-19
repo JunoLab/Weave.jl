@@ -9,6 +9,9 @@ using Base.Test
 info("Test: Chunk options")
 include("chunk_options.jl")
 
+info("Test: hold and term options with plots")
+include("test_hold.jl")
+
 # Cache is currently not implemented for new output format
 #info("Test: Caching")
 #include("cache_test.jl")

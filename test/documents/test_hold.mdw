@@ -1,0 +1,33 @@
+
+# Default
+
+<<>>=
+using Gadfly
+x = 1:10
+plot(x = x, y = x)
+print(x)
+plot(x = x, y = x)
+display(x)
+@
+
+# Terminal
+
+<<term=true>>=
+using Gadfly
+x = 1:10
+plot(x = x, y = x)
+print(x)
+plot(x = x, y = x)
+display(x)
+@
+
+# Hold results
+
+<<hold=true>>=
+using Gadfly
+x = 1:10
+plot(x = x, y = x)
+print(x)
+plot(x = x, y = x)
+display(x)
+@

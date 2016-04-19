@@ -405,7 +405,7 @@ function collect_results(chunk::CodeChunk, fmt::CollectResult)
     result_no = 1
     for r =chunk.result
         chunk.output *=  r.stdout
-        chunk.figures = [chunk.figures, r.figures]
+        chunk.figures = [chunk.figures; r.figures]
     end
 
     return [chunk]
