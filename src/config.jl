@@ -7,6 +7,7 @@ const rcParams =
                                 Dict{Symbol,Any}(
                                 :echo=> true,
                                 :results=> "markup",
+                                :hold => false,
                                 :fig=> true,
                                 :include=> true,
                                 :eval => true,

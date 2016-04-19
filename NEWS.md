@@ -1,6 +1,12 @@
 
 # Release notes for Weave.jl
 
+### In master
+
+* Use Documenter.jl for documentation
+* Add chunk option `hold`, replaces results = "hold". This way you can use e.g. `hold = true, results=raw`.
+
+
 ### v0.1.0
 
 19th April 2016
@@ -9,7 +15,7 @@
 * Each document is executed in separate sandbox module instead of redefining the same one. Fixes warnings and occasional segfaults.
 * Change the output of chunks:
   - Output will be added to the output directly where they are created (default).
-  - Use "results = :hold" to push all output after the chunk.
+  - Use results = "hold" to push all output after the chunk.
 * New chunk option: `line_width`.
 * Winston support is not implemented yet for this version.
 * Bug fix in wrapping output lines.

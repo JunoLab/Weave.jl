@@ -79,7 +79,7 @@ weave(source ; doctype = "pandoc", plotlib="Gadfly",
 Weave an input document to output file.
 
 * `doctype`: see `list_out_formats()`
-* `plotlib`: `"PyPlot"`, `"Gadfly"`, or `"Winston"`
+* `plotlib`: `"PyPlot"`, `"Gadfly"` or `nothing`
 * `informat`: `"noweb"` of `"markdown"`
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
     `"somepath"`: Path as a AbstractString e.g `"/home/mpastell/weaveout"`

@@ -66,6 +66,7 @@ Weave currently supports the following chunk options with the following defaults
 * `wrap = true`. Wrap long lines from output.
 * `line_width = 75`. Line width for wrapped lines.
 * `cache = false`. Cache results, depends on `cache` parameter on `weave` function.
+* `hold = false`. Hold all results until the end of the chunk.
 
 **Options for figures**
 

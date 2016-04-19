@@ -264,7 +264,7 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     chunk.result = run_code(chunk, report, SandBox)
     if chunk.options[:term]
         chunks = collect_results(chunk, TermResult())
-    elseif chunk.options[:results] == "hold"
+    elseif chunk.options[:hold]
         chunks = collect_results(chunk, CollectResult())
     else
         chunks = collect_results(chunk, ScriptResult())
