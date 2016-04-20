@@ -1,3 +1,4 @@
+<style type="text/css">
 @font-face {
   font-family: 'Raleway';
   font-style: normal;
@@ -519,3 +520,7 @@ code {
 @media (min-width: 750px) {}
 @media (min-width: 1000px) {}
 @media (min-width: 1200px) {}
+
+h1.title {margin-top : 20px}
+img {max-width : 100%%}
+</style>

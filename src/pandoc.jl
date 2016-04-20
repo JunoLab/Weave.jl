@@ -19,7 +19,7 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc)
 
   html = readall(pipeline(`echo $formatted` ,
    `pandoc -R -s --mathjax --self-contained --template
-    $html_template -V wversion=$wversion -V wtime=$wtime -V wsource=$wsource`)
+    $html_template --include-in-header=$css_template -V wversion=$wversion -V wtime=$wtime -V wsource=$wsource`)
     )
 
   cd(old_wd)
