@@ -5,7 +5,6 @@ This is the documentation of [Weave.jl](http://github.com/mpastell/weave.jl). We
 for Julia. It resembles [Pweave](http://mpastell.com/pweave) and, Knitr
 and Sweave.
 
-You can write your documentation and code in input document using Noweb or Markdown syntax and use `weave` function to execute to document to capture results and figures.
 
 **Current features**
 
@@ -19,7 +18,66 @@ You can write your documentation and code in input document using Noweb or Markd
 
     {contents}
 
+## Usage
 
+You can write your documentation and code in input document using Noweb or Markdown syntax and use `weave` function to execute to document to capture results and figures.
+
+### Weave
+
+Weave document with markup and julia code using Gadfly for plots,
+`out_path = :pwd` makes the results appear in the current working directory.
+
+```julia
+using Weave
+weave(Pkg.dir("Weave","examples","gadfly_sample.mdw"), out_path = :pwd)
+```
+
+Using PyPlot:
+
+```julia
+weave(Pkg.dir("Weave","examples","julia_sample.mdw"), plotlib="PyPlot", out_path = :pwd)
+```
+
+    {docs}
+      weave(source)
+
+### Weave from shell
+
+You can also use the `weave.jl` script under bin directory to weave documents
+from the shell:
+
+```
+$ ./weave.jl
+usage: weave.jl [--doctype DOCTYPE] [--plotlib PLOTLIB]
+                [--informat INFORMAT] [--out_path OUT_PATH]
+                [--fig_path FIG_PATH] [--fig_ext FIG_EXT] source...
+```
+
+### Tangle
+
+Tangling extracts the code from document:
+
+    {docs}
+      tangle(source)
+
+
+
+### Get supported formats
+
+You can get a list of supported output formats:
+
+```
+julia> list_out_formats()
+pandoc: Pandoc markdown
+rst: reStructuredText and Sphinx
+texminted: Latex using minted for highlighting
+github: Github markdown
+asciidoc: AsciiDoc
+tex: Latex with custom code environments
+```
+
+    {docs}
+      list_out_formats()
 
 ## Document syntax
 
@@ -81,51 +139,6 @@ Weave currently supports the following chunk options with the following defaults
 * `fig_env="figure"`. Figure environment in Latex.
 
 
-## Usage
-
-### Weave
-
-Run from julia using Gadfly for plots:
-
-```julia
-using Weave
-weave(Pkg.dir("Weave","examples","gadfly_sample.mdw"))
-```
-
-Using PyPlot:
-
-```julia
-weave(Pkg.dir("Weave","examples","julia_sample.mdw"), plotlib="PyPlot")
-```
-
-    {docs}
-      weave(source)
-
-### Tangle
-
-Tangling extracts the code from document:
-
-    {docs}
-      tangle(source)
-
-
-
-### Get supported formats
-
-You can get a list of supported output formats:
-
-```
-julia> list_out_formats()
-pandoc: Pandoc markdown
-rst: reStructuredText and Sphinx
-texminted: Latex using minted for highlighting
-github: Github markdown
-asciidoc: AsciiDoc
-tex: Latex with custom code environments
-```
-
-{docs}
-  list_out_formats()
 
 
 

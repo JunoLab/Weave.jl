@@ -41,7 +41,7 @@ end
 args = ArgParse.parse_args(ap)
 source = args["source"]
 delete!(args, "source")
-args_col = {}
+args_col = []
 
 #Check for special values of out_path
 if args["out_path"] == ":doc"
