@@ -183,6 +183,18 @@
             </li>
           
             <li class="anchor">
+              <a title="Usage" href="#usage">
+                Usage
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Supported formats" href="#supported-formats">
+                Supported formats
+              </a>
+            </li>
+          
+            <li class="anchor">
               <a title="Document syntax" href="#document-syntax">
                 Document syntax
               </a>
@@ -191,12 +203,6 @@
             <li class="anchor">
               <a title="Chunk options" href="#chunk-options">
                 Chunk options
-              </a>
-            </li>
-          
-            <li class="anchor">
-              <a title="Usage" href="#usage">
-                Usage
               </a>
             </li>
           
@@ -231,7 +237,6 @@
           <p><a id='Intro-1'></a></p>
 <h1 id="intro">Intro</h1>
 <p>This is the documentation of <a href="http://github.com/mpastell/weave.jl">Weave.jl</a>. Weave is a scientific report generator/literate programming tool for Julia. It resembles <a href="http://mpastell.com/pweave">Pweave</a> and, Knitr and Sweave.</p>
-<p>You can write your documentation and code in input document using Noweb or Markdown syntax and use <code>weave</code> function to execute to document to capture results and figures.</p>
 <p><strong>Current features</strong></p>
 <ul>
 <li>Noweb or markdown syntax for input documents.</li>
@@ -244,14 +249,85 @@
 <ul>
 <li><a href=".#Intro-1">Intro</a><ul>
 <li><a href=".#Contents-1">Contents</a></li>
+<li><a href=".#Usage-1">Usage</a></li>
+<li><a href=".#Supported-formats-1">Supported formats</a></li>
 <li><a href=".#Document-syntax-1">Document syntax</a></li>
 <li><a href=".#Chunk-options-1">Chunk options</a></li>
-<li><a href=".#Usage-1">Usage</a></li>
 <li><a href=".#Set-default-chunk-options-1">Set default chunk options</a></li>
 <li><a href=".#Function-index-1">Function index</a></li>
 </ul>
 </li>
 </ul>
+<p><a id='Usage-1'></a></p>
+<h2 id="usage">Usage</h2>
+<p>You can write your documentation and code in input document using Noweb or Markdown syntax and use <code>weave</code> function to execute to document to capture results and figures.</p>
+<p><a id='Weave-1'></a></p>
+<h3 id="weave">Weave</h3>
+<p>Weave document with markup and julia code using Gadfly for plots, <code>out_path = :pwd</code> makes the results appear in the current working directory.</p>
+<pre><code class="julia">using Weave
+weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;gadfly_sample.mdw&quot;), out_path = :pwd)
+</code></pre>
+
+<p>Using PyPlot:</p>
+<pre><code class="julia">weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;julia_sample.mdw&quot;), plotlib=&quot;PyPlot&quot;, out_path = :pwd)
+</code></pre>
+
+<p><a id='Weave.weave-Tuple{Any}' href='#Weave.weave-Tuple{Any}'>#</a>
+<strong><code>Weave.weave</code></strong> &mdash; <em>Method</em>.</p>
+<hr />
+<p><code>weave(source ; doctype = "pandoc", plotlib="Gadfly",     informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)</code></p>
+<p>Weave an input document to output file.</p>
+<ul>
+<li><code>doctype</code>: see <code>list_out_formats()</code></li>
+<li><code>plotlib</code>: <code>"PyPlot"</code>, <code>"Gadfly"</code> or <code>nothing</code></li>
+<li><code>informat</code>: <code>"noweb"</code> of <code>"markdown"</code></li>
+<li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>: Julia working directory,     <code>"somepath"</code>: Path as a String e.g <code>"/home/mpastell/weaveout"</code></li>
+<li><code>fig_path</code>: where figures will be generated, relative to out_path</li>
+<li><code>fig_ext</code>: Extension for saved figures e.g. <code>".pdf"</code>, <code>".png"</code>. Default setting depends on <code>doctype</code>.</li>
+<li><code>cache_path</code>: where of cached output will be saved.</li>
+<li><code>cache</code>: controls caching of code: <code>:off</code> = no caching, <code>:all</code> = cache everything,   <code>:user</code> = cache based on chunk options, <code>:refresh</code>, run all code chunks and save new cache.</li>
+</ul>
+<p><strong>Note:</strong> Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.</p>
+<p><a id='Weave-from-shell-1'></a></p>
+<h3 id="weave-from-shell">Weave from shell</h3>
+<p>You can also use the <code>weave.jl</code> script under bin directory to weave documents from the shell:</p>
+<pre><code>$ ./weave.jl
+usage: weave.jl [--doctype DOCTYPE] [--plotlib PLOTLIB]
+                [--informat INFORMAT] [--out_path OUT_PATH]
+                [--fig_path FIG_PATH] [--fig_ext FIG_EXT] source...
+</code></pre>
+
+<p><a id='Tangle-1'></a></p>
+<h3 id="tangle">Tangle</h3>
+<p>Tangling extracts the code from document:</p>
+<p><a id='Weave.tangle-Tuple{Any}' href='#Weave.tangle-Tuple{Any}'>#</a>
+<strong><code>Weave.tangle</code></strong> &mdash; <em>Method</em>.</p>
+<hr />
+<p><code>tangle(source ; out_path=:doc, informat="noweb")</code></p>
+<p>Tangle source code from input document to .jl file.</p>
+<ul>
+<li><code>informat</code>: <code>"noweb"</code> of <code>"markdown"</code></li>
+<li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>: Julia working directory, <code>"somepath"</code>: Path as a AbstractString e.g <code>"/home/mpastell/weaveout"</code></li>
+</ul>
+<p><a id='Supported-formats-1'></a></p>
+<h2 id="supported-formats">Supported formats</h2>
+<p>You can get a list of supported output formats:</p>
+<pre><code>julia&gt; list_out_formats()
+pandoc: Pandoc markdown
+rst: reStructuredText and Sphinx
+texminted: Latex using minted for highlighting
+github: Github markdown
+md2html: Markdown to HTML (requires Pandoc)
+md2pdf: Markdown to pdf (requires Pandoc and xelatex)
+asciidoc: AsciiDoc
+tex: Latex with custom code environments
+</code></pre>
+
+<p><a id='Weave.list_out_formats-Tuple{}' href='#Weave.list_out_formats-Tuple{}'>#</a>
+<strong><code>Weave.list_out_formats</code></strong> &mdash; <em>Method</em>.</p>
+<hr />
+<p><code>list_out_formats()</code></p>
+<p>List supported output formats</p>
 <p><a id='Document-syntax-1'></a></p>
 <h2 id="document-syntax">Document syntax</h2>
 <p>Weave uses noweb or markdown syntax for defining the code chunks and documentation chunks.</p>
@@ -305,60 +381,6 @@ plot(x=x, y = sin(x), Geom.line)
 <li><code>fig_pos="htpb"</code>. Figure position in Latex.  </li>
 <li><code>fig_env="figure"</code>. Figure environment in Latex.</li>
 </ul>
-<p><a id='Usage-1'></a></p>
-<h2 id="usage">Usage</h2>
-<p><a id='Weave-1'></a></p>
-<h3 id="weave">Weave</h3>
-<p>Run from julia using Gadfly for plots:</p>
-<pre><code class="julia">using Weave
-weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;gadfly_sample.mdw&quot;))
-</code></pre>
-
-<p>Using PyPlot:</p>
-<pre><code class="julia">weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;julia_sample.mdw&quot;), plotlib=&quot;PyPlot&quot;)
-</code></pre>
-
-<p><a id='Weave.weave-Tuple{Any}' href='#Weave.weave-Tuple{Any}'>#</a>
-<strong><code>Weave.weave</code></strong> &mdash; <em>Method</em>.</p>
-<hr />
-<p><code>weave(source ; doctype = "pandoc", plotlib="Gadfly",     informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)</code></p>
-<p>Weave an input document to output file.</p>
-<ul>
-<li><code>doctype</code>: see <code>list_out_formats()</code></li>
-<li><code>plotlib</code>: <code>"PyPlot"</code>, <code>"Gadfly"</code> or <code>nothing</code></li>
-<li><code>informat</code>: <code>"noweb"</code> of <code>"markdown"</code></li>
-<li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>: Julia working directory,     <code>"somepath"</code>: Path as a String e.g <code>"/home/mpastell/weaveout"</code></li>
-<li><code>fig_path</code>: where figures will be generated, relative to out_path</li>
-<li><code>fig_ext</code>: Extension for saved figures e.g. <code>".pdf"</code>, <code>".png"</code>. Default setting depends on <code>doctype</code>.</li>
-<li><code>cache_path</code>: where of cached output will be saved.</li>
-<li><code>cache</code>: controls caching of code: <code>:off</code> = no caching, <code>:all</code> = cache everything,   <code>:user</code> = cache based on chunk options, <code>:refresh</code>, run all code chunks and save new cache.</li>
-</ul>
-<p><strong>Note:</strong> Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.</p>
-<p><a id='Tangle-1'></a></p>
-<h3 id="tangle">Tangle</h3>
-<p>Tangling extracts the code from document:</p>
-<p><a id='Weave.tangle-Tuple{Any}' href='#Weave.tangle-Tuple{Any}'>#</a>
-<strong><code>Weave.tangle</code></strong> &mdash; <em>Method</em>.</p>
-<hr />
-<p><code>tangle(source ; out_path=:doc, informat="noweb")</code></p>
-<p>Tangle source code from input document to .jl file.</p>
-<ul>
-<li><code>informat</code>: <code>"noweb"</code> of <code>"markdown"</code></li>
-<li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>: Julia working directory, <code>"somepath"</code>: Path as a AbstractString e.g <code>"/home/mpastell/weaveout"</code></li>
-</ul>
-<p><a id='Get-supported-formats-1'></a></p>
-<h3 id="get-supported-formats">Get supported formats</h3>
-<p>You can get a list of supported output formats:</p>
-<pre><code>julia&gt; list_out_formats()
-pandoc: Pandoc markdown
-rst: reStructuredText and Sphinx
-texminted: Latex using minted for highlighting
-github: Github markdown
-asciidoc: AsciiDoc
-tex: Latex with custom code environments
-</code></pre>
-
-<p>{docs}   list_out_formats()</p>
 <p><a id='Set-default-chunk-options-1'></a></p>
 <h2 id="set-default-chunk-options">Set default chunk options</h2>
 <p>You can set or alter the default chunk options for a document either before running weave or inside the weaved document. You can e.g. use a hidden chunk in the beginning of the source document to set the options:</p>
@@ -394,6 +416,7 @@ Weave.set_chunk_defaults(Dict{Symbol, Any}(
 <h2 id="function-index">Function index</h2>
 <ul>
 <li><a href=".#Weave.get_chunk_defaults-Tuple{}"><code>Weave.get_chunk_defaults</code></a></li>
+<li><a href=".#Weave.list_out_formats-Tuple{}"><code>Weave.list_out_formats</code></a></li>
 <li><a href=".#Weave.restore_chunk_defaults-Tuple{}"><code>Weave.restore_chunk_defaults</code></a></li>
 <li><a href=".#Weave.set_chunk_defaults-Tuple{Any}"><code>Weave.set_chunk_defaults</code></a></li>
 <li><a href=".#Weave.tangle-Tuple{Any}"><code>Weave.tangle</code></a></li>
