@@ -1,163 +1,276 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
+<!--[if lt IE 7 ]><html class="no-js ie6"><![endif]-->
+<!--[if IE 7 ]><html class="no-js ie7"><![endif]-->
+<!--[if IE 8 ]><html class="no-js ie8"><![endif]-->
+<!--[if IE 9 ]><html class="no-js ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    
+      
+        <title>Weave.jl - Scientific Reports Using Julia</title>
+      
+      
+      
+      
         <meta name="author" content="Matti Pastell">
-        
-        <link rel="shortcut icon" href="./img/favicon.ico">
-
-	<title>Weave.jl - Scientific Reports Using Julia</title>
-
-        <link href="./css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="./css/font-awesome-4.5.0.css" rel="stylesheet">
-        <link href="./css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="./css/highlight.css">
-        <link href="./assets/Documenter.css" rel="stylesheet">
-
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
-
-        
-    </head>
-
-    <body class="homepage">
-
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container">
-
-        <!-- Collapsed navigation -->
-        <div class="navbar-header">
-            
-            <!-- Expander button -->
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            
-
-            <!-- Main title -->
-            <a class="navbar-brand" href=".">Weave.jl - Scientific Reports Using Julia</a>
-        </div>
-
-        <!-- Expanded navigation -->
-        <div class="navbar-collapse collapse">
-            
-
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                        <i class="fa fa-search"></i> Search
-                    </a>
-                </li>
-                
-                
-                    <li>
-                        <a href="https://github.com/mpastell/Weave.jl">
-                            
-                                <i class="fa fa-github"></i>
-                            
-                            GitHub
-                        </a>
-                    </li>
-                
-            </ul>
-        </div>
+      
+    
+    <meta property="og:url" content="None">
+    <meta property="og:title" content="Weave.jl - Scientific Reports Using Julia">
+    <meta property="og:image" content="None/./">
+    <meta name="apple-mobile-web-app-title" content="Weave.jl - Scientific Reports Using Julia">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    
+    <link rel="shortcut icon" type="image/x-icon" href="./None">
+    <link rel="icon" type="image/x-icon" href="./None">
+    <style>
+      @font-face {
+      	font-family: 'Icon';
+      	src: url('./assets/fonts/icon.eot?52m981');
+      	src: url('./assets/fonts/icon.eot?#iefix52m981')
+               format('embedded-opentype'),
+      		   url('./assets/fonts/icon.woff?52m981')
+               format('woff'),
+      		   url('./assets/fonts/icon.ttf?52m981')
+               format('truetype'),
+      		   url('./assets/fonts/icon.svg?52m981#icon')
+               format('svg');
+      	font-weight: normal;
+      	font-style: normal;
+      }
+    </style>
+    <link rel="stylesheet" href="./assets/stylesheets/application-54f87043f3.css">
+    
+      <link rel="stylesheet" href="./assets/stylesheets/palettes-05ab2406df.css">
+    
+    
+      
+      
+      
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu+Mono">
+      <style>
+        body, input {
+          font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+        }
+        pre, code {
+          font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+        }
+      </style>
+    
+    
+      <link rel="stylesheet" href="./assets/Documenter.css">
+    
+    <script src="./assets/javascripts/modernizr-4ab42b99fd.js"></script>
+    
+  </head>
+  
+  
+  
+  <body class="palette-primary-indigo palette-accent-blue">
+    
+      
+      
+    
+    <div class="backdrop">
+      <div class="backdrop-paper"></div>
     </div>
-</div>
-
-        <div class="container">
+    <input class="toggle" type="checkbox" id="toggle-drawer">
+    <input class="toggle" type="checkbox" id="toggle-search">
+    <label class="toggle-button overlay" for="toggle-drawer"></label>
+    <header class="header">
+      <nav aria-label="Header">
+  <div class="bar default">
+    <div class="button button-menu" role="button" aria-label="Menu">
+      <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+    </div>
+    <div class="stretch">
+      <div class="title">
+        
+          <span class="path">
             
-                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
+          </span>
+        
+        Weave.jl - Scientific Reports Using Julia
+      </div>
+    </div>
     
-        <li class="main active"><a href="#intro">Intro</a></li>
-        
     
-        <li class="main "><a href="#document-syntax">Document syntax</a></li>
+    <div class="button button-search" role="button" aria-label="Search">
+      <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
+    </div>
+  </div>
+  <div class="bar search">
+    <div class="button button-close" role="button" aria-label="Close">
+      <label class="toggle-button icon icon-back" for="toggle-search"></label>
+    </div>
+    <div class="stretch">
+      <div class="field">
+        <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+      </div>
+    </div>
+    <div class="button button-reset" role="button" aria-label="Search">
+      <button class="toggle-button icon icon-close" id="reset-search"></button>
+    </div>
+  </div>
+</nav>
+    </header>
+    <main class="main">
+      
+      <div class="drawer">
+        <nav aria-label="Navigation">
+  
+  <a href="https://github.com/mpastell/Weave.jl" class="project">
+    <div class="banner">
+      
+      <div class="name">
+        <strong>
+          Weave.jl - Scientific Reports Using Julia
+          <span class="version">
+            
+          </span>
+        </strong>
         
-            <li><a href="#noweb">Noweb</a></li>
+          <br>
+          mpastell/Weave.jl
         
-            <li><a href="#markdown">Markdown</a></li>
-        
+      </div>
+    </div>
+  </a>
+  <div class="scrollable">
+    <div class="wrapper">
+      
+        <ul class="repo">
+          <li class="repo-download">
+            
+            <a href="https://github.com/mpastell/Weave.jl/archive/master.zip" target="_blank" title="Download" data-action="download">
+              <i class="icon icon-download"></i> Download
+            </a>
+          </li>
+          <li class="repo-stars">
+            <a href="https://github.com/mpastell/Weave.jl/stargazers" target="_blank" title="Stargazers" data-action="star">
+              <i class="icon icon-star"></i> Stars
+              <span class="count">&ndash;</span>
+            </a>
+          </li>
+        </ul>
+        <hr>
+      
+      <div class="toc">
+        <ul>
+          
+            
+  <li>
+    <a class="current" title="Home" href=".">
+      Home
+    </a>
     
-        <li class="main "><a href="#chunk-options">Chunk options</a></li>
+      
         
+      
+      
+        <ul>
+          
+            <li class="anchor">
+              <a title="Contents" href="#contents">
+                Contents
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Document syntax" href="#document-syntax">
+                Document syntax
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Chunk options" href="#chunk-options">
+                Chunk options
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Usage" href="#usage">
+                Usage
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Set default chunk options" href="#set-default-chunk-options">
+                Set default chunk options
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Function index" href="#function-index">
+                Function index
+              </a>
+            </li>
+          
+        </ul>
+      
     
-        <li class="main "><a href="#usage">Usage</a></li>
-        
-            <li><a href="#weave">Weave</a></li>
-        
-            <li><a href="#tangle">Tangle</a></li>
-        
-            <li><a href="#get-supported-formats">Get supported formats</a></li>
-        
-            <li><a href="#set-default-chunk-options">Set default chunk options</a></li>
-        
-    
-        <li class="main "><a href="#function-index">Function index</a></li>
-        
-    
-    </ul>
-</div></div>
-                <div class="col-md-9" role="main">
+  </li>
 
-<p><a id='Intro-1'></a></p>
+          
+        </ul>
+        
+      </div>
+    </div>
+  </div>
+</nav>
+      </div>
+      <article class="article">
+        <div class="wrapper">
+          
+          <p><a id='Intro-1'></a></p>
 <h1 id="intro">Intro</h1>
 <p>This is the documentation of <a href="http://github.com/mpastell/weave.jl">Weave.jl</a>. Weave is a scientific report generator/literate programming tool for Julia. It resembles <a href="http://mpastell.com/pweave">Pweave</a> and, Knitr and Sweave.</p>
-<p>You can write your documentation and code in input document using Nowed or Markdown syntax and use <code>weave</code> function to execute to document to capture results and figures.</p>
+<p>You can write your documentation and code in input document using Noweb or Markdown syntax and use <code>weave</code> function to execute to document to capture results and figures.</p>
 <p><strong>Current features</strong></p>
 <ul>
 <li>Noweb or markdown syntax for input documents.</li>
 <li>Execute code as terminal or "script" chunks.</li>
 <li>Capture PyPlot or Gadfly figures.</li>
-<li>
-<p>Supports LaTex, Pandoc and Github markdown and reStructuredText output</p>
-</li>
-<li>
-<p><a href=".#Intro-1">Intro</a></p>
-</li>
-<li><a href=".#Document-syntax-1">Document syntax</a><ul>
-<li><a href=".#Noweb-1">Noweb</a></li>
-<li><a href=".#Markdown-1">Markdown</a></li>
+<li>Supports LaTex, Pandoc and Github markdown and reStructuredText output</li>
 </ul>
-</li>
+<p><a id='Contents-1'></a></p>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href=".#Intro-1">Intro</a><ul>
+<li><a href=".#Contents-1">Contents</a></li>
+<li><a href=".#Document-syntax-1">Document syntax</a></li>
 <li><a href=".#Chunk-options-1">Chunk options</a></li>
-<li><a href=".#Usage-1">Usage</a><ul>
-<li><a href=".#Weave-1">Weave</a></li>
-<li><a href=".#Tangle-1">Tangle</a></li>
-<li><a href=".#Get-supported-formats-1">Get supported formats</a></li>
+<li><a href=".#Usage-1">Usage</a></li>
 <li><a href=".#Set-default-chunk-options-1">Set default chunk options</a></li>
-</ul>
-</li>
 <li><a href=".#Function-index-1">Function index</a></li>
 </ul>
+</li>
+</ul>
 <p><a id='Document-syntax-1'></a></p>
-<h1 id="document-syntax">Document syntax</h1>
+<h2 id="document-syntax">Document syntax</h2>
 <p>Weave uses noweb or markdown syntax for defining the code chunks and documentation chunks.</p>
 <p><a id='Noweb-1'></a></p>
-<h2 id="noweb">Noweb</h2>
+<h3 id="noweb">Noweb</h3>
 <p><a id='Code-chunks-1'></a></p>
-<h3 id="code-chunks">Code chunks</h3>
+<h4 id="code-chunks">Code chunks</h4>
 <p>start with a line marked with <code>&lt;&lt;&gt;&gt;=</code> or <code>&lt;&lt;options&gt;&gt;=</code> and end with line marked with <code>@</code>. The code between the start and end markers is executed and the output is captured to the output document. See for options below.</p>
 <p><a id='Documentation-chunks-1'></a></p>
-<h3 id="documentation-chunks">Documentation chunks</h3>
+<h4 id="documentation-chunks">Documentation chunks</h4>
 <p>Are the rest of the document (between <code>@</code> and <code>&lt;&lt;&gt;&gt;=</code> lines and the first chunk be default) and can be written with several different markup languages.</p>
 <p><a href="https://github.com/mpastell/Weave.jl/blob/master/examples/julia_sample.mdw">Sample document</a></p>
 <p><a id='Markdown-1'></a></p>
-<h2 id="markdown">Markdown</h2>
+<h3 id="markdown">Markdown</h3>
 <p>Markdown code chunks are defined using fenced code blocks. <a href="https://github.com/mpastell/Weave.jl/blob/master/examples/gadfly_sample.jmd">See sample document:</a></p>
 <p><a id='Chunk-options-1'></a></p>
-<h1 id="chunk-options">Chunk options</h1>
-<p>I've tried to follow <a href="http://yihui.name/knitr/options">Knitr</a>'s naming for chunk options, but not all options are implemented.</p>
-<p>Options are separated using ";" and need to be valid Julia expressions.  Example: A code chunk that saves and displays a 12 cm wide image and hides the source code:</p>
+<h2 id="chunk-options">Chunk options</h2>
+<p>I've mostly followed <a href="http://yihui.name/knitr/options">Knitr</a>'s naming for chunk options, but not all options are implemented.</p>
+<p>Options are separated using ";" and need to be valid Julia expressions. Example: A code chunk that saves and displays a 12 cm wide image and hides the source code:</p>
 <pre><code class="julia">&lt;&lt;fig_width=5; echo=false &gt;&gt;=
 using Gadfly
 x = linspace(0, 2π, 200)
@@ -166,7 +279,8 @@ plot(x=x, y = sin(x), Geom.line)
 </code></pre>
 
 <p>Weave currently supports the following chunk options with the following defaults:</p>
-<p><strong>Options for code</strong></p>
+<p><a id='Options-for-code-1'></a></p>
+<h3 id="options-for-code">Options for code</h3>
 <ul>
 <li><code>echo = true</code>. Echo the code in the output document. If <code>false</code> the source code will be hidden.</li>
 <li><code>results = "markup"</code>. The output format of the printed results. "markup" for literal block, "hidden" for hidden results or anything else for raw output (I tend to use ‘tex’ for Latex and ‘rst’ for rest. Raw output is useful if you wan’t to e.g. create tables from code chunks.</li>
@@ -178,7 +292,8 @@ plot(x=x, y = sin(x), Geom.line)
 <li><code>cache = false</code>. Cache results, depends on <code>cache</code> parameter on <code>weave</code> function.</li>
 <li><code>hold = false</code>. Hold all results until the end of the chunk.</li>
 </ul>
-<p><strong>Options for figures</strong></p>
+<p><a id='Options-for-figures-1'></a></p>
+<h3 id="options-for-figures">Options for figures</h3>
 <ul>
 <li><code>fig_width</code>. Figure width defined in markup, default depends on the output format.</li>
 <li><code>out_width</code>. Width of saved figure.</li>
@@ -191,9 +306,9 @@ plot(x=x, y = sin(x), Geom.line)
 <li><code>fig_env="figure"</code>. Figure environment in Latex.</li>
 </ul>
 <p><a id='Usage-1'></a></p>
-<h1 id="usage">Usage</h1>
+<h2 id="usage">Usage</h2>
 <p><a id='Weave-1'></a></p>
-<h2 id="weave">Weave</h2>
+<h3 id="weave">Weave</h3>
 <p>Run from julia using Gadfly for plots:</p>
 <pre><code class="julia">using Weave
 weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;gadfly_sample.mdw&quot;))
@@ -220,7 +335,7 @@ weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;gadfly_sample.mdw&quo
 </ul>
 <p><strong>Note:</strong> Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.</p>
 <p><a id='Tangle-1'></a></p>
-<h2 id="tangle">Tangle</h2>
+<h3 id="tangle">Tangle</h3>
 <p>Tangling extracts the code from document:</p>
 <p><a id='Weave.tangle-Tuple{Any}' href='#Weave.tangle-Tuple{Any}'>#</a>
 <strong><code>Weave.tangle</code></strong> &mdash; <em>Method</em>.</p>
@@ -232,7 +347,7 @@ weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;gadfly_sample.mdw&quo
 <li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>: Julia working directory, <code>"somepath"</code>: Path as a AbstractString e.g <code>"/home/mpastell/weaveout"</code></li>
 </ul>
 <p><a id='Get-supported-formats-1'></a></p>
-<h2 id="get-supported-formats">Get supported formats</h2>
+<h3 id="get-supported-formats">Get supported formats</h3>
 <p>You can get a list of supported output formats:</p>
 <pre><code>julia&gt; list_out_formats()
 pandoc: Pandoc markdown
@@ -276,63 +391,50 @@ Weave.set_chunk_defaults(Dict{Symbol, Any}(
 <p><code>restore_chunk_defaults()</code></p>
 <p>Restore Weave.jl default chunk options</p>
 <p><a id='Function-index-1'></a></p>
-<h1 id="function-index">Function index</h1>
+<h2 id="function-index">Function index</h2>
 <ul>
 <li><a href=".#Weave.get_chunk_defaults-Tuple{}"><code>Weave.get_chunk_defaults</code></a></li>
 <li><a href=".#Weave.restore_chunk_defaults-Tuple{}"><code>Weave.restore_chunk_defaults</code></a></li>
 <li><a href=".#Weave.set_chunk_defaults-Tuple{Any}"><code>Weave.set_chunk_defaults</code></a></li>
 <li><a href=".#Weave.tangle-Tuple{Any}"><code>Weave.tangle</code></a></li>
 <li><a href=".#Weave.weave-Tuple{Any}"><code>Weave.weave</code></a></li>
-</ul></div>
+</ul>
+          <aside class="copyright" role="note">
             
+              Matti Pastell 2016 &ndash;
+            
+            Documentation built with
+            <a href="http://www.mkdocs.org" target="_blank">MkDocs</a>
+            using the
+            <a href="http://squidfunk.github.io/mkdocs-material/" target="_blank">
+              Material
+            </a>
+            theme.
+          </aside>
+          
+            <footer class="footer">
+              
+            </footer>
+          
         </div>
-
-        <footer class="col-md-12">
-            <hr>
-            
-                <p>Matti Pastell 2016</p>
-            
-            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-
-        <script src="./js/jquery-1.10.2.min.js"></script>
-        <script src="./js/bootstrap-3.0.3.min.js"></script>
-        <script src="./js/highlight.pack.js"></script>
-        <script>var base_url = '.';</script>
-        <script data-main="./mkdocs/js/search.js" src="./mkdocs/js/require.js"></script>
-        <script src="./js/base.js"></script>
-        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script src="./assets/mathjaxhelper.js"></script>
-
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                        <h4 class="modal-title" id="exampleModalLabel">Search</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            From here you can search these documents. Enter
-                            your search terms below.
-                        </p>
-                        <form role="form">
-                            <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
-                            </div>
-                        </form>
-                        <div id="mkdocs-search-results"></div>
-                    </div>
-                    <div class="modal-footer">
-                    </div>
-                </div>
-            </div>
+      </article>
+      <div class="results" role="status" aria-live="polite">
+        <div class="scrollable">
+          <div class="wrapper">
+            <div class="meta"></div>
+            <div class="list"></div>
+          </div>
         </div>
-
-    </body>
+      </div>
+    </main>
+    <script>
+      var base_url = '.';
+      var repo_id  = 'mpastell/Weave.jl';
+    </script>
+    <script src="./assets/javascripts/application-997097ee0c.js"></script>
+    
+      <script src="./assets/mathjaxhelper.js"></script>
+    
+    
+  </body>
 </html>
-
-<!--
-MkDocs version : 0.15.3
-Build Date UTC : 2016-04-20 08:54:58.528946
--->
