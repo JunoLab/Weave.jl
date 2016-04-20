@@ -19,14 +19,7 @@ function format(doc::WeaveDoc)
         push!(formatted, result)
     end
 
-    formatted_doc = join(formatted, "\n")
-
-    if doc.doctype == "md2html"
-      #formatted_doc = Base.Markdown.html(Base.Markdown.parse(formatted_doc))
-      formatted_doc = pandoc2html(formatted_doc, doc)
-    end
-
-    return formatted_doc
+    return formatted
 end
 
 
@@ -195,6 +188,29 @@ const pandoc = Pandoc("Pandoc markdown",
                                 :doctype=>"pandoc"
                                                ))
 
+
+const md2html = Pandoc("Markdown to HTML (requires Pandoc)",
+                      @compat Dict{Symbol,Any}(
+                              :codestart => "````julia",
+                              :codeend=> "````\n\n",
+                              :outputstart=> "````julia",
+                              :outputend=> "````\n\n",
+                              :fig_ext=> ".svg",
+                              :extension=> "md",
+                              :doctype=> "md2html"))
+
+const md2pdf = Pandoc("Markdown to pdf (requires Pandoc and xelatex)",
+                      @compat Dict{Symbol,Any}(
+                              :codestart => "````julia",
+                              :codeend=> "````\n\n",
+                              :outputstart=> "````julia",
+                              :outputend=> "````\n\n",
+                              :fig_ext=> ".pdf",
+                              :extension=> "md",
+                              :doctype=> "md2pdf"))
+
+
+
 type Markdown
    description::AbstractString
    formatdict::Dict{Symbol,Any}
@@ -212,16 +228,6 @@ const github = Markdown("Github markdown",
                                 :doctype=> "github"
                                                ))
 
-const md2html = Markdown("Markdown to HTML",
-                       @compat Dict{Symbol,Any}(
-                               :codestart => "````julia",
-                               :codeend=> "````\n\n",
-                               :outputstart=> "````julia",
-                               :outputend=> "````\n\n",
-                               :fig_ext=> ".png",
-                               :extension=> "html",
-                               :doctype=> "md2html"
-                                            ))
 
 type Rest
     description::AbstractString
@@ -405,6 +411,7 @@ const formats = @compat Dict{AbstractString, Any}("tex" => tex,
                                           "texminted" => texminted,
                                           "pandoc" => pandoc,
                                           "md2html" => md2html,
+                                          "md2pdf" => md2pdf,
                                           "github" => github,
                                           "rst" => rst,
                                           "asciidoc" => adoc

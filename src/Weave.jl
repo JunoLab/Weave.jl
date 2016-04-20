@@ -59,7 +59,6 @@ function tangle(source ; out_path=:doc, informat="noweb")
     doc = read_doc(source, informat)
     cwd = get_cwd(doc, out_path)
 
-
     outname = "$(cwd)/$(doc.basename).jl"
     open(outname, "w") do io
         for chunk in doc.chunks
@@ -101,16 +100,25 @@ function weave(source ; doctype = "pandoc", plotlib="Gadfly",
             fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache)
     formatted = format(doc)
 
-
-
-
+    formatted = join(formatted, "\n")
 
     outname = "$(doc.cwd)/$(doc.basename).$(doc.format.formatdict[:extension])"
+    ext = doc.format.formatdict[:extension]
+
     open(outname, "w") do io
         write(io, formatted)
     end
 
-    info("Report weaved to $(doc.basename).$(doc.format.formatdict[:extension])")
+    #Convert using pandoc
+    if doc.doctype == "md2html"
+      pandoc2html(formatted, doc)
+      ext = "html"
+    elseif doc.doctype == "md2pdf"
+      pandoc2pdf(formatted, doc)
+      ext = "pdf"
+    end
+
+    info("Report weaved to $(doc.basename).$ext")
 end
 
 
