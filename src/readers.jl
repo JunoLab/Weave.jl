@@ -34,21 +34,21 @@ function parse_doc(document::AbstractString, format="noweb"::AbstractString)
   start_line = 0
 
   options = Dict()
-  optionAbstractString = ""
+  optionString = ""
   parsed = Any[]
   for lineno in 1:length(lines)
     line = lines[lineno]
     if (m = match(codestart, line)) != nothing && state=="doc"
       state = "code"
       if m.captures[1] == nothing
-          optionAbstractString = ""
+          optionString = ""
       else
-          optionAbstractString=strip(m.captures[1])
+          optionString=strip(m.captures[1])
       end
       #@show optionAbstractString
       options = Dict{Symbol,Any}()
-      if length(optionAbstractString) > 0
-          expr = parse(optionAbstractString)
+      if length(optionString) > 0
+          expr = parse(optionString)
           Base.Meta.isexpr(expr,:(=)) && (options[expr.args[1]] = expr.args[2])
           Base.Meta.isexpr(expr,:toplevel) && map(pushopt,fill(options,length(expr.args)),expr.args)
       end
@@ -67,7 +67,7 @@ function parse_doc(document::AbstractString, format="noweb"::AbstractString)
     end
     if ismatch(codeend, line) && state=="code"
 
-      chunk = CodeChunk(content, codeno, start_line, optionAbstractString, options)
+      chunk = CodeChunk(content, codeno, start_line, optionString, options)
       #chunk = @compat Dict{Symbol,Any}(:type => "code", :content => content,
 #                                   :number => codeno, :options => options,
 #                                       :optionAbstractString => optionAbstractString,
