@@ -1,0 +1,30 @@
+
+
+<<>>=
+using Gadfly
+print(1:10)
+plot(x = 1:10)
+@
+
+<<>>=
+import Weave
+Weave.set_chunk_defaults(Dict{Symbol, Any}(
+      :out_width => "\\0.5linewidth",
+      :results => "tex"
+      ))
+@
+
+<<>>=
+print(1:10)
+plot(x = 1:10)
+@
+
+
+<<echo = false>>=
+Weave.restore_chunk_defaults()
+@
+
+<<>>=
+print(1:10)
+plot(x = 1:10)
+@

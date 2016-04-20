@@ -1,0 +1,58 @@
+
+
+
+\begin{juliacode}
+using Gadfly
+print(1:10)
+
+\end{juliacode}
+\begin{juliaout}
+1:10
+\end{juliaout}
+
+\begin{juliacode}
+plot(x = 1:10)
+\end{juliacode}
+\includegraphics[width=\linewidth]{figures/default_opts_1_1.pdf}
+
+
+
+\begin{juliacode}
+import Weave
+Weave.set_chunk_defaults(Dict{Symbol, Any}(
+      :out_width => "\\0.5linewidth",
+      :results => "tex"
+      ))
+\end{juliacode}
+
+
+
+\begin{juliacode}
+print(1:10)
+
+\end{juliacode}
+1:10
+
+\begin{juliacode}
+plot(x = 1:10)
+\end{juliacode}
+\includegraphics[width=\0.5linewidth]{figures/default_opts_3_1.pdf}
+
+
+
+
+
+
+
+\begin{juliacode}
+print(1:10)
+
+\end{juliacode}
+\begin{juliaout}
+1:10
+\end{juliaout}
+
+\begin{juliacode}
+plot(x = 1:10)
+\end{juliacode}
+\includegraphics[width=\linewidth]{figures/default_opts_5_1.pdf}
