@@ -1,33 +1,12 @@
 
-
 .. code-block:: julia
-    
-    julia> using Winston
-    
-    julia> t = linspace(0, 2*pi, 100)
-    100-element Array{Float64,1}:
-     0.0      
-     0.0634665
-     0.126933 
-     0.1904   
-     0.253866 
-     0.317333 
-     0.380799 
-     0.444266 
-     0.507732 
-     0.571199 
-     ⋮        
-     5.77545  
-     5.83892  
-     5.90239  
-     5.96585  
-     6.02932  
-     6.09279  
-     6.15625  
-     6.21972  
-     6.28319  
-    
-    julia> plot(t, sinc(t))
+
+julia> using Winston
+
+julia> t = linspace(0, 2*pi, 100)
+
+linspace(0.0,6.283185307179587,100)
+julia> plot(t, sinc(t))
 
 
 
@@ -38,34 +17,15 @@
 
 .. code-block:: julia
 
-    FramedPlot(...)
+julia> s = 1:10
 
-
-
-
-
-
-.. code-block:: julia
-    
-    julia> s = 1:10
-    1:10
-    
-    julia> plot(s, "r*")
-
+1:10
+julia> plot(s, "r*")
 
 
 
 .. image:: figures/winston_formats_1_2.png
    :width: 15 cm
-
-
-.. code-block:: julia
-
-    FramedPlot(...)
-
-
-
-
 
 
 
@@ -97,6 +57,16 @@
     add(p, Curve(x, s, color="blue"))
     display(p)
     
+
+
+
+.. image:: figures/winston_formats_3_1.png
+   :width: 15 cm
+
+
+.. code-block:: julia
+    
+    
     p = FramedPlot(
          aspect_ratio=1,
          xrange=(0,100),
@@ -123,9 +93,6 @@
     display(p)
 
 
-
-.. image:: figures/winston_formats_3_1.png
-   :width: 15 cm
 
 .. image:: figures/winston_formats_3_2.png
    :width: 15 cm

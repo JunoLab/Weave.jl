@@ -4,26 +4,12 @@ Gadfly.set_default_plot_format(:png)
 
 #Captures figures
 function Base.display(report::Report, m::MIME"image/png", p::Plot)
-    chunk = report.cur_chunk
 
+    chunk = report.cur_chunk
     full_name, rel_name = get_figname(report, chunk)
 
     docformat = formats[report.formatdict[:doctype]]
-    #Add to results for term chunks and store otherwise
-    #if chunk.options[:term]
-    #    chunk.figures = [rel_name]
-
-        #if report.term_state == :text
-        #   report.cur_result *= "\n" * report.formatdict[:codeend] * "\n"
-        #end
-
-
-        #report.cur_result *= formatfigures(chunk, docformat)
-        #report.term_state = :fig
-    #    chunk.figures = AbstractString[]
-    #else
-        push!(report.figures, rel_name)
-    #end
+    push!(report.figures, rel_name)
 
     report.fignum += 1
 

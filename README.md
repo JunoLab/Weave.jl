@@ -12,7 +12,7 @@ You can write your documentation and code in input document using Nowed or Markd
 
 * Noweb or markdown syntax for input documents.
 * Execute code as terminal or "script" chunks.
-* Capture PyPlot, Gadfly figures. (or Winston in  0.0.4)
+* Capture Gadfly, PyPlot and Winston figures.
 * Supports LaTex, Pandoc and Github markdown and reStructuredText output
 
 ## Usage

@@ -29,7 +29,7 @@ function Base.display(doc::Report, data)
     for m in supported_mime_types
         if mimewritable(m(), data)
             display(doc, m(), data)
-            brea
+            break
         end
     end
 end

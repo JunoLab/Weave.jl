@@ -7,8 +7,8 @@ function Base.display(report::Report, m::MIME"image/png", data)
 
     docformat = formats[report.formatdict[:doctype]]
     push!(report.figures, rel_name)
-
-    vector_fmts = [".pdf", ".svg"]
+    report.fignum += 1
+    vector_fmts = [".pdf"; ".svg"]
 
     #Don't use dpi for vector formats
     if chunk.options[:fig_ext] in vector_fmts
@@ -19,6 +19,4 @@ function Base.display(report::Report, m::MIME"image/png", data)
             width=chunk.options[:fig_width]*chunk.options[:dpi],
             height=chunk.options[:fig_height]*chunk.options[:dpi])
     end
-
-    report.fignum += 1
 end

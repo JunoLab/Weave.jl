@@ -10,9 +10,8 @@ and Sweave.
 
 * Noweb or markdown syntax for input documents.
 * Execute code as terminal or "script" chunks.
-* Capture PyPlot or Gadfly figures.
-* Supports LaTex, Pandoc and Github markdown and reStructuredText output
-
+* Capture Gadfly, PyPlot or Winston figures.
+* Supports LaTex, Pandoc and Github markdown, AsciiDoc and reStructuredText output
 
 ## Contents
 
@@ -139,9 +138,6 @@ Weave currently supports the following chunk options with the following defaults
 * `fig_ext`. File extension (format) of saved figures.
 * `fig_pos="htpb"`. Figure position in Latex.  
 * `fig_env="figure"`. Figure environment in Latex.
-
-
-
 
 
 ## Set default chunk options

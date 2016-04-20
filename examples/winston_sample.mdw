@@ -17,7 +17,7 @@ weave(Pkg.dir("Weave","examples","winston_sample.mdw"), plotlib="Winston")
 
 <<term=true>>=
 x = 1:10
-d = {"Weave" => "testing"}
+d = Dict("Weave" => "testing")
 y = [2, 4 ,8]
 @
 

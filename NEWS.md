@@ -3,12 +3,13 @@
 
 ### In master
 
-* Change pandoc output to use inline images if there is no caption
-* Use Documenter.jl for documentation
+* Change pandoc output to use inline images if there is no caption.
+* Use Documenter.jl for documentation.
 * Add chunk option `hold`, replaces results = "hold". This way you can use e.g. `hold = true, results=raw`.
 * Methods for setting and restoring default chunk options for documents.
-* New output options `md2pdf` and `md2html`, both use pandoc to output pdf and
-  html files directly with own templates.
+* New output options `md2pdf` and `md2html`, both use pandoc to output pdf
+  and html files directly with own templates.
+* Restored and improved Winston support.
 
 ### v0.1.0
 
