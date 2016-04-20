@@ -5,7 +5,7 @@ This is the documentation of [Weave.jl](http://github.com/mpastell/weave.jl). We
 for Julia. It resembles [Pweave](http://mpastell.com/pweave) and, Knitr
 and Sweave.
 
-You can write your documentation and code in input document using Nowed or Markdown syntax and use `weave` function to execute to document to capture results and figures.
+You can write your documentation and code in input document using Noweb or Markdown syntax and use `weave` function to execute to document to capture results and figures.
 
 **Current features**
 
@@ -110,7 +110,7 @@ Tangling extracts the code from document:
 
 
 
-## Supported formats
+## Get supported formats
 
 You can get a list of supported output formats:
 
@@ -124,6 +124,33 @@ asciidoc: AsciiDoc
 tex: Latex with custom code environments
 ```
 
-# Index
+{docs}
+  list_out_formats()
+
+
+
+## Set default chunk options
+
+You can set or alter the default chunk options for a document either before
+running weave or inside the weaved document. You can e.g. use a hidden chunk
+in the beginning of the source document to set the options:
+
+```
+<<echo = false>>=
+import Weave
+Weave.set_chunk_defaults(Dict{Symbol, Any}(
+      :out_width => "\\0.5linewidth",
+      :results => "tex"
+      ))
+@
+```
+
+
+    {docs}
+      set_chunk_defaults(opts)
+      get_chunk_defaults()
+      restore_chunk_defaults()
+
+# Function index
 
     {index}
