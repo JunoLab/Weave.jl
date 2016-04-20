@@ -72,6 +72,8 @@ pandoc: Pandoc markdown
 rst: reStructuredText and Sphinx
 texminted: Latex using minted for highlighting
 github: Github markdown
+md2html: Markdown to HTML (requires Pandoc)
+md2pdf: Markdown to pdf (requires Pandoc and xelatex)
 asciidoc: AsciiDoc
 tex: Latex with custom code environments
 ```

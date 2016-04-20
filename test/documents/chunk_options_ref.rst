@@ -1,5 +1,4 @@
 
-
 .. code-block:: julia
 
 julia> y= [2, 5, 12]

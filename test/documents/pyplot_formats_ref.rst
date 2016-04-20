@@ -2,7 +2,6 @@
 
 
 
-
 .. code-block:: julia
     
     using PyPlot
@@ -41,13 +40,13 @@ linspace(0.0,6.283185307179586,200)
 julia> plot(x, sin(x))
 
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7f995cdeae90>
+ PyObject <matplotlib.lines.Line2D object at 0x7fe5a9e74b70>
 julia> y = 20
 
 20
 julia> plot(x, cos(x))
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7f995cdf9b90>
+ PyObject <matplotlib.lines.Line2D object at 0x7fe5a9e7acf8>
 
 
 

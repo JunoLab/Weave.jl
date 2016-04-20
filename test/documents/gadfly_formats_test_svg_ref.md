@@ -1,6 +1,5 @@
 
 
-
 ~~~~{.julia}
 using Gadfly
 x = linspace(0, 2π, 200)

@@ -1,5 +1,4 @@
 
-
 ~~~~{.julia}
 julia> y= [2, 5, 12]
 3-element Array{Int64,1}:

@@ -1,6 +1,5 @@
 
 
-
 .. code-block:: julia
     
     using Gadfly
