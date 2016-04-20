@@ -21,7 +21,7 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc)
   html =""
 
   try
-  #html = readall(
+  #html = @compat readstring(
   run(pipeline(`echo $formatted` ,
    `pandoc -R -s --mathjax --self-contained --highlight-style=tango
    --template $html_template --include-in-header=$css_template

@@ -130,7 +130,7 @@ function capture_output(expr::Expr, SandBox::Module, term, plotlib)
     finally
         redirect_stdout(oldSTDOUT)
         close(wr)
-        out = readall(rw)
+        out = @compat readstring(rw)
         close(rw)
     end
     return (obj, out)
