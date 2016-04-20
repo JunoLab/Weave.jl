@@ -3,12 +3,8 @@ site_author: Matti Pastell
 copyright: Matti Pastell 2016
 repo_url: https://github.com/mpastell/Weave.jl
 
-theme: material
+#theme: material
 
-extra:
-  palette:
-    primary: 'indigo'
-    accent:  'blue'
 
 extra_css:
   - assets/Documenter.css
