@@ -240,7 +240,7 @@ function get_cwd(doc::WeaveDoc, out_path)
     elseif out_path == :pwd
         cwd = pwd()
     else
-        cwd = out_path
+        cwd = expanduser(out_path)
     end
     return cwd
 end
