@@ -19,10 +19,19 @@ You can write your documentation and code in input document using Nowed or Markd
 
 Run from julia using Gadfly for plots:
 
-````julia
+```julia
 using Weave
 weave(Pkg.dir("Weave","examples","gadfly_sample.mdw"))
-````
+```
+
+If you have Pandoc installed you can also weave directly to html and pdf.
+
+```julia
+weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), informat="markdown",
+  out_path = :pwd, doctype = "md2html")
+```
+
+![Weave code and output](http://mpastell.com/images/weave_demo.png)
 
 ## Documentation
 
