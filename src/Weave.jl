@@ -35,7 +35,7 @@ function Base.display(doc::Report, data)
 end
 
 """
-list_out_formats()
+`list_out_formats()`
 
 List supported output formats
 """
@@ -47,7 +47,7 @@ end
 
 
 """
-tangle(source ; out_path=:doc, informat="noweb")
+`tangle(source ; out_path=:doc, informat="noweb")`
 
 Tangle source code from input document to .jl file.
 
@@ -73,8 +73,8 @@ function tangle(source ; out_path=:doc, informat="noweb")
 end
 
 """
-weave(source ; doctype = "pandoc", plotlib="Gadfly",
-    informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)
+`weave(source ; doctype = "pandoc", plotlib="Gadfly",
+    informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)`
 
 Weave an input document to output file.
 
@@ -95,7 +95,7 @@ function weave(source ; doctype = "pandoc", plotlib="Gadfly",
         informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache=:off)
 
-    doc = read_doc(source, informat) #Reader toimii, muuten kesken...
+    doc = read_doc(source, informat)
     doc = run(doc, doctype = doctype, plotlib=plotlib,
             informat = informat, out_path=out_path,
             fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache)
@@ -120,7 +120,8 @@ function weave(doc::AbstractString, doctype::AbstractString)
     weave(doc, doctype=doctype)
 end
 
-export weave, list_out_formats, tangle
+export weave, list_out_formats, tangle,
+        set_chunk_defaults, get_chunk_defaults, restore_chunk_defaults
 
 include("config.jl")
 include("chunks.jl")

@@ -248,10 +248,13 @@ end
 function set_rc_params(formatdict, fig_path, fig_ext)
     if fig_ext == nothing
         rcParams[:chunk_defaults][:fig_ext] = formatdict[:fig_ext]
+        docParams[:fig_ext] = formatdict[:fig_ext]
     else
         rcParams[:chunk_defaults][:fig_ext] = fig_ext
+        docParams[:fig_ext] = fig_ext
     end
-    rcParams[:chunk_defaults][:fig_path] = fig_path
+        rcParams[:chunk_defaults][:fig_path] = fig_path
+        docParams[:fig_path] = fig_path
     return nothing
 end
 

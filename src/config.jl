@@ -1,5 +1,7 @@
 
-const rcParams =
+
+#Default options
+const defaultParams =
     @compat Dict{Symbol,Any}(:plotlib => "Gadfly",
                             :storeresults => false,
                             :doc_number => 0,
@@ -32,51 +34,50 @@ const rcParams =
                                 :out_height=> nothing,
                                 )
                             )
+#This one can be changed at runtime, initially a copy of defaults
+const rcParams = deepcopy(defaultParams)
+
+#Parameters set per document
+const docParams =Dict{Symbol,Any}(
+                                :fig_path=> nothing,
+                                :fig_ext => nothing,
+                            )
 
 
 
 
+"""
+`set_chunk_defaults(opts::Dict{Symbol, Any})`
 
-# Working towards Knitr compatible options, implemented options are
-# added to defaultoptions dictionary above and work in progress stays here,
-# options from https://github.com/yihui/knitr/blob/master/R/defaults.R
-# If you need a particular options, consider implementing it and making a
-# pull request.
+Set default options for code chunks, use get_chunk_defaults
+to see the current values.
 
-#tidy = FALSE,
-#tidy.opts = NULL,
-#collapse = FALSE
-#prompt = FALSE
-#highlight = TRUE
-#strip.white = TRUE
-#size = 'normalsize'
-#background = '#F7F7F7',
-#cache = FALSE
-#cache.path = 'cache/'
-#cache.vars = NULL
-#cache.lazy = TRUE,
-#dependson = NULL
-#autodep = FALSE,
-#fig.keep = 'high'
-#fig.show = 'asis'
-#fig.align = 'default'
-#dev = NULL
-#dev.args = NULL
-#fig.ext = NULL
-#fig.scap = NULL
-#fig.lp = 'fig:'
-#fig.subcap = NULL,
-#out.extra = NULL
-#fig.retina = 1,
-#external = TRUE
-#sanitize = FALSE
-#interval = 1
-#aniopts = 'controls,loop',
-#warning = TRUE
-#error = TRUE
-#message = TRUE,
-#render = NULL,
-#ref.label = NULL
-#child = NULL
-#split = FALSE
-#purl = TRUE
+e.g. set default dpi to 200 and fig_width to 8
+
+```
+julia> set_chunk_defaults(Dict{Symbol, Any}(:dpi => 200, fig_width => 8))
+```
+"""
+function set_chunk_defaults(opts::Dict{Symbol, Any})
+  merge!(rcParams[:chunk_defaults], opts)
+end
+
+"""
+`get_chunk_defaults()`
+
+Get default options used for code chunks.
+"""
+function get_chunk_defaults()
+  return(rcParams[:chunk_defaults])
+end
+
+"""
+`restore_chunk_defaults()`
+
+Restore Weave.jl default chunk options
+"""
+function restore_chunk_defaults()
+  rcParams[:chunk_defaults] = defaultParams[:chunk_defaults]
+  merge!(rcParams[:chunk_defaults], docParams)
+  return nothing
+end
