@@ -82,7 +82,11 @@ function parse_doc(document::AbstractString, format="noweb"::AbstractString)
       continue
     end
 
-    content *= "\n" * line
+    if lineno == 1
+      content *= line
+    else
+      content *= "\n" * line
+    end
   end
 
   #Remember the last chunk

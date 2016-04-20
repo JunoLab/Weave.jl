@@ -1,6 +1,7 @@
-% Weave.jl sample: embedding Gadfly plots
+% Weave.jl example document: Embedding Gadfly plots
 % Matti Pastell
-% date
+% 20th April 2016
+
 
 If you have Weave.jl installed you can run this document with output
 to your working directory using:
