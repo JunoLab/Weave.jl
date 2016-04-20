@@ -101,9 +101,13 @@ function weave(source ; doctype = "pandoc", plotlib="Gadfly",
             fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache)
     formatted = format(doc)
 
+
+
+
+
     outname = "$(doc.cwd)/$(doc.basename).$(doc.format.formatdict[:extension])"
     open(outname, "w") do io
-        write(io, join(formatted, "\n"))
+        write(io, formatted)
     end
 
     info("Report weaved to $(doc.basename).$(doc.format.formatdict[:extension])")
@@ -129,4 +133,5 @@ include("readers.jl")
 include("run.jl")
 include("cache.jl")
 include("formatters.jl")
+include("pandoc.jl")
 end

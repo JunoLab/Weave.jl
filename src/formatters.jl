@@ -2,7 +2,7 @@
 function format(doc::WeaveDoc)
     formatted = AbstractString[]
     docformat = doc.format
-    #@show docformat
+
 
     #Complete format dictionaries with defaults
     formatdict = docformat.formatdict
@@ -19,7 +19,14 @@ function format(doc::WeaveDoc)
         push!(formatted, result)
     end
 
-    return formatted
+    formatted_doc = join(formatted, "\n")
+
+    if doc.doctype == "md2html"
+      #formatted_doc = Base.Markdown.html(Base.Markdown.parse(formatted_doc))
+      formatted_doc = pandoc2html(formatted_doc, doc)
+    end
+
+    return formatted_doc
 end
 
 
@@ -205,6 +212,16 @@ const github = Markdown("Github markdown",
                                 :doctype=> "github"
                                                ))
 
+const md2html = Markdown("Markdown to HTML",
+                       @compat Dict{Symbol,Any}(
+                               :codestart => "````julia",
+                               :codeend=> "````\n\n",
+                               :outputstart=> "````julia",
+                               :outputend=> "````\n\n",
+                               :fig_ext=> ".png",
+                               :extension=> "html",
+                               :doctype=> "md2html"
+                                            ))
 
 type Rest
     description::AbstractString
@@ -387,6 +404,7 @@ end
 const formats = @compat Dict{AbstractString, Any}("tex" => tex,
                                           "texminted" => texminted,
                                           "pandoc" => pandoc,
+                                          "md2html" => md2html,
                                           "github" => github,
                                           "rst" => rst,
                                           "asciidoc" => adoc

@@ -1,4 +1,14 @@
-# Gadfly
+% Weave.jl sample: embedding Gadfly plots
+% Matti Pastell
+% date
+
+If you have Weave.jl installed you can run this document with output
+to your working directory using:
+
+```julia
+using Weave
+weave(Pkg.dir("Weave","examples","gadfly_sample.mdw"), out_path = :pwd)
+```
 
 <<term=true>>=
 using Gadfly

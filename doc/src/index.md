@@ -62,7 +62,7 @@ Tangling extracts the code from document:
 
 
 
-### Get supported formats
+## Supported formats
 
 You can get a list of supported output formats:
 
