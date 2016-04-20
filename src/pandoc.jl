@@ -16,12 +16,17 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc)
   #Change path for pandoc
   old_wd = pwd()
   cd(doc.cwd)
+  html =""
 
+  try
   html = readall(pipeline(`echo $formatted` ,
    `pandoc -R -s --mathjax --self-contained --template
     $html_template --include-in-header=$css_template -V wversion=$wversion -V wtime=$wtime -V wsource=$wsource`)
     )
+  catch
+    cd(old_wd)
+    error("Unable to convert to html, check that you have pandoc installed and in your path")
+  end
 
-  cd(old_wd)
   return(html)
 end
