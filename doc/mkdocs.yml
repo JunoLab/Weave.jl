@@ -27,3 +27,7 @@ docs_dir: 'build'
 
 pages:
   - Home: index.md
+  - Getting started: getting_started.md
+  - Using Weave: usage.md
+  - Chunk options: chunk_options.md
+  - Function index: function_index.md
