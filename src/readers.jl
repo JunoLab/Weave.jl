@@ -1,15 +1,28 @@
 pushopt(options::Dict,expr::Expr) = Base.Meta.isexpr(expr,:(=)) && (options[expr.args[1]] = expr.args[2])
 
+type MarkupInput
+    codestart::Regex
+    codeend::Regex
+end
 
-const input_formats = @compat Dict{AbstractString, Any}(
-        "noweb" => Dict{Symbol, Any}(
-                    :codestart => r"^<<(.*?)>>=\s*$",
-                    :codeend => r"^@\s*$"
-                    ),
-        "markdown" => Dict{Symbol, Any}(
-                    :codestart => r"(?:^(?:`|~){3,}\s*(?:\{|\{\.|)julia(?:;|\s)(.*)\}\s*$)|(?:^(?:`|~){3,}\s*julia\s*$)",
-                    :codeend => r"^`|~{3,}\s*$"
-                    )
+type ScriptInput
+  doc_line::Regex
+  doc_start::Regex
+  opt_line::Regex
+  opt_start::Regex
+end
+
+const input_formats = Dict{AbstractString, Any}(
+        "noweb" => MarkupInput(r"^<<(.*?)>>=\s*$",
+                    r"^@\s*$"),
+        "markdown" => MarkupInput(
+                      r"(?:^(?:`|~){3,}\s*(?:\{|\{\.|)julia(?:;|\s)(.*)\}\s*$)|(?:^(?:`|~){3,}\s*julia\s*$)",
+                      r"^`|~{3,}\s*$"),
+        "script" => ScriptInput(
+          r"(^#'.*)|(^#%%.*)|(^# %%.*)",
+          r"(^#')|(^#%%)|(^# %%)",
+          r"(^#\+.*$)|(^#%%\+.*$)|(^# %%\+.*$)",
+          r"(^#\+)|(^#%%\+)|(^# %%\+)")
         )
 
 
@@ -20,12 +33,16 @@ function read_doc(source::AbstractString, format="noweb"::AbstractString)
     doc = WeaveDoc(source, parsed)
 end
 
-"""Parse chunks from AbstractString"""
 function parse_doc(document::AbstractString, format="noweb"::AbstractString)
+  return parse_doc(document, input_formats[format])
+end
+
+"""Parse chunks from string"""
+function parse_doc(document::AbstractString, format::MarkupInput)
   lines = split(document, "\n")
 
-  codestart = input_formats[format][:codestart]
-  codeend = input_formats[format][:codeend]
+  codestart = format.codestart
+  codeend = format.codeend
   state = "doc"
 
   docno = 1
