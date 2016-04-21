@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     xmlns:gadfly="http://www.gadflyjl.org/ns"
+     version="1.2"
+     width="152.4mm" height="101.6mm" viewBox="0 0 152.4 101.6"
+     stroke="none"
+     fill="#000000"
+     stroke-width="0.3"
+     font-size="3.88"
+>
+<g class="plotroot xscalable yscalable" id="img-ccc7c64a-1">
+  <g font-size="3.88" font-family="'PT Sans','Helvetica Neue','Helvetica',sans-serif" fill="#564A55" stroke="#000000" stroke-opacity="0.000" id="img-ccc7c64a-2">
+    <text x="82.67" y="89.99" text-anchor="middle" dy="0.6em">x</text>
+  </g>
+  <g class="guide xlabels" font-size="2.82" font-family="'PT Sans Caption','Helvetica Neue','Helvetica',sans-serif" fill="#6C606B" id="img-ccc7c64a-3">
+    <text x="19.94" y="83.32" text-anchor="middle" dy="0.6em">0</text>
+    <text x="51.3" y="83.32" text-anchor="middle" dy="0.6em">2</text>
+    <text x="82.67" y="83.32" text-anchor="middle" dy="0.6em">4</text>
+    <text x="114.03" y="83.32" text-anchor="middle" dy="0.6em">6</text>
+    <text x="145.4" y="83.32" text-anchor="middle" dy="0.6em">8</text>
+  </g>
+<g clip-path="url(#img-ccc7c64a-4)">
+  <g id="img-ccc7c64a-5">
+    <g pointer-events="visible" opacity="1" fill="#000000" fill-opacity="0.000" stroke="#000000" stroke-opacity="0.000" class="guide background" id="img-ccc7c64a-6">
+      <rect x="17.94" y="5" width="129.46" height="77.32"/>
+    </g>
+    <g class="guide ygridlines xfixed" stroke-dasharray="0.5,0.5" stroke-width="0.2" stroke="#D0D0E0" id="img-ccc7c64a-7">
+      <path fill="none" d="M17.94,80.32 L 147.4 80.32"/>
+      <path fill="none" d="M17.94,61.99 L 147.4 61.99"/>
+      <path fill="none" d="M17.94,43.66 L 147.4 43.66"/>
+      <path fill="none" d="M17.94,25.33 L 147.4 25.33"/>
+      <path fill="none" d="M17.94,7 L 147.4 7"/>
+    </g>
+    <g class="guide xgridlines yfixed" stroke-dasharray="0.5,0.5" stroke-width="0.2" stroke="#D0D0E0" id="img-ccc7c64a-8">
+      <path fill="none" d="M19.94,5 L 19.94 82.32"/>
+      <path fill="none" d="M51.3,5 L 51.3 82.32"/>
+      <path fill="none" d="M82.67,5 L 82.67 82.32"/>
+      <path fill="none" d="M114.03,5 L 114.03 82.32"/>
+      <path fill="none" d="M145.4,5 L 145.4 82.32"/>
+    </g>
+    <g class="plotpanel" id="img-ccc7c64a-9">
+      <g class="geometry" id="img-ccc7c64a-10">
+        <g class="color_RGBA{Float32}(0.0f0,0.74736935f0,1.0f0,1.0f0)" stroke="#FFFFFF" stroke-width="0.3" fill="#00BFFF" id="img-ccc7c64a-11">
+          <use xlink:href="#img-ccc7c64a-12" x="19.94" y="43.66"/>
+          <use xlink:href="#img-ccc7c64a-12" x="21.95" y="38.97"/>
+          <use xlink:href="#img-ccc7c64a-12" x="23.96" y="34.36"/>
+          <use xlink:href="#img-ccc7c64a-12" x="25.97" y="29.9"/>
+          <use xlink:href="#img-ccc7c64a-12" x="27.98" y="25.67"/>
+          <use xlink:href="#img-ccc7c64a-12" x="29.99" y="21.73"/>
+          <use xlink:href="#img-ccc7c64a-12" x="32" y="18.16"/>
+          <use xlink:href="#img-ccc7c64a-12" x="34.02" y="15"/>
+          <use xlink:href="#img-ccc7c64a-12" x="36.03" y="12.31"/>
+          <use xlink:href="#img-ccc7c64a-12" x="38.04" y="10.14"/>
+          <use xlink:href="#img-ccc7c64a-12" x="40.05" y="8.52"/>
+          <use xlink:href="#img-ccc7c64a-12" x="42.06" y="7.47"/>
+          <use xlink:href="#img-ccc7c64a-12" x="44.07" y="7.02"/>
+          <use xlink:href="#img-ccc7c64a-12" x="46.08" y="7.17"/>
+          <use xlink:href="#img-ccc7c64a-12" x="48.09" y="7.92"/>
+          <use xlink:href="#img-ccc7c64a-12" x="50.1" y="9.26"/>
+          <use xlink:href="#img-ccc7c64a-12" x="52.11" y="11.16"/>
+          <use xlink:href="#img-ccc7c64a-12" x="54.13" y="13.59"/>
+          <use xlink:href="#img-ccc7c64a-12" x="56.14" y="16.52"/>
+          <use xlink:href="#img-ccc7c64a-12" x="58.15" y="19.9"/>
+          <use xlink:href="#img-ccc7c64a-12" x="60.16" y="23.66"/>
+          <use xlink:href="#img-ccc7c64a-12" x="62.17" y="27.75"/>
+          <use xlink:href="#img-ccc7c64a-12" x="64.18" y="32.11"/>
+          <use xlink:href="#img-ccc7c64a-12" x="66.19" y="36.65"/>
+          <use xlink:href="#img-ccc7c64a-12" x="68.2" y="41.31"/>
+          <use xlink:href="#img-ccc7c64a-12" x="70.21" y="46.01"/>
+          <use xlink:href="#img-ccc7c64a-12" x="72.22" y="50.66"/>
+          <use xlink:href="#img-ccc7c64a-12" x="74.23" y="55.21"/>
+          <use xlink:href="#img-ccc7c64a-12" x="76.25" y="59.56"/>
+          <use xlink:href="#img-ccc7c64a-12" x="78.26" y="63.66"/>
+          <use xlink:href="#img-ccc7c64a-12" x="80.27" y="67.42"/>
+          <use xlink:href="#img-ccc7c64a-12" x="82.28" y="70.79"/>
+          <use xlink:href="#img-ccc7c64a-12" x="84.29" y="73.72"/>
+          <use xlink:href="#img-ccc7c64a-12" x="86.3" y="76.16"/>
+          <use xlink:href="#img-ccc7c64a-12" x="88.31" y="78.06"/>
+          <use xlink:href="#img-ccc7c64a-12" x="90.32" y="79.4"/>
+          <use xlink:href="#img-ccc7c64a-12" x="92.33" y="80.15"/>
+          <use xlink:href="#img-ccc7c64a-12" x="94.34" y="80.3"/>
+          <use xlink:href="#img-ccc7c64a-12" x="96.36" y="79.85"/>
+          <use xlink:href="#img-ccc7c64a-12" x="98.37" y="78.8"/>
+          <use xlink:href="#img-ccc7c64a-12" x="100.38" y="77.18"/>
+          <use xlink:href="#img-ccc7c64a-12" x="102.39" y="75"/>
+          <use xlink:href="#img-ccc7c64a-12" x="104.4" y="72.32"/>
+          <use xlink:href="#img-ccc7c64a-12" x="106.41" y="69.16"/>
+          <use xlink:href="#img-ccc7c64a-12" x="108.42" y="65.58"/>
+          <use xlink:href="#img-ccc7c64a-12" x="110.43" y="61.65"/>
+          <use xlink:href="#img-ccc7c64a-12" x="112.44" y="57.41"/>
+          <use xlink:href="#img-ccc7c64a-12" x="114.45" y="52.96"/>
+          <use xlink:href="#img-ccc7c64a-12" x="116.46" y="48.35"/>
+          <use xlink:href="#img-ccc7c64a-12" x="118.48" y="43.66"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</g>
+  <g class="guide ylabels" font-size="2.82" font-family="'PT Sans Caption','Helvetica Neue','Helvetica',sans-serif" fill="#6C606B" id="img-ccc7c64a-13">
+    <text x="16.94" y="80.32" text-anchor="end" dy="0.35em">-1.0</text>
+    <text x="16.94" y="61.99" text-anchor="end" dy="0.35em">-0.5</text>
+    <text x="16.94" y="43.66" text-anchor="end" dy="0.35em">0.0</text>
+    <text x="16.94" y="25.33" text-anchor="end" dy="0.35em">0.5</text>
+    <text x="16.94" y="7" text-anchor="end" dy="0.35em">1.0</text>
+  </g>
+  <g font-size="3.88" font-family="'PT Sans','Helvetica Neue','Helvetica',sans-serif" fill="#564A55" stroke="#000000" stroke-opacity="0.000" id="img-ccc7c64a-14">
+    <text x="8.81" y="43.66" text-anchor="end" dy="0.35em">y</text>
+  </g>
+</g>
+<defs>
+  <clipPath id="img-ccc7c64a-4">
+  <path d="M17.94,5 L 147.4 5 147.4 82.32 17.94 82.32" />
+</clipPath>
+  <g id="img-ccc7c64a-12">
+    <circle cx="0" cy="0" r="0.9"/>
+  </g>
+</defs>
+</svg>
