@@ -37,7 +37,7 @@ function parse_doc(document::AbstractString, format="noweb"::AbstractString)
   return parse_doc(document, input_formats[format])
 end
 
-"""Parse chunks from string"""
+"""Parse documents with Weave.jl markup"""
 function parse_doc(document::AbstractString, format::MarkupInput)
   lines = split(document, "\n")
 
@@ -112,5 +112,107 @@ function parse_doc(document::AbstractString, format::MarkupInput)
     #                                 :number =>  docno, :start_line => start_line)
     push!(parsed, chunk)
   end
+  return parsed
+end
+
+"""Parse .jl scripts with Weave.jl markup"""
+function parse_doc(document::AbstractString, format::ScriptInput)
+  lines = split(document, "\n")
+
+  doc_line = format.doc_line
+  doc_start = format.doc_start
+  opt_line = format.opt_line
+  opt_start = format.opt_start
+
+  read = ""
+  chunks = []
+  docno = 1
+  codeno = 1
+  content = ""
+  start_line = 1
+  options = Dict{Symbol,Any}()
+  optionString = ""
+  parsed = Any[]
+  state = "code"
+  lineno = 1
+  n_emptylines = 0
+
+
+
+  for lineno in 1:length(lines)
+    line = lines[lineno]
+    if (m = match(doc_line, line)) != nothing && (m = match(opt_line, line)) == nothing
+          line = replace(line, doc_start, "", 1)
+      if startswith(line, " ")
+          line = replace(line, " ", "", 1)
+      end
+      if state == "code"  && strip(read) != ""
+          push!(parsed, chunk)
+          chunk = CodeChunk("\n" * rstrip(read), codeno, start_line, optionString, options)
+          push!(parsed, chunk)
+          codeno +=1
+          read = ""
+          start_line = lineno
+      end
+      state = "doc"
+    elseif (m = match(opt_line, line)) != nothing
+      start_line = lineno
+      if state == "code" && strip(read) !=""
+          chunk = CodeChunk("\n" * rstrip(read), codeno, start_line, optionString, options)
+          push!(parsed, chunk)
+          read = ""
+          codeno +=1
+      end
+      if state == "doc" && strip(read) != ""
+          (docno > 1) && (read = "\n" * read) # Add whitespace to doc chunk. Needed for markdown output
+          chunk = DocChunk(read, docno, start_line)
+          push!(parsed, chunk)
+          read = ""
+          docno += 1
+      end
+
+      optionString = replace(line, opt_start, "", 1)
+      #Get options
+      options = Dict{Symbol,Any}()
+      if length(optionString) > 0
+          expr = parse(optionString)
+          Base.Meta.isexpr(expr,:(=)) && (options[expr.args[1]] = expr.args[2])
+          Base.Meta.isexpr(expr,:toplevel) && map(pushopt,fill(options,length(expr.args)),expr.args)
+      end
+      haskey(options, :label) && (options[:name] = options[:label])
+      haskey(options, :name) || (options[:name] = nothing)
+
+      state = "code"
+
+      continue
+
+    elseif state == "doc" #&& strip(line) != "" && strip(read) != ""
+      state = "code"
+      (docno > 1) && (read = "\n" * read) # Add whitespace to doc chunk. Needed for markdown output
+      chunk = DocChunk(read, docno, start_line)
+      push!(parsed, chunk)
+      options = Dict{Symbol,Any}()
+      start_line = lineno
+      read = ""
+      docno += 1
+    end
+    read *= line * "\n"
+
+    if strip(line) == ""
+      n_emptylines += 1
+    else
+      n_emptylines = 0
+    end
+  end
+
+  # Handle the last chunk
+  if state == "code"
+    chunk = CodeChunk("\n" * rstrip(read), codeno, start_line, optionString, options)
+    push!(parsed, chunk)
+  else
+    chunk = DocChunk(read, docno, start_line)
+    push!(parsed, chunk)
+  end
+
   return parsed
 end
