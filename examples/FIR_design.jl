@@ -25,44 +25,56 @@
 #' Processing](http://www.dspguide.com/) which is freely available
 #' online.
 
-#' ## Functions for frequency, phase, impulse and step response
+#' ## Calculating frequency response
 
-#' Let's first define functions to plot filter
-#' properties.
+#' DSP.jl package doesn't (yet) have a method to calculate the
+#' the frequency response of a FIR filter so we define it:
 
 using Gadfly, DSP
 
-plot(x=1:10)
+function FIRfreqz(b::Array, w = linspace(0, π, 1024))
+    n = length(w)
+    h = Array{Complex64}(n)
+    sw = 0
+    for i = 1:n
+      for j = 1:length(b)
+        sw += b[j]*exp(-im*w[i])^-j
+      end
+      h[i] = sw
+      sw = 0
+    end
+    return h
+end
 
-#' ## Lowpass FIR filter
 
-#' Designing a lowpass FIR filter is very simple to do with SciPy, all you
+#' ## Design Lowpass FIR filter
+
+#' Designing a lowpass FIR filter is very simple to do with DSP.jl, all you
 #' need to do is to define the window length, cut off frequency and the
 #' window.
+
+#' We will define a lowpass filter with cut off frequency at 5Hz for a signal
+#' sampled at 20 Hz.
 
 #' The Hamming window is defined as:
 #' $w(n) = \alpha - \beta\cos\frac{2\pi n}{N-1}$, where $\alpha=0.54$ and $\beta=0.46$
 
-#' The next code chunk is executed in term mode, see the [Python script](FIR_design.py) for syntax.
-#' Notice also that Pweave can now catch multiple figures/code chunk.
-
+#' The next code chunk is executed in term mode, see the [script](FIR_design.jl) for syntax.
 #+ term=true
-n = 61
 
 
+fs = 20
+f = digitalfilter(Lowpass(5, fs = fs), FIRWindow(hamming(61)))
+w = linspace(0, pi, 1024)
+h = FIRfreqz(f, w)
 
-#' ## Highpass FIR Filter
+#' ## Plot the frequency and impulse response
 
-#' Let's define a highpass FIR filter, if you compare to original blog
-#' post you'll notice that it has become easier since 2009. You don't
-#' need to do ' spectral inversion "manually" anymore!
+h_db = log10(abs(h))
+ws = w/pi*(fs/2)
+plot(y = h_db, x = ws, Geom.line,
+      Guide.xlabel("Frequency (Hz)"), Guide.ylabel("Magnitude (db)"))
 
-n = 101
-
-#' ## Bandpass FIR filter
-
-#' Notice that the plot has a caption defined in code chunk options.
-
-#+ caption = "Bandpass FIR filter."
-
-n = 1001
+h_phase = unwrap(-atan2(imag(h),real(h)))
+plot(y = h_phase, x = ws, Geom.line,
+    Guide.xlabel("Frequency (Hz)"), Guide.ylabel("Phase (radians)"))
