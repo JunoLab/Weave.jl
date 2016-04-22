@@ -158,7 +158,6 @@ function parse_doc(document::AbstractString, format::ScriptInput)
           line = replace(line, " ", "", 1)
       end
       if state == "code"  && strip(read) != ""
-          push!(parsed, chunk)
           chunk = CodeChunk("\n" * rstrip(read), codeno, start_line, optionString, options)
           push!(parsed, chunk)
           codeno +=1
