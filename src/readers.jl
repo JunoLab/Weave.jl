@@ -183,10 +183,8 @@ function parse_doc(document::AbstractString, format::ScriptInput)
       haskey(options, :name) || (options[:name] = nothing)
 
       state = "code"
-
       continue
-
-    elseif state == "doc" #&& strip(line) != "" && strip(read) != ""
+    elseif state == "doc" && strip(line) != "" && strip(read) != ""
       state = "code"
       (docno > 1) && (read = "\n" * read) # Add whitespace to doc chunk. Needed for markdown output
       chunk = DocChunk(read, docno, start_line)

@@ -23,7 +23,7 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc)
   try
   #html = @compat readstring(
   run(pipeline(`echo $formatted` ,
-   `pandoc -R -s --mathjax --self-contained --highlight-style=tango
+   `pandoc -R -s --mathjax="" --self-contained --highlight-style=tango
    --template $html_template --include-in-header=$css_template
     -V wversion=$wversion -V wtime=$wtime -V wsource=$wsource
     -o $outname`))
@@ -58,7 +58,7 @@ function pandoc2pdf(formatted::AbstractString, doc::WeaveDoc)
   info("Done executing code. Running xelatex")
   try
     run(pipeline(`echo $formatted` ,
-     `pandoc -R -s --self-contained --latex-engine=xelatex --highlight-style=tango
+     `pandoc -R -s  --latex-engine=xelatex --highlight-style=tango
       --include-in-header=$header_template
       -V fontsize=12pt
       -o $outname`))
