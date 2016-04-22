@@ -216,8 +216,23 @@ type Markdown
    formatdict::Dict{Symbol,Any}
 end
 
-
 const github = Markdown("Github markdown",
+                        @compat Dict{Symbol,Any}(
+                                :codestart => "````julia",
+                                :codeend=> "````\n\n",
+                                :outputstart=> "````julia",
+                                :outputend=> "````\n\n",
+                                :fig_ext=> ".png",
+                                :extension=> "md",
+                                :doctype=> "github"
+                                               ))
+
+type MultiMarkdown
+  description::AbstractString
+  formatdict::Dict{Symbol,Any}
+end
+
+const multimarkdown = MultiMarkdown("MultiMarkdown",
                         @compat Dict{Symbol,Any}(
                                 :codestart => "````julia",
                                 :codeend=> "````\n\n",
@@ -312,28 +327,6 @@ function formatfigures(chunk, docformat::Tex)
    return result
 end
 
-function formatfigures(chunk, docformat::Markdown)
-    fignames = chunk.figures
-    caption = chunk.options[:fig_cap]
-    result = ""
-    figstring = ""
-
-    length(fignames) > 0 || (return "")
-
-    if caption != nothing
-        result *= "![$caption]($(fignames[1]))\n"
-        for fig = fignames[2:end]
-            result *= "![]($fig)\n"
-            println("Warning, only the first figure gets a caption\n")
-        end
-    else
-        for fig in fignames
-            result *= "![]($fig)\n"
-        end
-    end
-    return result
-end
-
 function formatfigures(chunk, docformat::Pandoc)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
@@ -356,8 +349,53 @@ function formatfigures(chunk, docformat::Pandoc)
     return result
 end
 
+function formatfigures(chunk, docformat::Markdown)
+    fignames = chunk.figures
+    caption = chunk.options[:fig_cap]
+    result = ""
+    figstring = ""
 
+    length(fignames) > 0 || (return "")
 
+    if caption != nothing
+        result *= "![$caption]($(fignames[1]))\n"
+        for fig = fignames[2:end]
+            result *= "![]($fig)\n"
+            println("Warning, only the first figure gets a caption\n")
+        end
+    else
+        for fig in fignames
+            result *= "![]($fig)\n"
+        end
+    end
+    return result
+end
+
+function formatfigures(chunk, docformat::MultiMarkdown)
+    fignames = chunk.figures
+    caption = chunk.options[:fig_cap]
+    result = ""
+    figstring = ""
+    width = "width=$(chunk.options[:out_width])"
+
+    length(fignames) > 0 || (return "")
+
+    if caption != nothing
+       result *= "![$caption][$(fignames[1])]\n\n"
+       result *= "[$(fignames[1])]: $(fignames[1]) $width\n"
+        for fig = fignames[2:end]
+          result *= "![][$fig]\n\n"
+          result *= "[$fig]: $fig $width\n"
+          println("Warning, only the first figure gets a caption\n")
+        end
+    else
+        for fig in fignames
+          result *= "![][$fig]\n\n"
+          result *= "[$fig]: $fig $width\n"
+        end
+    end
+    return result
+end
 
 
 function formatfigures(chunk, docformat::Rest)
@@ -413,6 +451,7 @@ const formats = @compat Dict{AbstractString, Any}("tex" => tex,
                                           "md2html" => md2html,
                                           "md2pdf" => md2pdf,
                                           "github" => github,
+                                          "multimarkdown" => multimarkdown,
                                           "rst" => rst,
                                           "asciidoc" => adoc
                                           )
