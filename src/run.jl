@@ -1,15 +1,15 @@
 """
-run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly", informat="noweb",
-    out_path=:doc, fig_path = "figures", fig_ext = nothing,
-    cache_path = "cache", cache = :off)
+`run(doc::WeaveDoc; doctype = :auto, plotlib="Gadfly",
+        out_path=:doc, fig_path = "figures", fig_ext = nothing,
+        cache_path = "cache", cache = :off)`
 
 Run code chunks and capture output from parsed document.
 
-* `doctype`: see `list_out_formats()`
+* `doctype`: :auto = set based on file extension or specify one of the supported formats.
+  See `list_out_formats()`
 * `plotlib`: `"PyPlot"`, `"Gadfly"`, or `"Winston"`
-* `informat`: `"noweb"` of `"markdown"`
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
-`"somepath"`: Path as a AbstractString e.g `"/home/mpastell/weaveout"`
+  `"somepath"`: Path as a AbstractString e.g `"/home/mpastell/weaveout"`
 * `fig_path`: where figures will be generated, relative to out_path
 * `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
 * `cache_path`: where of cached output will be saved.
@@ -18,14 +18,15 @@ Run code chunks and capture output from parsed document.
 
 **Note:** Run command from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """
-function Base.run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly",
+function Base.run(doc::WeaveDoc; doctype = :auto, plotlib="Gadfly",
         out_path=:doc, fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache = :off)
     #cache :all, :user, :off, :refresh
 
-
     doc.cwd = get_cwd(doc, out_path)
+    doctype == :auto && (doctype = detect_doctype(doc.source))
     doc.doctype = doctype
+
     doc.format = formats[doctype]
     set_rc_params(doc.format.formatdict, fig_path, fig_ext)
 
@@ -68,6 +69,19 @@ function Base.run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly",
     doc.chunks = executed
     return doc
 end
+
+"""Detect the output format based on file extension"""
+function detect_doctype(source::AbstractString)
+  ext = lowercase(splitext(source)[2])
+  ext == ".jl" && return "md2html"
+  contains(ext, ".md") && return "md2html"
+  contains(ext, ".rst") && return "rst"
+  contains(ext, ".tex") && return "texminted"
+  contains(ext, ".txt") && return "asciidoc"
+
+  return "pandoc"
+end
+
 
 function run_chunk(chunk::CodeChunk, report::Report, SandBox::Module, cached, cache, idx)
     #Defaults, already merged before, this merges format specific things

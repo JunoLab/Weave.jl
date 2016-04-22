@@ -75,14 +75,16 @@ function tangle(source ; out_path=:doc, informat=:auto)
 end
 
 """
-`weave(source ; doctype = "pandoc", plotlib="Gadfly",
-    informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)`
+`function weave(source ; doctype = :auto, plotlib="Gadfly",
+        informat=:auto, out_path=:doc, fig_path = "figures", fig_ext = nothing,
+        cache_path = "cache", cache=:off)`
 
 Weave an input document to output file.
 
-* `doctype`: see `list_out_formats()`
+* `doctype`: :auto = set based on file extension or specify one of the supported formats.
+  See `list_out_formats()`
 * `plotlib`: `"PyPlot"`, `"Gadfly"` or `nothing`
-* `informat`: `"noweb"` of `"markdown"`
+* `informat`: :auto = set based on file extension or set to  `"noweb"`, `"markdown"` or  `script`
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
     `"somepath"`: Path as a String e.g `"/home/mpastell/weaveout"`
 * `fig_path`: where figures will be generated, relative to out_path
@@ -93,7 +95,7 @@ Weave an input document to output file.
 
 **Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """
-function weave(source ; doctype = "pandoc", plotlib="Gadfly",
+function weave(source ; doctype = :auto, plotlib="Gadfly",
         informat=:auto, out_path=:doc, fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache=:off)
 
