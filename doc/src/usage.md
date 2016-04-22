@@ -41,8 +41,20 @@ Tangling extracts the code from document:
       tangle(source)
 
 
-
 ## Supported formats
+
+Weave sets the output format based on the file extension, but you can also set
+it using `doctype` option. The rules for detecting the format are:
+
+```julia
+ext == ".jl" && return "md2html"
+contains(ext, ".md") && return "md2html"
+contains(ext, ".rst") && return "rst"
+contains(ext, ".tex") && return "texminted"
+contains(ext, ".txt") && return "asciidoc"
+return "pandoc"
+```
+
 
 You can get a list of supported output formats:
 
@@ -63,7 +75,19 @@ tex: Latex with custom code environments
 
 ## Document syntax
 
-Weave uses noweb or markdown syntax for defining the code chunks and documentation chunks.
+Weave uses noweb, markdown or script syntax for defining the code chunks and
+documentation chunks. The format is detected based on the file extension, but
+you can also set it manually using the `informat` parameter.
+
+The rules for autodetection are:
+
+```
+ext == ".jl" && return "script"
+ext == ".jmd" && return "markdown"
+return "noweb"
+```
+
+
 
 ## Noweb
 

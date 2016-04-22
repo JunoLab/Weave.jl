@@ -17,6 +17,6 @@ cp("build/examples/gadfly_md_sample.md",
       "build/examples/gadfly_md_sample.txt", remove_destination = true)
 
 weave(Pkg.dir("Weave","examples","FIR_design.jl"), out_path = "build/examples")
-weave(Pkg.dir("Weave","examples","FIR_design.jl"), docformat = "md2pdf", out_path = "build/examples")
+weave(Pkg.dir("Weave","examples","FIR_design.jl"), doctype = "md2pdf", out_path = "build/examples")
 cp(Pkg.dir("Weave","examples","FIR_design.jl"),
     "build/examples/FIR_design.jl", remove_destination = true)

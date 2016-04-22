@@ -29,6 +29,6 @@ pages:
   - Home: index.md
   - Getting started: getting_started.md
   - Using Weave: usage.md
-  - Publishing script: publish.md
+  - Publishing scripts: publish.md
   - Chunk options: chunk_options.md
   - Function index: function_index.md

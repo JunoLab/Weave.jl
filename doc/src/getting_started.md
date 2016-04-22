@@ -19,12 +19,12 @@ You can Weave the files to your working directory using:
 ```
 using Weave
 #Markdown
-weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), informat="markdown",
-  out_path = :pwd, doctype = "pandoc")
+weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), out_path = :pwd,
+  doctype = "pandoc")
 #HTML
-weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), informat="markdown",
-  out_path = :pwd, doctype = "md2html")
+weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), out_path = :pwd,
+  doctype = "md2html")
 #pdf
-weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), informat="markdown",
-  out_path = :pwd, doctype = "md2pdf")
+weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), out_path = :pwd,
+  doctype = "md2pdf")
 ```

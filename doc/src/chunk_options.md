@@ -25,6 +25,7 @@ Weave currently supports the following chunk options with the following defaults
 * `line_width = 75`. Line width for wrapped lines.
 * `cache = false`. Cache results, depends on `cache` parameter on `weave` function.
 * `hold = false`. Hold all results until the end of the chunk.
+* `tangle = true`. Set tangle to false to exclude chunk from tangled code.
 
 ## Options for figures
 
