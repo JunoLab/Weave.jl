@@ -60,13 +60,16 @@ function tangle(source ; out_path=:doc, informat="noweb")
     cwd = get_cwd(doc, out_path)
 
     outname = "$(cwd)/$(doc.basename).jl"
-    open(outname, "w") do io
-        for chunk in doc.chunks
-            if typeof(chunk) == CodeChunk
-                write(io, chunk.content*"\n")
-            end
-        end
+  open(outname, "w") do io
+    for chunk in doc.chunks
+      if typeof(chunk) == CodeChunk
+          options = merge(rcParams[:chunk_defaults], chunk.options)
+          if options[:tangle]
+            write(io, chunk.content*"\n")
+          end
+      end
     end
+  end
 
     info("Writing to file $(doc.basename).jl")
 end

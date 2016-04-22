@@ -13,6 +13,7 @@ const defaultParams =
                                 :fig=> true,
                                 :include=> true,
                                 :eval => true,
+                                :tangle => true,
                                 :cache => false,
                                 :fig_cap=> nothing,
                                 #Size in inches
