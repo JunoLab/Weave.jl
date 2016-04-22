@@ -18,7 +18,7 @@ Run code chunks and capture output from parsed document.
 
 **Note:** Run command from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """
-function Base.run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly", informat="noweb",
+function Base.run(doc::WeaveDoc; doctype = "pandoc", plotlib="Gadfly",
         out_path=:doc, fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache = :off)
     #cache :all, :user, :off, :refresh

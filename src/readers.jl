@@ -25,9 +25,20 @@ const input_formats = Dict{AbstractString, Any}(
           r"(^#\+)|(^#%%\+)|(^# %%\+)")
         )
 
+"""Detect the input format based on file extension"""
+function detect_informat(source::AbstractString)
+  ext = lowercase(splitext(source)[2])
+
+  ext == ".jl" && return "script"
+  ext == ".jmd" && return "markdown"
+  return "noweb"
+end
+
+
 
 """Read and parse input document"""
-function read_doc(source::AbstractString, format="noweb"::AbstractString)
+function read_doc(source::AbstractString, format=:auto)
+    format == :auto && (format = detect_informat(source))
     document = @compat readstring(source)
     parsed = parse_doc(document, format)
     doc = WeaveDoc(source, parsed)

@@ -55,7 +55,7 @@ Tangle source code from input document to .jl file.
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
 `"somepath"`: Path as a AbstractString e.g `"/home/mpastell/weaveout"`
 """
-function tangle(source ; out_path=:doc, informat="noweb")
+function tangle(source ; out_path=:doc, informat=:auto)
     doc = read_doc(source, informat)
     cwd = get_cwd(doc, out_path)
 
@@ -94,12 +94,12 @@ Weave an input document to output file.
 **Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """
 function weave(source ; doctype = "pandoc", plotlib="Gadfly",
-        informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing,
+        informat=:auto, out_path=:doc, fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache=:off)
 
     doc = read_doc(source, informat)
     doc = run(doc, doctype = doctype, plotlib=plotlib,
-            informat = informat, out_path=out_path,
+            out_path=out_path,
             fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache)
     formatted = format(doc)
 

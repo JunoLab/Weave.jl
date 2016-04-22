@@ -23,7 +23,7 @@ ap = ArgParseSettings("Weave Julia documents using Weave.jl",
         help = "output format"
     "--informat"
         arg_type = String
-        default = "noweb"
+        default = ":auto"
         help = "output format"
     "--out_path"
         arg_type = String
@@ -44,6 +44,11 @@ delete!(args, "source")
 args_col = []
 
 #Check for special values of out_path
+
+if args["informat"] == ":auto"
+    args["informat"] = :auto
+end
+
 if args["out_path"] == ":doc"
     args["out_path"] = :doc
 elseif args["out_path"] == ":pwd"
