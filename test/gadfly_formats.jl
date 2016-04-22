@@ -49,3 +49,8 @@ weave("documents/gadfly_markdown_test.jmd", doctype="github",plotlib="gadfly", i
 result = @compat readstring(open("documents/gadfly_markdown_test.md"))
 ref = @compat readstring(open("documents/gadfly_markdown_test_ref.md"))
 @test result == ref
+
+weave("documents/FIR_design.jl", doctype="pandoc", plotlib="gadfly", informat="script")
+result = @compat readstring(open("documents/FIR_design.md"))
+ref = @compat readstring(open("documents/FIR_design_ref.md"))
+@test result == ref
