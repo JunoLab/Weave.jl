@@ -16,7 +16,7 @@ println(x)
 @
 
 
-<<eval=false>>=
+<<eval=false; tangle=false>>=
 y = randn(5)
 println("Don't eval, but show code")
 @

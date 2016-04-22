@@ -8,9 +8,6 @@ println(x)
 println("Results without code")
 println(x)
 
-y = randn(5)
-println("Don't eval, but show code")
-
 y = 1:5
 println(y)
 
