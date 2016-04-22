@@ -198,6 +198,15 @@
           
             
   <li>
+    <a class="" title="Publishing scripts" href="../publish/">
+      Publishing scripts
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
     <a class="" title="Chunk options" href="../chunk_options/">
       Chunk options
     </a>
@@ -233,18 +242,18 @@
 <li>HTML: <a href="../examples/gadfly_md_sample.html">gadfly_md_sample.html</a></li>
 <li>pdf: <a href="../examples/gadfly_md_sample.pdf">gadfly_md_sample.pdf</a></li>
 </ul>
-<p><em>Producing HTML and pdf output requires that you Pandoc and XeLatex (for pdf) installed.</em></p>
+<p><em>Producing HTML and pdf output requires that you have Pandoc and XeLatex (for pdf) installed.</em></p>
 <p>You can Weave the files to your working directory using:</p>
 <pre><code>using Weave
 #Markdown
-weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;gadfly_md_sample.jmd&quot;), informat=&quot;markdown&quot;,
-  out_path = :pwd, doctype = &quot;pandoc&quot;)
+weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;gadfly_md_sample.jmd&quot;), out_path = :pwd,
+  doctype = &quot;pandoc&quot;)
 #HTML
-weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;gadfly_md_sample.jmd&quot;), informat=&quot;markdown&quot;,
-  out_path = :pwd, doctype = &quot;md2html&quot;)
+weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;gadfly_md_sample.jmd&quot;), out_path = :pwd,
+  doctype = &quot;md2html&quot;)
 #pdf
-weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;gadfly_md_sample.jmd&quot;), informat=&quot;markdown&quot;,
-  out_path = :pwd, doctype = &quot;md2pdf&quot;)
+weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;gadfly_md_sample.jmd&quot;), out_path = :pwd,
+  doctype = &quot;md2pdf&quot;)
 </code></pre>
           <aside class="copyright" role="note">
             

@@ -244,6 +244,15 @@
           
             
   <li>
+    <a class="" title="Publishing scripts" href="../publish/">
+      Publishing scripts
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
     <a class="" title="Chunk options" href="../chunk_options/">
       Chunk options
     </a>
@@ -287,12 +296,12 @@ weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;gadfly_sample.mdw&quo
 <p><a id='Weave.weave-Tuple{Any}' href='#Weave.weave-Tuple{Any}'>#</a>
 <strong><code>Weave.weave</code></strong> &mdash; <em>Method</em>.</p>
 <hr />
-<p><code>weave(source ; doctype = "pandoc", plotlib="Gadfly",     informat="noweb", out_path=:doc, fig_path = "figures", fig_ext = nothing)</code></p>
+<p><code>function weave(source ; doctype = :auto, plotlib="Gadfly",         informat=:auto, out_path=:doc, fig_path = "figures", fig_ext = nothing,         cache_path = "cache", cache=:off)</code></p>
 <p>Weave an input document to output file.</p>
 <ul>
-<li><code>doctype</code>: see <code>list_out_formats()</code></li>
+<li><code>doctype</code>: :auto = set based on file extension or specify one of the supported formats.   See <code>list_out_formats()</code></li>
 <li><code>plotlib</code>: <code>"PyPlot"</code>, <code>"Gadfly"</code> or <code>nothing</code></li>
-<li><code>informat</code>: <code>"noweb"</code> of <code>"markdown"</code></li>
+<li><code>informat</code>: :auto = set based on file extension or set to  <code>"noweb"</code>, <code>"markdown"</code> or  <code>script</code></li>
 <li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>: Julia working directory,     <code>"somepath"</code>: Path as a String e.g <code>"/home/mpastell/weaveout"</code></li>
 <li><code>fig_path</code>: where figures will be generated, relative to out_path</li>
 <li><code>fig_ext</code>: Extension for saved figures e.g. <code>".pdf"</code>, <code>".png"</code>. Default setting depends on <code>doctype</code>.</li>
@@ -323,6 +332,15 @@ usage: weave.jl [--doctype DOCTYPE] [--plotlib PLOTLIB]
 </ul>
 <p><a id='Supported-formats-1'></a></p>
 <h2 id="supported-formats">Supported formats</h2>
+<p>Weave sets the output format based on the file extension, but you can also set it using <code>doctype</code> option. The rules for detecting the format are:</p>
+<pre><code class="julia">ext == &quot;.jl&quot; &amp;&amp; return &quot;md2html&quot;
+contains(ext, &quot;.md&quot;) &amp;&amp; return &quot;md2html&quot;
+contains(ext, &quot;.rst&quot;) &amp;&amp; return &quot;rst&quot;
+contains(ext, &quot;.tex&quot;) &amp;&amp; return &quot;texminted&quot;
+contains(ext, &quot;.txt&quot;) &amp;&amp; return &quot;asciidoc&quot;
+return &quot;pandoc&quot;
+</code></pre>
+
 <p>You can get a list of supported output formats:</p>
 <pre><code>julia&gt; list_out_formats()
 pandoc: Pandoc markdown
@@ -342,7 +360,13 @@ tex: Latex with custom code environments
 <p>List supported output formats</p>
 <p><a id='Document-syntax-1'></a></p>
 <h2 id="document-syntax">Document syntax</h2>
-<p>Weave uses noweb or markdown syntax for defining the code chunks and documentation chunks.</p>
+<p>Weave uses noweb, markdown or script syntax for defining the code chunks and documentation chunks. The format is detected based on the file extension, but you can also set it manually using the <code>informat</code> parameter.</p>
+<p>The rules for autodetection are:</p>
+<pre><code>ext == &quot;.jl&quot; &amp;&amp; return &quot;script&quot;
+ext == &quot;.jmd&quot; &amp;&amp; return &quot;markdown&quot;
+return &quot;noweb&quot;
+</code></pre>
+
 <p><a id='Noweb-1'></a></p>
 <h2 id="noweb">Noweb</h2>
 <p><a id='Code-chunks-1'></a></p>
@@ -392,14 +416,14 @@ tex: Latex with custom code environments
     </div>
     <div class="next">
       
-        <a href="../chunk_options/" title="Chunk options">
+        <a href="../publish/" title="Publishing scripts">
           <span class="direction">
             Next
           </span>
           <div class="page">
             <div class="stretch">
               <div class="title">
-                Chunk options
+                Publishing scripts
               </div>
             </div>
             <div class="button button-next" role="button" aria-label="Next">
