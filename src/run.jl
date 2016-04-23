@@ -53,20 +53,33 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib="Gadfly",
 
     for i = 1:n
         chunk = doc.chunks[i]
-        result_chunks = run_chunk(chunk, report, SandBox, cached, cache, i)
-        #push!(executed, result_chunk)
+
+        if typeof(chunk) == CodeChunk
+            options = merge(rcParams[:chunk_defaults], chunk.options)
+            merge!(chunk.options, options)
+        end
+
+        restore = (cache ==:user && typeof(chunk) == CodeChunk && chunk.options[:cache])
+
+        if cached != nothing && (cache == :all || restore)
+            result_chunks = restore_chunk(chunk, cached)
+        else
+            result_chunks = run_chunk(chunk, report, SandBox)
+        end
         executed = [executed; result_chunks]
     end
 
+
     popdisplay(report)
+
+    #Clear variables from used sandbox
+    clear_sandbox(SandBox)
+    doc.chunks = executed
 
     if cache != :off
         write_cache(doc, cache_path)
     end
 
-    #Clear variables from used sandbox
-    clear_sandbox(SandBox)
-    doc.chunks = executed
     return doc
 end
 
@@ -83,19 +96,11 @@ function detect_doctype(source::AbstractString)
 end
 
 
-function run_chunk(chunk::CodeChunk, report::Report, SandBox::Module, cached, cache, idx)
-    #Defaults, already merged before, this merges format specific things
-    options = merge(rcParams[:chunk_defaults], chunk.options)
-    merge!(chunk.options, options)
-
-    if cached != nothing && (cache == :all || (cache ==:user && chunk.options[:cache]))
-        result_chunk = restore_chunk(chunk, cached, idx)
-    else
-        result_chunk = eval_chunk(chunk, report, SandBox)
-    end
+function run_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
+    result_chunk = eval_chunk(chunk, report, SandBox)
 end
 
-function run_chunk(chunk::DocChunk, report::Report, SandBox::Module, cached, cache, idx)
+function run_chunk(chunk::DocChunk, report::Report, SandBox::Module)
     return chunk
 end
 
@@ -193,6 +198,7 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
       #else
      #   chunk.options[:fig] && (chunk.figures = copy(report.figures))
     #end
+
     chunks
 end
 
@@ -281,7 +287,7 @@ function collect_results(chunk::CodeChunk, fmt::ScriptResult)
             content *= r.code
         else
             content = "\n" * content * r.code
-            rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_AbstractString, copy(chunk.options))
+            rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.optionstring, copy(chunk.options))
             content = ""
             rchunk.result_no = result_no
             result_no *=1
@@ -292,7 +298,7 @@ function collect_results(chunk::CodeChunk, fmt::ScriptResult)
     end
     if content != ""
         startswith(content, "\n") || (content = "\n" * content)
-        rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_AbstractString, copy(chunk.options))
+        rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.optionstring, copy(chunk.options))
         push!(result_chunks, rchunk)
     end
 
@@ -308,7 +314,7 @@ function collect_results(chunk::CodeChunk, fmt::TermResult)
         output *= prompt * r.code
         output *=  r.displayed * r.stdout
         if !isempty(r.figures)
-            rchunk = CodeChunk("", chunk.number, chunk.start_line, chunk.option_AbstractString, copy(chunk.options))
+            rchunk = CodeChunk("", chunk.number, chunk.start_line, chunk.optionstring, copy(chunk.options))
             rchunk.output = output
             output = ""
             rchunk.figures = r.figures
@@ -316,7 +322,7 @@ function collect_results(chunk::CodeChunk, fmt::TermResult)
         end
     end
     if output != ""
-         rchunk = CodeChunk("", chunk.number, chunk.start_line, chunk.option_AbstractString, copy(chunk.options))
+         rchunk = CodeChunk("", chunk.number, chunk.start_line, chunk.optionstring, copy(chunk.options))
          rchunk.output = output
         push!(result_chunks, rchunk)
     end

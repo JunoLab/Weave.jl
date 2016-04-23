@@ -3,7 +3,6 @@ function format(doc::WeaveDoc)
     formatted = AbstractString[]
     docformat = doc.format
 
-
     #Complete format dictionaries with defaults
     formatdict = docformat.formatdict
     get!(formatdict, :termstart, formatdict[:codestart])
