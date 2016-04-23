@@ -376,7 +376,12 @@ function formatfigures(chunk, docformat::MultiMarkdown)
     caption = chunk.options[:fig_cap]
     result = ""
     figstring = ""
-    width = "width=$(chunk.options[:out_width])"
+
+    if chunk.options[:out_width] == nothing
+      width = ""
+    else
+      width = "width=$(chunk.options[:out_width])"
+    end
 
     length(fignames) > 0 || (return "")
 
