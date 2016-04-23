@@ -52,7 +52,7 @@ plot(x=x, y = sin(x), Geom.line)
 ~~~~~~~~~~~~~
 
 
-![](figures/gadfly_formats_test_5_1.svg)\ 
+![](figures/gadfly_formats_test_5_1.svg){width=15cm}\ 
 
 
 ~~~~{.julia}
@@ -61,5 +61,5 @@ plot(x=x, y = cos(x), Geom.line)
 ~~~~~~~~~~~~~
 
 
-![](figures/gadfly_formats_test_5_2.svg)\ 
+![](figures/gadfly_formats_test_5_2.svg){width=15cm}\ 
 

@@ -10,6 +10,10 @@
 * New output options `md2pdf` and `md2html`, both use pandoc to output pdf
   and html files directly with own templates.
 * Restored and improved Winston support.
+* New input format: scripts with markup in comments
+* New output format: MultiMarkdown
+* Added support for figure width in Pandoc
+* Autodetect input and output formats based on filename
 
 ### v0.1.0
 

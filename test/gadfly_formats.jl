@@ -33,10 +33,14 @@ result = @compat readstring(open("documents/gadfly_formats_test.md"))
 ref = @compat readstring(open("documents/gadfly_formats_test_jssvg_ref.md"))
 @test result == ref
 
-
 weave("documents/gadfly_formats_test.txt", doctype="rst", plotlib="gadfly")
 result = @compat readstring(open("documents/gadfly_formats_test.rst"))
 ref = @compat readstring(open("documents/gadfly_formats_test_ref.rst"))
+@test result == ref
+
+weave("documents/gadfly_formats_test.txt", doctype="multimarkdown", plotlib="gadfly")
+result = @compat readstring(open("documents/gadfly_formats_test.md"))
+ref = @compat readstring(open("documents/gadfly_formats_test_mmd_ref.md"))
 @test result == ref
 
 weave("documents/gadfly_formats_test.txt", doctype="asciidoc", plotlib="gadfly",

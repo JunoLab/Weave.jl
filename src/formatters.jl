@@ -184,6 +184,7 @@ const pandoc = Pandoc("Pandoc markdown",
                                 :outputstart=>"~~~~{.julia}",
                                 :outputend=>"~~~~~~~~~~~~~\n\n",
                                 :fig_ext=>".png",
+                                :out_width=>nothing,
                                 :extension=>"md",
                                 :doctype=>"pandoc"
                                                ))
@@ -332,18 +333,21 @@ function formatfigures(chunk, docformat::Pandoc)
     caption = chunk.options[:fig_cap]
     result = ""
     figstring = ""
+    attribs = ""
+    width = chunk.options[:out_width]
+    width == nothing || (attribs = "{width=$width}")
 
     length(fignames) > 0 || (return "")
 
     if caption != nothing
-        result *= "![$caption]($(fignames[1]))\n"
+        result *= "![$caption]($(fignames[1]))$attribs\n"
         for fig = fignames[2:end]
-            result *= "![]($fig)\n"
+            result *= "![]($fig)$attribs\n"
             println("Warning, only the first figure gets a caption\n")
         end
     else
         for fig in fignames
-            result *= "![]($fig)\\ \n\n"
+            result *= "![]($fig)$attribs\\ \n\n"
         end
     end
     return result
