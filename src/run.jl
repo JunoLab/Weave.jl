@@ -53,7 +53,15 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib="Gadfly",
 
     for i = 1:n
         chunk = doc.chunks[i]
-        if cached != nothing && (cache == :all || (cache ==:user && chunk.options[:cache]))
+
+        if typeof(chunk) == CodeChunk
+            options = merge(rcParams[:chunk_defaults], chunk.options)
+            merge!(chunk.options, options)
+        end
+
+        restore = (cache ==:user && typeof(chunk) == CodeChunk && chunk.options[:cache])
+
+        if cached != nothing && (cache == :all || restore)
             result_chunks = restore_chunk(chunk, cached)
         else
             result_chunks = run_chunk(chunk, report, SandBox)
@@ -89,9 +97,6 @@ end
 
 
 function run_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
-    #Defaults, already merged before, this merges format specific things
-    options = merge(rcParams[:chunk_defaults], chunk.options)
-    merge!(chunk.options, options)
     result_chunk = eval_chunk(chunk, report, SandBox)
 end
 
@@ -293,7 +298,7 @@ function collect_results(chunk::CodeChunk, fmt::ScriptResult)
     end
     if content != ""
         startswith(content, "\n") || (content = "\n" * content)
-        rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.option_AbstractString, copy(chunk.options))
+        rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.optionstring, copy(chunk.options))
         push!(result_chunks, rchunk)
     end
 

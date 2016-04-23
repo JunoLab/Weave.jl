@@ -9,9 +9,8 @@ using Base.Test
 info("Test: Chunk options")
 include("chunk_options.jl")
 
-# Cache is currently not implemented for new output format
-#info("Test: Caching")
-#include("cache_test.jl")
+info("Test: Caching")
+include("cache_test.jl")
 
 if VERSION < v"0.5-dev"
   info("Test: Chunk options with Gadfly")
