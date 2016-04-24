@@ -87,10 +87,10 @@ end
 function detect_doctype(source::AbstractString)
   ext = lowercase(splitext(source)[2])
   ext == ".jl" && return "md2html"
-  contains(ext, ".md") && return "md2html"
-  contains(ext, ".rst") && return "rst"
-  contains(ext, ".tex") && return "texminted"
-  contains(ext, ".txt") && return "asciidoc"
+  contains(ext, "md") && return "md2html"
+  contains(ext, "rst") && return "rst"
+  contains(ext, "tex") && return "texminted"
+  contains(ext, "txt") && return "asciidoc"
 
   return "pandoc"
 end

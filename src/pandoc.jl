@@ -17,6 +17,7 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
   old_wd = pwd()
   cd(doc.cwd)
   html =""
+  outname = basename(outname)
 
   try
   #html = @compat readstring(
@@ -45,7 +46,7 @@ function pandoc2pdf(formatted::AbstractString, doc::WeaveDoc, outname::AbstractS
   path, wsource = splitdir(abspath(doc.source))
   wversion = string(Pkg.installed("Weave"))
   wtime =  Date(now())
-
+  outname = basename(outname)
 
   #Change path for pandoc
   old_wd = pwd()
