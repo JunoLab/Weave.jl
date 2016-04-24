@@ -1,7 +1,7 @@
 
 # Release notes for Weave.jl
 
-### In master
+### v0.1.1
 
 * Change pandoc output to use inline images if there is no caption.
 * Use Documenter.jl for documentation.
