@@ -260,10 +260,36 @@ function get_cwd(doc::WeaveDoc, out_path)
     elseif out_path == :pwd
         cwd = pwd()
     else
-        cwd = expanduser(out_path)
+        #If there is no extension, use as path
+        splitted = splitext(out_path)
+        if splitted[2] == ""
+            cwd = expanduser(out_path)
+        else
+            cwd = splitdir(expanduser(out_path))[1]
+        end
     end
     return cwd
 end
+
+
+"""Get output file name based on out_path"""
+function get_outname(out_path::Symbol, doc::WeaveDoc; ext = nothing)
+    ext == nothing && (ext = doc.format.formatdict[:extension])
+    outname = "$(doc.cwd)/$(doc.basename).$ext"
+end
+
+
+"""Get output file name based on out_path"""
+function get_outname(out_path::AbstractString, doc::WeaveDoc; ext = nothing)
+    ext == nothing && (ext = doc.format.formatdict[:extension])
+    splitted = splitext(out_path)
+    if (splitted[2]) == ""
+        outname = "$(doc.cwd)/$(doc.basename).$ext"
+    else
+        outname = expanduser(out_path)
+    end
+end
+
 
 function set_rc_params(formatdict, fig_path, fig_ext)
     if fig_ext == nothing

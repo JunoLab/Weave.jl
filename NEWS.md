@@ -14,6 +14,7 @@
 * New output format: MultiMarkdown
 * Added support for figure width in Pandoc
 * Autodetect input and output formats based on filename
+* Allow `out_path` be a file or directory.
 
 ### v0.1.0
 

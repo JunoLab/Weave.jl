@@ -52,15 +52,16 @@ end
 Tangle source code from input document to .jl file.
 
 * `informat`: `"noweb"` of `"markdown"`
-* `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
-`"somepath"`: Path as a AbstractString e.g `"/home/mpastell/weaveout"`
+* `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,  `"somepath"`, directory name as a string e.g `"/home/mpastell/weaveout"`
+or filename as string e.g. ~/outpath/outfile.jl.
 """
 function tangle(source ; out_path=:doc, informat=:auto)
     doc = read_doc(source, informat)
-    cwd = get_cwd(doc, out_path)
+    doc.cwd = get_cwd(doc, out_path)
 
-    outname = "$(cwd)/$(doc.basename).jl"
-  open(outname, "w") do io
+    outname = get_outname(out_path, doc, ext = "jl")
+    
+    open(outname, "w") do io
     for chunk in doc.chunks
       if typeof(chunk) == CodeChunk
           options = merge(rcParams[:chunk_defaults], chunk.options)
@@ -70,9 +71,10 @@ function tangle(source ; out_path=:doc, informat=:auto)
       end
     end
   end
-
-    info("Writing to file $(doc.basename).jl")
+  doc.cwd == pwd()  && (outname = basename(outname))
+  info("Writing to file $outname")
 end
+
 
 """
 `function weave(source ; doctype = :auto, plotlib="Gadfly",
@@ -85,8 +87,7 @@ Weave an input document to output file.
   See `list_out_formats()`
 * `plotlib`: `"PyPlot"`, `"Gadfly"` or `nothing`
 * `informat`: :auto = set based on file extension or set to  `"noweb"`, `"markdown"` or  `script`
-* `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
-    `"somepath"`: Path as a String e.g `"/home/mpastell/weaveout"`
+* `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory, `"somepath"`: output directory as a String e.g `"/home/mpastell/weaveout"` or filename as string e.g. ~/outpath/outfile.tex.
 * `fig_path`: where figures will be generated, relative to out_path
 * `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
 * `cache_path`: where of cached output will be saved.
@@ -107,8 +108,7 @@ function weave(source ; doctype = :auto, plotlib="Gadfly",
 
     formatted = join(formatted, "\n")
 
-    outname = "$(doc.cwd)/$(doc.basename).$(doc.format.formatdict[:extension])"
-    ext = doc.format.formatdict[:extension]
+    outname = get_outname(out_path, doc)
 
     open(outname, "w") do io
         write(io, formatted)
@@ -116,15 +116,19 @@ function weave(source ; doctype = :auto, plotlib="Gadfly",
 
     #Convert using pandoc
     if doc.doctype == "md2html"
-      pandoc2html(formatted, doc)
-      ext = "html"
+        outname = get_outname(out_path, doc, ext = "html")
+        pandoc2html(formatted, doc, outname)
     elseif doc.doctype == "md2pdf"
-      pandoc2pdf(formatted, doc)
-      ext = "pdf"
+        outname = get_outname(out_path, doc, ext = "pdf")
+        pandoc2pdf(formatted, doc, outname)
     end
 
-    info("Report weaved to $(doc.basename).$ext")
+    doc.cwd == pwd() && (outname = basename(outname))
+
+    info("Report weaved to $outname")
 end
+
+
 
 
 function Base.display(report::Report, m::MIME"text/plain", data)
