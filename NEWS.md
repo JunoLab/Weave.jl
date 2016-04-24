@@ -1,6 +1,11 @@
 
 # Release notes for Weave.jl
 
+### master
+
+* Fix a bug with out_path for md2html and md2pdf
+* Improve doctype autodetection
+
 ### v0.1.1
 
 * Change pandoc output to use inline images if there is no caption.

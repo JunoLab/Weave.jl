@@ -8,10 +8,12 @@ and Sweave.
 
 **Current features**
 
-* Noweb or markdown syntax for input documents.
+* Noweb, markdown or script syntax for input documents.
 * Execute code as terminal or "script" chunks.
-* Capture Gadfly, PyPlot or Winston figures.
-* Supports LaTex, Pandoc and Github markdown, AsciiDoc and reStructuredText output
+* Capture Gadfly, PyPlot and Winston figures.
+* Supports LaTex, Pandoc, Github markdown, MultiMarkdown, Asciidoc and reStructuredText output
+* Publish markdown directly to html and pdf using Pandoc.
+* Simple caching of results
 
 ![Weave code and output](http://mpastell.com/images/weave_demo.png)
 
