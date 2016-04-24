@@ -4,7 +4,47 @@
     
     <url>
      <loc>None/</loc>
-     <lastmod>2016-04-19</lastmod>
+     <lastmod>2016-04-24</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>None/getting_started/</loc>
+     <lastmod>2016-04-24</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>None/usage/</loc>
+     <lastmod>2016-04-24</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>None/publish/</loc>
+     <lastmod>2016-04-24</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>None/chunk_options/</loc>
+     <lastmod>2016-04-24</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>None/function_index/</loc>
+     <lastmod>2016-04-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
