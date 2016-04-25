@@ -4,6 +4,7 @@
 ### master
 
 * Fix a bug with out_path for md2html and md2pdf
+* Fix md2html and md2pdf on Windows
 * Improve doctype autodetection
 
 ### v0.1.1

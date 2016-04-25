@@ -20,13 +20,12 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
   outname = basename(outname)
 
   try
-  #html = @compat readstring(
-  run(pipeline(`echo $formatted` ,
-   `pandoc -R -s --mathjax="" --self-contained --highlight-style=tango
-   --template $html_template --include-in-header=$css_template
-    -V wversion=$wversion -V wtime=$wtime -V wsource=$wsource
-    -o $outname`))
-  #  )
+    open(`pandoc -R -s --mathjax="" --self-contained --highlight-style=tango
+    --template $html_template --include-in-header=$css_template
+     -V wversion=$wversion -V wtime=$wtime -V wsource=$wsource
+     -o $outname`, "w", STDOUT) do io
+       println(io, formatted)
+    end
     cd(old_wd)
   catch
     cd(old_wd)
@@ -55,20 +54,15 @@ function pandoc2pdf(formatted::AbstractString, doc::WeaveDoc, outname::AbstractS
 
   info("Done executing code. Running xelatex")
   try
-    run(pipeline(`echo $formatted` ,
-     `pandoc -R -s  --latex-engine=xelatex --highlight-style=tango
-      --include-in-header=$header_template
-      -V fontsize=12pt
-      -o $outname`))
-
-  #run(pipeline(`echo $formatted` ,
-  # `pandoc -R -s --mathjax --self-contained --template
-  #  $html_template  -V wversion=$wversion -V wtime=$wtime -V wsource=$wsource
-  #  -o $outname`))
-
+    open(`pandoc -R -s  --latex-engine=xelatex --highlight-style=tango
+     --include-in-header=$header_template
+     -V fontsize=12pt
+     -o $outname`, "w", STDOUT) do io
+       println(io, formatted)
+    end
     cd(old_wd)
   catch
     cd(old_wd)
-    error("Unable to convert to html, check that you have pandoc installed and in your path")
+    error("Unable to convert to pdf, check that you have pandoc and xelatex installed and in your path")
   end
 end
