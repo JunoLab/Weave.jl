@@ -47,7 +47,7 @@ package for syntax hightlighting. You'll need to use either xetex or luatex with
 \texttt{-shell-escape} flag to get pdf e.g.
 
 \begin{minted}{bash}
-$ lualatex -shell-escape gadfly_pgf.tex
+lualatex -shell-escape gadfly_pgf.tex
 \end{minted}
 
 \section{Sample code}
