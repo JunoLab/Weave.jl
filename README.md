@@ -42,6 +42,25 @@ Documenter.jl with MKDocs generated documentation:
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://mpastell.github.io/Weave.jl/stable)
 [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://mpastell.github.io/Weave.jl/latest)
 
+# Editor support
+
+I have made [language-weave](https://atom.io/packages/language-weave) package
+for Atom to do the syntax highlighting correctly.
+
+Noweb documents work well with ESS as well, to set doc-mode for .mdw files to markdown
+and code to Julia you can do:
+
+```clojure
+(defun mdw-mode ()
+       (ess-noweb-mode)
+       (setq ess-noweb-default-code-mode 'ess-julia-mode)
+       (setq ess-noweb-doc-mode 'markdown-mode))
+
+(setq auto-mode-alist (append (list (cons "\\.mdw$" 'mdw-mode))
+                   auto-mode-alist))
+```
+
+
 ## Contributing
 
 I will probably add new features to Weave when I need them myself or if they are requested and not too difficult to implement. You can contribute by opening issues on Github or implementing things yourself and making a pull request. I'd also appreciate example documents written using Weave to add to examples.
