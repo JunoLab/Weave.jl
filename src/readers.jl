@@ -16,8 +16,8 @@ const input_formats = Dict{AbstractString, Any}(
         "noweb" => MarkupInput(r"^<<(.*?)>>=\s*$",
                     r"^@\s*$"),
         "markdown" => MarkupInput(
-                      r"(?:^(?:`|~){3,}\s*(?:\{|\{\.|)julia(?:;|\s)(.*)\}\s*$)|(?:^(?:`|~){3,}\s*julia\s*$)",
-                      r"^`|~{3,}\s*$"),
+                      r"(?:^(?:`|~){3,}\s*(?:\{|\{\.|)julia(?:;|\s|)(.*)\}\s*$)|(?:^(?:`|~){3,}\s*julia\s*$)",
+                      r"^(`|~){3,}\s*$"),
         "script" => ScriptInput(
           r"(^#'.*)|(^#%%.*)|(^# %%.*)",
           r"(^#')|(^#%%)|(^# %%)",
