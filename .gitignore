@@ -29,3 +29,5 @@ tmp/
 *.aux
 *.log
 *.out
+\#*\#
+.juliahistory
