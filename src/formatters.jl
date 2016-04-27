@@ -184,11 +184,13 @@ const pandoc = Pandoc("Pandoc markdown",
                         @compat Dict{Symbol,Any}(
                                 :codestart => "~~~~{.julia}",
                                 :codeend=>"~~~~~~~~~~~~~\n\n",
-                                :outputstart=>"~~~~{.julia}",
-                                :outputend=>"~~~~~~~~~~~~~\n\n",
+                                :outputstart=>"~~~~",
+                                :outputend=>"~~~~\n\n",
                                 :fig_ext=>".png",
                                 :out_width=>nothing,
                                 :extension=>"md",
+                                #Prefer png figures for markdown conversion, svg doesn't work with latex
+                                :mimetypes => ["image/png", "image/jpg", "image/svg+xml", "text/markdown", "text/plain"],
                                 :doctype=>"pandoc"
                                                ))
 
@@ -197,20 +199,24 @@ const md2html = Pandoc("Markdown to HTML (requires Pandoc)",
                       @compat Dict{Symbol,Any}(
                               :codestart => "````julia",
                               :codeend=> "````\n\n",
-                              :outputstart=> "````julia",
+                              :outputstart=> "````",
                               :outputend=> "````\n\n",
                               :fig_ext=> ".svg",
                               :extension=> "md",
+                              :mimetypes => ["image/svg+xml", "image/png", "image/jpg",
+                                  "text/html", "text/markdown",  "text/plain"],
                               :doctype=> "md2html"))
 
 const md2pdf = Pandoc("Markdown to pdf (requires Pandoc and xelatex)",
                       @compat Dict{Symbol,Any}(
                               :codestart => "````julia",
                               :codeend=> "````\n\n",
-                              :outputstart=> "````julia",
+                              :outputstart=> "````",
                               :outputend=> "````\n\n",
                               :fig_ext=> ".pdf",
                               :extension=> "md",
+                              :mimetypes => ["application/pdf", "image/png", "image/jpg",
+                                  "text/latex", "text/plain"],
                               :doctype=> "md2pdf"))
 
 
@@ -224,7 +230,7 @@ const github = Markdown("Github markdown",
                         @compat Dict{Symbol,Any}(
                                 :codestart => "````julia",
                                 :codeend=> "````\n\n",
-                                :outputstart=> "````julia",
+                                :outputstart=> "````",
                                 :outputend=> "````\n\n",
                                 :fig_ext=> ".png",
                                 :extension=> "md",
@@ -240,7 +246,7 @@ const multimarkdown = MultiMarkdown("MultiMarkdown",
                         @compat Dict{Symbol,Any}(
                                 :codestart => "````julia",
                                 :codeend=> "````\n\n",
-                                :outputstart=> "````julia",
+                                :outputstart=> "````",
                                 :outputend=> "````\n\n",
                                 :fig_ext=> ".png",
                                 :extension=> "md",
