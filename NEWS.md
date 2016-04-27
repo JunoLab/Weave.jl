@@ -1,6 +1,12 @@
 
 # Release notes for Weave.jl
 
+### Git
+
+* Fix parsing of lone variables from chunks
+* Support for displaying general multimedia objects e.g. Plots.jl and Images.jl
+  now work with weave
+
 ### v0.1.2
 
 27th April 2016

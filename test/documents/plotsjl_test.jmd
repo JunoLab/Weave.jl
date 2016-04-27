@@ -5,7 +5,7 @@ using Plots
 pyplot()
 x = linspace(0, 2*pi)
 println(x)
-plot(x = x, y = sin(x), size =(900,300))
+p = plot(x = x, y = sin(x), size =(900,300))
 ```
 
 
@@ -28,13 +28,13 @@ scatter!(rand(100),markersize=6,c=:orange)
 plot(y = cumsum(randn(1000, 1)))
 ```
 
-```julia
+```
 using TestImages
 testimage("mandrill")
 ```
 
 
-```julia
+```
 using RDatasets
 iris = dataset("datasets", "iris")
 head(iris)

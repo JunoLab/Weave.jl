@@ -1,15 +1,18 @@
 
 
 ```julia
-using RDatasets
-iris = dataset("datasets", "iris")
-display(iris)
+using DataFrames
+df = DataFrame(letters = 'a':'z', numbers = 1:26)
+
+df
+z = 51
+display(df)
 ```
 
 ```julia; hold=true
-display(head(iris))
+head(df)
 ```
 
 ```julia; term=true
-iris
+df
 ```

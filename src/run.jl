@@ -153,15 +153,15 @@ function capture_output(expr, SandBox::Module, term, plotlib, lastline)
         obj = eval(SandBox, expr)
         if term
             obj != nothing && display(obj)
+        elseif typeof(expr) == Symbol
+            display(obj)
         elseif plotlib == "Gadfly" && typeof(obj) == Gadfly.Plot
             obj != nothing && display(obj)
         #This shows images and lone variables, result can
-        #still be e.g. SVG depending on the avaible methods
-        #for the type
+        #Handle last line sepately
         elseif lastline && obj != nothing
-          if typeof(expr) == Symbol
-            display(obj)
-          elseif mimewritable("image/png", obj) && expr.head == :call
+          #elseif mimewritable("image/png", obj) && expr.head == :call
+          if expr.head == :call
             display(obj)
           end
         end

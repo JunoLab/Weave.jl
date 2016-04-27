@@ -1,6 +1,6 @@
 import Winston
 
-function Base.display(report::Report, m::MIME"image/svg+xml", Winston.FramedPlot)
+function Base.display(report::Report, m::MIME"image/svg+xml", data::Winston.FramedPlot)
 
     chunk = report.cur_chunk
     full_name, rel_name = get_figname(report, chunk)

@@ -58,27 +58,30 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
         result = format_termchunk(chunk, formatdict)
     else
 
-        if chunk.options[:echo]
-            result = "$(formatdict[:codestart])$(chunk.content)\n$(formatdict[:codeend])\n"
+    if chunk.options[:echo]
+        result = "$(formatdict[:codestart])$(chunk.content)\n$(formatdict[:codeend])\n"
+    else
+        result = ""
+    end
+
+    if (strip(chunk.output)!= "" || strip(chunk.rich_output) != "") && (chunk.options[:results] != "hidden")
+        if chunk.options[:results] != "markup" && chunk.options[:results] != "hold"
+            strip(chunk.output) ≠ "" && (result *= "$(chunk.output)\n")
+            strip(chunk.rich_output) ≠ "" && (result *= "$(chunk.rich_output)\n")
         else
-            result = ""
-        end
-
-        if (strip(chunk.output)!= "") && (chunk.options[:results] != "hidden")
-            if chunk.options[:results] != "markup" && chunk.options[:results] != "hold"
-                result *= "$(chunk.output)\n"
-            else
-                if chunk.options[:wrap]
-                    chunk.output = "\n" * wraplines(chunk.output,
-                                            chunk.options[:line_width])
-                end
-
-                if haskey(formatdict, :indent)
-                    chunk.output = indent(chunk.output, formatdict[:indent])
-                end
-                result *= "$(formatdict[:outputstart])$(chunk.output)\n$(formatdict[:outputend])\n"
+            if chunk.options[:wrap]
+                chunk.output = "\n" * wraplines(chunk.output,
+                                        chunk.options[:line_width])
             end
+
+            if haskey(formatdict, :indent)
+                chunk.output = indent(chunk.output, formatdict[:indent])
+            end
+            strip(chunk.output) ≠ "" &&
+                (result *= "$(formatdict[:outputstart])$(chunk.output)\n$(formatdict[:outputend])\n")
+            strip(chunk.rich_output) ≠ "" && (result *= chunk.rich_output * "\n")
         end
+    end
 
     end
 
@@ -151,7 +154,7 @@ const tex = Tex("Latex with custom code environments",
                                          :fig_env=> "figure",
                                          :fig_pos => "htpb",
                                          :doctype => "tex",
-                                         :mimetypes => ["application/pdf", "image/png", "text/plain"]
+                                         :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"]
                                          ))
 
 const texminted = Tex("Latex using minted for highlighting",
@@ -168,7 +171,7 @@ const texminted = Tex("Latex using minted for highlighting",
                                          :fig_env=> "figure",
                                          :fig_pos => "htpb",
                                          :doctype => "texminted",
-                                         :mimetypes => ["application/pdf", "image/png", "text/plain"]
+                                         :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"]
                                          ))
 
 type Pandoc
