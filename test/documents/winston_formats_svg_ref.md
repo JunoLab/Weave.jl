@@ -7,10 +7,11 @@ julia> t = linspace(0, 2*pi, 100)
 linspace(0.0,6.283185307179587,100)
 julia> plot(t, sinc(t))
 
+Winston.FramedPlot(...)
 ~~~~~~~~~~~~~
 
 
-![](figures/winston_formats_1_1.svg)\ 
+![](figures/winston_formats_1_1.png)\ 
 
 
 ~~~~{.julia}
@@ -18,17 +19,18 @@ julia> s = 1:10
 
 1:10
 julia> plot(s, "r*")
+Winston.FramedPlot(...)
 ~~~~~~~~~~~~~
 
 
-![](figures/winston_formats_1_2.svg)\ 
+![](figures/winston_formats_1_2.png)\ 
 
 
 
 
 
 
-![Random walk.](figures/winston_formats_random_1.svg)
+![Random walk.](figures/winston_formats_random_1.png)
 
 
 
@@ -51,7 +53,12 @@ display(p)
 ~~~~~~~~~~~~~
 
 
-![](figures/winston_formats_3_1.svg)\ 
+~~~~
+warning: sub-optimal solution for plot
+~~~~
+
+
+![](figures/winston_formats_3_1.png)\ 
 
 
 ~~~~{.julia}
@@ -83,5 +90,5 @@ display(p)
 ~~~~~~~~~~~~~
 
 
-![](figures/winston_formats_3_2.svg)\ 
+![](figures/winston_formats_3_2.png)\ 
 

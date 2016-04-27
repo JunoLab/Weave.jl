@@ -64,11 +64,12 @@ h = FIRfreqz(f, w)
 
 #' ## Plot the frequency and impulse response
 
+h_db = log10(abs(h))
+ws = w/pi*(fs/2)
+
 #' The next code chunk is executed in term mode, see the [script](FIR_design.jl) for syntax.
 #+ term=true
 
-h_db = log10(abs(h))
-ws = w/pi*(fs/2)
 plot(y = h_db, x = ws, Geom.line,
       Guide.xlabel("Frequency (Hz)"), Guide.ylabel("Magnitude (db)"))
 

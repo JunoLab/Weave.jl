@@ -75,42 +75,25 @@ h = FIRfreqz(f, w)
 
 ## Plot the frequency and impulse response
 
+
+~~~~{.julia}
+h_db = log10(abs(h))
+ws = w/pi*(fs/2)
+~~~~~~~~~~~~~
+
+
+
+
 The next code chunk is executed in term mode, see the [script](FIR_design.jl) for syntax.
 
 ~~~~{.julia}
 julia> 
-h_db = log10(abs(h))
-
-1024-element Array{Float32,1}:
-  0.0        
- -1.52727e-6 
- -6.03147e-6 
- -1.35386e-5 
- -2.39452e-5 
- -3.71738e-5 
- -5.31213e-5 
- -7.16583e-5 
- -9.25781e-5 
- -0.000115803
-  ⋮          
- -3.21659    
- -3.18342    
- -3.15605    
- -3.13379    
- -3.11615    
- -3.10275    
- -3.09335    
- -3.08778    
- -3.08593    
-julia> ws = w/pi*(fs/2)
-
-linspace(0.0,10.0,1024)
-julia> plot(y = h_db, x = ws, Geom.line,
+plot(y = h_db, x = ws, Geom.line,
       Guide.xlabel("Frequency (Hz)"), Guide.ylabel("Magnitude (db)"))
 ~~~~~~~~~~~~~
 
 
-![](figures/FIR_design_3_1.png)\ 
+![](figures/FIR_design_4_1.png)\ 
 
 
 
@@ -124,5 +107,5 @@ plot(y = h_phase, x = ws, Geom.line,
 ~~~~~~~~~~~~~
 
 
-![](figures/FIR_design_4_1.png)\ 
+![](figures/FIR_design_5_1.png)\ 
 

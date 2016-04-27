@@ -10,6 +10,13 @@
 
 
 
+::
+    
+    1-element Array{Any,1}:
+     PyObject <matplotlib.lines.Line2D object at 0x7f9745111450>
+
+
+
 .. figure:: figures/pyplot_formats_sin_fun_1.svg
    :width: 15 cm
 
@@ -18,11 +25,25 @@
 
 
 
+::
+    
+    1-element Array{Any,1}:
+     PyObject <matplotlib.lines.Line2D object at 0x7f9777e49990>
+
+
+
 .. figure:: figures/pyplot_formats_2_1.svg
    :width: 15 cm
 
    cos(x) function.
 
+
+
+
+::
+    
+    1-element Array{Any,1}:
+     PyObject <matplotlib.lines.Line2D object at 0x7f9777d7b590>
 
 
 
@@ -40,13 +61,13 @@ linspace(0.0,6.283185307179586,200)
 julia> plot(x, sin(x))
 
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7fe5a9e74b70>
+ PyObject <matplotlib.lines.Line2D object at 0x7f9777c71190>
 julia> y = 20
 
 20
 julia> plot(x, cos(x))
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7fe5a9e7acf8>
+ PyObject <matplotlib.lines.Line2D object at 0x7f9777c71390>
 
 
 
@@ -60,6 +81,12 @@ julia> plot(x, cos(x))
     
     x = randn(100, 100)
     contourf(x)
+
+
+
+::
+    
+    PyObject <matplotlib.contour.QuadContourSet object at 0x7f9777ba3510>
 
 
 

@@ -7,6 +7,7 @@ julia> t = linspace(0, 2*pi, 100)
 linspace(0.0,6.283185307179587,100)
 julia> plot(t, sinc(t))
 
+Winston.FramedPlot(...)
 ````
 
 
@@ -17,6 +18,7 @@ julia> s = 1:10
 
 1:10
 julia> plot(s, "r*")
+Winston.FramedPlot(...)
 ````
 
 
@@ -46,6 +48,11 @@ add(p, Curve(x, c, color="red"))
 add(p, Curve(x, s, color="blue"))
 display(p)
 
+````
+
+
+````
+warning: sub-optimal solution for plot
 ````
 
 

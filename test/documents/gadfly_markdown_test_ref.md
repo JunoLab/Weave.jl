@@ -33,7 +33,7 @@ println(x)
 ````
 
 
-````julia
+````
 linspace(0.0,200.0,50)
 ````
 
@@ -73,7 +73,7 @@ println(x)
 ````
 
 
-````julia
+````
 linspace(0.0,200.0,50)
 ````
 

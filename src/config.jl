@@ -61,6 +61,7 @@ julia> set_chunk_defaults(Dict{Symbol, Any}(:dpi => 200, fig_width => 8))
 """
 function set_chunk_defaults(opts::Dict{Symbol, Any})
   merge!(rcParams[:chunk_defaults], opts)
+  return nothing
 end
 
 """
