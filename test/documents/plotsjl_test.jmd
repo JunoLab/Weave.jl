@@ -27,15 +27,3 @@ scatter!(rand(100),markersize=6,c=:orange)
 ```{julia;echo=false; fig_cap="A random walk."; label="random"}
 plot(y = cumsum(randn(1000, 1)))
 ```
-
-```
-using TestImages
-testimage("mandrill")
-```
-
-
-```
-using RDatasets
-iris = dataset("datasets", "iris")
-head(iris)
-```
