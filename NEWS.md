@@ -1,11 +1,14 @@
 
 # Release notes for Weave.jl
 
-### master
+### v0.1.2
 
-* Fix a bug with out_path for md2html and md2pdf
+27th April 2016
+
+* Fix a bug with `out_path` for md2html and md2pdf
 * Fix md2html and md2pdf on Windows
 * Improve doctype autodetection
+* Improved regex for parsing markdown input format
 
 ### v0.1.1
 
