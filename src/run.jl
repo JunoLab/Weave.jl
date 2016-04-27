@@ -144,6 +144,8 @@ function capture_output(expr::Expr, SandBox::Module, term, plotlib)
             obj != nothing && display(obj)
         elseif plotlib == "Gadfly" && typeof(obj) == Gadfly.Plot
             obj != nothing && display(obj)
+        elseif plotlib == "Plots" && issubtype(typeof(obj), Plots.Plot)
+            obj != nothing && display(obj)
         end
 
     finally
@@ -248,7 +250,10 @@ function init_plotting(plotlib)
         elseif l_plotlib == "gadfly"
             eval(parse("""include(Pkg.dir("Weave","src","gadfly.jl"))"""))
             rcParams[:plotlib] = "Gadfly"
-        end
+      elseif l_plotlib == "plots"
+          eval(parse("""include(Pkg.dir("Weave","src","plotsjl.jl"))"""))
+          rcParams[:plotlib] = "Plots"
+      end
     end
     return nothing
 end
