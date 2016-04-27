@@ -1,6 +1,6 @@
 import Winston
 
-function Base.display(report::Report, m::MIME"image/png", data)
+function Base.display(report::Report, m::MIME"image/svg+xml", Winston.FramedPlot)
 
     chunk = report.cur_chunk
     full_name, rel_name = get_figname(report, chunk)
@@ -9,7 +9,6 @@ function Base.display(report::Report, m::MIME"image/png", data)
     push!(report.figures, rel_name)
     report.fignum += 1
     vector_fmts = [".pdf"; ".svg"]
-
     #Don't use dpi for vector formats
     if chunk.options[:fig_ext] in vector_fmts
         Winston.savefig(data, full_name, width=chunk.options[:fig_width]*100,

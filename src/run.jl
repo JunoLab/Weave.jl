@@ -148,8 +148,9 @@ function capture_output(expr::Expr, SandBox::Module, term, plotlib, lastline)
             obj != nothing && display(obj)
         elseif plotlib == "Gadfly" && typeof(obj) == Gadfly.Plot
             obj != nothing && display(obj)
-        #Display Plots.jl plots if they are the last expr in script mode
-        #elseif plotlib == "Plots" && lastline && issubtype(typeof(obj), Plots.Plot)
+        #This displays images from last line, result can
+        #still be e.g. SVG depending on the avaible methods
+        #for the type
         elseif lastline && mimewritable("image/png", obj)
             obj != nothing && display(obj)
         end
@@ -241,7 +242,7 @@ end
 
 function init_plotting(plotlib)
     if plotlib == nothing
-        rcParams[:chunk_defaults][:fig] = false
+        #rcParams[:chunk_defaults][:fig] = false
         rcParams[:plotlib] = nothing
     else
         l_plotlib = lowercase(plotlib)
@@ -256,9 +257,6 @@ function init_plotting(plotlib)
         elseif l_plotlib == "gadfly"
             eval(parse("""include(Pkg.dir("Weave","src","gadfly.jl"))"""))
             rcParams[:plotlib] = "Gadfly"
-      elseif l_plotlib == "plots"
-          eval(parse("""include(Pkg.dir("Weave","src","plotsjl.jl"))"""))
-          rcParams[:plotlib] = "Plots"
       end
     end
     return nothing
