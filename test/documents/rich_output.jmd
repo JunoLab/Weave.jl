@@ -11,5 +11,5 @@ display(head(iris))
 ```
 
 ```julia; term=true
-t = iris
+iris
 ```

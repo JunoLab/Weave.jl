@@ -144,14 +144,14 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
     return results
 end
 
-function capture_output(expr::Expr, SandBox::Module, term, plotlib, lastline)
+function capture_output(expr, SandBox::Module, term, plotlib, lastline)
     oldSTDOUT = STDOUT
     out = nothing
     obj = nothing
     rw, wr = redirect_stdout()
     try
         obj = eval(SandBox, expr)
-         if term
+        if term
             obj != nothing && display(obj)
         elseif plotlib == "Gadfly" && typeof(obj) == Gadfly.Plot
             obj != nothing && display(obj)
@@ -174,14 +174,16 @@ end
 
 #Parse chunk input to array of expressions
 function parse_input(input::AbstractString)
-    parsed = Tuple{AbstractString, Expr}[]
+    parsed = Tuple{AbstractString, Any}[]
     n = length(input)
     pos = 2 #The first character is extra line end
-    while pos < n
+    while pos ≤ n
         oldpos = pos
         code,  pos = parse(input, pos)
+        info(code)
         push!(parsed, (input[oldpos:pos-1] , code ))
     end
+    info(parsed)
     parsed
 end
 
