@@ -155,13 +155,16 @@ function capture_output(expr, SandBox::Module, term, plotlib, lastline)
             obj != nothing && display(obj)
         elseif plotlib == "Gadfly" && typeof(obj) == Gadfly.Plot
             obj != nothing && display(obj)
-        #This displays images from last line, result can
+        #This shows images and lone variables, result can
         #still be e.g. SVG depending on the avaible methods
         #for the type
-        elseif lastline && mimewritable("image/png", obj)
-            obj != nothing && display(obj)
+        elseif lastline && obj != nothing
+          if typeof(expr) == Symbol
+            display(obj)
+          elseif mimewritable("image/png", obj) && expr.head == :call
+            display(obj)
+          end
         end
-
     finally
         redirect_stdout(oldSTDOUT)
         close(wr)
@@ -180,10 +183,8 @@ function parse_input(input::AbstractString)
     while pos ≤ n
         oldpos = pos
         code,  pos = parse(input, pos)
-        info(code)
         push!(parsed, (input[oldpos:pos-1] , code ))
     end
-    info(parsed)
     parsed
 end
 
