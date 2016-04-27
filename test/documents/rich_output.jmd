@@ -1,0 +1,15 @@
+
+
+```julia
+using RDatasets
+iris = dataset("datasets", "iris")
+display(iris)
+```
+
+```julia; hold=true
+display(head(iris))
+```
+
+```julia; term=true
+t = iris
+```

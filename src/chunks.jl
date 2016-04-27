@@ -30,10 +30,11 @@ type CodeChunk
     optionstring::AbstractString
     options::Dict{Symbol, Any}
     output::AbstractString
+    rich_output::AbstractString
     figures::Array{AbstractString}
     result::Array{ChunkOutput}
     function CodeChunk(content, number, start_line, optionstring, options)
-        new(content, number, 0, start_line, optionstring, options, "", AbstractString[], ChunkOutput[])
+        new(content, number, 0, start_line, optionstring, options, "","", AbstractString[], ChunkOutput[])
     end
 end
 

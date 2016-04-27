@@ -130,7 +130,7 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
         (obj, out) = capture_output(expr, SandBox, chunk.options[:term],
                       rcParams[:plotlib], lastline)
         figures = report.figures #Captured figures
-        result = ChunkOutput(str_expr, out, report.rich_output, report.cur_result, figures)
+        result = ChunkOutput(str_expr, out, report.cur_result, report.rich_output, figures)
         report.rich_output = ""
         push!(results, result)
         result_no += 1
@@ -325,7 +325,8 @@ function collect_results(chunk::CodeChunk, fmt::ScriptResult)
     result_no = 1
     result_chunks = CodeChunk[ ]
     for r = chunk.result
-        if strip(r.stdout) == "" && isempty(r.figures)  && r.displayed == ""
+        #Check if there is any output from chunk
+        if strip(r.stdout) == "" && isempty(r.figures)  && strip(r.rich_output) == ""
             content *= r.code
         else
             content = "\n" * content * r.code
@@ -335,6 +336,7 @@ function collect_results(chunk::CodeChunk, fmt::ScriptResult)
             result_no *=1
             rchunk.figures = r.figures
             rchunk.output = r.stdout * r.displayed
+            rchunk.rich_output = r.rich_output
             push!(result_chunks, rchunk)
         end
     end
@@ -376,8 +378,8 @@ function collect_results(chunk::CodeChunk, fmt::CollectResult)
     result_no = 1
     for r =chunk.result
         chunk.output *=  r.stdout
+        chunk.rich_output *= r.rich_output
         chunk.figures = [chunk.figures; r.figures]
     end
-
     return [chunk]
 end

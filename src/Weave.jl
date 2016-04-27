@@ -1,39 +1,6 @@
 module Weave
 using Compat
 
-#Contains report global properties
-type Report <: Display
-  cwd::AbstractString
-  basename::AbstractString
-  formatdict::Dict{Symbol,Any}
-  pending_code::AbstractString
-  cur_result::AbstractString
-  rich_output::AbstractString
-  fignum::Int
-  figures::Array{AbstractString}
-  term_state::Symbol
-  cur_chunk
-  mimetypes::Array{AbstractString}
-end
-
-function Report(cwd, basename, formatdict, mimetypes)
-    Report(cwd, basename, formatdict, "", "", "", 1, AbstractString[], :text, nothing, mimetypes)
-end
-
-#Default mimetypes in order, can be overridden for some inside `run method` formats
-const default_mime_types = ["image/svg+xml", "image/png", "text/html", "text/plain"]
-#From IJulia as a reminder
-#const supported_mime_types = [ "text/html", "text/latex", "image/svg+xml", "image/png", "image/jpeg", "text/plain", "text/markdown" ]
-
-function Base.display(doc::Report, data)
-    #Set preferred mimetypes for report based on format
-    for m in doc.mimetypes
-        if mimewritable(m, data)
-            display(doc, m, data)
-            break
-        end
-    end
-end
 
 """
 `list_out_formats()`

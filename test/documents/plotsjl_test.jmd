@@ -32,3 +32,10 @@ plot(y = cumsum(randn(1000, 1)))
 using TestImages
 testimage("mandrill")
 ```
+
+
+```julia
+using RDatasets
+iris = dataset("datasets", "iris")
+head(iris)
+```
