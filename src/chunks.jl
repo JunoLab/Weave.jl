@@ -18,6 +18,7 @@ immutable ChunkOutput
     code::AbstractString
     stdout::AbstractString
     displayed::AbstractString
+    rich_output::AbstractString
     figures::Array{AbstractString}
 end
 

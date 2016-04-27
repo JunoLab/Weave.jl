@@ -150,7 +150,8 @@ const tex = Tex("Latex with custom code environments",
                                          :out_width=> "\\linewidth",
                                          :fig_env=> "figure",
                                          :fig_pos => "htpb",
-                                         :doctype => "tex"
+                                         :doctype => "tex",
+                                         :mimetypes => ["application/pdf", "image/png", "text/plain"]
                                          ))
 
 const texminted = Tex("Latex using minted for highlighting",
@@ -166,9 +167,9 @@ const texminted = Tex("Latex using minted for highlighting",
                                          :out_width => "\\linewidth",
                                          :fig_env=> "figure",
                                          :fig_pos => "htpb",
-                                         :doctype => "texminted"
+                                         :doctype => "texminted",
+                                         :mimetypes => ["application/pdf", "image/png", "text/plain"]
                                          ))
-
 
 type Pandoc
   description::AbstractString

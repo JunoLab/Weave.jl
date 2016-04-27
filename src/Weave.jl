@@ -8,21 +8,26 @@ type Report <: Display
   formatdict::Dict{Symbol,Any}
   pending_code::AbstractString
   cur_result::AbstractString
+  rich_output::AbstractString
   fignum::Int
   figures::Array{AbstractString}
   term_state::Symbol
   cur_chunk
+  mimetypes::Array{AbstractString}
 end
 
-function Report(cwd, basename, formatdict)
-    Report(cwd, basename, formatdict, "", "", 1, AbstractString[], :text, nothing)
+function Report(cwd, basename, formatdict, mimetypes)
+    Report(cwd, basename, formatdict, "", "", "", 1, AbstractString[], :text, nothing, mimetypes)
 end
 
-const supported_mime_types = ["image/svg+xml", "image/png", "text/plain"]
+#Default mimetypes in order, can be overridden for some inside `run method` formats
+const default_mime_types = ["image/svg+xml", "image/png", "text/html", "text/plain"]
+#From IJulia as a reminder
 #const supported_mime_types = [ "text/html", "text/latex", "image/svg+xml", "image/png", "image/jpeg", "text/plain", "text/markdown" ]
 
 function Base.display(doc::Report, data)
-    for m in supported_mime_types
+    #Set preferred mimetypes for report based on format
+    for m in doc.mimetypes
         if mimewritable(m, data)
             display(doc, m, data)
             break
@@ -124,16 +129,6 @@ function weave(source ; doctype = :auto, plotlib="Gadfly",
     info("Report weaved to $outname")
 end
 
-function Base.display(report::Report, m::MIME"text/plain", data)
-    s = reprmime(m, data)
-    print("\n" * s)
-end
-
-#This should not go to stdout, need to think of a good way to catch it!
-function Base.display(report::Report, m::MIME"text/html", data)
-    s = reprmime(m, data)
-    print("\n" * s)
-end
 
 function weave(doc::AbstractString, doctype::AbstractString)
     weave(doc, doctype=doctype)

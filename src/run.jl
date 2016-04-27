@@ -26,10 +26,10 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib="Gadfly",
     doc.cwd = get_cwd(doc, out_path)
     doctype == :auto && (doctype = detect_doctype(doc.source))
     doc.doctype = doctype
-
     doc.format = formats[doctype]
-    set_rc_params(doc.format.formatdict, fig_path, fig_ext)
 
+
+    set_rc_params(doc.format.formatdict, fig_path, fig_ext)
 
     #New sandbox for each document
     sandbox = "ReportSandBox$(rcParams[:doc_number])"
@@ -37,8 +37,15 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib="Gadfly",
     SandBox = eval(parse(sandbox))
     rcParams[:doc_number] += 1
 
+    if haskey(doc.format.formatdict, :mimetypes)
+      mimetypes = doc.format.formatdict[:mimetypes]
+    else
+      mimetypes = default_mime_types
+    end
+
+
     init_plotting(plotlib)
-    report = Report(doc.cwd, doc.basename, doc.format.formatdict)
+    report = Report(doc.cwd, doc.basename, doc.format.formatdict, mimetypes)
     pushdisplay(report)
 
     if cache != :off && cache != :refresh
@@ -122,9 +129,9 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
         lastline = (result_no == N)
         (obj, out) = capture_output(expr, SandBox, chunk.options[:term],
                       rcParams[:plotlib], lastline)
-        displayed = report.cur_result #Not needed?
         figures = report.figures #Captured figures
-        result = ChunkOutput(str_expr, out, displayed, figures)
+        result = ChunkOutput(str_expr, out, report.rich_output, report.cur_result, figures)
+        report.rich_output = ""
         push!(results, result)
         result_no += 1
     end
