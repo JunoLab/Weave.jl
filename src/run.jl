@@ -112,17 +112,21 @@ end
 
 function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
     expressions = parse_input(chunk.content)
+    N = length(expressions)
     #@show expressions
     result_no = 1
     results = ChunkOutput[ ]
 
     for (str_expr, expr) = expressions
         reset_report(report)
-        (obj, out) = capture_output(expr, SandBox, chunk.options[:term], rcParams[:plotlib])
+        lastline = (result_no == N)
+        (obj, out) = capture_output(expr, SandBox, chunk.options[:term],
+                      rcParams[:plotlib], lastline)
         displayed = report.cur_result #Not needed?
         figures = report.figures #Captured figures
         result = ChunkOutput(str_expr, out, displayed, figures)
         push!(results, result)
+        result_no += 1
     end
 
     #Save figures only in the end of chunk for PyPlot
@@ -133,7 +137,7 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
     return results
 end
 
-function capture_output(expr::Expr, SandBox::Module, term, plotlib)
+function capture_output(expr::Expr, SandBox::Module, term, plotlib, lastline)
     oldSTDOUT = STDOUT
     out = nothing
     obj = nothing
@@ -144,7 +148,9 @@ function capture_output(expr::Expr, SandBox::Module, term, plotlib)
             obj != nothing && display(obj)
         elseif plotlib == "Gadfly" && typeof(obj) == Gadfly.Plot
             obj != nothing && display(obj)
-        elseif plotlib == "Plots" && issubtype(typeof(obj), Plots.Plot)
+        #Display Plots.jl plots if they are the last expr in script mode
+        #elseif plotlib == "Plots" && lastline && issubtype(typeof(obj), Plots.Plot)
+        elseif lastline && mimewritable("image/png", obj)
             obj != nothing && display(obj)
         end
 
@@ -219,10 +225,10 @@ function clear_sandbox(SandBox::Module)
 end
 
 
-function get_figname(report::Report, chunk; fignum = nothing)
+function get_figname(report::Report, chunk; fignum = nothing, ext = nothing)
     figpath = joinpath(report.cwd, chunk.options[:fig_path])
     isdir(figpath) || mkpath(figpath)
-    ext = chunk.options[:fig_ext]
+    ext == nothing && (ext = chunk.options[:fig_ext])
     fignum == nothing && (fignum = report.fignum)
 
     chunkid = (chunk.options[:name] == nothing) ? chunk.number : chunk.options[:name]

@@ -18,17 +18,13 @@ function Report(cwd, basename, formatdict)
     Report(cwd, basename, formatdict, "", "", 1, AbstractString[], :text, nothing)
 end
 
-
-#const report = Report()
-
-const supported_mime_types =
-    [MIME"image/png",
-     MIME"text/plain"]
+const supported_mime_types = ["image/svg+xml", "image/png", "text/plain"]
+#const supported_mime_types = [ "text/html", "text/latex", "image/svg+xml", "image/png", "image/jpeg", "text/plain", "text/markdown" ]
 
 function Base.display(doc::Report, data)
     for m in supported_mime_types
-        if mimewritable(m(), data)
-            display(doc, m(), data)
+        if mimewritable(m, data)
+            display(doc, m, data)
             break
         end
     end
@@ -60,7 +56,7 @@ function tangle(source ; out_path=:doc, informat=:auto)
     doc.cwd = get_cwd(doc, out_path)
 
     outname = get_outname(out_path, doc, ext = "jl")
-    
+
     open(outname, "w") do io
     for chunk in doc.chunks
       if typeof(chunk) == CodeChunk
@@ -128,13 +124,15 @@ function weave(source ; doctype = :auto, plotlib="Gadfly",
     info("Report weaved to $outname")
 end
 
-
-
-
 function Base.display(report::Report, m::MIME"text/plain", data)
     s = reprmime(m, data)
     print("\n" * s)
-    #report.cur_result *= "\n" * s
+end
+
+#This should not go to stdout, need to think of a good way to catch it!
+function Base.display(report::Report, m::MIME"text/html", data)
+    s = reprmime(m, data)
+    print("\n" * s)
 end
 
 function weave(doc::AbstractString, doctype::AbstractString)
@@ -146,6 +144,7 @@ export weave, list_out_formats, tangle,
 
 include("config.jl")
 include("chunks.jl")
+include("display_methods.jl")
 include("readers.jl")
 include("run.jl")
 include("cache.jl")

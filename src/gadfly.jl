@@ -1,9 +1,9 @@
 using Gadfly
 
-Gadfly.set_default_plot_format(:png)
+Gadfly.set_default_plot_format(:svg)
 
 #Captures figures
-function Base.display(report::Report, m::MIME"image/png", p::Plot)
+function Base.display(report::Report, m::MIME"image/svg+xml", p::Plot)
 
     chunk = report.cur_chunk
     full_name, rel_name = get_figname(report, chunk)
