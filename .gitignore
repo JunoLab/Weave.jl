@@ -7,15 +7,15 @@ examples/*.pdf
 examples/*.html
 examples/*.rst
 examples/*.tex
-test/documents/figures
-test/documents/cache
-test/documents/output/figures
+test/**/cache
+test/**/figures
 test/documents/output/gadfly_formats_test.txt
 test/**/*.tex
 test/**/*.md
 test/**/*.rst
 test/**/*.html
 test/**/*.pdf
+test/**/*.png
 test/**/chunk_options.jl
 !test/**/*ref.*
 
