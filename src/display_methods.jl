@@ -70,6 +70,18 @@ function Base.display(report::Report, m::MIME"text/html", data)
     report.rich_output *= "\n" * s
 end
 
+#Catch "rich_output"
+function Base.display(report::Report, m::MIME"text/markdown", data)
+    s = reprmime(m, data)
+    report.rich_output *= "\n" * s
+end
+
+function Base.display(report::Report, m::MIME"text/latex", data)
+    s = reprmime(m, data)
+    report.rich_output *= "\n" * s
+end
+
+
 """Add saved figure name to results and return the name"""
 function add_figure(report::Report, ext)
   chunk = report.cur_chunk

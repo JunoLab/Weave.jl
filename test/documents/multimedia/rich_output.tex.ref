@@ -1,0 +1,115 @@
+
+
+\begin{juliacode}
+using DataFrames
+df = DataFrame(letters = 'a':'z', numbers = 1:26)
+
+df
+
+\end{juliacode}
+\begin{juliaout}
+26x2 DataFrames.DataFrame
+│ Row │ letters │ numbers │
+┝━━━━━┿━━━━━━━━━┿━━━━━━━━━┥
+│ 1   │ 'a'     │ 1       │
+│ 2   │ 'b'     │ 2       │
+│ 3   │ 'c'     │ 3       │
+│ 4   │ 'd'     │ 4       │
+│ 5   │ 'e'     │ 5       │
+│ 6   │ 'f'     │ 6       │
+│ 7   │ 'g'     │ 7       │
+│ 8   │ 'h'     │ 8       │
+⋮
+│ 18  │ 'r'     │ 18      │
+│ 19  │ 's'     │ 19      │
+│ 20  │ 't'     │ 20      │
+│ 21  │ 'u'     │ 21      │
+│ 22  │ 'v'     │ 22      │
+│ 23  │ 'w'     │ 23      │
+│ 24  │ 'x'     │ 24      │
+│ 25  │ 'y'     │ 25      │
+│ 26  │ 'z'     │ 26      │
+\end{juliaout}
+
+\begin{juliacode}
+z = 51
+display(df)
+\end{juliacode}
+\begin{juliaout}
+26x2 DataFrames.DataFrame
+│ Row │ letters │ numbers │
+┝━━━━━┿━━━━━━━━━┿━━━━━━━━━┥
+│ 1   │ 'a'     │ 1       │
+│ 2   │ 'b'     │ 2       │
+│ 3   │ 'c'     │ 3       │
+│ 4   │ 'd'     │ 4       │
+│ 5   │ 'e'     │ 5       │
+│ 6   │ 'f'     │ 6       │
+│ 7   │ 'g'     │ 7       │
+│ 8   │ 'h'     │ 8       │
+⋮
+│ 18  │ 'r'     │ 18      │
+│ 19  │ 's'     │ 19      │
+│ 20  │ 't'     │ 20      │
+│ 21  │ 'u'     │ 21      │
+│ 22  │ 'v'     │ 22      │
+│ 23  │ 'w'     │ 23      │
+│ 24  │ 'x'     │ 24      │
+│ 25  │ 'y'     │ 25      │
+│ 26  │ 'z'     │ 26      │
+\end{juliaout}
+
+
+
+\begin{juliacode}
+head(df)
+\end{juliacode}
+\begin{juliaout}
+6x2 DataFrames.DataFrame
+│ Row │ letters │ numbers │
+┝━━━━━┿━━━━━━━━━┿━━━━━━━━━┥
+│ 1   │ 'a'     │ 1       │
+│ 2   │ 'b'     │ 2       │
+│ 3   │ 'c'     │ 3       │
+│ 4   │ 'd'     │ 4       │
+│ 5   │ 'e'     │ 5       │
+│ 6   │ 'f'     │ 6       │
+\end{juliaout}
+
+
+
+\begin{juliaterm}
+julia> df
+26x2 DataFrames.DataFrame
+│ Row │ letters │ numbers │
+┝━━━━━┿━━━━━━━━━┿━━━━━━━━━┥
+│ 1   │ 'a'     │ 1       │
+│ 2   │ 'b'     │ 2       │
+│ 3   │ 'c'     │ 3       │
+│ 4   │ 'd'     │ 4       │
+│ 5   │ 'e'     │ 5       │
+│ 6   │ 'f'     │ 6       │
+│ 7   │ 'g'     │ 7       │
+│ 8   │ 'h'     │ 8       │
+⋮
+│ 18  │ 'r'     │ 18      │
+│ 19  │ 's'     │ 19      │
+│ 20  │ 't'     │ 20      │
+│ 21  │ 'u'     │ 21      │
+│ 22  │ 'v'     │ 22      │
+│ 23  │ 'w'     │ 23      │
+│ 24  │ 'x'     │ 24      │
+│ 25  │ 'y'     │ 25      │
+│ 26  │ 'z'     │ 26      │
+\end{juliaterm}
+
+
+
+
+\begin{juliacode}
+m = Base.Markdown.parse("**Some Markdown**")
+m
+\end{juliacode}
+
+\textbf{Some Markdown}
+

@@ -11,13 +11,13 @@ test/documents/figures
 test/documents/cache
 test/documents/output/figures
 test/documents/output/gadfly_formats_test.txt
-test/documents/*.tex
-test/documents/*.md
-test/documents/*.rst
-test/documents/*.html
-test/documents/*.pdf
-test/documents/chunk_options.jl
-!test/documents/*ref.*
+test/**/*.tex
+test/**/*.md
+test/**/*.rst
+test/**/*.html
+test/**/*.pdf
+test/**/chunk_options.jl
+!test/**/*ref.*
 
 doc/build
 doc/site

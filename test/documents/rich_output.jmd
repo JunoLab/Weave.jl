@@ -16,3 +16,9 @@ head(df)
 ```julia; term=true
 df
 ```
+
+
+```julia
+m = Base.Markdown.parse("**Some Markdown**")
+m
+```
