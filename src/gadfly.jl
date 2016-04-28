@@ -2,7 +2,8 @@ using Gadfly
 
 Gadfly.set_default_plot_format(:svg)
 
-#Captures figures
+#Gadfly doesn't call the default display methods, this catches
+#all Gadfly plots
 function Base.display(report::Report, m::MIME"image/svg+xml", p::Plot)
 
     chunk = report.cur_chunk

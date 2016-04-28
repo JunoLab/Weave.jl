@@ -51,11 +51,6 @@ display(p)
 ````
 
 
-````
-warning: sub-optimal solution for plot
-````
-
-
 ![](figures/winston_formats_3_1.png)
 
 ````julia

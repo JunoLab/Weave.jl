@@ -62,12 +62,6 @@ Winston.FramedPlot(...)
 
 
 
-::
-    
-    warning: sub-optimal solution for plot
-
-
-
 .. image:: figures/winston_formats_3_1.png
    :width: 15 cm
 
