@@ -26,7 +26,6 @@ const default_mime_types = ["image/svg+xml", "image/png", "text/html", "text/pla
 function Base.display(report::Report, data)
     #Set preferred mimetypes for report based on format
     for m in report.mimetypes
-        info(m)
         if mimewritable(m, data)
             display(report, m, data)
             #Always show plain text as well for term mode
