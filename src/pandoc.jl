@@ -20,16 +20,19 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
   outname = basename(outname)
 
   try
-    open(`pandoc -R -s --mathjax="" --self-contained --highlight-style=tango
+    pandoc_out, pandoc_in, proc = readandwrite(`pandoc -R -s --mathjax="" --self-contained --highlight-style=tango
     --template $html_template --include-in-header=$css_template
      -V wversion=$wversion -V wtime=$wtime -V wsource=$wsource
-     -o $outname`, "w", STDOUT) do io
-       println(io, formatted)
-    end
+     -o $outname`)
+    println(pandoc_in, formatted)
+
+    close(pandoc_in)
+    proc_output = readall(pandoc_out)
     cd(old_wd)
-  catch
+  catch e
     cd(old_wd)
-    error("Unable to convert to html, check that you have pandoc installed and in your path")
+    warn("Error converting document to HTML")
+    throw(e)
   end
 end
 
@@ -54,15 +57,17 @@ function pandoc2pdf(formatted::AbstractString, doc::WeaveDoc, outname::AbstractS
 
   info("Done executing code. Running xelatex")
   try
-    open(`pandoc -R -s  --latex-engine=xelatex --highlight-style=tango
+    pandoc_out, pandoc_in, proc = readandwrite(`pandoc -R -s  --latex-engine=xelatex --highlight-style=tango
      --include-in-header=$header_template
-     -V fontsize=12pt
-     -o $outname`, "w", STDOUT) do io
-       println(io, formatted)
-    end
+     -V fontsize=12pt -o $outname`) 
+    println(pandoc_in, formatted)
+
+    close(pandoc_in)
+    proc_output = readall(pandoc_out)
     cd(old_wd)
-  catch
+  catch e
     cd(old_wd)
-    error("Unable to convert to pdf, check that you have pandoc and xelatex installed and in your path")
+    warn("Error converting document to pdf")
+    throw(e)
   end
 end
