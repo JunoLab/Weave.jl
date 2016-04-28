@@ -9,7 +9,7 @@ julia> plot(t, sinc(t))
 
 Winston.FramedPlot(...)
 \end{juliaterm}
-\includegraphics[width=\linewidth]{figures/winston_formats_1_1.png}
+\includegraphics[width=\linewidth]{figures/winston_formats_1_1.pdf}
 
 \begin{juliaterm}
 julia> s = 1:10
@@ -18,7 +18,7 @@ julia> s = 1:10
 julia> plot(s, "r*")
 Winston.FramedPlot(...)
 \end{juliaterm}
-\includegraphics[width=\linewidth]{figures/winston_formats_1_2.png}
+\includegraphics[width=\linewidth]{figures/winston_formats_1_2.pdf}
 
 
 
@@ -26,7 +26,7 @@ Winston.FramedPlot(...)
 
 \begin{figure}[htpb]
 \center
-\includegraphics[width=\linewidth]{figures/winston_formats_random_1.png}
+\includegraphics[width=\linewidth]{figures/winston_formats_random_1.pdf}
 \caption{Random walk.}
 \label{fig:random}
 \end{figure}
@@ -50,10 +50,7 @@ add(p, Curve(x, s, color="blue"))
 display(p)
 
 \end{juliacode}
-\begin{juliaout}
-warning: sub-optimal solution for plot
-\end{juliaout}
-\includegraphics[width=\linewidth]{figures/winston_formats_3_1.png}
+\includegraphics[width=\linewidth]{figures/winston_formats_3_1.pdf}
 
 \begin{juliacode}
 
@@ -82,4 +79,4 @@ l = Legend(.1, .9, {a,b,s})
 add(p, s, a, b, l)
 display(p)
 \end{juliacode}
-\includegraphics[width=\linewidth]{figures/winston_formats_3_2.png}
+\includegraphics[width=\linewidth]{figures/winston_formats_3_2.pdf}

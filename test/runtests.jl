@@ -20,8 +20,8 @@ if VERSION < v"0.5-dev"
   include("chunk_opts_gadfly.jl")
 
   #Fails on travis, works locally.
-  #info("Test: Weaving with Winston")
-  #include("winston_formats.jl")
+  info("Test: Weaving with Winston")
+  include("winston_formats.jl")
 
   info("Test: Weaving with Gadfly")
   include("gadfly_formats.jl")

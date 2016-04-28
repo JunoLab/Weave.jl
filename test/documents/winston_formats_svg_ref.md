@@ -11,7 +11,7 @@ Winston.FramedPlot(...)
 ~~~~~~~~~~~~~
 
 
-![](figures/winston_formats_1_1.png)\ 
+![](figures/winston_formats_1_1.svg)\ 
 
 
 ~~~~{.julia}
@@ -23,14 +23,14 @@ Winston.FramedPlot(...)
 ~~~~~~~~~~~~~
 
 
-![](figures/winston_formats_1_2.png)\ 
+![](figures/winston_formats_1_2.svg)\ 
 
 
 
 
 
 
-![Random walk.](figures/winston_formats_random_1.png)
+![Random walk.](figures/winston_formats_random_1.svg)
 
 
 
@@ -53,12 +53,7 @@ display(p)
 ~~~~~~~~~~~~~
 
 
-~~~~
-warning: sub-optimal solution for plot
-~~~~
-
-
-![](figures/winston_formats_3_1.png)\ 
+![](figures/winston_formats_3_1.svg)\ 
 
 
 ~~~~{.julia}
@@ -90,5 +85,5 @@ display(p)
 ~~~~~~~~~~~~~
 
 
-![](figures/winston_formats_3_2.png)\ 
+![](figures/winston_formats_3_2.svg)\ 
 
