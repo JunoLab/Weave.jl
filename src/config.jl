@@ -3,6 +3,7 @@
 #Default options
 const defaultParams =
     @compat Dict{Symbol,Any}(:plotlib => nothing,
+                            :plotlib_set => false,
                             :storeresults => false,
                             :doc_number => 0,
                             :chunk_defaults =>

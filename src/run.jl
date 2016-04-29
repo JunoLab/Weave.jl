@@ -44,8 +44,8 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
     end
 
     #Reset plotting
-    plotlib_set = false
-    plotlib == :auto || init_plotting(plotlib)
+    rcParams[:plotlib_set] = false
+    #plotlib == :auto || init_plotting(plotlib)
 
     report = Report(doc.cwd, doc.basename, doc.format.formatdict, mimetypes)
     pushdisplay(report)
@@ -66,7 +66,8 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
         if typeof(chunk) == CodeChunk
             options = merge(rcParams[:chunk_defaults], chunk.options)
             merge!(chunk.options, options)
-            plotlib_set || detect_plotlib() #Try to autodetect plotting library
+
+            rcParams[:plotlib_set] || detect_plotlib() #Try to autodetect plotting library
         end
 
         restore = (cache ==:user && typeof(chunk) == CodeChunk && chunk.options[:cache])
@@ -269,6 +270,7 @@ end
 
 
 function init_plotting(plotlib)
+    rcParams[:plotlib_set] = true
     if plotlib == nothing
         rcParams[:plotlib] = nothing
     else
@@ -288,7 +290,6 @@ function init_plotting(plotlib)
             rcParams[:plotlib] = "Gadfly"
       end
     end
-    plotlib_set = true
     info(rcParams[:plotlib])
     return true
 end

@@ -111,7 +111,7 @@ const postexecute_hooks = Function[]
 push_postexecute_hook(f::Function) = push!(postexecute_hooks, f)
 pop_postexecute_hook(f::Function) = splice!(postexecute_hooks, findfirst(postexecute_hooks, f))
 
-const plotlib_set = false
+
 
 export weave, list_out_formats, tangle,
         set_chunk_defaults, get_chunk_defaults, restore_chunk_defaults
