@@ -11,7 +11,7 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
 
   path, wsource = splitdir(abspath(doc.source))
   wversion = string(Pkg.installed("Weave"))
-  wtime =  Date(now())
+  wtime =  string(Date(now()))
 
   #Change path for pandoc
   old_wd = pwd()
