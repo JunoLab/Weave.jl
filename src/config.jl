@@ -2,7 +2,7 @@
 
 #Default options
 const defaultParams =
-    @compat Dict{Symbol,Any}(:plotlib => "Gadfly",
+    @compat Dict{Symbol,Any}(:plotlib => nothing,
                             :storeresults => false,
                             :doc_number => 0,
                             :chunk_defaults =>

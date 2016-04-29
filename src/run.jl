@@ -18,7 +18,7 @@ Run code chunks and capture output from parsed document.
 
 **Note:** Run command from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """
-function Base.run(doc::WeaveDoc; doctype = :auto, plotlib="Gadfly",
+function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
         out_path=:doc, fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache = :off)
     #cache :all, :user, :off, :refresh
@@ -43,8 +43,10 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib="Gadfly",
       mimetypes = default_mime_types
     end
 
+    #Reset plotting
+    plotlib_set = false
+    plotlib == :auto || init_plotting(plotlib)
 
-    init_plotting(plotlib)
     report = Report(doc.cwd, doc.basename, doc.format.formatdict, mimetypes)
     pushdisplay(report)
 
@@ -64,6 +66,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib="Gadfly",
         if typeof(chunk) == CodeChunk
             options = merge(rcParams[:chunk_defaults], chunk.options)
             merge!(chunk.options, options)
+            plotlib_set || detect_plotlib() #Try to autodetect plotting library
         end
 
         restore = (cache ==:user && typeof(chunk) == CodeChunk && chunk.options[:cache])
@@ -71,8 +74,10 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib="Gadfly",
         if cached != nothing && (cache == :all || restore)
             result_chunks = restore_chunk(chunk, cached)
         else
-            result_chunks = run_chunk(chunk, report, SandBox)
+
+        result_chunks = run_chunk(chunk, report, SandBox)
         end
+
         executed = [executed; result_chunks]
     end
 
@@ -198,6 +203,11 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
         return chunk
     end
 
+    #Run preexecute_hooks
+    for hook in preexecute_hooks
+      chunk = hook(chunk)
+    end
+
     report.fignum = 1
     report.cur_chunk = chunk
 
@@ -206,6 +216,12 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     end
 
     chunk.result = run_code(chunk, report, SandBox)
+
+    #Run post_execute chunks
+    for hook in postexecute_hooks
+      chunk = hook(chunk)
+    end
+
     if chunk.options[:term]
         chunks = collect_results(chunk, TermResult())
     elseif chunk.options[:hold]
@@ -213,6 +229,8 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     else
         chunks = collect_results(chunk, ScriptResult())
     end
+
+
 
       #else
      #   chunk.options[:fig] && (chunk.figures = copy(report.figures))
@@ -252,24 +270,27 @@ end
 
 function init_plotting(plotlib)
     if plotlib == nothing
-        #rcParams[:chunk_defaults][:fig] = false
         rcParams[:plotlib] = nothing
     else
         l_plotlib = lowercase(plotlib)
         rcParams[:chunk_defaults][:fig] = true
-
         if l_plotlib == "winston"
             eval(parse("""include(Pkg.dir("Weave","src","winston.jl"))"""))
             rcParams[:plotlib] = "Winston"
         elseif l_plotlib == "pyplot"
             eval(parse("""include(Pkg.dir("Weave","src","pyplot.jl"))"""))
             rcParams[:plotlib] = "PyPlot"
+        elseif l_plotlib == "plots"
+            eval(parse("""include(Pkg.dir("Weave","src","plots.jl"))"""))
+            rcParams[:plotlib] = "Plots"
         elseif l_plotlib == "gadfly"
             eval(parse("""include(Pkg.dir("Weave","src","gadfly.jl"))"""))
             rcParams[:plotlib] = "Gadfly"
       end
     end
-    return nothing
+    plotlib_set = true
+    info(rcParams[:plotlib])
+    return true
 end
 
 function get_cwd(doc::WeaveDoc, out_path)
@@ -385,4 +406,12 @@ function collect_results(chunk::CodeChunk, fmt::CollectResult)
         chunk.figures = [chunk.figures; r.figures]
     end
     return [chunk]
+end
+
+function detect_plotlib()
+  info("Detecting plotting library")
+  isdefined(:Plots) && init_plotting("Plots") && return
+  isdefined(:PyPlot) && init_plotting("PyPlot") && return
+  isdefined(:Gadfly) && init_plotting("Gadfly") && return
+  isdefined(:Winston) && init_plotting("Winston") && return
 end

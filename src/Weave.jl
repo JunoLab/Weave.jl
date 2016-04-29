@@ -64,7 +64,7 @@ Weave an input document to output file.
 
 **Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """
-function weave(source ; doctype = :auto, plotlib="Gadfly",
+function weave(source ; doctype = :auto, plotlib=:auto,
         informat=:auto, out_path=:doc, fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache=:off)
 
@@ -100,6 +100,18 @@ end
 function weave(doc::AbstractString, doctype::AbstractString)
     weave(doc, doctype=doctype)
 end
+
+#Hooks to run before and after chunks, this is form IJulia,
+#but note that Weave hooks take the chunk as input
+const preexecute_hooks = Function[]
+push_preexecute_hook(f::Function) = push!(preexecute_hooks, f)
+pop_preexecute_hook(f::Function) = splice!(preexecute_hooks, findfirst(pretexecute_hooks, f))
+
+const postexecute_hooks = Function[]
+push_postexecute_hook(f::Function) = push!(postexecute_hooks, f)
+pop_postexecute_hook(f::Function) = splice!(postexecute_hooks, findfirst(postexecute_hooks, f))
+
+const plotlib_set = false
 
 export weave, list_out_formats, tangle,
         set_chunk_defaults, get_chunk_defaults, restore_chunk_defaults
