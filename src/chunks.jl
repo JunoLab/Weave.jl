@@ -44,6 +44,9 @@ type DocChunk
     start_line::Int
 end
 
+type DispResult
+end
+
 type TermResult
 end
 

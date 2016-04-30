@@ -128,7 +128,7 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
         reset_report(report)
         lastline = (result_no == N)
         (obj, out) = capture_output(expr, SandBox, chunk.options[:term],
-                      rcParams[:plotlib], lastline)
+                      chunk.options[:display], rcParams[:plotlib], lastline)
         figures = report.figures #Captured figures
         result = ChunkOutput(str_expr, out, report.cur_result, report.rich_output, figures)
         report.rich_output = ""
@@ -144,14 +144,15 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
     return results
 end
 
-function capture_output(expr, SandBox::Module, term, plotlib, lastline)
+function capture_output(expr, SandBox::Module, term, disp, plotlib,
+                        lastline)
     oldSTDOUT = STDOUT
     out = nothing
     obj = nothing
     rw, wr = redirect_stdout()
     try
         obj = eval(SandBox, expr)
-        if term
+        if term || disp
             obj != nothing && display(obj)
         elseif typeof(expr) == Symbol
             display(obj)
@@ -208,6 +209,8 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     chunk.result = run_code(chunk, report, SandBox)
     if chunk.options[:term]
         chunks = collect_results(chunk, TermResult())
+    elseif chunk.options[:display] && !chunk.options[:term]
+        chunks = collect_results(chunk, DispResult())
     elseif chunk.options[:hold]
         chunks = collect_results(chunk, CollectResult())
     else
@@ -324,6 +327,36 @@ function set_rc_params(formatdict, fig_path, fig_ext)
 end
 
 function collect_results(chunk::CodeChunk, fmt::ScriptResult)
+    content = ""
+    result_no = 1
+    result_chunks = CodeChunk[ ]
+    for r = chunk.result
+        #Check if there is any output from chunk
+        if strip(r.stdout) == "" && isempty(r.figures)  && strip(r.rich_output) == ""
+            content *= r.code
+        else
+            content = "\n" * content * r.code
+            rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.optionstring, copy(chunk.options))
+            content = ""
+            rchunk.result_no = result_no
+            result_no *=1
+            rchunk.figures = r.figures
+            rchunk.output = r.stdout * r.displayed
+            rchunk.rich_output = r.rich_output
+            push!(result_chunks, rchunk)
+        end
+    end
+    if content != ""
+        startswith(content, "\n") || (content = "\n" * content)
+        rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.optionstring, copy(chunk.options))
+        push!(result_chunks, rchunk)
+    end
+
+    return result_chunks
+end
+
+
+function collect_results(chunk::CodeChunk, fmt::DispResult)
     content = ""
     result_no = 1
     result_chunks = CodeChunk[ ]

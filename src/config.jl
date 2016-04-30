@@ -22,6 +22,7 @@ const defaultParams =
                                 :fig_path=> "figures",
                                 :dpi => 96,
                                 :term=> false,
+                                :display => false,
                                 :name=> nothing,
                                 :wrap=> true,
                                 :line_width => 75,
