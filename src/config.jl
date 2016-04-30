@@ -23,6 +23,7 @@ const defaultParams =
                                 :dpi => 96,
                                 :term=> false,
                                 :display => false,
+                                :prompt => "\njulia> ",
                                 :name=> nothing,
                                 :wrap=> true,
                                 :line_width => 75,
