@@ -387,12 +387,12 @@ end
 
 function collect_results(chunk::CodeChunk, fmt::TermResult)
     output = ""
+    prompt = chunk.options[:prompt]
     result_no = 1
-    prompt = "\njulia> "
     result_chunks = CodeChunk[ ]
-    for r =chunk.result
+    for r = chunk.result
         output *= prompt * r.code
-        output *=  r.displayed * r.stdout
+        output *= r.displayed * r.stdout
         if !isempty(r.figures)
             rchunk = CodeChunk("", chunk.number, chunk.start_line, chunk.optionstring, copy(chunk.options))
             rchunk.output = output
