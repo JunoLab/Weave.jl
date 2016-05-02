@@ -1,11 +1,24 @@
 
 # Release notes for Weave.jl
 
-### Git
+### In Master
 
-* Fix parsing of lone variables from chunks
+* New `display` and `prompt` chunk options by @gragusa
+* Implemented fig_width and fig_height chunk option for Plots.jl
+* Added pre and post chunk hooks, only used internally for now
+* Automatic detection of plotting library, `:auto` is the new default options
 * Support for displaying general multimedia objects e.g. Plots.jl and Images.jl
-  now work with weave
+  now work with weave.
+* Support for including html, latex and markdown output from objects
+* New logic for displaying output in script chunks, output is shown by default for:
+  - Writing to stdout
+  - Calling display
+  - Gadfly plots
+  - Variables on their own
+  - If the last line of a chunk is a function call that returns output e.g. plot(1:10)
+* Bug fixes
+  - Fix parsing of lone variables from chunks
+  - Fix error with md2html formatter and dates #38
 
 ### v0.1.2
 
