@@ -45,7 +45,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
 
     #Reset plotting
     rcParams[:plotlib_set] = false
-    #plotlib == :auto || init_plotting(plotlib)
+    plotlib == :auto || init_plotting(plotlib)
 
     report = Report(doc.cwd, doc.basename, doc.format.formatdict, mimetypes)
     pushdisplay(report)
@@ -67,7 +67,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
             options = merge(rcParams[:chunk_defaults], chunk.options)
             merge!(chunk.options, options)
 
-            rcParams[:plotlib_set] || detect_plotlib() #Try to autodetect plotting library
+
         end
 
         restore = (cache ==:user && typeof(chunk) == CodeChunk && chunk.options[:cache])
@@ -133,6 +133,7 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
     for (str_expr, expr) = expressions
         reset_report(report)
         lastline = (result_no == N)
+        rcParams[:plotlib_set] || detect_plotlib(chunk) #Try to autodetect plotting library
         (obj, out) = capture_output(expr, SandBox, chunk.options[:term],
                       rcParams[:plotlib], lastline)
         figures = report.figures #Captured figures
@@ -290,7 +291,6 @@ function init_plotting(plotlib)
             rcParams[:plotlib] = "Gadfly"
       end
     end
-    info(rcParams[:plotlib])
     return true
 end
 
@@ -409,9 +409,13 @@ function collect_results(chunk::CodeChunk, fmt::CollectResult)
     return [chunk]
 end
 
-function detect_plotlib()
-  info("Detecting plotting library")
-  isdefined(:Plots) && init_plotting("Plots") && return
+function detect_plotlib(chunk::CodeChunk)
+  if isdefined(:Plots)
+    init_plotting("Plots")
+    #Need to set size before plots are created
+    plots_set_size(chunk)
+    return
+  end
   isdefined(:PyPlot) && init_plotting("PyPlot") && return
   isdefined(:Gadfly) && init_plotting("Gadfly") && return
   isdefined(:Winston) && init_plotting("Winston") && return
