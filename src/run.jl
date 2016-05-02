@@ -128,7 +128,7 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
         reset_report(report)
         lastline = (result_no == N)
         (obj, out) = capture_output(expr, SandBox, chunk.options[:term],
-                      rcParams[:plotlib], lastline)
+                      chunk.options[:display], rcParams[:plotlib], lastline)
         figures = report.figures #Captured figures
         result = ChunkOutput(str_expr, out, report.cur_result, report.rich_output, figures)
         report.rich_output = ""
@@ -144,14 +144,15 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
     return results
 end
 
-function capture_output(expr, SandBox::Module, term, plotlib, lastline)
+function capture_output(expr, SandBox::Module, term, disp, plotlib,
+                        lastline)
     oldSTDOUT = STDOUT
     out = nothing
     obj = nothing
     rw, wr = redirect_stdout()
     try
         obj = eval(SandBox, expr)
-        if term
+        if term || disp
             obj != nothing && display(obj)
         elseif typeof(expr) == Symbol
             display(obj)
@@ -354,12 +355,12 @@ end
 
 function collect_results(chunk::CodeChunk, fmt::TermResult)
     output = ""
+    prompt = chunk.options[:prompt]
     result_no = 1
-    prompt = "\njulia> "
     result_chunks = CodeChunk[ ]
-    for r =chunk.result
+    for r = chunk.result
         output *= prompt * r.code
-        output *=  r.displayed * r.stdout
+        output *= r.displayed * r.stdout
         if !isempty(r.figures)
             rchunk = CodeChunk("", chunk.number, chunk.start_line, chunk.optionstring, copy(chunk.options))
             rchunk.output = output

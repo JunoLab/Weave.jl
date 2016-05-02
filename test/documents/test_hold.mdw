@@ -21,6 +21,40 @@ plot(x = x, y = x)
 display(x)
 @
 
+# Prompt
+
+<<term=true; prompt="\njulietta> ">>=
+using Gadfly
+x = 1:10
+plot(x = x, y = x)
+print(x)
+plot(x = x, y = x)
+display(x)
+@
+
+# Display
+
+<<display=true>>=
+using Gadfly
+x = 1:10
+plot(x = x, y = x)
+print(x)
+plot(x = x, y = x)
+display(x)
+@
+
+# Both display and term
+
+<<display=true;term=true>>=
+using Gadfly
+x = 1:10
+plot(x = x, y = x)
+print(x)
+plot(x = x, y = x)
+display(x)
+@
+
+
 # Hold results
 
 <<hold=true>>=
