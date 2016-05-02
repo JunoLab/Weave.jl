@@ -27,6 +27,7 @@ function restore_chunk(chunk::CodeChunk, cached)
       newc.figures = c.figures
       newc.result = c.result
       newc.output = c.output
+      newc.rich_output = c.rich_output
       push!(new_chunks, newc)
     end
     return new_chunks
