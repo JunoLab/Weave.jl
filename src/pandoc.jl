@@ -21,7 +21,7 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
 
   try
     pandoc_out, pandoc_in, proc = readandwrite(`pandoc -R -s --mathjax="" --self-contained --highlight-style=tango
-    --template $html_template --include-in-header=$css_template
+    --template $html_template -c $css_template
      -V wversion=$wversion -V wtime=$wtime -V wsource=$wsource
      -o $outname`)
     println(pandoc_in, formatted)
