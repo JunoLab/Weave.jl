@@ -295,11 +295,17 @@ function formatfigures(chunk, docformat::Tex)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
     width = chunk.options[:out_width]
+    height = chunk.options[:out_height]
     f_pos = chunk.options[:fig_pos]
     f_env = chunk.options[:fig_env]
     result = ""
     figstring = ""
 
+    #Set size
+    attribs = ""
+    width == nothing || (attribs = "width=$width")
+    (attribs != "" && height != nothing ) && (attribs *= ",")
+    height == nothing    || (attribs *= "height=$height")
 
 
     if f_env != nothing
@@ -308,10 +314,12 @@ function formatfigures(chunk, docformat::Tex)
 
 
     for fig = fignames
+
+
         if splitext(fig)[2] == ".tex" #Tikz figures
             figstring *= "\\resizebox{$width}{!}{\\input{$fig}}\n"
         else
-            figstring *= "\\includegraphics[width=$width]{$fig}\n"
+            figstring *= "\\includegraphics[$attribs]{$fig}\n"
         end
     end
 
@@ -344,8 +352,13 @@ function formatfigures(chunk, docformat::Pandoc)
     figstring = ""
     attribs = ""
     width = chunk.options[:out_width]
-    width == nothing || (attribs = "{width=$width}")
+    height = chunk.options[:out_height]
 
+    #Build figure attibutes
+    width == nothing || (attribs = "width=$width")
+    (attribs ≠ "" && height ≠ nothing ) && (attribs *= " ")
+    height == nothing   || (attribs *= "height=$height")
+    attribs == ""    || (attribs = "{$attribs}")
     length(fignames) > 0 || (return "")
 
     if caption != nothing
