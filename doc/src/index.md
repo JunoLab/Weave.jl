@@ -19,4 +19,5 @@ and Sweave.
 
 ## Contents
 
-    {contents}
+```@contents
+```

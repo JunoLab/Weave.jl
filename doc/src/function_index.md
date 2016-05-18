@@ -1,4 +1,5 @@
 
 # Function index
 
-    {index}
+```@index
+```

@@ -57,7 +57,8 @@ Weave.set_chunk_defaults(Dict{Symbol, Any}(
 ```
 
 
-    {docs}
-      set_chunk_defaults(opts)
-      get_chunk_defaults()
-      restore_chunk_defaults()
+```@docs
+set_chunk_defaults(opts)
+get_chunk_defaults()
+restore_chunk_defaults()
+```
