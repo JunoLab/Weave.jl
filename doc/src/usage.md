@@ -18,8 +18,9 @@ Using PyPlot:
 weave(Pkg.dir("Weave","examples","julia_sample.mdw"), plotlib="PyPlot", out_path = :pwd)
 ```
 
-    {docs}
-      weave(source)
+```@docs
+weave(source)
+```
 
 ## Weave from shell
 
@@ -37,9 +38,9 @@ usage: weave.jl [--doctype DOCTYPE] [--plotlib PLOTLIB]
 
 Tangling extracts the code from document:
 
-    {docs}
-      tangle(source)
-
+```@docs
+tangle(source)
+```
 
 ## Supported formats
 
@@ -70,8 +71,9 @@ asciidoc: AsciiDoc
 tex: Latex with custom code environments
 ```
 
-    {docs}
-      list_out_formats()
+```@docs
+list_out_formats()
+```
 
 ## Document syntax
 
