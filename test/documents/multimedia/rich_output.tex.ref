@@ -8,9 +8,9 @@ df
 
 \end{juliacode}
 \begin{juliaout}
-26x2 DataFrames.DataFrame
+26×2 DataFrames.DataFrame
 │ Row │ letters │ numbers │
-┝━━━━━┿━━━━━━━━━┿━━━━━━━━━┥
+├─────┼─────────┼─────────┤
 │ 1   │ 'a'     │ 1       │
 │ 2   │ 'b'     │ 2       │
 │ 3   │ 'c'     │ 3       │
@@ -36,9 +36,9 @@ z = 51
 display(df)
 \end{juliacode}
 \begin{juliaout}
-26x2 DataFrames.DataFrame
+26×2 DataFrames.DataFrame
 │ Row │ letters │ numbers │
-┝━━━━━┿━━━━━━━━━┿━━━━━━━━━┥
+├─────┼─────────┼─────────┤
 │ 1   │ 'a'     │ 1       │
 │ 2   │ 'b'     │ 2       │
 │ 3   │ 'c'     │ 3       │
@@ -65,9 +65,9 @@ display(df)
 head(df)
 \end{juliacode}
 \begin{juliaout}
-6x2 DataFrames.DataFrame
+6×2 DataFrames.DataFrame
 │ Row │ letters │ numbers │
-┝━━━━━┿━━━━━━━━━┿━━━━━━━━━┥
+├─────┼─────────┼─────────┤
 │ 1   │ 'a'     │ 1       │
 │ 2   │ 'b'     │ 2       │
 │ 3   │ 'c'     │ 3       │
@@ -80,9 +80,9 @@ head(df)
 
 \begin{juliaterm}
 julia> df
-26x2 DataFrames.DataFrame
+26×2 DataFrames.DataFrame
 │ Row │ letters │ numbers │
-┝━━━━━┿━━━━━━━━━┿━━━━━━━━━┥
+├─────┼─────────┼─────────┤
 │ 1   │ 'a'     │ 1       │
 │ 2   │ 'b'     │ 2       │
 │ 3   │ 'c'     │ 3       │

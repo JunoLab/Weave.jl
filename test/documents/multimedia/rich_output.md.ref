@@ -10,9 +10,9 @@ df
 
 
 ~~~~
-26x2 DataFrames.DataFrame
+26×2 DataFrames.DataFrame
 │ Row │ letters │ numbers │
-┝━━━━━┿━━━━━━━━━┿━━━━━━━━━┥
+├─────┼─────────┼─────────┤
 │ 1   │ 'a'     │ 1       │
 │ 2   │ 'b'     │ 2       │
 │ 3   │ 'c'     │ 3       │
@@ -42,9 +42,9 @@ display(df)
 
 
 ~~~~
-26x2 DataFrames.DataFrame
+26×2 DataFrames.DataFrame
 │ Row │ letters │ numbers │
-┝━━━━━┿━━━━━━━━━┿━━━━━━━━━┥
+├─────┼─────────┼─────────┤
 │ 1   │ 'a'     │ 1       │
 │ 2   │ 'b'     │ 2       │
 │ 3   │ 'c'     │ 3       │
@@ -75,9 +75,9 @@ head(df)
 
 
 ~~~~
-6x2 DataFrames.DataFrame
+6×2 DataFrames.DataFrame
 │ Row │ letters │ numbers │
-┝━━━━━┿━━━━━━━━━┿━━━━━━━━━┥
+├─────┼─────────┼─────────┤
 │ 1   │ 'a'     │ 1       │
 │ 2   │ 'b'     │ 2       │
 │ 3   │ 'c'     │ 3       │
@@ -92,9 +92,9 @@ head(df)
 
 ~~~~{.julia}
 julia> df
-26x2 DataFrames.DataFrame
+26×2 DataFrames.DataFrame
 │ Row │ letters │ numbers │
-┝━━━━━┿━━━━━━━━━┿━━━━━━━━━┥
+├─────┼─────────┼─────────┤
 │ 1   │ 'a'     │ 1       │
 │ 2   │ 'b'     │ 2       │
 │ 3   │ 'c'     │ 3       │
