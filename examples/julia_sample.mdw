@@ -17,7 +17,7 @@ weave("examples/julia_sample.mdw")
 
 <<term=true>>=
 x = 1:10
-d = {"Weave" => "testing"}
+d = Dict("Weave" => "testing")
 y = [2, 4 ,8]
 @
 
