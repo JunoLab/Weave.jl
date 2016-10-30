@@ -1,8 +1,9 @@
 
 # Release notes for Weave.jl
 
-### In Master
+### v0.2
 
+* Move 0.5 only
 * New `display` and `prompt` chunk options by @gragusa
 * Implemented fig_width and fig_height chunk option for Plots.jl
 * Added pre and post chunk hooks, only used internally for now
