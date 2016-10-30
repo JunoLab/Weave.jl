@@ -9,3 +9,19 @@ function plots_set_size(chunk)
 end
 
 push_preexecute_hook(plots_set_size)
+
+function Base.display(report::Report, m::MIME"image/png", data::Plots.Plot)
+    Plots.gui(data) #Required for savefig to work
+    chunk = report.cur_chunk
+    full_name, rel_name = get_figname(report, chunk)
+    push!(report.figures, rel_name)
+    Plots.savefig(data, full_name)
+end
+
+function Base.display(report::Report, m::MIME"application/pdf", data::Plots.Plot)
+    Plots.gui(data)
+    chunk = report.cur_chunk
+    full_name, rel_name = get_figname(report, chunk)
+    push!(report.figures, rel_name)
+    Plots.savefig(data, full_name)
+end

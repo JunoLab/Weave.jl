@@ -20,6 +20,7 @@ end
 
 #Default mimetypes in order, can be overridden for some inside `run method` formats
 const default_mime_types = ["image/svg+xml", "image/png", "text/html", "text/plain"]
+#const default_mime_types = ["image/png", "image/svg+xml", "text/html", "text/plain"]
 #From IJulia as a reminder
 #const supported_mime_types = [ "text/html", "text/latex", "image/svg+xml", "image/png", "image/jpeg", "text/plain", "text/markdown" ]
 
@@ -40,21 +41,21 @@ end
 function Base.display(report::Report, m::MIME"image/png", data)
     figname = add_figure(report, ".png")
     open(figname, "w") do io
-      writemime(io, m, data)
+      show(io, m, data)
     end
 end
 
 function Base.display(report::Report, m::MIME"image/svg+xml", data)
     figname = add_figure(report, ".svg")
     open(figname, "w") do io
-      writemime(io, m, data)
+      show(io, m, data)
     end
 end
 
 function Base.display(report::Report, m::MIME"application/pdf", data)
     figname = add_figure(report, ".pdf")
     open(figname, "w") do io
-      writemime(io, m, data)
+      show(io, m, data)
     end
 end
 
