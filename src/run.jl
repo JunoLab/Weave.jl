@@ -279,16 +279,16 @@ function init_plotting(plotlib)
         l_plotlib = lowercase(plotlib)
         rcParams[:chunk_defaults][:fig] = true
         if l_plotlib == "winston"
-            include("winston.jl")
+            eval(parse("""include(Pkg.dir("Weave","src","winston.jl"))"""))
             rcParams[:plotlib] = "Winston"
         elseif l_plotlib == "pyplot"
-            include("pyplot.jl")
+            eval(parse("""include(Pkg.dir("Weave","src","pyplot.jl"))"""))
             rcParams[:plotlib] = "PyPlot"
         elseif l_plotlib == "plots"
-            include("plots.jl")
+            eval(parse("""include(Pkg.dir("Weave","src","plots.jl"))"""))
             rcParams[:plotlib] = "Plots"
         elseif l_plotlib == "gadfly"
-            include("gadfly.jl")
+            eval(parse("""include(Pkg.dir("Weave","src","gadfly.jl"))"""))
             rcParams[:plotlib] = "Gadfly"
       end
     end
