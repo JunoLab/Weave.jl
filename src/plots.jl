@@ -9,3 +9,21 @@ function plots_set_size(chunk)
 end
 
 push_preexecute_hook(plots_set_size)
+
+function Base.display(report::Report, m::MIME"image/svg+xml", data::Plots.Plot{Plots.PlotlyBackend})#
+  #Remove extra spaces from start of line for pandoc
+  s = reprmime(MIME("text/html"), data)
+  splitted = split(s, "\n")
+  start = split(splitted[1], r"(?=<div)")
+  #script = lstrip(start[1]) #local
+  script = "<script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>"
+  div = lstrip(start[2])
+  plot = join(map(lstrip, splitted[2:end]), "\n")
+
+  if report.first_plot
+    report.rich_output *= "\n" * script
+    report.first_plot = false
+  end
+
+    report.rich_output *= "\n" * div * "\n" * plot
+end

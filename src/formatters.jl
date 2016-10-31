@@ -201,9 +201,9 @@ const md2html = Pandoc("Markdown to HTML (requires Pandoc)",
                               :codeend=> "````\n\n",
                               :outputstart=> "````",
                               :outputend=> "````\n\n",
-                              :fig_ext=> ".png",
+                              :fig_ext=> ".svg",
                               :extension=> "md",
-                              :mimetypes => ["image/png", "image/svg+xml", "image/jpg",
+                              :mimetypes => ["image/svg+xml", "image/png", "image/jpg",
                                   "text/html", "text/markdown",  "text/plain"],
                               :doctype=> "md2html"))
 

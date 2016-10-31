@@ -11,10 +11,11 @@ type Report <: Display
   term_state::Symbol
   cur_chunk
   mimetypes::Array{AbstractString}
+  first_plot::Bool
 end
 
 function Report(cwd, basename, formatdict, mimetypes)
-    Report(cwd, basename, formatdict, "", "", "", 1, AbstractString[], :text, nothing, mimetypes)
+    Report(cwd, basename, formatdict, "", "", "", 1, AbstractString[], :text, nothing, mimetypes, true)
 end
 
 
@@ -28,7 +29,12 @@ function Base.display(report::Report, data)
     #Set preferred mimetypes for report based on format
     for m in report.mimetypes
         if mimewritable(m, data)
-            display(report, m, data)
+            try
+              display(report, m, data)
+            catch
+              info(m)
+              continue
+            end
             #Always show plain text as well for term mode
             if m ≠ "text/plain" && report.cur_chunk.options[:term]
               display(report, "text/plain", data)
@@ -40,9 +46,6 @@ end
 
 function Base.display(report::Report, m::MIME"image/png", data)
     figname = add_figure(report, ".png")
-    open(figname, "w") do io
-      show(io, m, data)
-    end
 end
 
 function Base.display(report::Report, m::MIME"image/svg+xml", data)
@@ -87,6 +90,11 @@ end
 function add_figure(report::Report, ext)
   chunk = report.cur_chunk
   full_name, rel_name = get_figname(report, chunk, ext = ext)
+
+  open(full_name, "w") do io
+    show(io, m, data)
+  end
+
   push!(report.figures, rel_name)
   report.fignum += 1
   return full_name
