@@ -159,7 +159,7 @@ function capture_output(expr, SandBox::Module, term, disp, plotlib,
     rw, wr = redirect_stdout()
     try
         obj = eval(SandBox, expr)
-        if term || disp
+        if (term || disp) && typeof(expr) == Expr && expr.head != :toplevel
             obj != nothing && display(obj)
         elseif typeof(expr) == Symbol
             display(obj)
