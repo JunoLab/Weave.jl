@@ -10,6 +10,7 @@ end
 
 push_preexecute_hook(plots_set_size)
 
+#PNG or SVG is not working, output html
 function Base.display(report::Report, m::MIME"image/svg+xml", data::Plots.Plot{Plots.PlotlyBackend})#
   #Remove extra spaces from start of line for pandoc
   s = reprmime(MIME("text/html"), data)
@@ -26,4 +27,29 @@ function Base.display(report::Report, m::MIME"image/svg+xml", data::Plots.Plot{P
   end
 
     report.rich_output *= "\n" * div * "\n" * plot
+end
+
+#PNG or SVG is not working, output html
+function Base.display(report::Report, m::MIME"image/svg+xml", plot::Plots.Plot{Plots.PlotlyJSBackend})
+  script = "<script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>"
+  body = Plots.PlotlyJS.html_body(plot.o.plot)
+
+  if report.first_plot
+    report.rich_output *= "\n" * script
+    report.first_plot = false
+  end
+
+  report.rich_output *= "\n" * body
+end
+
+function Base.display(report::Report, m::MIME"image/png", plot::Plots.Plot{Plots.PlotlyJSBackend})
+  script = "<script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>"
+  body = Plots.PlotlyJS.html_body(plot.o.plot)
+
+  if report.first_plot
+    report.rich_output *= "\n" * script
+    report.first_plot = false
+  end
+
+  report.rich_output *= "\n" * body
 end
