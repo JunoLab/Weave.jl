@@ -27,7 +27,7 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
     println(pandoc_in, formatted)
 
     close(pandoc_in)
-    proc_output = readall(pandoc_out)
+    proc_output = readstring(pandoc_out)
     cd(old_wd)
   catch e
     cd(old_wd)
