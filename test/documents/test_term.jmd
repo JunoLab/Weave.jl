@@ -1,0 +1,12 @@
+
+```julia
+p = Array(linspace(0, 2π))
+```
+
+```julia;term=true
+p = Array(linspace(0, 2π))
+```
+
+```julia;term=true
+p = Array(linspace(0, 2π));
+```

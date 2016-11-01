@@ -57,3 +57,10 @@ result = @compat readstring(open("documents/chunk_func.md"))
 ref = @compat readstring(open("documents/chunk_func_ref.md"))
 @test result == ref
 cleanup && rm("documents/chunk_func.md")
+
+#Test term=true
+weave("documents/test_term.jmd", doctype = "pandoc")
+result = @compat readstring(open("documents/test_term.md"))
+ref = @compat readstring(open("documents/test_term_ref.md"))
+@test result == ref
+cleanup && rm("documents/test_term.md")
