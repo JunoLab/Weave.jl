@@ -26,8 +26,8 @@ include("gadfly_formats.jl")
 #include("winston_formats.jl")
 
 # Output changed, needs fixing for 0.5
-#info("Test: Weaving with PyPlot")
-#include("pyplot_formats.jl")
+info("Test: Weaving with PyPlot")
+include("pyplot_formats.jl")
 
-#info("Test: Weaving with Plots.jl")
-#include("plotsjl_test.jl")
+info("Test: Weaving with Plots.jl")
+include("plotsjl_test.jl")

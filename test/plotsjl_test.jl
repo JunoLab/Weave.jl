@@ -2,7 +2,7 @@ using Weave, Compat
 using Base.Test
 
 function pljtest(source, resfile, doctype)
-  weave("documents/$source", out_path = "documents/plotsjl/$resfile", doctype=doctype, plotlib=nothing)
+  weave("documents/$source", out_path = "documents/plotsjl/$resfile", doctype=doctype)
   result = @compat readstring(open("documents/plotsjl/$resfile"))
   ref = @compat readstring(open("documents/plotsjl/$resfile.ref"))
   @test result == ref

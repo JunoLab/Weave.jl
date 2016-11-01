@@ -32,7 +32,7 @@ function Base.display(report::Report, data)
             try
               display(report, m, data)
             catch
-              info(m)
+              warn("Failed to save image in \"$m\" format")
               continue
             end
             #Always show plain text as well for term mode
@@ -45,21 +45,15 @@ function Base.display(report::Report, data)
 end
 
 function Base.display(report::Report, m::MIME"image/png", data)
-    figname = add_figure(report, ".png")
+    figname = add_figure(report, data, m, ".png")
 end
 
 function Base.display(report::Report, m::MIME"image/svg+xml", data)
-    figname = add_figure(report, ".svg")
-    open(figname, "w") do io
-      show(io, m, data)
-    end
+    figname = add_figure(report, data, m, ".svg")
 end
 
 function Base.display(report::Report, m::MIME"application/pdf", data)
-    figname = add_figure(report, ".pdf")
-    open(figname, "w") do io
-      show(io, m, data)
-    end
+    figname = add_figure(report, m, data, ".pdf")
 end
 
 #Text is written to stdout, called from "term" mode chunks
@@ -87,7 +81,7 @@ end
 
 
 """Add saved figure name to results and return the name"""
-function add_figure(report::Report, ext)
+function add_figure(report::Report, data, m, ext)
   chunk = report.cur_chunk
   full_name, rel_name = get_figname(report, chunk, ext = ext)
 

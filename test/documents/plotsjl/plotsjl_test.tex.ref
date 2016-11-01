@@ -20,7 +20,7 @@ p = plot(x = x, y = sin(x), size =(900,300))
 
 \begin{juliaterm}
 julia> plot(x = x, y = sin(x))
-Plot{Plots.PyPlotBackend() n=1}
+
 \end{juliaterm}
 \includegraphics[width=\linewidth]{figures/plotsjl_test_2_1.pdf}
 
@@ -37,13 +37,13 @@ scatter!(rand(100),markersize=6,c=:orange)
 \begin{juliaterm}
 julia> plot(rand(100) / 3,reg=true,fill=(0,:green))
 
-Plot{Plots.PyPlotBackend() n=1}
+
 \end{juliaterm}
 \includegraphics[width=\linewidth]{figures/plotsjl_test_4_1.pdf}
 
 \begin{juliaterm}
 julia> scatter!(rand(100),markersize=6,c=:orange)
-Plot{Plots.PyPlotBackend() n=2}
+
 \end{juliaterm}
 \includegraphics[width=\linewidth]{figures/plotsjl_test_4_2.pdf}
 

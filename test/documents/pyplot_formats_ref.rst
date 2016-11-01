@@ -13,7 +13,7 @@
 ::
     
     1-element Array{Any,1}:
-     PyObject <matplotlib.lines.Line2D object at 0x7f9745111450>
+     PyObject <matplotlib.lines.Line2D object at 0x7f6a209bb518>
 
 
 
@@ -28,7 +28,7 @@
 ::
     
     1-element Array{Any,1}:
-     PyObject <matplotlib.lines.Line2D object at 0x7f9777e49990>
+     PyObject <matplotlib.lines.Line2D object at 0x7f6a2099c3c8>
 
 
 
@@ -43,7 +43,7 @@
 ::
     
     1-element Array{Any,1}:
-     PyObject <matplotlib.lines.Line2D object at 0x7f9777d7b590>
+     PyObject <matplotlib.lines.Line2D object at 0x7f6a20e59780>
 
 
 
@@ -57,17 +57,18 @@
 
 julia> x = linspace(0, 2π, 200)
 
-linspace(0.0,6.283185307179586,200)
+200-element LinSpace{Float64}:
+ 0.0,0.0315738,0.0631476,0.0947214,0.126295,…,6.18846,6.22004,6.25161,6.28319
 julia> plot(x, sin(x))
 
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7f9777c71190>
+ PyObject <matplotlib.lines.Line2D object at 0x7f6a19819208>
 julia> y = 20
 
 20
 julia> plot(x, cos(x))
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7f9777c71390>
+ PyObject <matplotlib.lines.Line2D object at 0x7f6a209aed68>
 
 
 
@@ -86,7 +87,7 @@ julia> plot(x, cos(x))
 
 ::
     
-    PyObject <matplotlib.contour.QuadContourSet object at 0x7f9777ba3510>
+    PyObject <matplotlib.contour.QuadContourSet object at 0x7f6a193c6668>
 
 
 
