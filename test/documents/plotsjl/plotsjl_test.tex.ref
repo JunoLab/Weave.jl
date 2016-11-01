@@ -12,14 +12,14 @@ linspace(0.0,6.283185307179586,50)
 \end{juliaout}
 
 \begin{juliacode}
-p = plot(x = x, y = sin(x), size =(900,300))
+p = plot(x, sin(x), size =(900,300))
 \end{juliacode}
 
 
 
 
 \begin{juliaterm}
-julia> plot(x = x, y = sin(x))
+julia> plot(x, sin(x))
 
 \end{juliaterm}
 \includegraphics[width=\linewidth]{figures/plotsjl_test_2_1.pdf}

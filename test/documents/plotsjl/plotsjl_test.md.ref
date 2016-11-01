@@ -16,7 +16,7 @@ linspace(0.0,6.283185307179586,50)
 
 
 ~~~~{.julia}
-p = plot(x = x, y = sin(x), size =(900,300))
+p = plot(x, sin(x), size =(900,300))
 ~~~~~~~~~~~~~
 
 
@@ -27,7 +27,7 @@ p = plot(x = x, y = sin(x), size =(900,300))
 
 
 ~~~~{.julia}
-julia> plot(x = x, y = sin(x))
+julia> plot(x, sin(x))
 
 ~~~~~~~~~~~~~
 
