@@ -1,21 +1,18 @@
 <style type="text/css">
 @font-face {
-  font-family: 'Raleway';
+  font-family: 'Garamond';
   font-style: normal;
   font-weight: 300;
-  src: local('Raleway Light'), local('Raleway-Light'), url(http://fonts.gstatic.com/s/raleway/v9/-_Ctzj9b56b8RgXW8FArifk_vArhqVIZ0nv9q090hN8.woff2) format('woff2');
 }
 @font-face {
-  font-family: 'Raleway';
+  font-family: 'Garamond';
   font-style: normal;
   font-weight: 400;
-  src: local('Raleway'), url(http://fonts.gstatic.com/s/raleway/v9/0dTEPzkLWceF7z0koJaX1A.woff2) format('woff2');
 }
 @font-face {
-  font-family: 'Raleway';
+  font-family: 'Garamond';
   font-style: normal;
   font-weight: 600;
-  src: local('Raleway SemiBold'), local('Raleway-SemiBold'), url(http://fonts.gstatic.com/s/raleway/v9/xkvoNo9fC8O2RDydKj12b_k_vArhqVIZ0nv9q090hN8.woff2) format('woff2');
 }
 html {
   font-family: sans-serif; /* 1 */

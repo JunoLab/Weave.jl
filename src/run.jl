@@ -82,6 +82,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
         executed = [executed; result_chunks]
     end
 
+    doc.header_script = report.header_script
 
     popdisplay(report)
 
