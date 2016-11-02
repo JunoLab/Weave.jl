@@ -20,7 +20,7 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
   outname = basename(outname)
 
   try
-    pandoc_out, pandoc_in, proc = readandwrite(`pandoc -R -s --mathjax="" --self-contained --highlight-style=tango
+    pandoc_out, pandoc_in, proc = readandwrite(`pandoc -R -s --mathjax --highlight-style=tango
     --template $html_template -c $css_template
      -V wversion=$wversion -V wtime=$wtime -V wsource=$wsource
      -o $outname`)
@@ -59,7 +59,7 @@ function pandoc2pdf(formatted::AbstractString, doc::WeaveDoc, outname::AbstractS
   try
     pandoc_out, pandoc_in, proc = readandwrite(`pandoc -R -s  --latex-engine=xelatex --highlight-style=tango
      --include-in-header=$header_template
-     -V fontsize=12pt -o $outname`) 
+     -V fontsize=12pt -o $outname`)
     println(pandoc_in, formatted)
 
     close(pandoc_in)

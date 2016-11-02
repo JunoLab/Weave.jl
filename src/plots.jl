@@ -17,7 +17,10 @@ function Base.display(report::Report, m::MIME"image/svg+xml", data::Plots.Plot{P
   splitted = split(s, "\n")
   start = split(splitted[1], r"(?=<div)")
   #script = lstrip(start[1]) #local
-  script = "<script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>"
+
+  #TODO insert into header
+  #script = "<script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>"
+  script = ""
   div = lstrip(start[2])
   plot = join(map(lstrip, splitted[2:end]), "\n")
 
