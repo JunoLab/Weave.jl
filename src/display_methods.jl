@@ -12,10 +12,11 @@ type Report <: Display
   cur_chunk
   mimetypes::Array{AbstractString}
   first_plot::Bool
+  header_script::String
 end
 
 function Report(cwd, basename, formatdict, mimetypes)
-    Report(cwd, basename, formatdict, "", "", "", 1, AbstractString[], :text, nothing, mimetypes, true)
+    Report(cwd, basename, formatdict, "", "", "", 1, AbstractString[], :text, nothing, mimetypes, true, "")
 end
 
 

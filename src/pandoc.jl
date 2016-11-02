@@ -13,6 +13,16 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
   wversion = string(Pkg.installed("Weave"))
   wtime =  string(Date(now()))
 
+  #Header is inserted from displayed plots
+  header_script = doc.header_script
+  #info(doc.header_script)
+
+  if header_script ≠ ""
+    self_contained = []
+  else
+    self_contained = "--self-contained"
+  end
+
   #Change path for pandoc
   old_wd = pwd()
   cd(doc.cwd)
@@ -20,9 +30,10 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
   outname = basename(outname)
 
   try
-    pandoc_out, pandoc_in, proc = readandwrite(`pandoc -R -s --mathjax="" --self-contained --highlight-style=tango
-    --template $html_template -c $css_template
+    pandoc_out, pandoc_in, proc = readandwrite(`pandoc -R -s --mathjax="" --highlight-style=tango
+    --template $html_template -H $css_template $self_contained
      -V wversion=$wversion -V wtime=$wtime -V wsource=$wsource
+     -V headerscript=$header_script
      -o $outname`)
     println(pandoc_in, formatted)
 
@@ -59,7 +70,7 @@ function pandoc2pdf(formatted::AbstractString, doc::WeaveDoc, outname::AbstractS
   try
     pandoc_out, pandoc_in, proc = readandwrite(`pandoc -R -s  --latex-engine=xelatex --highlight-style=tango
      --include-in-header=$header_template
-     -V fontsize=12pt -o $outname`) 
+     -V fontsize=12pt -o $outname`)
     println(pandoc_in, formatted)
 
     close(pandoc_in)
