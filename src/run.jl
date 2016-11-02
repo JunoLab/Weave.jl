@@ -157,6 +157,7 @@ function capture_output(expr, SandBox::Module, term, disp, plotlib,
     out = nothing
     obj = nothing
     rw, wr = redirect_stdout()
+    reader = @async readstring(rw)
     try
         obj = eval(SandBox, expr)
         if (term || disp) && typeof(expr) == Expr && expr.head != :toplevel
@@ -176,7 +177,7 @@ function capture_output(expr, SandBox::Module, term, disp, plotlib,
     finally
         redirect_stdout(oldSTDOUT)
         close(wr)
-        out = @compat readstring(rw)
+        out = wait(reader)
         close(rw)
     end
     return (obj, out)
