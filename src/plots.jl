@@ -29,6 +29,11 @@ function Base.display(report::Report, m::MIME"image/svg+xml", data::Plots.Plot{P
     report.rich_output *= "\n" * div * "\n" * plot
 end
 
+function Base.display(report::Report, m::MIME"image/png", data::Plots.Plot{Plots.PlotlyBackend})#
+  display(report, MIME("image/svg+xml"), data)
+end
+
+
 #PNG or SVG is not working, output html
 function Base.display(report::Report, m::MIME"image/svg+xml", plot::Plots.Plot{Plots.PlotlyJSBackend})
   script = "<script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>"

@@ -14,7 +14,7 @@
 #' Notice that you don't need to define chunk options, but you can using
 #' `#+`. just before code e.g. `#+ term=True, caption='Fancy plots.'`.
 #' If you're viewing the published version have a look at the
-#' [source](FIR_design.jl) to see the markup.
+#' [source](FIR_design_plots.jl) to see the markup.
 
 
 #' # FIR Filter Design
@@ -30,7 +30,8 @@
 #' DSP.jl package doesn't (yet) have a method to calculate the
 #' the frequency response of a FIR filter so we define it:
 
-using Gadfly, DSP
+using Plots, DSP
+plotly()
 
 function FIRfreqz(b::Array, w = linspace(0, π, 1024))
     n = length(w)
@@ -56,6 +57,7 @@ end
 #' We will use the Hamming window, which is defined as:
 #' $w(n) = \alpha - \beta\cos\frac{2\pi n}{N-1}$, where $\alpha=0.54$ and $\beta=0.46$
 
+
 fs = 20
 f = digitalfilter(Lowpass(5, fs = fs), FIRWindow(hamming(61)))
 w = linspace(0, pi, 1024)
@@ -71,11 +73,11 @@ ws = w/pi*(fs/2)
 
 #+
 
-plot(y = h_db, x = ws, Geom.line,
-      Guide.xlabel("Frequency (Hz)"), Guide.ylabel("Magnitude (db)"))
+plot(ws, h_db,
+      xlabel = "Frequency (Hz)", ylabel = "Magnitude (db)")
 
 #' And again with default options
 
 h_phase = unwrap(-atan2(imag(h),real(h)))
-plot(y = h_phase, x = ws, Geom.line,
-    Guide.xlabel("Frequency (Hz)"), Guide.ylabel("Phase (radians)"))
+plot(ws, h_phase,
+    xlabel = "Frequency (Hz)", ylabel = "Phase (radians)")
