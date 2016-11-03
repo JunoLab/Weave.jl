@@ -1,6 +1,4 @@
 module Weave
-#using Compat
-
 
 """
 `list_out_formats()`
