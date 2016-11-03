@@ -52,7 +52,7 @@ end
 
 
 """Add saved figure name to results and return the name"""
-function add_pyplot_figure(report::Report, plot::Plots.Plot{Plots.PyPlotBackend}, ext)
+function add_pyplot_figure(report::Report, plot::Plots.Plot, ext)
   chunk = report.cur_chunk
   full_name, rel_name = get_figname(report, chunk, ext = ext)
 
@@ -72,4 +72,12 @@ end
 
 function Base.display(report::Report, m::MIME"image/svg+xml", plot::Plots.Plot{Plots.PyPlotBackend})
     add_pyplot_figure(report, plot, ".svg")
+end
+
+function Base.display(report::Report, m::MIME"image/svg+xml", plot::Plots.Plot{Plots.PGFPlotsBackend})
+    add_pyplot_figure(report, plot, ".png")
+end
+
+function Base.display(report::Report, m::MIME"application/pdf", plot::Plots.Plot{Plots.PGFPlotsBackend})
+    add_pyplot_figure(report, plot, ".pdf")
 end

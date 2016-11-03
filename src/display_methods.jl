@@ -34,6 +34,7 @@ function Base.display(report::Report, data)
               display(report, m, data)
             catch
               warn("Failed to save image in \"$m\" format")
+              #rethrow()
               continue
             end
             #Always show plain text as well for term mode
