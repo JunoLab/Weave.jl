@@ -3,8 +3,8 @@ using Base.Test
 
 function mmtest(source, resfile, doctype)
   weave("documents/$source", out_path = "documents/multimedia/$resfile", doctype=doctype, plotlib=nothing)
-  result = @compat readstring(open("documents/multimedia/$resfile"))
-  ref = @compat readstring(open("documents/multimedia/$resfile.ref"))
+  result =  readstring(open("documents/multimedia/$resfile"))
+  ref =  readstring(open("documents/multimedia/$resfile.ref"))
   @test result == ref
 end
 
