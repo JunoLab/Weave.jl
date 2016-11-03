@@ -1,4 +1,4 @@
-using Weave, Compat
+using Weave
 using Base.Test
 
 function mmtest(source, resfile, doctype)

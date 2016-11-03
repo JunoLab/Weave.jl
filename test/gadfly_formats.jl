@@ -1,5 +1,5 @@
 #Test for Gadfly with different chunk options and figure formatsusing Weave
-using Weave, Compat
+using Weave
 using Base.Test
 
 

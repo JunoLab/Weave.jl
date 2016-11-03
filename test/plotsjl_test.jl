@@ -1,4 +1,4 @@
-using Weave, Compat
+using Weave
 using Base.Test
 
 function pljtest(source, resfile, doctype)

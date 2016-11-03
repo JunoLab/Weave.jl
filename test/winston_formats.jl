@@ -1,4 +1,4 @@
-using Weave, Compat
+using Weave
 using Base.Test
 
 weave("documents/winston_formats.txt", plotlib="Winston", doctype="tex")

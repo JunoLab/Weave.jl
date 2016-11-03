@@ -1,4 +1,4 @@
-using Weave, Compat
+using Weave
 using Base.Test
 
 #Test if running document with and without cache works
