@@ -39,7 +39,7 @@ end
 """Read and parse input document"""
 function read_doc(source::AbstractString, format=:auto)
     format == :auto && (format = detect_informat(source))
-    document = @compat readstring(source)
+    document = readstring(source)
     parsed = parse_doc(document, format)
     doc = WeaveDoc(source, parsed)
 end
@@ -85,7 +85,7 @@ function parse_doc(document::AbstractString, format::MarkupInput)
       #options = merge(rcParams[:chunk_defaults], options)
       #@show options
       chunk = DocChunk(content, docno, start_line)
-      #chunk = @compat Dict{Symbol,Any}(:type => "doc", :content => content,
+      #chunk =  Dict{Symbol,Any}(:type => "doc", :content => content,
       #                                 :number => docno,:start_line => start_line)
       docno += 1
       start_line = lineno
@@ -96,7 +96,7 @@ function parse_doc(document::AbstractString, format::MarkupInput)
     if ismatch(codeend, line) && state=="code"
 
       chunk = CodeChunk(content, codeno, start_line, optionString, options)
-      #chunk = @compat Dict{Symbol,Any}(:type => "code", :content => content,
+      #chunk =  Dict{Symbol,Any}(:type => "code", :content => content,
 #                                   :number => codeno, :options => options,
 #                                       :optionAbstractString => optionAbstractString,
 #                                       :start_line => start_line)
@@ -119,7 +119,7 @@ function parse_doc(document::AbstractString, format::MarkupInput)
   #Remember the last chunk
   if strip(content) != ""
     chunk = DocChunk(content, docno, start_line)
-    #chunk = @compat Dict{Symbol,Any}(:type => "doc", :content => content,
+    #chunk =  Dict{Symbol,Any}(:type => "doc", :content => content,
     #                                 :number =>  docno, :start_line => start_line)
     push!(parsed, chunk)
   end

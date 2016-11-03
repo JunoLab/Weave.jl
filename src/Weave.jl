@@ -1,5 +1,5 @@
 module Weave
-using Compat
+#using Compat
 
 
 """

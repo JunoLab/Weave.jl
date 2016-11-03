@@ -142,7 +142,7 @@ type Tex
 end
 
 const tex = Tex("Latex with custom code environments",
-                @compat Dict{Symbol,Any}(:codestart => "\\begin{juliacode}",
+                Dict{Symbol,Any}(:codestart => "\\begin{juliacode}",
                                          :codeend => "\\end{juliacode}",
                                          :outputstart => "\\begin{juliaout}",
                                          :outputend => "\\end{juliaout}",
@@ -158,7 +158,7 @@ const tex = Tex("Latex with custom code environments",
                                          ))
 
 const texminted = Tex("Latex using minted for highlighting",
-                      @compat Dict{Symbol,Any}(
+                      Dict{Symbol,Any}(
                                          :codestart => "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}",
                                          :codeend => "\\end{minted}",
                                          :outputstart => "\\begin{minted}[fontsize=\\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}",
@@ -181,7 +181,7 @@ end
 
 
 const pandoc = Pandoc("Pandoc markdown",
-                        @compat Dict{Symbol,Any}(
+                        Dict{Symbol,Any}(
                                 :codestart => "~~~~{.julia}",
                                 :codeend=>"~~~~~~~~~~~~~\n\n",
                                 :outputstart=>"~~~~",
@@ -196,7 +196,7 @@ const pandoc = Pandoc("Pandoc markdown",
 
 
 const md2html = Pandoc("Markdown to HTML (requires Pandoc)",
-                      @compat Dict{Symbol,Any}(
+                      Dict{Symbol,Any}(
                               :codestart => "````julia",
                               :codeend=> "````\n\n",
                               :outputstart=> "````",
@@ -208,7 +208,7 @@ const md2html = Pandoc("Markdown to HTML (requires Pandoc)",
                               :doctype=> "md2html"))
 
 const md2pdf = Pandoc("Markdown to pdf (requires Pandoc and xelatex)",
-                      @compat Dict{Symbol,Any}(
+                      Dict{Symbol,Any}(
                               :codestart => "````julia",
                               :codeend=> "````\n\n",
                               :outputstart=> "````",
@@ -227,7 +227,7 @@ type Markdown
 end
 
 const github = Markdown("Github markdown",
-                        @compat Dict{Symbol,Any}(
+                        Dict{Symbol,Any}(
                                 :codestart => "````julia",
                                 :codeend=> "````\n\n",
                                 :outputstart=> "````",
@@ -243,7 +243,7 @@ type MultiMarkdown
 end
 
 const multimarkdown = MultiMarkdown("MultiMarkdown",
-                        @compat Dict{Symbol,Any}(
+                        Dict{Symbol,Any}(
                                 :codestart => "````julia",
                                 :codeend=> "````\n\n",
                                 :outputstart=> "````",
@@ -260,7 +260,7 @@ type Rest
 end
 
 const rst = Rest("reStructuredText and Sphinx",
-                 @compat Dict{Symbol,Any}(
+                    Dict{Symbol,Any}(
                                 :codestart => ".. code-block:: julia\n",
                                 :codeend => "\n\n",
                                 :outputstart => "::\n",
@@ -279,7 +279,7 @@ end
 
 #asciidoc -b html5 -a source-highlighter=pygments ...
 const adoc = AsciiDoc("AsciiDoc",
-        @compat Dict{Symbol,Any}(
+        Dict{Symbol,Any}(
         :codestart => "[source,julia]\n--------------------------------------",
         :codeend => "--------------------------------------\n\n",
         :outputstart => "--------------------------------------",
@@ -476,7 +476,7 @@ end
 
 
 #Add new supported formats here
-const formats = @compat Dict{AbstractString, Any}("tex" => tex,
+const formats = Dict{AbstractString, Any}("tex" => tex,
                                           "texminted" => texminted,
                                           "pandoc" => pandoc,
                                           "md2html" => md2html,
