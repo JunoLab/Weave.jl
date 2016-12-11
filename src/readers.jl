@@ -1,3 +1,5 @@
+import JSON
+
 pushopt(options::Dict,expr::Expr) = Base.Meta.isexpr(expr,:(=)) && (options[expr.args[1]] = expr.args[2])
 
 type MarkupInput
@@ -12,6 +14,9 @@ type ScriptInput
   opt_start::Regex
 end
 
+type NotebookInput
+end
+
 const input_formats = Dict{AbstractString, Any}(
         "noweb" => MarkupInput(r"^<<(.*?)>>=\s*$",
                     r"^@\s*$"),
@@ -22,7 +27,8 @@ const input_formats = Dict{AbstractString, Any}(
           r"(^#'.*)|(^#%%.*)|(^# %%.*)",
           r"(^#')|(^#%%)|(^# %%)",
           r"(^#\+.*$)|(^#%%\+.*$)|(^# %%\+.*$)",
-          r"(^#\+)|(^#%%\+)|(^# %%\+)")
+          r"(^#\+)|(^#%%\+)|(^# %%\+)"),
+        "notebook" => NotebookInput()
         )
 
 """Detect the input format based on file extension"""
@@ -31,6 +37,7 @@ function detect_informat(source::AbstractString)
 
   ext == ".jl" && return "script"
   ext == ".jmd" && return "markdown"
+  ext == ".ipynb" && return "notebook"
   return "noweb"
 end
 
@@ -223,4 +230,30 @@ function parse_doc(document::AbstractString, format::ScriptInput)
   end
 
   return parsed
+end
+
+"""Parse IJUlia notebook"""
+function parse_doc(document::String, format::NotebookInput)
+  nb = JSON.parse(document)
+  parsed = Any[]
+  options = Dict{Symbol,Any}()
+  opt_string = ""
+  docno = 1
+  codeno = 1
+
+  for cell in nb["cells"]
+    srctext = "\n" * join(cell["source"], "")
+
+    if cell["cell_type"] == "code"
+      chunk = CodeChunk(rstrip(srctext), codeno, 0, opt_string, options)
+      push!(parsed, chunk)
+      codeno += 1
+    else
+      chunk = DocChunk(srctext * "\n", docno, 0)
+      push!(parsed, chunk)
+      docno +=1
+    end
+  end
+
+return parsed
 end
