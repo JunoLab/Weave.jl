@@ -25,8 +25,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     
-    <link rel="shortcut icon" type="image/x-icon" href="../None">
-    <link rel="icon" type="image/x-icon" href="../None">
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/images/favicon-e565ddfa3b.ico">
+    <link rel="icon" type="image/x-icon" href="../assets/images/favicon-e565ddfa3b.ico">
     <style>
       @font-face {
       	font-family: 'Icon';
@@ -43,15 +43,13 @@
       	font-style: normal;
       }
     </style>
-    <link rel="stylesheet" href="../assets/stylesheets/application-54f87043f3.css">
-    
-      <link rel="stylesheet" href="../assets/stylesheets/palettes-05ab2406df.css">
+    <link rel="stylesheet" href="../assets/stylesheets/application-a422ff04cc.css">
     
     
       
       
       
-      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu+Mono">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu+Mono">
       <style>
         body, input {
           font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
@@ -70,7 +68,7 @@
   
   
   
-  <body class="palette-primary-indigo palette-accent-blue">
+  <body class=" ">
     
       
       
@@ -238,6 +236,15 @@
           
             
   <li>
+    <a class="" title="Working with Jupyter notebooks" href="../notebooks/">
+      Working with Jupyter notebooks
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
     <a class="" title="Function index" href="../function_index/">
       Function index
     </a>
@@ -259,12 +266,13 @@
 <h1 id="chunk-options">Chunk options</h1>
 <p>I've mostly followed <a href="http://yihui.name/knitr/options">Knitr</a>'s naming for chunk options, but not all options are implemented.</p>
 <p>Options are separated using ";" and need to be valid Julia expressions. Example: A code chunk that saves and displays a 12 cm wide image and hides the source code:</p>
-<pre><code class="julia">&lt;&lt;fig_width=5; echo=false &gt;&gt;=
-using Gadfly
-x = linspace(0, 2π, 200)
-plot(x=x, y = sin(x), Geom.line)
-@
-</code></pre>
+<div class="code"><pre><span></span><span class="o">&lt;&lt;</span><span class="n">fig_width</span><span class="o">=</span><span class="mi">5</span><span class="p">;</span> <span class="n">echo</span><span class="o">=</span><span class="n">false</span> <span class="o">&gt;&gt;=</span>
+<span class="k">using</span> <span class="n">Gadfly</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="n">π</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">Geom</span><span class="o">.</span><span class="n">line</span><span class="p">)</span>
+<span class="p">@</span>
+</pre></div>
+
 
 <p>Weave currently supports the following chunk options with the following defaults:</p>
 <p><a id='Options-for-code-1'></a></p>
@@ -291,40 +299,26 @@ plot(x=x, y = sin(x), Geom.line)
 <li><code>fig_cap</code>. Figure caption.</li>
 <li><code>label</code>. Chunk label, will be used for figure labels in Latex as fig:label</li>
 <li><code>fig_ext</code>. File extension (format) of saved figures.</li>
-<li><code>fig_pos="htpb"</code>. Figure position in Latex.  </li>
+<li><code>fig_pos="htpb"</code>. Figure position in Latex.</li>
 <li><code>fig_env="figure"</code>. Figure environment in Latex.</li>
 </ul>
 <p><a id='Set-default-chunk-options-1'></a></p>
 <h2 id="set-default-chunk-options">Set default chunk options</h2>
 <p>You can set or alter the default chunk options for a document either before running weave or inside the weaved document. You can e.g. use a hidden chunk in the beginning of the source document to set the options:</p>
-<pre><code>&lt;&lt;echo = false&gt;&gt;=
-import Weave
-Weave.set_chunk_defaults(Dict{Symbol, Any}(
-      :out_width =&gt; &quot;\\0.5linewidth&quot;,
-      :results =&gt; &quot;tex&quot;
-      ))
-@
-</code></pre>
+<div class="code"><pre><span></span><span class="o">&lt;&lt;</span><span class="n">echo</span> <span class="o">=</span> <span class="n">false</span><span class="o">&gt;&gt;=</span>
+<span class="k">import</span> <span class="n">Weave</span>
+<span class="n">Weave</span><span class="o">.</span><span class="n">set_chunk_defaults</span><span class="p">(</span><span class="n">Dict</span><span class="p">{</span><span class="n">Symbol</span><span class="p">,</span> <span class="kt">Any</span><span class="p">}(</span>
+      <span class="p">:</span><span class="n">out_width</span> <span class="o">=&gt;</span> <span class="s">&quot;</span><span class="se">\\</span><span class="s">0.5linewidth&quot;</span><span class="p">,</span>
+      <span class="p">:</span><span class="n">results</span> <span class="o">=&gt;</span> <span class="s">&quot;tex&quot;</span>
+      <span class="p">))</span>
+<span class="p">@</span>
+</pre></div>
 
-<p><a id='Weave.set_chunk_defaults-Tuple{Any}' href='#Weave.set_chunk_defaults-Tuple{Any}'>#</a>
-<strong><code>Weave.set_chunk_defaults</code></strong> &mdash; <em>Method</em>.</p>
-<hr />
-<p><code>set_chunk_defaults(opts::Dict{Symbol, Any})</code></p>
-<p>Set default options for code chunks, use get_chunk_defaults to see the current values.</p>
-<p>e.g. set default dpi to 200 and fig_width to 8</p>
-<pre><code>julia&gt; set_chunk_defaults(Dict{Symbol, Any}(:dpi =&gt; 200, fig_width =&gt; 8))
-</code></pre>
 
-<p><a id='Weave.get_chunk_defaults-Tuple{}' href='#Weave.get_chunk_defaults-Tuple{}'>#</a>
-<strong><code>Weave.get_chunk_defaults</code></strong> &mdash; <em>Method</em>.</p>
-<hr />
-<p><code>get_chunk_defaults()</code></p>
-<p>Get default options used for code chunks.</p>
-<p><a id='Weave.restore_chunk_defaults-Tuple{}' href='#Weave.restore_chunk_defaults-Tuple{}'>#</a>
-<strong><code>Weave.restore_chunk_defaults</code></strong> &mdash; <em>Method</em>.</p>
-<hr />
-<p><code>restore_chunk_defaults()</code></p>
-<p>Restore Weave.jl default chunk options</p>
+<div class="code"><pre><span></span>set_chunk_defaults(opts)
+get_chunk_defaults()
+restore_chunk_defaults()
+</pre></div>
           <aside class="copyright" role="note">
             
               Matti Pastell 2016 &ndash;
@@ -362,14 +356,14 @@ Weave.set_chunk_defaults(Dict{Symbol, Any}(
     </div>
     <div class="next">
       
-        <a href="../function_index/" title="Function index">
+        <a href="../notebooks/" title="Working with Jupyter notebooks">
           <span class="direction">
             Next
           </span>
           <div class="page">
             <div class="stretch">
               <div class="title">
-                Function index
+                Working with Jupyter notebooks
               </div>
             </div>
             <div class="button button-next" role="button" aria-label="Next">

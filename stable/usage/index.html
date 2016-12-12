@@ -25,8 +25,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     
-    <link rel="shortcut icon" type="image/x-icon" href="../None">
-    <link rel="icon" type="image/x-icon" href="../None">
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/images/favicon-e565ddfa3b.ico">
+    <link rel="icon" type="image/x-icon" href="../assets/images/favicon-e565ddfa3b.ico">
     <style>
       @font-face {
       	font-family: 'Icon';
@@ -43,15 +43,13 @@
       	font-style: normal;
       }
     </style>
-    <link rel="stylesheet" href="../assets/stylesheets/application-54f87043f3.css">
-    
-      <link rel="stylesheet" href="../assets/stylesheets/palettes-05ab2406df.css">
+    <link rel="stylesheet" href="../assets/stylesheets/application-a422ff04cc.css">
     
     
       
       
       
-      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu+Mono">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu+Mono">
       <style>
         body, input {
           font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
@@ -70,7 +68,7 @@
   
   
   
-  <body class="palette-primary-indigo palette-accent-blue">
+  <body class=" ">
     
       
       
@@ -262,6 +260,15 @@
           
             
   <li>
+    <a class="" title="Working with Jupyter notebooks" href="../notebooks/">
+      Working with Jupyter notebooks
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
     <a class="" title="Function index" href="../function_index/">
       Function index
     </a>
@@ -285,87 +292,92 @@
 <p><a id='Weave-1'></a></p>
 <h2 id="weave">Weave</h2>
 <p>Weave document with markup and julia code using Gadfly for plots, <code>out_path = :pwd</code> makes the results appear in the current working directory.</p>
-<pre><code class="julia">using Weave
-weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;gadfly_sample.mdw&quot;), out_path = :pwd)
-</code></pre>
+<div class="code"><pre><span></span><span class="k">using</span> <span class="n">Weave</span>
+<span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;gadfly_sample.mdw&quot;</span><span class="p">),</span> <span class="n">out_path</span> <span class="o">=</span> <span class="p">:</span><span class="n">pwd</span><span class="p">)</span>
+</pre></div>
+
 
 <p>Using PyPlot:</p>
-<pre><code class="julia">weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;julia_sample.mdw&quot;), plotlib=&quot;PyPlot&quot;, out_path = :pwd)
-</code></pre>
+<div class="code"><pre><span></span><span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;julia_sample.mdw&quot;</span><span class="p">),</span> <span class="n">plotlib</span><span class="o">=</span><span class="s">&quot;PyPlot&quot;</span><span class="p">,</span> <span class="n">out_path</span> <span class="o">=</span> <span class="p">:</span><span class="n">pwd</span><span class="p">)</span>
+</pre></div>
+
 
 <p><a id='Weave.weave-Tuple{Any}' href='#Weave.weave-Tuple{Any}'>#</a>
 <strong><code>Weave.weave</code></strong> &mdash; <em>Method</em>.</p>
-<hr />
 <p><code>function weave(source ; doctype = :auto, plotlib="Gadfly",         informat=:auto, out_path=:doc, fig_path = "figures", fig_ext = nothing,         cache_path = "cache", cache=:off)</code></p>
 <p>Weave an input document to output file.</p>
 <ul>
-<li><code>doctype</code>: :auto = set based on file extension or specify one of the supported formats.   See <code>list_out_formats()</code></li>
+<li><code>doctype</code>: :auto = set based on file extension or specify one of the supported formats. See <code>list_out_formats()</code></li>
 <li><code>plotlib</code>: <code>"PyPlot"</code>, <code>"Gadfly"</code> or <code>nothing</code></li>
 <li><code>informat</code>: :auto = set based on file extension or set to  <code>"noweb"</code>, <code>"markdown"</code> or  <code>script</code></li>
 <li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>: Julia working directory, <code>"somepath"</code>: output directory as a String e.g <code>"/home/mpastell/weaveout"</code> or filename as string e.g. ~/outpath/outfile.tex.</li>
 <li><code>fig_path</code>: where figures will be generated, relative to out_path</li>
 <li><code>fig_ext</code>: Extension for saved figures e.g. <code>".pdf"</code>, <code>".png"</code>. Default setting depends on <code>doctype</code>.</li>
 <li><code>cache_path</code>: where of cached output will be saved.</li>
-<li><code>cache</code>: controls caching of code: <code>:off</code> = no caching, <code>:all</code> = cache everything,   <code>:user</code> = cache based on chunk options, <code>:refresh</code>, run all code chunks and save new cache.</li>
+<li><code>cache</code>: controls caching of code: <code>:off</code> = no caching, <code>:all</code> = cache everything, <code>:user</code> = cache based on chunk options, <code>:refresh</code>, run all code chunks and save new cache.</li>
 </ul>
 <p><strong>Note:</strong> Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.</p>
 <p><a id='Weave-from-shell-1'></a></p>
 <h2 id="weave-from-shell">Weave from shell</h2>
 <p>You can also use the <code>weave.jl</code> script under bin directory to weave documents from the shell:</p>
-<pre><code>$ ./weave.jl
-usage: weave.jl [--doctype DOCTYPE] [--plotlib PLOTLIB]
-                [--informat INFORMAT] [--out_path OUT_PATH]
-                [--fig_path FIG_PATH] [--fig_ext FIG_EXT] source...
-</code></pre>
+<div class="code"><pre><span></span>$ ./weave.jl
+usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span> <span class="o">[</span>--plotlib PLOTLIB<span class="o">]</span>
+                <span class="o">[</span>--informat INFORMAT<span class="o">]</span> <span class="o">[</span>--out_path OUT_PATH<span class="o">]</span>
+                <span class="o">[</span>--fig_path FIG_PATH<span class="o">]</span> <span class="o">[</span>--fig_ext FIG_EXT<span class="o">]</span> source...
+</pre></div>
+
 
 <p><a id='Tangle-1'></a></p>
 <h2 id="tangle">Tangle</h2>
 <p>Tangling extracts the code from document:</p>
 <p><a id='Weave.tangle-Tuple{Any}' href='#Weave.tangle-Tuple{Any}'>#</a>
 <strong><code>Weave.tangle</code></strong> &mdash; <em>Method</em>.</p>
-<hr />
 <p><code>tangle(source ; out_path=:doc, informat="noweb")</code></p>
 <p>Tangle source code from input document to .jl file.</p>
 <ul>
 <li><code>informat</code>: <code>"noweb"</code> of <code>"markdown"</code></li>
-<li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>: Julia working directory,  <code>"somepath"</code>, directory name as a string e.g <code>"/home/mpastell/weaveout"</code> or filename as string e.g. ~/outpath/outfile.jl.</li>
+<li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>: Julia working directory,  <code>"somepath"</code>, directory name as a string e.g <code>"/home/mpastell/weaveout"</code></li>
 </ul>
+<p>or filename as string e.g. ~/outpath/outfile.jl.</p>
 <p><a id='Supported-formats-1'></a></p>
 <h2 id="supported-formats">Supported formats</h2>
 <p>Weave sets the output format based on the file extension, but you can also set it using <code>doctype</code> option. The rules for detecting the format are:</p>
-<pre><code class="julia">ext == &quot;.jl&quot; &amp;&amp; return &quot;md2html&quot;
-contains(ext, &quot;.md&quot;) &amp;&amp; return &quot;md2html&quot;
-contains(ext, &quot;.rst&quot;) &amp;&amp; return &quot;rst&quot;
-contains(ext, &quot;.tex&quot;) &amp;&amp; return &quot;texminted&quot;
-contains(ext, &quot;.txt&quot;) &amp;&amp; return &quot;asciidoc&quot;
-return &quot;pandoc&quot;
-</code></pre>
+<div class="code"><pre><span></span><span class="n">ext</span> <span class="o">==</span> <span class="s">&quot;.jl&quot;</span> <span class="o">&amp;&amp;</span> <span class="k">return</span> <span class="s">&quot;md2html&quot;</span>
+<span class="n">contains</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="s">&quot;.md&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">return</span> <span class="s">&quot;md2html&quot;</span>
+<span class="n">contains</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="s">&quot;.rst&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">return</span> <span class="s">&quot;rst&quot;</span>
+<span class="n">contains</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="s">&quot;.tex&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">return</span> <span class="s">&quot;texminted&quot;</span>
+<span class="n">contains</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="s">&quot;.txt&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">return</span> <span class="s">&quot;asciidoc&quot;</span>
+<span class="k">return</span> <span class="s">&quot;pandoc&quot;</span>
+</pre></div>
+
 
 <p>You can get a list of supported output formats:</p>
-<pre><code>julia&gt; list_out_formats()
-pandoc: Pandoc markdown
-rst: reStructuredText and Sphinx
-texminted: Latex using minted for highlighting
-github: Github markdown
-md2html: Markdown to HTML (requires Pandoc)
-md2pdf: Markdown to pdf (requires Pandoc and xelatex)
-asciidoc: AsciiDoc
-tex: Latex with custom code environments
-</code></pre>
+<div class="code"><pre><span></span><span class="n">julia</span><span class="o">&gt;</span> <span class="n">list_out_formats</span><span class="p">()</span>
+<span class="n">pandoc</span><span class="p">:</span> <span class="n">Pandoc</span> <span class="n">markdown</span>
+<span class="n">rst</span><span class="p">:</span> <span class="n">reStructuredText</span> <span class="n">and</span> <span class="n">Sphinx</span>
+<span class="n">texminted</span><span class="p">:</span> <span class="n">Latex</span> <span class="k">using</span> <span class="n">minted</span> <span class="k">for</span> <span class="n">highlighting</span>
+<span class="n">github</span><span class="p">:</span> <span class="n">Github</span> <span class="n">markdown</span>
+<span class="n">md2html</span><span class="p">:</span> <span class="n">Markdown</span> <span class="n">to</span> <span class="n">HTML</span> <span class="p">(</span><span class="n">requires</span> <span class="n">Pandoc</span><span class="p">)</span>
+<span class="n">md2pdf</span><span class="p">:</span> <span class="n">Markdown</span> <span class="n">to</span> <span class="n">pdf</span> <span class="p">(</span><span class="n">requires</span> <span class="n">Pandoc</span> <span class="n">and</span> <span class="n">xelatex</span><span class="p">)</span>
+<span class="n">asciidoc</span><span class="p">:</span> <span class="n">AsciiDoc</span>
+<span class="n">tex</span><span class="p">:</span> <span class="n">Latex</span> <span class="n">with</span> <span class="n">custom</span> <span class="n">code</span> <span class="n">environments</span>
+</pre></div>
+
 
 <p><a id='Weave.list_out_formats-Tuple{}' href='#Weave.list_out_formats-Tuple{}'>#</a>
 <strong><code>Weave.list_out_formats</code></strong> &mdash; <em>Method</em>.</p>
-<hr />
 <p><code>list_out_formats()</code></p>
 <p>List supported output formats</p>
 <p><a id='Document-syntax-1'></a></p>
 <h2 id="document-syntax">Document syntax</h2>
-<p>Weave uses noweb, markdown or script syntax for defining the code chunks and documentation chunks. The format is detected based on the file extension, but you can also set it manually using the <code>informat</code> parameter.</p>
+<p>Weave uses noweb, markdown or script syntax for defining the code chunks and documentation chunks. You can also weave Jupyter notebooks. The format is detected based on the file extension, but you can also set it manually using the <code>informat</code> parameter.</p>
 <p>The rules for autodetection are:</p>
-<pre><code>ext == &quot;.jl&quot; &amp;&amp; return &quot;script&quot;
-ext == &quot;.jmd&quot; &amp;&amp; return &quot;markdown&quot;
-return &quot;noweb&quot;
-</code></pre>
+<div class="code"><pre><span></span><span class="n">ext</span> <span class="o">==</span> <span class="s">&quot;.jl&quot;</span> <span class="o">&amp;&amp;</span> <span class="k">return</span> <span class="s">&quot;script&quot;</span>
+<span class="n">ext</span> <span class="o">==</span> <span class="s">&quot;.jmd&quot;</span> <span class="o">&amp;&amp;</span> <span class="k">return</span> <span class="s">&quot;markdown&quot;</span>
+<span class="n">ext</span> <span class="o">==</span> <span class="s">&quot;.ipynb&quot;</span> <span class="o">&amp;&amp;</span> <span class="k">return</span> <span class="s">&quot;notebook&quot;</span>
+<span class="k">return</span> <span class="s">&quot;noweb&quot;</span>
+</pre></div>
+
 
 <p><a id='Noweb-1'></a></p>
 <h2 id="noweb">Noweb</h2>
@@ -378,7 +390,7 @@ return &quot;noweb&quot;
 <p><a href="https://github.com/mpastell/Weave.jl/blob/master/examples/julia_sample.mdw">Sample document</a></p>
 <p><a id='Markdown-1'></a></p>
 <h2 id="markdown">Markdown</h2>
-<p>Markdown code chunks are defined using fenced code blocks. <a href="https://github.com/mpastell/Weave.jl/blob/master/examples/gadfly_sample.jmd">See sample document:</a></p>
+<p>Markdown code chunks are defined using fenced code blocks. <a href="https://github.com/mpastell/Weave.jl/blob/master/examples/gadfly_md_sample.jmd">See sample document:</a></p>
           <aside class="copyright" role="note">
             
               Matti Pastell 2016 &ndash;

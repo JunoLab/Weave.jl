@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     
       
-        <title>Weave.jl - Scientific Reports Using Julia</title>
+        <title>Working with Jupyter notebooks - Weave.jl - Scientific Reports Using Julia</title>
       
       
       
@@ -19,31 +19,31 @@
     
     <meta property="og:url" content="None">
     <meta property="og:title" content="Weave.jl - Scientific Reports Using Julia">
-    <meta property="og:image" content="None/./">
+    <meta property="og:image" content="None/../">
     <meta name="apple-mobile-web-app-title" content="Weave.jl - Scientific Reports Using Julia">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     
-    <link rel="shortcut icon" type="image/x-icon" href="./assets/images/favicon-e565ddfa3b.ico">
-    <link rel="icon" type="image/x-icon" href="./assets/images/favicon-e565ddfa3b.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/images/favicon-e565ddfa3b.ico">
+    <link rel="icon" type="image/x-icon" href="../assets/images/favicon-e565ddfa3b.ico">
     <style>
       @font-face {
       	font-family: 'Icon';
-      	src: url('./assets/fonts/icon.eot?52m981');
-      	src: url('./assets/fonts/icon.eot?#iefix52m981')
+      	src: url('../assets/fonts/icon.eot?52m981');
+      	src: url('../assets/fonts/icon.eot?#iefix52m981')
                format('embedded-opentype'),
-      		   url('./assets/fonts/icon.woff?52m981')
+      		   url('../assets/fonts/icon.woff?52m981')
                format('woff'),
-      		   url('./assets/fonts/icon.ttf?52m981')
+      		   url('../assets/fonts/icon.ttf?52m981')
                format('truetype'),
-      		   url('./assets/fonts/icon.svg?52m981#icon')
+      		   url('../assets/fonts/icon.svg?52m981#icon')
                format('svg');
       	font-weight: normal;
       	font-style: normal;
       }
     </style>
-    <link rel="stylesheet" href="./assets/stylesheets/application-a422ff04cc.css">
+    <link rel="stylesheet" href="../assets/stylesheets/application-a422ff04cc.css">
     
     
       
@@ -60,9 +60,9 @@
       </style>
     
     
-      <link rel="stylesheet" href="./assets/Documenter.css">
+      <link rel="stylesheet" href="../assets/Documenter.css">
     
-    <script src="./assets/javascripts/modernizr-4ab42b99fd.js"></script>
+    <script src="../assets/javascripts/modernizr-4ab42b99fd.js"></script>
     
   </head>
   
@@ -94,7 +94,7 @@
             
           </span>
         
-        Weave.jl - Scientific Reports Using Julia
+        Working with Jupyter notebooks
       </div>
     </div>
     
@@ -164,8 +164,53 @@
           
             
   <li>
-    <a class="current" title="Home" href=".">
+    <a class="" title="Home" href="..">
       Home
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="Getting started" href="../getting_started/">
+      Getting started
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="Using Weave" href="../usage/">
+      Using Weave
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="Publishing scripts" href="../publish/">
+      Publishing scripts
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="" title="Chunk options" href="../chunk_options/">
+      Chunk options
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="current" title="Working with Jupyter notebooks" href="./">
+      Working with Jupyter notebooks
     </a>
     
       
@@ -175,8 +220,14 @@
         <ul>
           
             <li class="anchor">
-              <a title="Contents" href="#contents">
-                Contents
+              <a title="Weaving" href="#weaving">
+                Weaving
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Converting between formats" href="#converting-between-formats">
+                Converting between formats
               </a>
             </li>
           
@@ -188,52 +239,7 @@
           
             
   <li>
-    <a class="" title="Getting started" href="getting_started/">
-      Getting started
-    </a>
-    
-  </li>
-
-          
-            
-  <li>
-    <a class="" title="Using Weave" href="usage/">
-      Using Weave
-    </a>
-    
-  </li>
-
-          
-            
-  <li>
-    <a class="" title="Publishing scripts" href="publish/">
-      Publishing scripts
-    </a>
-    
-  </li>
-
-          
-            
-  <li>
-    <a class="" title="Chunk options" href="chunk_options/">
-      Chunk options
-    </a>
-    
-  </li>
-
-          
-            
-  <li>
-    <a class="" title="Working with Jupyter notebooks" href="notebooks/">
-      Working with Jupyter notebooks
-    </a>
-    
-  </li>
-
-          
-            
-  <li>
-    <a class="" title="Function index" href="function_index/">
+    <a class="" title="Function index" href="../function_index/">
       Function index
     </a>
     
@@ -250,50 +256,37 @@
       <article class="article">
         <div class="wrapper">
           
-          <p><a id='Intro-1'></a></p>
-<h1 id="intro">Intro</h1>
-<p>This is the documentation of <a href="http://github.com/mpastell/weave.jl">Weave.jl</a>. Weave is a scientific report generator/literate programming tool for Julia. It resembles <a href="http://mpastell.com/pweave">Pweave</a>, Knitr, rmarkdown and Sweave.</p>
-<p><strong>Current features</strong></p>
+          <p><a id='Working-with-Jupyter-notebooks-1'></a></p>
+<h1 id="working-with-jupyter-notebooks">Working with Jupyter notebooks</h1>
+<p><a id='Weaving-1'></a></p>
+<h2 id="weaving">Weaving</h2>
+<p>Weave supports using Jupyter notebooks as input format, this means you can weave notebooks to any supported formats. You can't use chunk options with notebooks.</p>
+<div class="code"><pre><span></span><span class="n">weave</span><span class="p">(</span><span class="s">&quot;notebook.ipynb&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>In order to output notebooks from other formats you need to convert the document to a notebook and run the code using IJulia.</p>
+<p><a id='Converting-between-formats-1'></a></p>
+<h2 id="converting-between-formats">Converting between formats</h2>
+<p>You can convert between all supported input formats using the <code>convert_doc</code> function.</p>
+<p>To convert from script to notebook:</p>
+<div class="code"><pre><span></span><span class="n">convert_doc</span><span class="p">(</span><span class="s">&quot;examples/FIR_design.jl&quot;</span><span class="p">,</span> <span class="s">&quot;FIR_design.ipynb&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>and from notebooks to markdown use:</p>
+<div class="code"><pre><span></span><span class="n">convert_doc</span><span class="p">(</span><span class="s">&quot;FIR_design.ipynb&quot;</span><span class="p">,</span> <span class="s">&quot;FIR_design.jmd&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><a id='Weave.convert_doc-Tuple{String,String}' href='#Weave.convert_doc-Tuple{String,String}'>#</a>
+<strong><code>Weave.convert_doc</code></strong> &mdash; <em>Method</em>.</p>
+<p><code>convert_doc(infile::AbstractString, outfile::AbstractString; format = nothing)</code></p>
+<p>Convert Weave documents between different formats</p>
 <ul>
-<li>Noweb, markdown or script syntax for input documents.</li>
-<li>Execute code as terminal or "script" chunks.</li>
-<li>Capture Plots, Gadfly, PyPlot and Winston figures.</li>
-<li>Supports LaTex, Pandoc, Github markdown, MultiMarkdown, Asciidoc and reStructuredText output</li>
-<li>Publish markdown directly to html and pdf using Pandoc.</li>
-<li>Simple caching of results</li>
-<li>Convert to and from IJulia notebooks</li>
-</ul>
-<p><img alt="Weave code and output" src="http://mpastell.com/images/weave_demo.png" /></p>
-<p><a id='Contents-1'></a></p>
-<h2 id="contents">Contents</h2>
-<ul>
-<li><a href="getting_started/#Getting-started-1">Getting started</a></li>
-<li><a href="usage/#Using-Weave-1">Using Weave</a><ul>
-<li><a href="usage/#Weave-1">Weave</a></li>
-<li><a href="usage/#Weave-from-shell-1">Weave from shell</a></li>
-<li><a href="usage/#Tangle-1">Tangle</a></li>
-<li><a href="usage/#Supported-formats-1">Supported formats</a></li>
-<li><a href="usage/#Document-syntax-1">Document syntax</a></li>
-<li><a href="usage/#Noweb-1">Noweb</a></li>
-<li><a href="usage/#Markdown-1">Markdown</a></li>
-</ul>
-</li>
-<li><a href="publish/#Publishing-scripts-1">Publishing scripts</a><ul>
-<li><a href="publish/#Other-mark-ups-with-scripts-1">Other mark ups with scripts</a></li>
-</ul>
-</li>
-<li><a href="chunk_options/#Chunk-options-1">Chunk options</a><ul>
-<li><a href="chunk_options/#Options-for-code-1">Options for code</a></li>
-<li><a href="chunk_options/#Options-for-figures-1">Options for figures</a></li>
-<li><a href="chunk_options/#Set-default-chunk-options-1">Set default chunk options</a></li>
-</ul>
-</li>
-<li><a href="notebooks/#Working-with-Jupyter-notebooks-1">Working with Jupyter notebooks</a><ul>
-<li><a href="notebooks/#Weaving-1">Weaving</a></li>
-<li><a href="notebooks/#Converting-between-formats-1">Converting between formats</a></li>
-</ul>
-</li>
-<li><a href="function_index/#Function-index-1">Function index</a></li>
+<li><code>infile</code> = Name of the input document</li>
+<li><code>outfile</code> = Name of the output document</li>
+<li><code>format</code> = Output format (optional). Detected from outfile extension, but can be set to <code>"script"</code>, <code>"markdown"</code>, <code>"notebook"</code> or <code>"noweb"</code>.</li>
 </ul>
           <aside class="copyright" role="note">
             
@@ -313,17 +306,33 @@
   <nav class="pagination" aria-label="Footer">
     <div class="previous">
       
+        <a href="../chunk_options/" title="Chunk options">
+          <span class="direction">
+            Previous
+          </span>
+          <div class="page">
+            <div class="button button-previous" role="button" aria-label="Previous">
+              <i class="icon icon-back"></i>
+            </div>
+            <div class="stretch">
+              <div class="title">
+                Chunk options
+              </div>
+            </div>
+          </div>
+        </a>
+      
     </div>
     <div class="next">
       
-        <a href="getting_started/" title="Getting started">
+        <a href="../function_index/" title="Function index">
           <span class="direction">
             Next
           </span>
           <div class="page">
             <div class="stretch">
               <div class="title">
-                Getting started
+                Function index
               </div>
             </div>
             <div class="button button-next" role="button" aria-label="Next">
@@ -349,12 +358,12 @@
       </div>
     </main>
     <script>
-      var base_url = '.';
+      var base_url = '..';
       var repo_id  = 'mpastell/Weave.jl';
     </script>
-    <script src="./assets/javascripts/application-997097ee0c.js"></script>
+    <script src="../assets/javascripts/application-997097ee0c.js"></script>
     
-      <script src="./assets/mathjaxhelper.js"></script>
+      <script src="../assets/mathjaxhelper.js"></script>
     
     
   </body>
