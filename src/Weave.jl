@@ -111,7 +111,7 @@ pop_postexecute_hook(f::Function) = splice!(postexecute_hooks, findfirst(postexe
 
 
 
-export weave, list_out_formats, tangle,
+export weave, list_out_formats, tangle, convert_doc,
         set_chunk_defaults, get_chunk_defaults, restore_chunk_defaults
 
 include("config.jl")
@@ -122,4 +122,5 @@ include("run.jl")
 include("cache.jl")
 include("formatters.jl")
 include("pandoc.jl")
+include("writers.jl")
 end
