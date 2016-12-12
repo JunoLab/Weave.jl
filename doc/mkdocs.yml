@@ -1,4 +1,4 @@
-site_name: Weave.jl - Scientific Reports Using Julia
+site_name: Weave.jl
 site_author: Matti Pastell
 copyright: Matti Pastell 2016
 repo_url: https://github.com/mpastell/Weave.jl
@@ -23,6 +23,15 @@ markdown_extensions:
   - fenced_code
   - codehilite(css_class=code)
 #  - mdx_math
+
+google_analytics:
+  - 'UA-6474352-10'
+  - 'auto'
+
+extra:
+  version: 'v0.2.2'
+  author:
+    twitter: 'mpastell'
 
 docs_dir: 'build'
 
