@@ -5,7 +5,7 @@
 
 Weave supports using Jupyter notebooks as input format, this means you can weave notebooks to any supported formats. You can't use chunk options with notebooks.
 
-```
+```julia
 weave("notebook.ipynb")
 ```
 
@@ -19,13 +19,13 @@ function.
 
 To convert from script to notebook:
 
-```
+```julia
 convert_doc("examples/FIR_design.jl", "FIR_design.ipynb")
 ```
 
 and from notebooks to markdown use:
 
-```
+```julia
 convert_doc("FIR_design.ipynb", "FIR_design.jmd")
 ```
 

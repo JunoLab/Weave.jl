@@ -20,7 +20,7 @@ e.g. `#+ term=true`. See the example below for the markup.
 
 [FIR_design.jl](examples/FIR_design.jl), [FIR_design.html](examples/FIR_design.html) , [FIR_design.pdf](examples/FIR_design.pdf).
 
-```
+```julia
 weave("FIR_design.jl")
 weave("FIR_design.jl", docformat = "md2pdf")
 ```
@@ -30,6 +30,6 @@ weave("FIR_design.jl", docformat = "md2pdf")
 You can also use any Weave supported format in the comments and set the output format
 as you would for noweb and markdown inputs. e.g for LaTeX you can use:
 
-```
+```julia
 weave("latex_doc.jl", docformat = "texminted")
 ```

@@ -46,7 +46,7 @@ You can set or alter the default chunk options for a document either before
 running weave or inside the weaved document. You can e.g. use a hidden chunk
 in the beginning of the source document to set the options:
 
-```
+```julia
 <<echo = false>>=
 import Weave
 Weave.set_chunk_defaults(Dict{Symbol, Any}(

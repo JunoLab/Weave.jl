@@ -16,7 +16,7 @@ output in different formats:
 
 You can Weave the files to your working directory using:
 
-```
+```julia
 using Weave
 #Markdown
 weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), out_path = :pwd,

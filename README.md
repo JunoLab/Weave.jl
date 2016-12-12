@@ -3,10 +3,12 @@
 [![Build Status](https://travis-ci.org/mpastell/Weave.jl.svg?branch=master)](https://travis-ci.org/mpastell/Weave.jl)[![Coverage Status](https://img.shields.io/coveralls/mpastell/Weave.jl.svg)](https://coveralls.io/r/mpastell/Weave.jl?branch=master)
 
 Weave is a scientific report generator/literate programming tool
-for Julia. It resembles [Pweave](http://mpastell.com/pweave) and, Knitr
+for Julia. It resembles [Pweave](http://mpastell.com/pweave), Knitr, rmarkdown
 and Sweave.
 
-You can write your documentation and code in input document using Nowed or Markdown syntax and use `weave` function to execute to document to capture results and figures.
+You can write your documentation and code in input document using Noweb,
+Markdown, Script syntax and use `weave` function to execute to document to capture results 
+and figures.
 
 **Current features**
 

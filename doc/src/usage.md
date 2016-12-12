@@ -59,7 +59,7 @@ return "pandoc"
 
 You can get a list of supported output formats:
 
-```
+```julia
 julia> list_out_formats()
 pandoc: Pandoc markdown
 rst: reStructuredText and Sphinx
@@ -82,7 +82,7 @@ documentation chunks. You can also weave Jupyter notebooks. The format is detect
 
 The rules for autodetection are:
 
-```
+```julia
 ext == ".jl" && return "script"
 ext == ".jmd" && return "markdown"
 ext == ".ipynb" && return "notebook"

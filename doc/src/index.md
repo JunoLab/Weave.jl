@@ -2,7 +2,7 @@
 # Intro
 
 This is the documentation of [Weave.jl](http://github.com/mpastell/weave.jl). Weave is a scientific report generator/literate programming tool
-for Julia. It resembles [Pweave](http://mpastell.com/pweave) and, Knitr
+for Julia. It resembles [Pweave](http://mpastell.com/pweave), Knitr, rmarkdown
 and Sweave.
 
 
