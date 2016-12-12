@@ -6,8 +6,9 @@
 Convert output from pandoc markdown to html using Weave.jl template
 """
 function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::AbstractString)
-  html_template = joinpath(Pkg.dir("Weave"), "templates/pandoc_skeleton.html")
-  css_template = joinpath(Pkg.dir("Weave"), "templates/pandoc_skeleton.css")
+  weavedir = dirname(@__FILE__)
+  html_template = joinpath(weavedir, "../templates/pandoc_skeleton.html")
+  css_template = joinpath(weavedir, "../templates/pandoc_skeleton.css")
 
   path, wsource = splitdir(abspath(doc.source))
   wversion = string(Pkg.installed("Weave"))
@@ -53,8 +54,8 @@ end
 Convert output from pandoc markdown to pdf using Weave.jl template
 """
 function pandoc2pdf(formatted::AbstractString, doc::WeaveDoc, outname::AbstractString)
-
-  header_template = joinpath(Pkg.dir("Weave"), "templates/pandoc_header.txt")
+  weavedir = dirname(@__FILE__)
+  header_template = joinpath(weavedir, "../templates/pandoc_header.txt")
 
   path, wsource = splitdir(abspath(doc.source))
   wversion = string(Pkg.installed("Weave"))

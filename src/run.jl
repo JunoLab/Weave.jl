@@ -274,6 +274,7 @@ end
 
 
 function init_plotting(plotlib)
+    srcdir = dirname(@__FILE__)
     rcParams[:plotlib_set] = true
     if plotlib == nothing
         rcParams[:plotlib] = nothing
@@ -281,16 +282,16 @@ function init_plotting(plotlib)
         l_plotlib = lowercase(plotlib)
         rcParams[:chunk_defaults][:fig] = true
         if l_plotlib == "winston"
-            eval(parse("""include(Pkg.dir("Weave","src","winston.jl"))"""))
+            eval(parse("""include("$srcdir/winston.jl")"""))
             rcParams[:plotlib] = "Winston"
         elseif l_plotlib == "pyplot"
-            eval(parse("""include(Pkg.dir("Weave","src","pyplot.jl"))"""))
+            eval(parse("""include("$srcdir/pyplot.jl")"""))
             rcParams[:plotlib] = "PyPlot"
         elseif l_plotlib == "plots"
-            eval(parse("""include(Pkg.dir("Weave","src","plots.jl"))"""))
+            eval(parse("""include("$srcdir/plots.jl")"""))
             rcParams[:plotlib] = "Plots"
         elseif l_plotlib == "gadfly"
-            eval(parse("""include(Pkg.dir("Weave","src","gadfly.jl"))"""))
+            eval(parse("""include("$srcdir/gadfly.jl")"""))
             rcParams[:plotlib] = "Gadfly"
       end
     end
