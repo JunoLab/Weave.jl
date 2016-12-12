@@ -5,7 +5,7 @@ documents from Julia scripts with a specific format. Producing HTML and pdf outp
 requires that you have Pandoc and XeLatex (for pdf) installed and in your path.
 
 These scripts can be executed normally using Julia or published with Weave.
-Documentation is written in markdown in lines starting with ``#'``, ``#%%`` or ``# %%`` ,
+Documentation is written in markdown in lines starting with `#'`, `#%%` or `# %%`,
 and code is executed and results are included in the published document.
 
 The format is identical to [Pweave](http://mpastell.com/pweave/pypublish.html)
@@ -14,10 +14,9 @@ using Knitr's [spin](http://yihui.name/knitr/demo/stitch/).
 Weave will remove the first empty space from each line of documentation.
 
 All lines that are not documentation are treated as code. You can set chunk options
-using lines starting with ``#+``, ``#%%`` or ``# %%`` just before code
-e.g. ``#+ term=True, caption='Fancy plots.'``. See the example below for the markup.
+using lines starting with `#+` just before code
+e.g. `#+ term=true`. See the example below for the markup.
 
-The scripts can be published using the `pypublish` scipts:
 
 [FIR_design.jl](examples/FIR_design.jl), [FIR_design.html](examples/FIR_design.html) , [FIR_design.pdf](examples/FIR_design.pdf).
 

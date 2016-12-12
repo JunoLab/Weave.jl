@@ -29,14 +29,23 @@ function detect_outformat(outfile::String)
   return "noweb"
 end
 
-"""Convert Weave documents between different formats"""
+"""
+`convert_doc(infile::AbstractString, outfile::AbstractString; format = nothing)`
+
+Convert Weave documents between different formats
+
+* `infile` = Name of the input document
+* `outfile` = Name of the output document
+* `format` = Output format (optional). Detected from outfile extension, but can
+  be set to `"script"`, `"markdown"`, `"notebook"` or `"noweb"`.
+"""
 function convert_doc(infile::AbstractString, outfile::AbstractString; format = nothing)
   doc = read_doc(infile)
 
   if format == nothing
     format = detect_outformat(outfile)
   end
-  
+
   converted = convert_doc(doc, output_formats[format])
 
   open(outfile, "w") do f

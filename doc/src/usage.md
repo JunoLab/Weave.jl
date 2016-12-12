@@ -78,18 +78,16 @@ list_out_formats()
 ## Document syntax
 
 Weave uses noweb, markdown or script syntax for defining the code chunks and
-documentation chunks. The format is detected based on the file extension, but
-you can also set it manually using the `informat` parameter.
+documentation chunks. You can also weave Jupyter notebooks. The format is detected based on the file extension, but you can also set it manually using the `informat` parameter.
 
 The rules for autodetection are:
 
 ```
 ext == ".jl" && return "script"
 ext == ".jmd" && return "markdown"
+ext == ".ipynb" && return "notebook"
 return "noweb"
 ```
-
-
 
 ## Noweb
 
@@ -104,4 +102,4 @@ Are the rest of the document (between `@` and `<<>>=` lines and the first chunk 
 
 ## Markdown
 
-Markdown code chunks are defined using fenced code blocks. [See sample document:](https://github.com/mpastell/Weave.jl/blob/master/examples/gadfly_sample.jmd)
+Markdown code chunks are defined using fenced code blocks. [See sample document:](https://github.com/mpastell/Weave.jl/blob/master/examples/gadfly_md_sample.jmd)
