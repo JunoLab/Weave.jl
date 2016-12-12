@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     
       
-        <title>Chunk options - Weave.jl - Scientific Reports Using Julia</title>
+        <title>Working with Jupyter notebooks - Weave.jl - Scientific Reports Using Julia</title>
       
       
       
@@ -96,7 +96,7 @@
             
           </span>
         
-        Chunk options
+        Working with Jupyter notebooks
       </div>
     </div>
     
@@ -202,8 +202,17 @@
           
             
   <li>
-    <a class="current" title="Chunk options" href="./">
+    <a class="" title="Chunk options" href="../chunk_options/">
       Chunk options
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
+    <a class="current" title="Working with Jupyter notebooks" href="./">
+      Working with Jupyter notebooks
     </a>
     
       
@@ -213,34 +222,19 @@
         <ul>
           
             <li class="anchor">
-              <a title="Options for code" href="#options-for-code">
-                Options for code
+              <a title="Weaving" href="#weaving">
+                Weaving
               </a>
             </li>
           
             <li class="anchor">
-              <a title="Options for figures" href="#options-for-figures">
-                Options for figures
-              </a>
-            </li>
-          
-            <li class="anchor">
-              <a title="Set default chunk options" href="#set-default-chunk-options">
-                Set default chunk options
+              <a title="Converting between formats" href="#converting-between-formats">
+                Converting between formats
               </a>
             </li>
           
         </ul>
       
-    
-  </li>
-
-          
-            
-  <li>
-    <a class="" title="Working with Jupyter notebooks" href="../notebooks/">
-      Working with Jupyter notebooks
-    </a>
     
   </li>
 
@@ -264,61 +258,35 @@
       <article class="article">
         <div class="wrapper">
           
-          <p><a id='Chunk-options-1'></a></p>
-<h1 id="chunk-options">Chunk options</h1>
-<p>I've mostly followed <a href="http://yihui.name/knitr/options">Knitr</a>'s naming for chunk options, but not all options are implemented.</p>
-<p>Options are separated using ";" and need to be valid Julia expressions. Example: A code chunk that saves and displays a 12 cm wide image and hides the source code:</p>
-<pre><code class="julia">&lt;&lt;fig_width=5; echo=false &gt;&gt;=
-using Gadfly
-x = linspace(0, 2π, 200)
-plot(x=x, y = sin(x), Geom.line)
-@
+          <p><a id='Working-with-Jupyter-notebooks-1'></a></p>
+<h1 id="working-with-jupyter-notebooks">Working with Jupyter notebooks</h1>
+<p><a id='Weaving-1'></a></p>
+<h2 id="weaving">Weaving</h2>
+<p>Weave supports using Jupyter notebooks as input format, this means you can weave notebooks to any supported formats. You can't use chunk options with notebooks.</p>
+<pre><code>weave(&quot;notebook.ipynb&quot;)
 </code></pre>
 
-<p>Weave currently supports the following chunk options with the following defaults:</p>
-<p><a id='Options-for-code-1'></a></p>
-<h2 id="options-for-code">Options for code</h2>
-<ul>
-<li><code>echo = true</code>. Echo the code in the output document. If <code>false</code> the source code will be hidden.</li>
-<li><code>results = "markup"</code>. The output format of the printed results. "markup" for literal block, "hidden" for hidden results or anything else for raw output (I tend to use ‘tex’ for Latex and ‘rst’ for rest. Raw output is useful if you wan’t to e.g. create tables from code chunks.</li>
-<li><code>eval = true</code>. Evaluate the code chunk. If false the chunk won’t be executed.</li>
-<li><code>term=false</code>. If true the output emulates a REPL session. Otherwise only stdout and figures will be included in output.</li>
-<li><code>label</code>. Chunk label, will be used for figure labels in Latex as fig:label</li>
-<li><code>wrap = true</code>. Wrap long lines from output.</li>
-<li><code>line_width = 75</code>. Line width for wrapped lines.</li>
-<li><code>cache = false</code>. Cache results, depends on <code>cache</code> parameter on <code>weave</code> function.</li>
-<li><code>hold = false</code>. Hold all results until the end of the chunk.</li>
-<li><code>tangle = true</code>. Set tangle to false to exclude chunk from tangled code.</li>
-</ul>
-<p><a id='Options-for-figures-1'></a></p>
-<h2 id="options-for-figures">Options for figures</h2>
-<ul>
-<li><code>fig_width</code>. Figure width defined in markup, default depends on the output format.</li>
-<li><code>out_width</code>. Width of saved figure.</li>
-<li><code>out_height</code>. Height of saved figure.</li>
-<li><code>dpi</code>=96. Resolution of saved figures.</li>
-<li><code>fig_cap</code>. Figure caption.</li>
-<li><code>label</code>. Chunk label, will be used for figure labels in Latex as fig:label</li>
-<li><code>fig_ext</code>. File extension (format) of saved figures.</li>
-<li><code>fig_pos="htpb"</code>. Figure position in Latex.</li>
-<li><code>fig_env="figure"</code>. Figure environment in Latex.</li>
-</ul>
-<p><a id='Set-default-chunk-options-1'></a></p>
-<h2 id="set-default-chunk-options">Set default chunk options</h2>
-<p>You can set or alter the default chunk options for a document either before running weave or inside the weaved document. You can e.g. use a hidden chunk in the beginning of the source document to set the options:</p>
-<pre><code>&lt;&lt;echo = false&gt;&gt;=
-import Weave
-Weave.set_chunk_defaults(Dict{Symbol, Any}(
-      :out_width =&gt; &quot;\\0.5linewidth&quot;,
-      :results =&gt; &quot;tex&quot;
-      ))
-@
+<p>In order to output notebooks from other formats you need to convert the document to a notebook and run the code using IJulia.</p>
+<p><a id='Converting-between-formats-1'></a></p>
+<h2 id="converting-between-formats">Converting between formats</h2>
+<p>You can convert between all supported input formats using the <code>convert_doc</code> function.</p>
+<p>To convert from script to notebook:</p>
+<pre><code>convert_doc(&quot;examples/FIR_design.jl&quot;, &quot;FIR_design.ipynb&quot;)
 </code></pre>
 
-<pre><code>set_chunk_defaults(opts)
-get_chunk_defaults()
-restore_chunk_defaults()
+<p>and from notebooks to markdown use:</p>
+<pre><code>convert_doc(&quot;FIR_design.ipynb&quot;, &quot;FIR_design.jmd&quot;)
 </code></pre>
+
+<p><a id='Weave.convert_doc-Tuple{String,String}' href='#Weave.convert_doc-Tuple{String,String}'>#</a>
+<strong><code>Weave.convert_doc</code></strong> &mdash; <em>Method</em>.</p>
+<p><code>convert_doc(infile::AbstractString, outfile::AbstractString; format = nothing)</code></p>
+<p>Convert Weave documents between different formats</p>
+<ul>
+<li><code>infile</code> = Name of the input document</li>
+<li><code>outfile</code> = Name of the output document</li>
+<li><code>format</code> = Output format (optional). Detected from outfile extension, but can be set to <code>"script"</code>, <code>"markdown"</code>, <code>"notebook"</code> or <code>"noweb"</code>.</li>
+</ul>
           <aside class="copyright" role="note">
             
               Matti Pastell 2016 &ndash;
@@ -337,7 +305,7 @@ restore_chunk_defaults()
   <nav class="pagination" aria-label="Footer">
     <div class="previous">
       
-        <a href="../publish/" title="Publishing scripts">
+        <a href="../chunk_options/" title="Chunk options">
           <span class="direction">
             Previous
           </span>
@@ -347,7 +315,7 @@ restore_chunk_defaults()
             </div>
             <div class="stretch">
               <div class="title">
-                Publishing scripts
+                Chunk options
               </div>
             </div>
           </div>
@@ -356,14 +324,14 @@ restore_chunk_defaults()
     </div>
     <div class="next">
       
-        <a href="../notebooks/" title="Working with Jupyter notebooks">
+        <a href="../function_index/" title="Function index">
           <span class="direction">
             Next
           </span>
           <div class="page">
             <div class="stretch">
               <div class="title">
-                Working with Jupyter notebooks
+                Function index
               </div>
             </div>
             <div class="button button-next" role="button" aria-label="Next">

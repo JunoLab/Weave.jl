@@ -25,8 +25,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     
-    <link rel="shortcut icon" type="image/x-icon" href="../None">
-    <link rel="icon" type="image/x-icon" href="../None">
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/images/favicon-e565ddfa3b.ico">
+    <link rel="icon" type="image/x-icon" href="../assets/images/favicon-e565ddfa3b.ico">
     <style>
       @font-face {
       	font-family: 'Icon';
@@ -43,7 +43,7 @@
       	font-style: normal;
       }
     </style>
-    <link rel="stylesheet" href="../assets/stylesheets/application-54f87043f3.css">
+    <link rel="stylesheet" href="../assets/stylesheets/application-a422ff04cc.css">
     
       <link rel="stylesheet" href="../assets/stylesheets/palettes-05ab2406df.css">
     
@@ -51,7 +51,7 @@
       
       
       
-      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu+Mono">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu+Mono">
       <style>
         body, input {
           font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
@@ -262,6 +262,15 @@
           
             
   <li>
+    <a class="" title="Working with Jupyter notebooks" href="../notebooks/">
+      Working with Jupyter notebooks
+    </a>
+    
+  </li>
+
+          
+            
+  <li>
     <a class="" title="Function index" href="../function_index/">
       Function index
     </a>
@@ -295,18 +304,17 @@ weave(Pkg.dir(&quot;Weave&quot;,&quot;examples&quot;,&quot;gadfly_sample.mdw&quo
 
 <p><a id='Weave.weave-Tuple{Any}' href='#Weave.weave-Tuple{Any}'>#</a>
 <strong><code>Weave.weave</code></strong> &mdash; <em>Method</em>.</p>
-<hr />
 <p><code>function weave(source ; doctype = :auto, plotlib="Gadfly",         informat=:auto, out_path=:doc, fig_path = "figures", fig_ext = nothing,         cache_path = "cache", cache=:off)</code></p>
 <p>Weave an input document to output file.</p>
 <ul>
-<li><code>doctype</code>: :auto = set based on file extension or specify one of the supported formats.   See <code>list_out_formats()</code></li>
+<li><code>doctype</code>: :auto = set based on file extension or specify one of the supported formats. See <code>list_out_formats()</code></li>
 <li><code>plotlib</code>: <code>"PyPlot"</code>, <code>"Gadfly"</code> or <code>nothing</code></li>
 <li><code>informat</code>: :auto = set based on file extension or set to  <code>"noweb"</code>, <code>"markdown"</code> or  <code>script</code></li>
 <li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>: Julia working directory, <code>"somepath"</code>: output directory as a String e.g <code>"/home/mpastell/weaveout"</code> or filename as string e.g. ~/outpath/outfile.tex.</li>
 <li><code>fig_path</code>: where figures will be generated, relative to out_path</li>
 <li><code>fig_ext</code>: Extension for saved figures e.g. <code>".pdf"</code>, <code>".png"</code>. Default setting depends on <code>doctype</code>.</li>
 <li><code>cache_path</code>: where of cached output will be saved.</li>
-<li><code>cache</code>: controls caching of code: <code>:off</code> = no caching, <code>:all</code> = cache everything,   <code>:user</code> = cache based on chunk options, <code>:refresh</code>, run all code chunks and save new cache.</li>
+<li><code>cache</code>: controls caching of code: <code>:off</code> = no caching, <code>:all</code> = cache everything, <code>:user</code> = cache based on chunk options, <code>:refresh</code>, run all code chunks and save new cache.</li>
 </ul>
 <p><strong>Note:</strong> Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.</p>
 <p><a id='Weave-from-shell-1'></a></p>
@@ -323,13 +331,13 @@ usage: weave.jl [--doctype DOCTYPE] [--plotlib PLOTLIB]
 <p>Tangling extracts the code from document:</p>
 <p><a id='Weave.tangle-Tuple{Any}' href='#Weave.tangle-Tuple{Any}'>#</a>
 <strong><code>Weave.tangle</code></strong> &mdash; <em>Method</em>.</p>
-<hr />
 <p><code>tangle(source ; out_path=:doc, informat="noweb")</code></p>
 <p>Tangle source code from input document to .jl file.</p>
 <ul>
 <li><code>informat</code>: <code>"noweb"</code> of <code>"markdown"</code></li>
-<li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>: Julia working directory,  <code>"somepath"</code>, directory name as a string e.g <code>"/home/mpastell/weaveout"</code> or filename as string e.g. ~/outpath/outfile.jl.</li>
+<li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>: Julia working directory,  <code>"somepath"</code>, directory name as a string e.g <code>"/home/mpastell/weaveout"</code></li>
 </ul>
+<p>or filename as string e.g. ~/outpath/outfile.jl.</p>
 <p><a id='Supported-formats-1'></a></p>
 <h2 id="supported-formats">Supported formats</h2>
 <p>Weave sets the output format based on the file extension, but you can also set it using <code>doctype</code> option. The rules for detecting the format are:</p>
@@ -355,15 +363,15 @@ tex: Latex with custom code environments
 
 <p><a id='Weave.list_out_formats-Tuple{}' href='#Weave.list_out_formats-Tuple{}'>#</a>
 <strong><code>Weave.list_out_formats</code></strong> &mdash; <em>Method</em>.</p>
-<hr />
 <p><code>list_out_formats()</code></p>
 <p>List supported output formats</p>
 <p><a id='Document-syntax-1'></a></p>
 <h2 id="document-syntax">Document syntax</h2>
-<p>Weave uses noweb, markdown or script syntax for defining the code chunks and documentation chunks. The format is detected based on the file extension, but you can also set it manually using the <code>informat</code> parameter.</p>
+<p>Weave uses noweb, markdown or script syntax for defining the code chunks and documentation chunks. You can also weave Jupyter notebooks. The format is detected based on the file extension, but you can also set it manually using the <code>informat</code> parameter.</p>
 <p>The rules for autodetection are:</p>
 <pre><code>ext == &quot;.jl&quot; &amp;&amp; return &quot;script&quot;
 ext == &quot;.jmd&quot; &amp;&amp; return &quot;markdown&quot;
+ext == &quot;.ipynb&quot; &amp;&amp; return &quot;notebook&quot;
 return &quot;noweb&quot;
 </code></pre>
 
@@ -378,7 +386,7 @@ return &quot;noweb&quot;
 <p><a href="https://github.com/mpastell/Weave.jl/blob/master/examples/julia_sample.mdw">Sample document</a></p>
 <p><a id='Markdown-1'></a></p>
 <h2 id="markdown">Markdown</h2>
-<p>Markdown code chunks are defined using fenced code blocks. <a href="https://github.com/mpastell/Weave.jl/blob/master/examples/gadfly_sample.jmd">See sample document:</a></p>
+<p>Markdown code chunks are defined using fenced code blocks. <a href="https://github.com/mpastell/Weave.jl/blob/master/examples/gadfly_md_sample.jmd">See sample document:</a></p>
           <aside class="copyright" role="note">
             
               Matti Pastell 2016 &ndash;
