@@ -1,0 +1,179 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "source": [
+        ""
+      ],
+      "metadata": {}
+    },
+    {
+      "outputs": [],
+      "cell_type": "code",
+      "source": [
+        "y= [2, 5, 12]"
+      ],
+      "metadata": {},
+      "execution_count": null
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        ""
+      ],
+      "metadata": {}
+    },
+    {
+      "outputs": [],
+      "cell_type": "code",
+      "source": [
+        "x = [12, 10]\nprintln(y)\nprintln(x)"
+      ],
+      "metadata": {},
+      "execution_count": null
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        ""
+      ],
+      "metadata": {}
+    },
+    {
+      "outputs": [],
+      "cell_type": "code",
+      "source": [
+        "println(\"Results without code\")\nprintln(x)"
+      ],
+      "metadata": {},
+      "execution_count": null
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        ""
+      ],
+      "metadata": {}
+    },
+    {
+      "outputs": [],
+      "cell_type": "code",
+      "source": [
+        "y = randn(5)\nprintln(\"Don't eval, but show code\")"
+      ],
+      "metadata": {},
+      "execution_count": null
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        ""
+      ],
+      "metadata": {}
+    },
+    {
+      "outputs": [],
+      "cell_type": "code",
+      "source": [
+        "y = 1:5\nprintln(y)"
+      ],
+      "metadata": {},
+      "execution_count": null
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        ""
+      ],
+      "metadata": {}
+    },
+    {
+      "outputs": [],
+      "cell_type": "code",
+      "source": [
+        "a = \"Don't print me\"\nprintln(a)"
+      ],
+      "metadata": {},
+      "execution_count": null
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        ""
+      ],
+      "metadata": {}
+    },
+    {
+      "outputs": [],
+      "cell_type": "code",
+      "source": [
+        "println(\"No markup for results.\")"
+      ],
+      "metadata": {},
+      "execution_count": null
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Test wrapping:"
+      ],
+      "metadata": {}
+    },
+    {
+      "outputs": [],
+      "cell_type": "code",
+      "source": [
+        "println(collect(0:10:1000))"
+      ],
+      "metadata": {},
+      "execution_count": null
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        ""
+      ],
+      "metadata": {}
+    },
+    {
+      "outputs": [],
+      "cell_type": "code",
+      "source": [
+        "println(collect(0:10:1000))"
+      ],
+      "metadata": {},
+      "execution_count": null
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        ""
+      ],
+      "metadata": {}
+    },
+    {
+      "outputs": [],
+      "cell_type": "code",
+      "source": [
+        "println(collect(0:10:1000))"
+      ],
+      "metadata": {},
+      "execution_count": null
+    }
+  ],
+  "nbformat_minor": 2,
+  "metadata": {
+    "language_info": {
+      "file_extension": ".jl",
+      "mimetype": "application/julia",
+      "name": "julia",
+      "version": "0.5.0"
+    },
+    "kernelspec": {
+      "name": "julia-0.5",
+      "display_name": "Julia 0.5.0",
+      "language": "julia"
+    }
+  },
+  "nbformat": 4
+}

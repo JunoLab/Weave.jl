@@ -51,6 +51,8 @@ function convert_doc(infile::AbstractString, outfile::AbstractString; format = n
   open(outfile, "w") do f
     write(f, converted)
   end
+
+  return nothing
 end
 
 """Convert Weave document to Jupyter notebook format"""
