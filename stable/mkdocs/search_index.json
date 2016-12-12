@@ -2,13 +2,13 @@
     "docs": [
         {
             "location": "/",
-            "text": "Intro\n\n\nThis is the documentation of \nWeave.jl\n. Weave is a scientific report generator/literate programming tool for Julia. It resembles \nPweave\n, Knitr, rmarkdown and Sweave.\n\n\nCurrent features\n\n\n\n\nNoweb, markdown or script syntax for input documents.\n\n\nExecute code as terminal or \"script\" chunks.\n\n\nCapture Plots, Gadfly, PyPlot and Winston figures.\n\n\nSupports LaTex, Pandoc, Github markdown, MultiMarkdown, Asciidoc and reStructuredText output\n\n\nPublish markdown directly to html and pdf using Pandoc.\n\n\nSimple caching of results\n\n\nConvert to and from IJulia notebooks\n\n\n\n\n\n\n\n\nContents\n\n\n\n\nGetting started\n\n\nUsing Weave\n\n\nWeave\n\n\nWeave from shell\n\n\nTangle\n\n\nSupported formats\n\n\nDocument syntax\n\n\nNoweb\n\n\nMarkdown\n\n\n\n\n\n\nPublishing scripts\n\n\nOther mark ups with scripts\n\n\n\n\n\n\nChunk options\n\n\nOptions for code\n\n\nOptions for figures\n\n\nSet default chunk options\n\n\n\n\n\n\nWorking with Jupyter notebooks\n\n\nWeaving\n\n\nConverting between formats\n\n\n\n\n\n\nFunction index",
+            "text": "Weave.jl - Scientific Reports Using Julia\n\n\nThis is the documentation of \nWeave.jl\n. Weave is a scientific report generator/literate programming tool for Julia. It resembles \nPweave\n, Knitr, rmarkdown and Sweave.\n\n\nCurrent features\n\n\n\n\nNoweb, markdown or script syntax for input documents.\n\n\nExecute code as terminal or \"script\" chunks.\n\n\nCapture Plots, Gadfly, PyPlot and Winston figures.\n\n\nSupports LaTex, Pandoc, Github markdown, MultiMarkdown, Asciidoc and reStructuredText output\n\n\nPublish markdown directly to html and pdf using Pandoc.\n\n\nSimple caching of results\n\n\nConvert to and from IJulia notebooks\n\n\n\n\n\n\n\n\nContents\n\n\n\n\nGetting started\n\n\nUsing Weave\n\n\nWeave\n\n\nWeave from shell\n\n\nTangle\n\n\nSupported formats\n\n\nDocument syntax\n\n\nNoweb\n\n\nMarkdown\n\n\n\n\n\n\nPublishing scripts\n\n\nOther mark ups with scripts\n\n\n\n\n\n\nChunk options\n\n\nOptions for code\n\n\nOptions for figures\n\n\nSet default chunk options\n\n\n\n\n\n\nWorking with Jupyter notebooks\n\n\nWeaving\n\n\nConverting between formats\n\n\n\n\n\n\nFunction index",
             "title": "Home"
         },
         {
-            "location": "/#intro",
+            "location": "/#weavejl-scientific-reports-using-julia",
             "text": "This is the documentation of  Weave.jl . Weave is a scientific report generator/literate programming tool for Julia. It resembles  Pweave , Knitr, rmarkdown and Sweave.  Current features   Noweb, markdown or script syntax for input documents.  Execute code as terminal or \"script\" chunks.  Capture Plots, Gadfly, PyPlot and Winston figures.  Supports LaTex, Pandoc, Github markdown, MultiMarkdown, Asciidoc and reStructuredText output  Publish markdown directly to html and pdf using Pandoc.  Simple caching of results  Convert to and from IJulia notebooks",
-            "title": "Intro"
+            "title": "Weave.jl - Scientific Reports Using Julia"
         },
         {
             "location": "/#contents",

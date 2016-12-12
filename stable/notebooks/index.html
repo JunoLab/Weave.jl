@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     
       
-        <title>Working with Jupyter notebooks - Weave.jl - Scientific Reports Using Julia</title>
+        <title>Working with Jupyter notebooks - Weave.jl</title>
       
       
       
@@ -18,9 +18,9 @@
       
     
     <meta property="og:url" content="None">
-    <meta property="og:title" content="Weave.jl - Scientific Reports Using Julia">
+    <meta property="og:title" content="Weave.jl">
     <meta property="og:image" content="None/../">
-    <meta name="apple-mobile-web-app-title" content="Weave.jl - Scientific Reports Using Julia">
+    <meta name="apple-mobile-web-app-title" content="Weave.jl">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
@@ -98,6 +98,11 @@
       </div>
     </div>
     
+      
+      <div class="button button-twitter" role="button" aria-label="Twitter">
+        <a href="https://twitter.com/mpastell" title="@mpastell on Twitter" target="_blank" class="toggle-button icon icon-twitter"></a>
+      </div>
+    
     
     <div class="button button-search" role="button" aria-label="Search">
       <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
@@ -128,9 +133,9 @@
       
       <div class="name">
         <strong>
-          Weave.jl - Scientific Reports Using Julia
+          Weave.jl
           <span class="version">
-            
+            v0.2.2
           </span>
         </strong>
         
@@ -146,7 +151,7 @@
         <ul class="repo">
           <li class="repo-download">
             
-            <a href="https://github.com/mpastell/Weave.jl/archive/master.zip" target="_blank" title="Download" data-action="download">
+            <a href="https://github.com/mpastell/Weave.jl/archive/v0.2.2.zip" target="_blank" title="Download" data-action="download">
               <i class="icon icon-download"></i> Download
             </a>
           </li>
@@ -247,6 +252,20 @@
 
           
         </ul>
+        
+          <hr>
+          <span class="section">The author</span>
+          <ul>
+            
+              
+              <li>
+                <a href="https://twitter.com/mpastell" target="_blank" title="@mpastell on Twitter">
+                  @mpastell on Twitter
+                </a>
+              </li>
+            
+            
+          </ul>
         
       </div>
     </div>
@@ -365,6 +384,38 @@
     
       <script src="../assets/mathjaxhelper.js"></script>
     
+    
+      <script>
+        (function(i,s,o,g,r,a,m){
+          i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||
+          []).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;
+          m.parentNode.insertBefore(a,m)
+        })(window, document,
+          'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        /* General initialization */
+        ga('create', 'UA-6474352-10', 'auto');
+        ga('set', 'anonymizeIp', true);
+        ga('send', 'pageview');
+        /* Track outbound links */
+        var buttons = document.querySelectorAll('a');
+        Array.prototype.map.call(buttons, function(item) {
+          if (item.host != document.location.host) {
+            item.addEventListener('click', function() {
+              var action = item.getAttribute('data-action') || 'follow';
+              ga('send', 'event', 'outbound', action, item.href);
+            });
+          }
+        });
+        /* Register handler to log search on blur */
+        var query = document.querySelector('.query');
+        query.addEventListener('blur', function() {
+          if (this.value) {
+            var path = document.location.pathname;
+            ga('send', 'pageview', path + '?q=' + this.value);
+          }
+        });
+      </script>
     
   </body>
 </html>
