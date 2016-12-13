@@ -45,12 +45,11 @@ function render_doc(formatted, format::JMarkdown2HTML)
   theme_css = readstring(joinpath(dirname(@__FILE__), "../templates/skeleton_css.txt"))
   template = Mustache.template_from_file(joinpath(dirname(@__FILE__), "../templates/julia_html.txt"))
 
-  return Mustache.render(template, theme_css = theme_css,
-                          highlight_css = css, body = formatted)
+  return Mustache.render(template, themecss = theme_css,
+                          highlightcss = css, body = formatted)
 end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat)
-    #info(typeof(docformat))
     return chunk.content
 end
 
@@ -88,7 +87,7 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
     end
 
     if chunk.options[:term]
-        result = format_termchunk(chunk, formatdict)
+        result = format_termchunk(chunk, formatdict, docformat)
     else
 
     if chunk.options[:echo]
@@ -153,11 +152,22 @@ function format_code(result::AbstractString, docformat::JMarkdown2HTML)
   return highlighted
 end
 
-
-function format_termchunk(chunk, formatdict)
+function format_termchunk(chunk, formatdict, docformat)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"
         result = "$(formatdict[:termstart])$(chunk.output)\n" * "$(formatdict[:termend])\n"
-        #chunk.options[:term_state] == :text && (result*= "$(formatdict[:termend])\n")
+    else
+        result = ""
+    end
+    return result
+end
+
+function format_termchunk(chunk, formatdict, docformat::JMarkdown2HTML)
+    if chunk.options[:echo] && chunk.options[:results] != "hidden"
+        buf = PipeBuffer()
+        Highlights.highlight(buf, MIME("text/html"), strip(chunk.output), Highlights.Lexers.JuliaConsoleLexer)
+        flush(buf)
+        result = readstring(buf)
+        close(buf)
     else
         result = ""
     end

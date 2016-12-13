@@ -70,7 +70,6 @@ function weave(source ; doctype = :auto, plotlib=:auto,
     doc = run(doc, doctype = doctype, plotlib=plotlib,
             out_path=out_path,
             fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache)
-
     formatted = format(doc)
 
     outname = get_outname(out_path, doc)
@@ -80,7 +79,7 @@ function weave(source ; doctype = :auto, plotlib=:auto,
     end
 
     #Convert using pandoc
-    if doc.doctype == "md2html"
+    if doc.doctype == "pandoc2html"
         outname = get_outname(out_path, doc, ext = "html")
         pandoc2html(formatted, doc, outname)
     elseif doc.doctype == "md2pdf"

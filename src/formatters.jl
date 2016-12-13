@@ -57,7 +57,7 @@ const pandoc = Pandoc("Pandoc markdown",
                                                ))
 
 
-const md2html = Pandoc("Markdown to HTML (requires Pandoc)",
+const pdoc2html = Pandoc("Markdown to HTML (requires Pandoc)",
                       Dict{Symbol,Any}(
                               :codestart => "````julia",
                               :codeend=> "````\n\n",
@@ -105,19 +105,62 @@ type JMarkdown2HTML
  formatdict::Dict{Symbol,Any}
 end
 
-const jmd2html = JMarkdown2HTML("Julia markdown", Dict{Symbol,Any}(
+const md2html = JMarkdown2HTML("Julia markdown", Dict{Symbol,Any}(
         :codestart => "\n",
         :codeend=> "\n",
         :outputstart=> "<pre class=\"hljl\">",
         :outputend=> "</pre>\n",
         :fig_ext=> ".png",
         :extension=> "html",
-        :doctype=> "html"))
+        :doctype=> "md2html"))
 
 type MultiMarkdown
   description::AbstractString
   formatdict::Dict{Symbol,Any}
 end
+
+function formatfigures(chunk, docformat::JMarkdown2HTML)
+    fignames = chunk.figures
+    caption = chunk.options[:fig_cap]
+    width = chunk.options[:out_width]
+    height = chunk.options[:out_height]
+    f_pos = chunk.options[:fig_pos]
+    f_env = chunk.options[:fig_env]
+    result = ""
+    figstring = ""
+
+    #Set size
+    attribs = ""
+    width == nothing || (attribs = "width=\"$width\"")
+    (attribs != "" && height != nothing ) && (attribs *= ",")
+    height == nothing  || (attribs *= " height=\"$height\" ")
+
+    if f_env != nothing
+        result *= """<figure>\n"""
+    end
+
+    for fig = fignames
+      figstring *= """<img src="$fig" $attribs />\n"""
+    end
+
+    result *= figstring
+
+    if caption != nothing
+        result *= """
+          <figcaption>$caption</figcaption>
+          """
+    end
+
+    if f_env != nothing
+        result *= "</figure>\n"
+    end
+
+   return result
+end
+
+
+
+
 
 const multimarkdown = MultiMarkdown("MultiMarkdown",
                         Dict{Symbol,Any}(
@@ -356,11 +399,11 @@ end
 const formats = Dict{AbstractString, Any}("tex" => tex,
                                           "texminted" => texminted,
                                           "pandoc" => pandoc,
-                                          "md2html" => md2html,
+                                          "pandoc2html" => pdoc2html,
                                           "md2pdf" => md2pdf,
                                           "github" => github,
                                           "multimarkdown" => multimarkdown,
                                           "rst" => rst,
                                           "asciidoc" => adoc,
-                                          "jmd2html" => jmd2html
+                                          "md2html" => md2html
                                           )
