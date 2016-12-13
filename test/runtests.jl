@@ -6,6 +6,7 @@ using Base.Test
 #run(`julia --code-coverage=user -e 'include("winston_formats.jl")'`)
 #run(`julia --code-coverage=user -e 'include("pyplot_formats.jl")'`)
 
+
 info("Test: Chunk options")
 include("chunk_options.jl")
 
@@ -18,19 +19,20 @@ include("cache_test.jl")
 info("Testing rich output")
 include("rich_output.jl")
 
-info("Test: Chunk options with Gadfly")
-include("chunk_opts_gadfly.jl")
+if VERSION < v"0.6-"
+  info("Test: Chunk options with Gadfly")
+  include("chunk_opts_gadfly.jl")
 
-info("Test: Weaving with Gadfly")
-include("gadfly_formats.jl")
+  info("Test: Weaving with Gadfly")
+  include("gadfly_formats.jl")
+
+  info("Test: Weaving with PyPlot")
+  include("pyplot_formats.jl")
+
+  info("Test: Weaving with Plots.jl")
+  include("plotsjl_test.jl")
+end
 
 #Fails on travis, works locally.
 #info("Test: Weaving with Winston")#
 #include("winston_formats.jl")
-
-# Output changed, needs fixing for 0.5
-info("Test: Weaving with PyPlot")
-include("pyplot_formats.jl")
-
-info("Test: Weaving with Plots.jl")
-include("plotsjl_test.jl")
