@@ -70,9 +70,8 @@ function weave(source ; doctype = :auto, plotlib=:auto,
     doc = run(doc, doctype = doctype, plotlib=plotlib,
             out_path=out_path,
             fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache)
-    formatted = format(doc)
 
-    formatted = join(formatted, "\n")
+    formatted = format(doc)
 
     outname = get_outname(out_path, doc)
 
@@ -116,6 +115,7 @@ include("readers.jl")
 include("run.jl")
 include("cache.jl")
 include("formatters.jl")
+include("format.jl")
 include("pandoc.jl")
 include("writers.jl")
 

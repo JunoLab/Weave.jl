@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<HTML lang = "en">
+<HEAD>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+  <style type="text/css">
+  {{{ :theme_css }}}
+  {{{ :highlight_css }}}
+  </style>
+</HEAD>
+  <BODY>
+    <div class ="container">
+      <div class = "row">
+        <div class = "col-md-12 twelve columns">
+          {{{ :body }}}
+        </div>
+      </div>
+    </div>
+  </BODY>
+</HTML>
