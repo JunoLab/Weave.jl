@@ -1,4 +1,4 @@
-import Mustache, Highlights
+import Mustache, Highlights, Documenter
 
 function format(doc::WeaveDoc)
     formatted = AbstractString[]
@@ -61,7 +61,8 @@ end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
     m = Base.Markdown.parse(chunk.content)
-    return Base.Markdown.html(m)
+    #Base.Markdown.html(m)
+    return string(Documenter.Writers.HTMLWriter.mdconvert(m))
 end
 
 
