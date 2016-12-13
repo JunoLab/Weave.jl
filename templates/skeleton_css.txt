@@ -416,12 +416,9 @@ label > .label-body {
   margin-left: .5rem;
   font-weight: normal; }
 ul {
-  list-style: circle inside; }
+  list-style: circle; }
 ol {
-  list-style: decimal inside; }
-ol, ul {
-  padding-left: 0;
-  margin-top: 0; }
+  list-style: decimal; }
 ul ul,
 ul ol,
 ol ol,
@@ -522,14 +519,6 @@ code {
   background-color: #ffffff;
   border-radius: 4px;
 }
-
-code.sourceCode.julia {
-  padding: 2px 4px;
-  font-size: 90%;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-}
-
 
 @media (min-width: 400px) {}
 @media (min-width: 550px) {}
