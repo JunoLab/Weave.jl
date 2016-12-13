@@ -10,3 +10,5 @@ end
 
 pljtest("plotsjl_test.jmd", "plotsjl_test.md", "pandoc")
 pljtest("plotsjl_test.jmd", "plotsjl_test.tex", "tex")
+
+pljtest("plotsjl_test_gr.jmd", "plotsjl_test_gr.md", "pandoc")

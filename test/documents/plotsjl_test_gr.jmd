@@ -1,0 +1,29 @@
+
+
+```julia
+using Plots
+gr()
+x = linspace(0, 2*pi)
+println(x)
+p = plot(x, sin(x), size =(900,300))
+```
+
+
+```julia; term=true
+plot(x, sin(x))
+```
+
+```julia
+plot(rand(100) / 3,reg=true,fill=(0,:green))
+scatter!(rand(100),markersize=6,c=:orange)
+```
+
+```julia; term=true
+plot(rand(100) / 3,reg=true,fill=(0,:green))
+scatter!(rand(100),markersize=6,c=:orange)
+```
+
+
+```{julia;echo=false; fig_cap="A random walk."; label="random"}
+plot(cumsum(randn(1000, 1)))
+```
