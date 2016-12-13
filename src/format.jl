@@ -43,6 +43,7 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
   css = readstring(buf)
   close(buf)
 
+  title = get_title(doc)
   path, wsource = splitdir(abspath(doc.source))
   wversion = string(Pkg.installed("Weave"))
   wtime =  string(Date(now()))
@@ -52,7 +53,25 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
 
   return Mustache.render(template, themecss = theme_css,
                           highlightcss = css, body = formatted, header_script = doc.header_script,
-                          source = wsource, wtime = wtime, wversion = wversion)
+                          source = wsource, wtime = wtime, wversion = wversion,
+                          title = title)
+end
+
+function get_title(doc::WeaveDoc)
+
+  if isa(doc.chunks[1], CodeChunk)
+    return doc.source
+  end
+
+  m = Base.Markdown.parse(doc.chunks[1].content)
+
+  if isa(m.content[1], Base.Markdown.Header)
+      title = m.content[1].text[1]
+  else
+      title = doc.source
+  end
+
+  return title
 end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat)
