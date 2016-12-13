@@ -19,6 +19,9 @@ include("cache_test.jl")
 info("Testing rich output")
 include("rich_output.jl")
 
+info("Testing formatters")
+include("formatter_test.jl")
+
 if VERSION < v"0.6-"
   info("Test: Chunk options with Gadfly")
   include("chunk_opts_gadfly.jl")

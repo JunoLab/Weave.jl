@@ -58,11 +58,11 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
 end
 
 function get_title(doc::WeaveDoc)
-
   if isa(doc.chunks[1], CodeChunk)
     return doc.source
   end
 
+  isempty(doc.chunks[1].content) && return doc.source
   m = Base.Markdown.parse(doc.chunks[1].content)
 
   if isa(m.content[1], Base.Markdown.Header)
