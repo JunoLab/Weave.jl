@@ -18,6 +18,15 @@
 
           {{{ :body }}}
 
+
+          <HR/>
+          <div class="footer"><p>
+          Published from <a href="{{{:source}}}">{{{:source}}}</a> using
+          <a href="http://github.com/mpastell/Weave.jl">Weave.jl</a>
+          {{:wversion}} on {{:wtime}}.
+          <p></div>
+
+
         </div>
       </div>
     </div>

@@ -43,11 +43,16 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
   css = readstring(buf)
   close(buf)
 
+  path, wsource = splitdir(abspath(doc.source))
+  wversion = string(Pkg.installed("Weave"))
+  wtime =  string(Date(now()))
+
   theme_css = readstring(joinpath(dirname(@__FILE__), "../templates/skeleton_css.txt"))
   template = Mustache.template_from_file(joinpath(dirname(@__FILE__), "../templates/julia_html.txt"))
 
   return Mustache.render(template, themecss = theme_css,
-                          highlightcss = css, body = formatted, header_script = doc.header_script)
+                          highlightcss = css, body = formatted, header_script = doc.header_script,
+                          source = wsource, wtime = wtime, wversion = wversion)
 end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat)
