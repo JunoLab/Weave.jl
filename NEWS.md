@@ -1,6 +1,11 @@
 
 # Release notes for Weave.jl
 
+### v0.2.2
+
+* Add IJulia notebook as input format
+* Add `convert_doc` method to convert between input formats
+
 ### v0.2.1
 
 * Fix critical hanging on Windows using proper handling of redirect_stdout
