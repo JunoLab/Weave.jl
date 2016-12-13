@@ -1,0 +1,23 @@
+
+y= [2, 5, 12]
+
+x = [12, 10]
+println(y)
+println(x)
+
+println("Results without code")
+println(x)
+
+y = 1:5
+println(y)
+
+a = "Don't print me"
+println(a)
+
+println("No markup for results.")
+
+println(collect(0:10:1000))
+
+println(collect(0:10:1000))
+
+println(collect(0:10:1000))
