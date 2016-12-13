@@ -1,8 +1,8 @@
-% Intro to Weave.jl with Gadfly
-% Matti Pastell
-% 20th April 2016
+# Intro to Weave.jl with Gadfly
 
-# Introduction
+Matti Pastell, 13th December 2016
+
+## Introduction
 
 This a sample [Julia](http://julialang.org/) noweb document that can
 be executed using [Weave.jl](https://github.com/mpastell/Weave.jl).
@@ -31,7 +31,7 @@ weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), informat="markdown",
 *The documents will be written to the Julia working directory when you
 use the `out_path = :pwd`.*
 
-# Capturing code
+## Capturing code
 
 The basic code chunk will be run with default options and the code and
 output will be captured.
@@ -60,11 +60,11 @@ syntax from the source document):
 plot(y = cumsum(randn(1000, 1)), Geom.line)
 ```
 
-# Whats next
+## Whats next
 
 Read the documentation:
 
-  - stable: <http://mpastell.github.io/Weave.jl/stable/>
-  - latest: <http://mpastell.github.io/Weave.jl/latest/>
+  - stable: [http://mpastell.github.io/Weave.jl/stable/](http://mpastell.github.io/Weave.jl/stable/)
+  - latest: [http://mpastell.github.io/Weave.jl/latest/](http://mpastell.github.io/Weave.jl/latest/)
 
-See other examples in: <https://github.com/mpastell/Weave.jl/tree/master/examples>
+See other examples in the [Github repo](https://github.com/mpastell/Weave.jl/tree/master/examples)

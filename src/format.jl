@@ -13,6 +13,7 @@ function format(doc::WeaveDoc)
     get!(formatdict, :fig_pos, nothing)
     get!(formatdict, :fig_env, nothing)
 
+    docformat.formatdict[:cwd] = doc.cwd #pass wd to figure formatters
 
     for chunk in copy(doc.chunks)
         result = format_chunk(chunk, formatdict, docformat)
@@ -76,6 +77,8 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
         chunk.content = indent(chunk.content, formatdict[:indent])
     end
 
+    chunk.content = format_code(chunk.content, docformat)
+
     if !chunk.options[:eval]
         if chunk.options[:echo]
             result = "$(formatdict[:codestart])$(chunk.content)\n$(formatdict[:codeend])"
@@ -92,8 +95,7 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
 
     if chunk.options[:echo]
       #Convert to output format and highlight (html, tex...) if needed
-        formatted_code = format_code(chunk.content, docformat)
-        result = "$(formatdict[:codestart])$(formatted_code)\n$(formatdict[:codeend])\n"
+        result = "$(formatdict[:codestart])$(chunk.content)\n$(formatdict[:codeend])\n"
     else
         result = ""
     end
@@ -126,7 +128,6 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
             result *= formatfigures(chunk, docformat)
         end
     end
-
 
     return result
 end

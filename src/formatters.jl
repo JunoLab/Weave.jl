@@ -119,6 +119,19 @@ type MultiMarkdown
   formatdict::Dict{Symbol,Any}
 end
 
+function img_to_base64(fig, ext, cwd)
+  f = open(joinpath(cwd, fig), "r")
+    raw = read(f)
+  close(f)
+  if ext == ".png"
+    return "data:image/png;base64," * stringmime(MIME("image/png"), raw)
+  elseif ext == ".svg"
+    return "data:image/svg+xml;base64," * stringmime(MIME("image/svg+xml"), raw)
+  else
+    return(fig)
+  end
+end
+
 function formatfigures(chunk, docformat::JMarkdown2HTML)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
@@ -135,11 +148,16 @@ function formatfigures(chunk, docformat::JMarkdown2HTML)
     (attribs != "" && height != nothing ) && (attribs *= ",")
     height == nothing  || (attribs *= " height=\"$height\" ")
 
-    if f_env != nothing
+    if caption != nothing
         result *= """<figure>\n"""
     end
 
     for fig = fignames
+      ext = splitext(fig)[2]
+      if ext == ".png" || ext == ".svg"
+        fig = img_to_base64(fig, ext, docformat.formatdict[:cwd])
+      end
+
       figstring *= """<img src="$fig" $attribs />\n"""
     end
 
@@ -151,16 +169,12 @@ function formatfigures(chunk, docformat::JMarkdown2HTML)
           """
     end
 
-    if f_env != nothing
+    if caption != nothing
         result *= "</figure>\n"
     end
 
    return result
 end
-
-
-
-
 
 const multimarkdown = MultiMarkdown("MultiMarkdown",
                         Dict{Symbol,Any}(
@@ -320,7 +334,7 @@ end
 function formatfigures(chunk, docformat::MultiMarkdown)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
-    result = ""J
+    result = ""
     figstring = ""
 
     if chunk.options[:out_width] == nothing
