@@ -22,7 +22,7 @@ function format(doc::WeaveDoc)
 
     formatted = join(formatted, "\n")
     # Render using a template if needed
-    rendered = render_doc(formatted, doc.format)
+    rendered = render_doc(formatted, doc, doc.format)
 
     return rendered
 end
@@ -32,11 +32,11 @@ end
 
 Render formatted document to a template
 """
-function render_doc(formatted, format)
+function render_doc(formatted, doc::WeaveDoc, format)
   return formatted
 end
 
-function render_doc(formatted, format::JMarkdown2HTML)
+function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
   buf = PipeBuffer()
   Highlights.stylesheet(buf, MIME("text/css"))
   flush(buf)
@@ -47,7 +47,7 @@ function render_doc(formatted, format::JMarkdown2HTML)
   template = Mustache.template_from_file(joinpath(dirname(@__FILE__), "../templates/julia_html.txt"))
 
   return Mustache.render(template, themecss = theme_css,
-                          highlightcss = css, body = formatted)
+                          highlightcss = css, body = formatted, header_script = doc.header_script)
 end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat)

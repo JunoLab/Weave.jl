@@ -1,0 +1,14 @@
+
+<<>>=
+using Plots
+plotly()
+x = linspace(0, 2π, 2056)
+@
+
+<<>>=
+plot(sinc(x))
+@
+
+<<>>=
+plot(-sinc(x))
+@
