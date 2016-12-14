@@ -1,4 +1,4 @@
-import JSON
+import JSON, YAML
 
 pushopt(options::Dict,expr::Expr) = Base.Meta.isexpr(expr,:(=)) && (options[expr.args[1]] = expr.args[2])
 
@@ -48,7 +48,23 @@ function read_doc(source::AbstractString, format=:auto)
     format == :auto && (format = detect_informat(source))
     document = readstring(source)
     parsed = parse_doc(document, format)
-    doc = WeaveDoc(source, parsed)
+    header = parse_header(parsed[1])
+    doc = WeaveDoc(source, parsed, header)
+    return doc
+end
+
+function parse_header(chunk::CodeChunk)
+  return nothing
+end
+
+function parse_header(chunk::DocChunk)
+  m = match(r"^---$(?<header>.+)^---$"ms, chunk.content)
+  if m !== nothing
+    header = YAML.load(string(m[:header]))
+  else
+    header = nothing
+  end
+  return header
 end
 
 function parse_doc(document::AbstractString, format="noweb"::AbstractString)

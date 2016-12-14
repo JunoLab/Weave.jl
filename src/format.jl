@@ -15,6 +15,11 @@ function format(doc::WeaveDoc)
 
     docformat.formatdict[:cwd] = doc.cwd #pass wd to figure formatters
 
+    #strip header
+    if isa(doc.chunks[1], DocChunk)
+      doc.chunks[1] = strip_header(doc.chunks[1])
+    end
+
     for chunk in copy(doc.chunks)
         result = format_chunk(chunk, formatdict, docformat)
         push!(formatted, result)
@@ -92,6 +97,11 @@ function get_title(doc::WeaveDoc)
   return title
 end
 
+function strip_header(chunk::DocChunk)
+  chunk.content = lstrip(replace(chunk.content, r"^---$(?<header>.+)^---$"ms, ""))
+  return chunk
+end
+
 function format_chunk(chunk::DocChunk, formatdict, docformat)
     return chunk.content
 end
@@ -113,7 +123,6 @@ end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
     m = Base.Markdown.parse(chunk.content)
-    #TODO add space between paragraphs
     return Base.Markdown.latex(m)
 end
 
