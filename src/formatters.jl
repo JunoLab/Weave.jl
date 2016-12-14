@@ -105,7 +105,7 @@ type JMarkdown2HTML
  formatdict::Dict{Symbol,Any}
 end
 
-const md2html = JMarkdown2HTML("Julia markdown", Dict{Symbol,Any}(
+const md2html = JMarkdown2HTML("Julia markdown to html", Dict{Symbol,Any}(
         :codestart => "\n",
         :codeend=> "\n",
         :outputstart=> "<pre class=\"hljl\">",
@@ -113,6 +113,24 @@ const md2html = JMarkdown2HTML("Julia markdown", Dict{Symbol,Any}(
         :fig_ext=> ".png",
         :extension=> "html",
         :doctype=> "md2html"))
+
+#Julia markdown
+type JMarkdown2tex
+ description::AbstractString
+ formatdict::Dict{Symbol,Any}
+end
+
+const md2tex = JMarkdown2tex("Julia markdown to latex", Dict{Symbol,Any}(
+        :codestart => "",
+        :codeend=> "",
+        :outputstart=> "\\begin{lstlisting}",
+        :outputend=> "\\end{lstlisting}\n",
+        :fig_ext=> ".pdf",
+        :extension=> "tex",
+        :mimetypes => ["application/pdf", "image/png", "image/jpg",
+                       "text/latex", "text/plain"],
+        :doctype=> "md2tex"))
+
 
 type MultiMarkdown
   description::AbstractString
@@ -419,5 +437,6 @@ const formats = Dict{AbstractString, Any}("tex" => tex,
                                           "multimarkdown" => multimarkdown,
                                           "rst" => rst,
                                           "asciidoc" => adoc,
-                                          "md2html" => md2html
+                                          "md2html" => md2html,
+                                          "md2tex" => md2tex
                                           )

@@ -1,0 +1,13 @@
+\documentclass{article}[12pt]
+\usepackage[a4paper,text={16.5cm,25.2cm},centering]{geometry}
+
+\title{ {{{ :title }}} }
+
+{{{ :highlight }}}
+
+\begin{document}
+\maketitle
+
+{{{ :body }}}
+
+\end{document}

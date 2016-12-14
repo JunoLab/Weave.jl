@@ -36,13 +36,17 @@ function render_doc(formatted, doc::WeaveDoc, format)
   return formatted
 end
 
-function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
+function stylesheet(m::MIME)
   buf = PipeBuffer()
-  Highlights.stylesheet(buf, MIME("text/css"))
+  Highlights.stylesheet(buf, m)
   flush(buf)
-  css = readstring(buf)
+  style = readstring(buf)
   close(buf)
+  return style
+end
 
+function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
+  css = stylesheet(MIME("text/html"))
   title = get_title(doc)
   path, wsource = splitdir(abspath(doc.source))
   wversion = string(Pkg.installed("Weave"))
@@ -56,6 +60,20 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
                           source = wsource, wtime = wtime, wversion = wversion,
                           title = title)
 end
+
+function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2tex)
+  highlight = stylesheet(MIME("text/latex"))
+  title = get_title(doc)
+  path, wsource = splitdir(abspath(doc.source))
+  wversion = string(Pkg.installed("Weave"))
+  wtime =  string(Date(now()))
+  template = Mustache.template_from_file(joinpath(dirname(@__FILE__), "../templates/julia_tex.txt"))
+
+  return Mustache.render(template, body = formatted,
+    highlight = highlight,
+    title = title)
+end
+
 
 function get_title(doc::WeaveDoc)
   if isa(doc.chunks[1], CodeChunk)
@@ -84,6 +102,20 @@ function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
     return string(Documenter.Writers.HTMLWriter.mdconvert(m))
 end
 
+function Base.Markdown.latex(io::IO, md::Base.Markdown.Paragraph)
+    println(io)
+    for md in md.content
+        Base.Markdown.latexinline(io, md)
+    end
+    println(io)
+end
+
+
+function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
+    m = Base.Markdown.parse(chunk.content)
+    #TODO add space between paragraphs
+    return Base.Markdown.latex(m)
+end
 
 function format_chunk(chunk::CodeChunk, formatdict, docformat)
     #Fill undefined options with format specific defaults
@@ -167,6 +199,15 @@ end
 
 function format_code(result::AbstractString, docformat)
   return result
+end
+
+function format_code(result::AbstractString, docformat::JMarkdown2tex)
+  buf = PipeBuffer()
+  Highlights.highlight(buf, MIME("text/latex"), strip(result), Highlights.Lexers.JuliaLexer)
+  flush(buf)
+  highlighted = readstring(buf)
+  close(buf)
+  return highlighted
 end
 
 function format_code(result::AbstractString, docformat::JMarkdown2HTML)
