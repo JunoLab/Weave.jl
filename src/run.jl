@@ -274,7 +274,7 @@ end
 
 
 function init_plotting(plotlib)
-    srcdir = dirname(@__FILE__)
+    srcdir = escape_string(dirname(@__FILE__))
     rcParams[:plotlib_set] = true
     if plotlib == nothing
         rcParams[:plotlib] = nothing
