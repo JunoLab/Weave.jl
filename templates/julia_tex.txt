@@ -3,10 +3,19 @@
 
 \title{ {{{ :title }}} }
 
+{{#:author}}
+\author{ {{{ :author }}} }
+{{/:author}}
+
+{{#:date}}
+\date{ {{{ :date }}} }
+{{/:date}}
+
 {{{ :highlight }}}
 
 \begin{document}
-\maketitle
+
+{{#:title}}\maketitle{{/:title}}
 
 {{{ :body }}}
 

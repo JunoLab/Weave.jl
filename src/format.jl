@@ -52,7 +52,7 @@ end
 
 function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
   css = stylesheet(MIME("text/html"))
-  title = get_title(doc)
+  title, author, date = get_titleblock(doc)
   path, wsource = splitdir(abspath(doc.source))
   wversion = string(Pkg.installed("Weave"))
   wtime =  string(Date(now()))
@@ -63,12 +63,15 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
   return Mustache.render(template, themecss = theme_css,
                           highlightcss = css, body = formatted, header_script = doc.header_script,
                           source = wsource, wtime = wtime, wversion = wversion,
-                          title = title)
+                          title = title, author = author, date = date)
 end
 
 function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2tex)
   highlight = stylesheet(MIME("text/latex"))
-  title = get_title(doc)
+
+  title, author, date = get_titleblock(doc)
+
+
   path, wsource = splitdir(abspath(doc.source))
   wversion = string(Pkg.installed("Weave"))
   wtime =  string(Date(now()))
@@ -76,25 +79,14 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2tex)
 
   return Mustache.render(template, body = formatted,
     highlight = highlight,
-    title = title)
+    title = title, author = author, date = date)
 end
 
-
-function get_title(doc::WeaveDoc)
-  if isa(doc.chunks[1], CodeChunk)
-    return doc.source
-  end
-
-  isempty(doc.chunks[1].content) && return doc.source
-  m = Base.Markdown.parse(doc.chunks[1].content)
-
-  if isa(m.content[1], Base.Markdown.Header)
-      title = m.content[1].text[1]
-  else
-      title = doc.source
-  end
-
-  return title
+function get_titleblock(doc::WeaveDoc)
+  title = get!(doc.header, "title", false)
+  author =  get!(doc.header, "author", false)
+  date =  get!(doc.header, "date", false)
+  return title, author, date
 end
 
 function strip_header(chunk::DocChunk)

@@ -54,7 +54,7 @@ function read_doc(source::AbstractString, format=:auto)
 end
 
 function parse_header(chunk::CodeChunk)
-  return nothing
+  return Dict()
 end
 
 function parse_header(chunk::DocChunk)
@@ -62,7 +62,7 @@ function parse_header(chunk::DocChunk)
   if m !== nothing
     header = YAML.load(string(m[:header]))
   else
-    header = nothing
+    header = Dict()
   end
   return header
 end

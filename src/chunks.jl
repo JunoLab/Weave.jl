@@ -8,7 +8,7 @@ type WeaveDoc
     format
     doctype::AbstractString
     header_script::String
-    header
+    header::Dict
     function WeaveDoc(source, chunks, header)
         path, fname = splitdir(abspath(source))
         basename = splitext(fname)[1]
