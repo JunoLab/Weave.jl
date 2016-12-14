@@ -1,5 +1,4 @@
 
-
 \begin{juliacode}
 using DataFrames
 df = DataFrame(letters = 'a':'z', numbers = 1:26)
@@ -110,6 +109,7 @@ julia> df
 m = Base.Markdown.parse("**Some Markdown**")
 m
 \end{juliacode}
+
 
 \textbf{Some Markdown}
 
