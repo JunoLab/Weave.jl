@@ -90,7 +90,9 @@ function get_titleblock(doc::WeaveDoc)
 end
 
 function strip_header(chunk::DocChunk)
-  chunk.content = lstrip(replace(chunk.content, r"^---$(?<header>.+)^---$"ms, ""))
+  if ismatch(r"^---$(?<header>.+)^---$"ms, chunk.content)
+    chunk.content = lstrip(replace(chunk.content, r"^---$(?<header>.+)^---$"ms, ""))
+  end
   return chunk
 end
 
