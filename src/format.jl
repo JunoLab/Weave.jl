@@ -15,6 +15,11 @@ function format(doc::WeaveDoc)
 
     docformat.formatdict[:cwd] = doc.cwd #pass wd to figure formatters
 
+    #strip header
+    if isa(doc.chunks[1], DocChunk)
+      doc.chunks[1] = strip_header(doc.chunks[1])
+    end
+
     for chunk in copy(doc.chunks)
         result = format_chunk(chunk, formatdict, docformat)
         push!(formatted, result)
@@ -36,14 +41,18 @@ function render_doc(formatted, doc::WeaveDoc, format)
   return formatted
 end
 
-function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
+function stylesheet(m::MIME)
   buf = PipeBuffer()
-  Highlights.stylesheet(buf, MIME("text/css"))
+  Highlights.stylesheet(buf, m)
   flush(buf)
-  css = readstring(buf)
+  style = readstring(buf)
   close(buf)
+  return style
+end
 
-  title = get_title(doc)
+function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
+  css = stylesheet(MIME("text/html"))
+  title, author, date = get_titleblock(doc)
   path, wsource = splitdir(abspath(doc.source))
   wversion = string(Pkg.installed("Weave"))
   wtime =  string(Date(now()))
@@ -54,24 +63,37 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
   return Mustache.render(template, themecss = theme_css,
                           highlightcss = css, body = formatted, header_script = doc.header_script,
                           source = wsource, wtime = wtime, wversion = wversion,
-                          title = title)
+                          title = title, author = author, date = date)
 end
 
-function get_title(doc::WeaveDoc)
-  if isa(doc.chunks[1], CodeChunk)
-    return doc.source
+function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2tex)
+  highlight = stylesheet(MIME("text/latex"))
+
+  title, author, date = get_titleblock(doc)
+
+
+  path, wsource = splitdir(abspath(doc.source))
+  wversion = string(Pkg.installed("Weave"))
+  wtime =  string(Date(now()))
+  template = Mustache.template_from_file(joinpath(dirname(@__FILE__), "../templates/julia_tex.txt"))
+
+  return Mustache.render(template, body = formatted,
+    highlight = highlight,
+    title = title, author = author, date = date)
+end
+
+function get_titleblock(doc::WeaveDoc)
+  title = get!(doc.header, "title", false)
+  author =  get!(doc.header, "author", false)
+  date =  get!(doc.header, "date", false)
+  return title, author, date
+end
+
+function strip_header(chunk::DocChunk)
+  if ismatch(r"^---$(?<header>.+)^---$"ms, chunk.content)
+    chunk.content = lstrip(replace(chunk.content, r"^---$(?<header>.+)^---$"ms, ""))
   end
-
-  isempty(doc.chunks[1].content) && return doc.source
-  m = Base.Markdown.parse(doc.chunks[1].content)
-
-  if isa(m.content[1], Base.Markdown.Header)
-      title = m.content[1].text[1]
-  else
-      title = doc.source
-  end
-
-  return title
+  return chunk
 end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat)
@@ -84,6 +106,19 @@ function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
     return string(Documenter.Writers.HTMLWriter.mdconvert(m))
 end
 
+function Base.Markdown.latex(io::IO, md::Base.Markdown.Paragraph)
+    println(io)
+    for md in md.content
+        Base.Markdown.latexinline(io, md)
+    end
+    println(io)
+end
+
+
+function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
+    m = Base.Markdown.parse(chunk.content)
+    return Base.Markdown.latex(m)
+end
 
 function format_chunk(chunk::CodeChunk, formatdict, docformat)
     #Fill undefined options with format specific defaults
@@ -167,6 +202,15 @@ end
 
 function format_code(result::AbstractString, docformat)
   return result
+end
+
+function format_code(result::AbstractString, docformat::JMarkdown2tex)
+  buf = PipeBuffer()
+  Highlights.highlight(buf, MIME("text/latex"), strip(result), Highlights.Lexers.JuliaLexer)
+  flush(buf)
+  highlighted = readstring(buf)
+  close(buf)
+  return highlighted
 end
 
 function format_code(result::AbstractString, docformat::JMarkdown2HTML)

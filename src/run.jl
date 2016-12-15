@@ -281,7 +281,7 @@ function init_plotting(plotlib)
     else
         l_plotlib = lowercase(plotlib)
         rcParams[:chunk_defaults][:fig] = true
-        if l_plotlib == "winston"
+        if l_plotlib  == "winston"
             eval(parse("""include("$srcdir/winston.jl")"""))
             rcParams[:plotlib] = "Winston"
         elseif l_plotlib == "pyplot"
