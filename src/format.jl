@@ -117,16 +117,29 @@ end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
     m = Base.Markdown.parse(chunk.content)
-    #Base.Markdown.html(m)
     return string(Documenter.Writers.HTMLWriter.mdconvert(m))
 end
 
+
+#Fixes to Base latex writer
 function Base.Markdown.latex(io::IO, md::Base.Markdown.Paragraph)
     println(io)
     for md in md.content
         Base.Markdown.latexinline(io, md)
     end
     println(io)
+end
+
+function wrapverb(f, io, cmd)
+    print(io, "\\", cmd, "|")
+    f()
+    print(io, "|")
+end
+
+function Base.Markdown.latexinline(io::IO, code::Base.Markdown.Code)
+    wrapverb(io, "verb") do
+        print(io, code.code)
+    end
 end
 
 
