@@ -1,3 +1,4 @@
+__precompile__()
 module Weave
 import Highlights
 

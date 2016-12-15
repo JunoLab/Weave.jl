@@ -152,9 +152,12 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
     return results
 end
 
+getstdout() = Base.STDOUT
+
 function capture_output(expr, SandBox::Module, term, disp, plotlib,
                         lastline)
-    oldSTDOUT = STDOUT
+    #oldSTDOUT = STDOUT
+    oldSTDOUT = getstdout()
     out = nothing
     obj = nothing
     rw, wr = redirect_stdout()
