@@ -69,20 +69,6 @@ const pdoc2html = Pandoc("Markdown to HTML (requires Pandoc)",
                                   "text/html", "text/markdown",  "text/plain"],
                               :doctype=> "md2html"))
 
-const md2pdf = Pandoc("Markdown to pdf (requires Pandoc and xelatex)",
-                      Dict{Symbol,Any}(
-                              :codestart => "````julia",
-                              :codeend=> "````\n\n",
-                              :outputstart=> "````",
-                              :outputend=> "````\n\n",
-                              :fig_ext=> ".pdf",
-                              :extension=> "md",
-                              :mimetypes => ["application/pdf", "image/png", "image/jpg",
-                                  "text/latex", "text/plain"],
-                              :doctype=> "md2pdf"))
-
-
-
 type Markdown
    description::AbstractString
    formatdict::Dict{Symbol,Any}
@@ -432,7 +418,7 @@ const formats = Dict{AbstractString, Any}("tex" => tex,
                                           "texminted" => texminted,
                                           "pandoc" => pandoc,
                                           "pandoc2html" => pdoc2html,
-                                          "md2pdf" => md2pdf,
+                                          "md2pdf" => md2tex,
                                           "github" => github,
                                           "multimarkdown" => multimarkdown,
                                           "rst" => rst,

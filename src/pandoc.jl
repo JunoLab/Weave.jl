@@ -83,3 +83,18 @@ function pandoc2pdf(formatted::AbstractString, doc::WeaveDoc, outname::AbstractS
     throw(e)
   end
 end
+
+function xelatex(doc::WeaveDoc, outname)
+  old_wd = pwd()
+  cd(doc.cwd)
+  xname = basename(outname)
+  info("Weaved code to $outname. Running xelatex")
+  try
+    out = readstring(`xelatex $xname`)
+    cd(old_wd)
+  catch e
+    cd(old_wd)
+    warn("Error converting document to pdf")
+    throw(e)
+  end
+end

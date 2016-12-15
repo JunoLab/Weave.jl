@@ -89,13 +89,16 @@ function weave(source ; doctype = :auto, plotlib=:auto,
         write(io, formatted)
     end
 
-    #Convert using pandoc
+    #Special for that need external programs
     if doc.doctype == "pandoc2html"
         outname = get_outname(out_path, doc, ext = "html")
         pandoc2html(formatted, doc, outname)
-    elseif doc.doctype == "md2pdf"
+    elseif doc.doctype == "pandoc2pdf"
         outname = get_outname(out_path, doc, ext = "pdf")
         pandoc2pdf(formatted, doc, outname)
+    elseif doc.doctype == "md2pdf"
+        xelatex(doc, outname)
+        outname = get_outname(out_path, doc, ext = "pdf")
     end
 
     doc.cwd == pwd() && (outname = basename(outname))
