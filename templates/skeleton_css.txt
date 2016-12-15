@@ -528,3 +528,4 @@ code {
 
 h1.title {margin-top : 20px}
 img {max-width : 100%%}
+div.title {text-align: center;}
