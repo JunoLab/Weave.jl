@@ -1,22 +1,19 @@
-# Publishing scripts
+# Publishing to html and pdf
 
-You can also also publish html and pdf
-documents from Julia scripts with a specific format. Producing HTML and pdf output
-requires that you have Pandoc and XeLatex (for pdf) installed and in your path.
+You can also publish any supported input format using markdown for doc chunks to html and pdf documents. Producing pdf output requires that you have XeLatex installed and in your path. *The markdown variant is [Julia markdown](http://docs.julialang.org/en/latest/manual/documentation.html#Markdown-syntax-1)*.
 
-These scripts can be executed normally using Julia or published with Weave.
-Documentation is written in markdown in lines starting with `#'`, `#%%` or `# %%`,
-and code is executed and results are included in the published document.
+You can use a YAML header in the beginning of the input document delimited with "---"
+to set the document title, author and date e.g.
 
-The format is identical to [Pweave](http://mpastell.com/pweave/pypublish.html)
-and the concept is similar to publishing documents with MATLAB or
-using Knitr's [spin](http://yihui.name/knitr/demo/stitch/).
-Weave will remove the first empty space from each line of documentation.
+```
+---
+title : Weave example
+author : Matti Pastell
+date: 15th December 2016
+---
+```
 
-All lines that are not documentation are treated as code. You can set chunk options
-using lines starting with `#+` just before code
-e.g. `#+ term=true`. See the example below for the markup.
-
+Here is a a sample document and output:
 
 [FIR_design.jl](examples/FIR_design.jl), [FIR_design.html](examples/FIR_design.html) , [FIR_design.pdf](examples/FIR_design.pdf).
 
@@ -25,11 +22,5 @@ weave("FIR_design.jl")
 weave("FIR_design.jl", docformat = "md2pdf")
 ```
 
-## Other mark ups with scripts
-
-You can also use any Weave supported format in the comments and set the output format
-as you would for noweb and markdown inputs. e.g for LaTeX you can use:
-
-```julia
-weave("latex_doc.jl", docformat = "texminted")
-```
+**Note:** docformats `md2pdf` and `md2html` use Julia markdown and `pandoc2pdf` and `pandoc2html`
+use Pandoc.

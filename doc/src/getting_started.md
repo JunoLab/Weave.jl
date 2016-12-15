@@ -12,7 +12,7 @@ output in different formats:
   - HTML: [gadfly_md_sample.html](examples/gadfly_md_sample.html)
   - pdf: [gadfly_md_sample.pdf](examples/gadfly_md_sample.pdf)
 
-*Producing HTML and pdf output requires that you have Pandoc and XeLatex (for pdf) installed.*
+*Producing pdf output requires that you have XeLatex installed.*
 
 You can Weave the files to your working directory using:
 

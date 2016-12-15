@@ -3,7 +3,8 @@
 
 ## Weaving
 
-Weave supports using Jupyter notebooks as input format, this means you can weave notebooks to any supported formats. You can't use chunk options with notebooks.
+Weave supports using Jupyter notebooks as input format, this means you
+can weave notebooks to any supported formats. You can't use chunk options with notebooks.
 
 ```julia
 weave("notebook.ipynb")
