@@ -4,6 +4,7 @@ function format(doc::WeaveDoc)
     formatted = AbstractString[]
     docformat = doc.format
 
+
     #Complete format dictionaries with defaults
     formatdict = docformat.formatdict
     get!(formatdict, :termstart, formatdict[:codestart])
@@ -14,6 +15,7 @@ function format(doc::WeaveDoc)
     get!(formatdict, :fig_env, nothing)
 
     docformat.formatdict[:cwd] = doc.cwd #pass wd to figure formatters
+    docformat.formatdict[:theme] = doc.highlight_theme
 
     #strip header
     if isa(doc.chunks[1], DocChunk)
@@ -41,9 +43,9 @@ function render_doc(formatted, doc::WeaveDoc, format)
   return formatted
 end
 
-function stylesheet(m::MIME)
+function stylesheet(m::MIME, theme)
   buf = PipeBuffer()
-  Highlights.stylesheet(buf, m)
+  Highlights.stylesheet(buf, m, theme)
   flush(buf)
   style = readstring(buf)
   close(buf)
@@ -51,14 +53,23 @@ function stylesheet(m::MIME)
 end
 
 function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
-  css = stylesheet(MIME("text/html"))
+  css = stylesheet(MIME("text/html"), doc.highlight_theme)
   title, author, date = get_titleblock(doc)
   path, wsource = splitdir(abspath(doc.source))
   wversion = string(Pkg.installed("Weave"))
   wtime =  string(Date(now()))
 
-  theme_css = readstring(joinpath(dirname(@__FILE__), "../templates/skeleton_css.txt"))
-  template = Mustache.template_from_file(joinpath(dirname(@__FILE__), "../templates/julia_html.txt"))
+  if isempty(doc.css)
+    theme_css = readstring(joinpath(dirname(@__FILE__), "../templates/skeleton_css.css"))
+  else
+    theme_css = readstring(doc.css)
+  end
+
+  if isempty(doc.template)
+    template = Mustache.template_from_file(joinpath(dirname(@__FILE__), "../templates/julia_html.tpl"))
+  else
+    template = Mustache.template_from_file(doc.template)
+  end
 
   return Mustache.render(template, themecss = theme_css,
                           highlightcss = css, body = formatted, header_script = doc.header_script,
@@ -67,15 +78,19 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
 end
 
 function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2tex)
-  highlight = stylesheet(MIME("text/latex"))
+  highlight = stylesheet(MIME("text/latex"), doc.highlight_theme)
 
   title, author, date = get_titleblock(doc)
-
 
   path, wsource = splitdir(abspath(doc.source))
   wversion = string(Pkg.installed("Weave"))
   wtime =  string(Date(now()))
-  template = Mustache.template_from_file(joinpath(dirname(@__FILE__), "../templates/julia_tex.txt"))
+
+  if isempty(doc.template)
+    template = Mustache.template_from_file(joinpath(dirname(@__FILE__), "../templates/julia_tex.tpl"))
+  else
+    template = Mustache.template_from_file(doc.template)
+  end
 
   return Mustache.render(template, body = formatted,
     highlight = highlight,
@@ -206,7 +221,8 @@ end
 
 function format_code(result::AbstractString, docformat::JMarkdown2tex)
   buf = PipeBuffer()
-  Highlights.highlight(buf, MIME("text/latex"), strip(result), Highlights.Lexers.JuliaLexer)
+  Highlights.highlight(buf, MIME("text/latex"), strip(result),
+      Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
   flush(buf)
   highlighted = readstring(buf)
   close(buf)
@@ -215,7 +231,8 @@ end
 
 function format_code(result::AbstractString, docformat::JMarkdown2HTML)
   buf = PipeBuffer()
-  Highlights.highlight(buf, MIME("text/html"), strip(result), Highlights.Lexers.JuliaLexer)
+  Highlights.highlight(buf, MIME("text/html"), strip(result),
+    Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
   flush(buf)
   highlighted = readstring(buf)
   close(buf)

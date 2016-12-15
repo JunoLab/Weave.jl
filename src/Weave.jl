@@ -1,4 +1,5 @@
 module Weave
+import Highlights
 
 """
 `list_out_formats()`
@@ -59,14 +60,23 @@ Weave an input document to output file.
 * `cache_path`: where of cached output will be saved.
 * `cache`: controls caching of code: `:off` = no caching, `:all` = cache everything,
   `:user` = cache based on chunk options, `:refresh`, run all code chunks and save new cache.
+* `template` : Template (file path) for md2html or md2tex formats.
+* `highlight_theme` : Theme (Highlights.AbstractTheme) for used syntax highlighting
+* `css` : CSS (file path) used for md2html format
 
 **Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """
 function weave(source ; doctype = :auto, plotlib=:auto,
         informat=:auto, out_path=:doc, fig_path = "figures", fig_ext = nothing,
-        cache_path = "cache", cache=:off)
+        cache_path = "cache", cache=:off,
+        template = nothing, highlight_theme = nothing, css = nothing)
 
     doc = read_doc(source, informat)
+    highlight_theme != nothing && (doc.highlight_theme = highlight_theme) #Reserved for themes
+    #theme != nothing && (doc.theme = theme) #Reserved for themes
+    css != nothing && (doc.css = css)
+    template != nothing && (doc.template = template)
+
     doc = run(doc, doctype = doctype, plotlib=plotlib,
             out_path=out_path,
             fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache)
@@ -91,7 +101,6 @@ function weave(source ; doctype = :auto, plotlib=:auto,
 
     info("Report weaved to $outname")
 end
-
 
 function weave(doc::AbstractString, doctype::AbstractString)
     weave(doc, doctype=doctype)

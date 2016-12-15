@@ -16,8 +16,10 @@
 
   <style type="text/css">
   {{{ :themecss }}}
-  {{{ :highlightcss }}}
   </style>
+
+  {{{ :highlightcss }}}
+
 </HEAD>
   <BODY>
     <div class ="container">
