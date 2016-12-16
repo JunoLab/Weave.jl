@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     
       
-        <title>Weave.jl - Scientific Reports Using Julia</title>
+        <title>Weave.jl</title>
       
       
       
@@ -18,9 +18,9 @@
       
     
     <meta property="og:url" content="None">
-    <meta property="og:title" content="Weave.jl - Scientific Reports Using Julia">
+    <meta property="og:title" content="Weave.jl">
     <meta property="og:image" content="None/./">
-    <meta name="apple-mobile-web-app-title" content="Weave.jl - Scientific Reports Using Julia">
+    <meta name="apple-mobile-web-app-title" content="Weave.jl">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
@@ -94,9 +94,14 @@
             
           </span>
         
-        Weave.jl - Scientific Reports Using Julia
+        Weave.jl
       </div>
     </div>
+    
+      
+      <div class="button button-twitter" role="button" aria-label="Twitter">
+        <a href="https://twitter.com/mpastell" title="@mpastell on Twitter" target="_blank" class="toggle-button icon icon-twitter"></a>
+      </div>
     
     
     <div class="button button-search" role="button" aria-label="Search">
@@ -128,9 +133,9 @@
       
       <div class="name">
         <strong>
-          Weave.jl - Scientific Reports Using Julia
+          Weave.jl
           <span class="version">
-            
+            v0.2.2+
           </span>
         </strong>
         
@@ -146,7 +151,7 @@
         <ul class="repo">
           <li class="repo-download">
             
-            <a href="https://github.com/mpastell/Weave.jl/archive/master.zip" target="_blank" title="Download" data-action="download">
+            <a href="https://github.com/mpastell/Weave.jl/archive/v0.2.2+.zip" target="_blank" title="Download" data-action="download">
               <i class="icon icon-download"></i> Download
             </a>
           </li>
@@ -242,6 +247,20 @@
           
         </ul>
         
+          <hr>
+          <span class="section">The author</span>
+          <ul>
+            
+              
+              <li>
+                <a href="https://twitter.com/mpastell" target="_blank" title="@mpastell on Twitter">
+                  @mpastell on Twitter
+                </a>
+              </li>
+            
+            
+          </ul>
+        
       </div>
     </div>
   </div>
@@ -250,8 +269,8 @@
       <article class="article">
         <div class="wrapper">
           
-          <p><a id='Intro-1'></a></p>
-<h1 id="intro">Intro</h1>
+          <p><a id='Weave.jl-Scientific-Reports-Using-Julia-1'></a></p>
+<h1 id="weavejl-scientific-reports-using-julia">Weave.jl - Scientific Reports Using Julia</h1>
 <p>This is the documentation of <a href="http://github.com/mpastell/weave.jl">Weave.jl</a>. Weave is a scientific report generator/literate programming tool for Julia. It resembles <a href="http://mpastell.com/pweave">Pweave</a>, Knitr, rmarkdown and Sweave.</p>
 <p><strong>Current features</strong></p>
 <ul>
@@ -259,7 +278,7 @@
 <li>Execute code as terminal or "script" chunks.</li>
 <li>Capture Plots, Gadfly, PyPlot and Winston figures.</li>
 <li>Supports LaTex, Pandoc, Github markdown, MultiMarkdown, Asciidoc and reStructuredText output</li>
-<li>Publish markdown directly to html and pdf using Pandoc.</li>
+<li>Publish markdown directly to html and pdf using julia or Pandoc markdown.</li>
 <li>Simple caching of results</li>
 <li>Convert to and from IJulia notebooks</li>
 </ul>
@@ -274,14 +293,12 @@
 <li><a href="usage/#Tangle-1">Tangle</a></li>
 <li><a href="usage/#Supported-formats-1">Supported formats</a></li>
 <li><a href="usage/#Document-syntax-1">Document syntax</a></li>
-<li><a href="usage/#Noweb-1">Noweb</a></li>
-<li><a href="usage/#Markdown-1">Markdown</a></li>
+<li><a href="usage/#Noweb-format-1">Noweb format</a></li>
+<li><a href="usage/#Markdown-format-1">Markdown format</a></li>
+<li><a href="usage/#Script-format-1">Script format</a></li>
 </ul>
 </li>
-<li><a href="publish/#Publishing-scripts-1">Publishing scripts</a><ul>
-<li><a href="publish/#Other-mark-ups-with-scripts-1">Other mark ups with scripts</a></li>
-</ul>
-</li>
+<li><a href="publish/#Publishing-to-html-and-pdf-1">Publishing to html and pdf</a></li>
 <li><a href="chunk_options/#Chunk-options-1">Chunk options</a><ul>
 <li><a href="chunk_options/#Options-for-code-1">Options for code</a></li>
 <li><a href="chunk_options/#Options-for-figures-1">Options for figures</a></li>
@@ -356,6 +373,38 @@
     
       <script src="./assets/mathjaxhelper.js"></script>
     
+    
+      <script>
+        (function(i,s,o,g,r,a,m){
+          i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||
+          []).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;
+          m.parentNode.insertBefore(a,m)
+        })(window, document,
+          'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        /* General initialization */
+        ga('create', 'UA-6474352-10', 'auto');
+        ga('set', 'anonymizeIp', true);
+        ga('send', 'pageview');
+        /* Track outbound links */
+        var buttons = document.querySelectorAll('a');
+        Array.prototype.map.call(buttons, function(item) {
+          if (item.host != document.location.host) {
+            item.addEventListener('click', function() {
+              var action = item.getAttribute('data-action') || 'follow';
+              ga('send', 'event', 'outbound', action, item.href);
+            });
+          }
+        });
+        /* Register handler to log search on blur */
+        var query = document.querySelector('.query');
+        query.addEventListener('blur', function() {
+          if (this.value) {
+            var path = document.location.pathname;
+            ga('send', 'pageview', path + '?q=' + this.value);
+          }
+        });
+      </script>
     
   </body>
 </html>

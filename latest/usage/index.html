@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     
       
-        <title>Using Weave - Weave.jl - Scientific Reports Using Julia</title>
+        <title>Using Weave - Weave.jl</title>
       
       
       
@@ -18,9 +18,9 @@
       
     
     <meta property="og:url" content="None">
-    <meta property="og:title" content="Weave.jl - Scientific Reports Using Julia">
+    <meta property="og:title" content="Weave.jl">
     <meta property="og:image" content="None/../">
-    <meta name="apple-mobile-web-app-title" content="Weave.jl - Scientific Reports Using Julia">
+    <meta name="apple-mobile-web-app-title" content="Weave.jl">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
@@ -98,6 +98,11 @@
       </div>
     </div>
     
+      
+      <div class="button button-twitter" role="button" aria-label="Twitter">
+        <a href="https://twitter.com/mpastell" title="@mpastell on Twitter" target="_blank" class="toggle-button icon icon-twitter"></a>
+      </div>
+    
     
     <div class="button button-search" role="button" aria-label="Search">
       <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
@@ -128,9 +133,9 @@
       
       <div class="name">
         <strong>
-          Weave.jl - Scientific Reports Using Julia
+          Weave.jl
           <span class="version">
-            
+            v0.2.2+
           </span>
         </strong>
         
@@ -146,7 +151,7 @@
         <ul class="repo">
           <li class="repo-download">
             
-            <a href="https://github.com/mpastell/Weave.jl/archive/master.zip" target="_blank" title="Download" data-action="download">
+            <a href="https://github.com/mpastell/Weave.jl/archive/v0.2.2+.zip" target="_blank" title="Download" data-action="download">
               <i class="icon icon-download"></i> Download
             </a>
           </li>
@@ -223,14 +228,20 @@
             </li>
           
             <li class="anchor">
-              <a title="Noweb" href="#noweb">
-                Noweb
+              <a title="Noweb format" href="#noweb-format">
+                Noweb format
               </a>
             </li>
           
             <li class="anchor">
-              <a title="Markdown" href="#markdown">
-                Markdown
+              <a title="Markdown format" href="#markdown-format">
+                Markdown format
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Script format" href="#script-format">
+                Script format
               </a>
             </li>
           
@@ -278,6 +289,20 @@
           
         </ul>
         
+          <hr>
+          <span class="section">The author</span>
+          <ul>
+            
+              
+              <li>
+                <a href="https://twitter.com/mpastell" target="_blank" title="@mpastell on Twitter">
+                  @mpastell on Twitter
+                </a>
+              </li>
+            
+            
+          </ul>
+        
       </div>
     </div>
   </div>
@@ -288,7 +313,7 @@
           
           <p><a id='Using-Weave-1'></a></p>
 <h1 id="using-weave">Using Weave</h1>
-<p>You can write your documentation and code in input document using Noweb or Markdown syntax and use <code>weave</code> function to execute to document to capture results and figures.</p>
+<p>You can write your documentation and code in input document using Noweb, Markdown or script syntax and use <code>weave</code> function to execute to document to capture results and figures.</p>
 <p><a id='Weave-1'></a></p>
 <h2 id="weave">Weave</h2>
 <p>Weave document with markup and julia code using Gadfly for plots, <code>out_path = :pwd</code> makes the results appear in the current working directory.</p>
@@ -304,7 +329,14 @@
 
 <p><a id='Weave.weave-Tuple{Any}' href='#Weave.weave-Tuple{Any}'>#</a>
 <strong><code>Weave.weave</code></strong> &mdash; <em>Method</em>.</p>
-<p><code>function weave(source ; doctype = :auto, plotlib="Gadfly",         informat=:auto, out_path=:doc, fig_path = "figures", fig_ext = nothing,         cache_path = "cache", cache=:off)</code></p>
+<div class="code"><pre><span></span>weave(source ; doctype = :auto, plotlib=:auto,
+    informat=:auto, out_path=:doc, fig_path = &quot;figures&quot;, fig_ext = nothing,
+    cache_path = &quot;cache&quot;, cache=:off,
+    template = nothing, highlight_theme = nothing, css = nothing
+    latex_cmd = &quot;pdflatex&quot;)
+</pre></div>
+
+
 <p>Weave an input document to output file.</p>
 <ul>
 <li><code>doctype</code>: :auto = set based on file extension or specify one of the supported formats. See <code>list_out_formats()</code></li>
@@ -315,6 +347,10 @@
 <li><code>fig_ext</code>: Extension for saved figures e.g. <code>".pdf"</code>, <code>".png"</code>. Default setting depends on <code>doctype</code>.</li>
 <li><code>cache_path</code>: where of cached output will be saved.</li>
 <li><code>cache</code>: controls caching of code: <code>:off</code> = no caching, <code>:all</code> = cache everything, <code>:user</code> = cache based on chunk options, <code>:refresh</code>, run all code chunks and save new cache.</li>
+<li><code>template</code> : Template (file path) for md2html or md2tex formats.</li>
+<li><code>highlight_theme</code> : Theme (Highlights.AbstractTheme) for used syntax highlighting</li>
+<li><code>css</code> : CSS (file path) used for md2html format</li>
+<li><code>latex_cmd</code> the command used to make pdf from .tex</li>
 </ul>
 <p><strong>Note:</strong> Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.</p>
 <p><a id='Weave-from-shell-1'></a></p>
@@ -352,15 +388,22 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
 
 
 <p>You can get a list of supported output formats:</p>
-<div class="code"><pre><span></span><span class="n">julia</span><span class="o">&gt;</span> <span class="n">list_out_formats</span><span class="p">()</span>
-<span class="n">pandoc</span><span class="p">:</span> <span class="n">Pandoc</span> <span class="n">markdown</span>
-<span class="n">rst</span><span class="p">:</span> <span class="n">reStructuredText</span> <span class="n">and</span> <span class="n">Sphinx</span>
-<span class="n">texminted</span><span class="p">:</span> <span class="n">Latex</span> <span class="k">using</span> <span class="n">minted</span> <span class="k">for</span> <span class="n">highlighting</span>
-<span class="n">github</span><span class="p">:</span> <span class="n">Github</span> <span class="n">markdown</span>
-<span class="n">md2html</span><span class="p">:</span> <span class="n">Markdown</span> <span class="n">to</span> <span class="n">HTML</span> <span class="p">(</span><span class="n">requires</span> <span class="n">Pandoc</span><span class="p">)</span>
-<span class="n">md2pdf</span><span class="p">:</span> <span class="n">Markdown</span> <span class="n">to</span> <span class="n">pdf</span> <span class="p">(</span><span class="n">requires</span> <span class="n">Pandoc</span> <span class="n">and</span> <span class="n">xelatex</span><span class="p">)</span>
-<span class="n">asciidoc</span><span class="p">:</span> <span class="n">AsciiDoc</span>
-<span class="n">tex</span><span class="p">:</span> <span class="n">Latex</span> <span class="n">with</span> <span class="n">custom</span> <span class="n">code</span> <span class="n">environments</span>
+<div class="code"><pre><span></span><span class="n">list_out_formats</span><span class="p">()</span>
+</pre></div>
+
+
+<div class="code"><pre><span></span><span class="n">github</span><span class="o">:</span> <span class="n">Github</span> <span class="n">markdown</span>
+<span class="n">md2tex</span><span class="o">:</span> <span class="n">Julia</span> <span class="n">markdown</span> <span class="n">to</span> <span class="n">latex</span>
+<span class="n">pandoc2html</span><span class="o">:</span> <span class="n">Markdown</span> <span class="n">to</span> <span class="n">HTML</span> <span class="o">(</span><span class="n">requires</span> <span class="n">Pandoc</span><span class="o">)</span>
+<span class="n">pandoc</span><span class="o">:</span> <span class="n">Pandoc</span> <span class="n">markdown</span>
+<span class="n">pandoc2pdf</span><span class="o">:</span> <span class="n">Pandoc</span> <span class="n">markdown</span>
+<span class="n">tex</span><span class="o">:</span> <span class="n">Latex</span> <span class="k">with</span> <span class="n">custom</span> <span class="n">code</span> <span class="n">environments</span>
+<span class="n">texminted</span><span class="o">:</span> <span class="n">Latex</span> <span class="n">using</span> <span class="n">minted</span> <span class="k">for</span> <span class="n">highlighting</span>
+<span class="n">md2html</span><span class="o">:</span> <span class="n">Julia</span> <span class="n">markdown</span> <span class="n">to</span> <span class="n">html</span>
+<span class="n">rst</span><span class="o">:</span> <span class="n">reStructuredText</span> <span class="n">and</span> <span class="n">Sphinx</span>
+<span class="n">multimarkdown</span><span class="o">:</span> <span class="n">MultiMarkdown</span>
+<span class="n">md2pdf</span><span class="o">:</span> <span class="n">Julia</span> <span class="n">markdown</span> <span class="n">to</span> <span class="n">latex</span>
+<span class="n">asciidoc</span><span class="o">:</span> <span class="n">AsciiDoc</span>
 </pre></div>
 
 
@@ -379,18 +422,26 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
 </pre></div>
 
 
-<p><a id='Noweb-1'></a></p>
-<h2 id="noweb">Noweb</h2>
+<p><a id='Noweb-format-1'></a></p>
+<h2 id="noweb-format">Noweb format</h2>
 <p><a id='Code-chunks-1'></a></p>
 <h3 id="code-chunks">Code chunks</h3>
-<p>start with a line marked with <code>&lt;&lt;&gt;&gt;=</code> or <code>&lt;&lt;options&gt;&gt;=</code> and end with line marked with <code>@</code>. The code between the start and end markers is executed and the output is captured to the output document. See for options below.</p>
+<p>start with a line marked with <code>&lt;&lt;&gt;&gt;=</code> or <code>&lt;&lt;options&gt;&gt;=</code> and end with line marked with <code>@</code>. The code between the start and end markers is executed and the output is captured to the output document. See <a href="../../chunk_options/">chunk options</a>.</p>
 <p><a id='Documentation-chunks-1'></a></p>
 <h3 id="documentation-chunks">Documentation chunks</h3>
 <p>Are the rest of the document (between <code>@</code> and <code>&lt;&lt;&gt;&gt;=</code> lines and the first chunk be default) and can be written with several different markup languages.</p>
 <p><a href="https://github.com/mpastell/Weave.jl/blob/master/examples/julia_sample.mdw">Sample document</a></p>
-<p><a id='Markdown-1'></a></p>
-<h2 id="markdown">Markdown</h2>
-<p>Markdown code chunks are defined using fenced code blocks. <a href="https://github.com/mpastell/Weave.jl/blob/master/examples/gadfly_md_sample.jmd">See sample document:</a></p>
+<p><a id='Markdown-format-1'></a></p>
+<h2 id="markdown-format">Markdown format</h2>
+<p>Markdown code chunks are defined using fenced code blocks with options following on the same line. e.g. to hide code from output you can use:</p>
+<p><code>```julia; echo=false</code></p>
+<p><a href="https://github.com/mpastell/Weave.jl/blob/master/examples/gadfly_md_sample.jmd">See sample document:</a></p>
+<p><a id='Script-format-1'></a></p>
+<h2 id="script-format">Script format</h2>
+<p>Weave also support script input format with a markup in comments. These scripts can be executed normally using Julia or published with Weave.  Documentation is in lines starting with <code>#'</code>, <code>#%%</code> or <code># %%</code>, and code is executed and results are included in the weaved document.</p>
+<p>All lines that are not documentation are treated as code. You can set chunk options using lines starting with <code>#+</code> just before code e.g. <code>#+ term=true</code>.</p>
+<p>The format is identical to <a href="http://mpastell.com/pweave/pypublish.html">Pweave</a> and the concept is similar to publishing documents with MATLAB or using Knitr's <a href="http://yihui.name/knitr/demo/stitch/">spin</a>. Weave will remove the first empty space from each line of documentation.</p>
+<p><a href="https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jl">See sample document:</a></p>
           <aside class="copyright" role="note">
             
               Matti Pastell 2016 &ndash;
@@ -468,6 +519,38 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
     
       <script src="../assets/mathjaxhelper.js"></script>
     
+    
+      <script>
+        (function(i,s,o,g,r,a,m){
+          i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||
+          []).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;
+          m.parentNode.insertBefore(a,m)
+        })(window, document,
+          'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        /* General initialization */
+        ga('create', 'UA-6474352-10', 'auto');
+        ga('set', 'anonymizeIp', true);
+        ga('send', 'pageview');
+        /* Track outbound links */
+        var buttons = document.querySelectorAll('a');
+        Array.prototype.map.call(buttons, function(item) {
+          if (item.host != document.location.host) {
+            item.addEventListener('click', function() {
+              var action = item.getAttribute('data-action') || 'follow';
+              ga('send', 'event', 'outbound', action, item.href);
+            });
+          }
+        });
+        /* Register handler to log search on blur */
+        var query = document.querySelector('.query');
+        query.addEventListener('blur', function() {
+          if (this.value) {
+            var path = document.location.pathname;
+            ga('send', 'pageview', path + '?q=' + this.value);
+          }
+        });
+      </script>
     
   </body>
 </html>
