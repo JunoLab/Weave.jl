@@ -14,8 +14,8 @@
 \setlength{\parskip}{1.2ex}
 
 \hypersetup
-       {   pdfauthor = {:author},
-           pdftitle={:title},
+       {   pdfauthor = { {{{:author}}} },
+           pdftitle={ {{{:title}}} },
            colorlinks=TRUE,
            linkcolor=black,
            citecolor=blue,
