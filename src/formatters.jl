@@ -324,7 +324,11 @@ function formatfigures(chunk, docformat::JMarkdown2tex)
       if splitext(fig)[2] == ".tex" #Tikz figures
           figstring *= "\\resizebox{$width}{!}{\\input{$fig}}\n"
       else
-          figstring *= "\\includegraphics[$attribs]{$fig}\n"
+          if isempty(attribs)
+            figstring *= "\\includegraphics{$fig}\n"
+          else
+            figstring *= "\\includegraphics[$attribs]{$fig}\n"
+          end
       end
   end
 

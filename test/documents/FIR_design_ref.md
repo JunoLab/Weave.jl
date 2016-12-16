@@ -87,8 +87,7 @@ ws = w/pi*(fs/2)
 The next code chunk is executed in term mode, see the [script](FIR_design.jl) for syntax.
 
 ~~~~{.julia}
-julia> 
-plot(y = h_db, x = ws, Geom.line,
+julia> plot(y = h_db, x = ws, Geom.line,
       Guide.xlabel("Frequency (Hz)"), Guide.ylabel("Magnitude (db)"))
 ~~~~~~~~~~~~~
 

@@ -45,9 +45,11 @@ end
 
 
 """
-`function weave(source ; doctype = :auto, plotlib="Gadfly",
+  function weave(source ; doctype = :auto, plotlib=:auto,
         informat=:auto, out_path=:doc, fig_path = "figures", fig_ext = nothing,
-        cache_path = "cache", cache=:off)`
+        cache_path = "cache", cache=:off,
+        template = nothing, highlight_theme = nothing, css = nothing
+        latex_cmd = "pdflatex")
 
 Weave an input document to output file.
 
@@ -64,13 +66,15 @@ Weave an input document to output file.
 * `template` : Template (file path) for md2html or md2tex formats.
 * `highlight_theme` : Theme (Highlights.AbstractTheme) for used syntax highlighting
 * `css` : CSS (file path) used for md2html format
+* `latex_cmd` the command used to make pdf from .tex
 
 **Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """
 function weave(source ; doctype = :auto, plotlib=:auto,
         informat=:auto, out_path=:doc, fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache=:off,
-        template = nothing, highlight_theme = nothing, css = nothing)
+        template = nothing, highlight_theme = nothing, css = nothing,
+        latex_cmd = "pdflatex")
 
     doc = read_doc(source, informat)
     highlight_theme != nothing && (doc.highlight_theme = highlight_theme) #Reserved for themes
@@ -97,7 +101,7 @@ function weave(source ; doctype = :auto, plotlib=:auto,
         outname = get_outname(out_path, doc, ext = "pdf")
         pandoc2pdf(formatted, doc, outname)
     elseif doc.doctype == "md2pdf"
-        xelatex(doc, outname)
+        run_latex(doc, outname, latex_cmd)
         outname = get_outname(out_path, doc, ext = "pdf")
     end
 

@@ -3,10 +3,25 @@
 \usepackage[a4paper,text={16.5cm,25.2cm},centering]{geometry}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
-\usepackage{mathspec}
+\usepackage{ifxetex}
+\ifxetex
+  \usepackage{mathspec}
+\fi
 \usepackage{graphics}
 \usepackage{microtype}
 \usepackage{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.2ex}
+
+\hypersetup
+       {   pdfauthor = {:author},
+           pdftitle={:title},
+           colorlinks=TRUE,
+           linkcolor=black,
+           citecolor=blue,
+           urlcolor=blue
+       }
+
 
 {{#:title}}
 \title{ {{{ :title }}} }

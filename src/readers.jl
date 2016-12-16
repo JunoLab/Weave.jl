@@ -181,7 +181,7 @@ function parse_doc(document::AbstractString, format::ScriptInput)
           line = replace(line, " ", "", 1)
       end
       if state == "code"  && strip(read) != ""
-          chunk = CodeChunk("\n" * rstrip(read), codeno, start_line, optionString, options)
+          chunk = CodeChunk("\n" * strip(read), codeno, start_line, optionString, options)
           push!(parsed, chunk)
           codeno +=1
           read = ""
@@ -191,7 +191,7 @@ function parse_doc(document::AbstractString, format::ScriptInput)
     elseif (m = match(opt_line, line)) != nothing
       start_line = lineno
       if state == "code" && strip(read) !=""
-          chunk = CodeChunk("\n" * rstrip(read), codeno, start_line, optionString, options)
+          chunk = CodeChunk("\n" * strip(read), codeno, start_line, optionString, options)
           push!(parsed, chunk)
           read = ""
           codeno +=1
@@ -238,7 +238,7 @@ function parse_doc(document::AbstractString, format::ScriptInput)
 
   # Handle the last chunk
   if state == "code"
-    chunk = CodeChunk("\n" * rstrip(read), codeno, start_line, optionString, options)
+    chunk = CodeChunk("\n" * strip(read), codeno, start_line, optionString, options)
     push!(parsed, chunk)
   else
     chunk = DocChunk(read, docno, start_line)

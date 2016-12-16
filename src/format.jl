@@ -274,6 +274,19 @@ function format_termchunk(chunk, formatdict, docformat::JMarkdown2HTML)
     return result
 end
 
+function format_termchunk(chunk, formatdict, docformat::JMarkdown2tex)
+    if chunk.options[:echo] && chunk.options[:results] != "hidden"
+        buf = PipeBuffer()
+        Highlights.highlight(buf, MIME("text/latex"), strip(chunk.output), Highlights.Lexers.JuliaConsoleLexer)
+        flush(buf)
+        result = readstring(buf)
+        close(buf)
+    else
+        result = ""
+    end
+    return result
+end
+
 function indent(text, nindent)
     return join(map(x->
                     string(repeat(" ", nindent), x), split(text, "\n")), "\n")
