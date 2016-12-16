@@ -60,7 +60,7 @@ You can also for instance hide the code and show only the figure, add a
 caption to the figure and make it wider as follows (you can only see the
 syntax from the source document):
 
-```{julia;echo=false; fig_cap="A random walk."; label="random"; fig_width=8; fig_height=4}
+```{julia;echo=false; fig_cap="A random walk."; label="random"; fig_width=7; fig_height=4}
 plot(y = cumsum(randn(1000, 1)), Geom.line)
 ```
 

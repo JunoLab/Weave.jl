@@ -45,7 +45,7 @@ end
 
 
 """
-  function weave(source ; doctype = :auto, plotlib=:auto,
+    weave(source ; doctype = :auto, plotlib=:auto,
         informat=:auto, out_path=:doc, fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache=:off,
         template = nothing, highlight_theme = nothing, css = nothing

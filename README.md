@@ -7,7 +7,7 @@ for Julia. It resembles [Pweave](http://mpastell.com/pweave), Knitr, rmarkdown
 and Sweave.
 
 You can write your documentation and code in input document using Noweb,
-Markdown, Script syntax and use `weave` function to execute to document to capture results 
+Markdown, Script syntax and use `weave` function to execute to document to capture results
 and figures.
 
 **Current features**
@@ -16,7 +16,7 @@ and figures.
 * Execute code as terminal or "script" chunks.
 * Capture Plots, Gadfly, PyPlot and Winston figures.
 * Supports LaTex, Pandoc, Github markdown, MultiMarkdown, Asciidoc and reStructuredText output
-* Publish markdown directly to html and pdf using Pandoc.
+* Publish markdown directly to html and pdf using Julia or Pandoc markdown.
 * Simple caching of results
 * Convert to and from IJulia notebooks
 

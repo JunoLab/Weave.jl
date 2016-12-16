@@ -60,7 +60,8 @@ return "pandoc"
 
 You can get a list of supported output formats:
 
-```@repl
+```@example
+using Weave # hide
 list_out_formats()
 ```
 

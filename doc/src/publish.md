@@ -1,6 +1,6 @@
 # Publishing to html and pdf
 
-You can also publish any supported input format using markdown for doc chunks to html and pdf documents. Producing pdf output requires that you have XeLatex installed and in your path. *The markdown variant is [Julia markdown](http://docs.julialang.org/en/latest/manual/documentation.html#Markdown-syntax-1)*.
+You can also publish any supported input format using markdown for doc chunks to html and pdf documents. Producing pdf output requires that you have pdflatex installed and in your path. *The markdown variant is [Julia markdown](http://docs.julialang.org/en/latest/manual/documentation.html#Markdown-syntax-1)*.
 
 You can use a YAML header in the beginning of the input document delimited with "---"
 to set the document title, author and date e.g.
