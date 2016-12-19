@@ -1,11 +1,8 @@
-
-
 ~~~~{.julia}
 using Plots
 gr()
 x = linspace(0, 2*pi)
 println(x)
-
 ~~~~~~~~~~~~~
 
 
@@ -21,9 +18,6 @@ p = plot(x, sin(x), size =(900,300))
 
 
 
-
-
-
 ~~~~{.julia}
 julia> plot(x, sin(x))
 
@@ -33,8 +27,6 @@ julia> plot(x, sin(x))
 ![](figures/plotsjl_test_gr_2_1.png)\ 
 
 
-
-
 ~~~~{.julia}
 plot(rand(100) / 3,reg=true,fill=(0,:green))
 scatter!(rand(100),markersize=6,c=:orange)
@@ -42,8 +34,6 @@ scatter!(rand(100),markersize=6,c=:orange)
 
 
 ![](figures/plotsjl_test_gr_3_1.png)\ 
-
-
 
 
 ~~~~{.julia}
@@ -63,9 +53,6 @@ julia> scatter!(rand(100),markersize=6,c=:orange)
 
 
 ![](figures/plotsjl_test_gr_4_2.png)\ 
-
-
-
 
 
 ![A random walk.](figures/plotsjl_test_gr_random_1.png)

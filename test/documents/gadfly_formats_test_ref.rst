@@ -1,5 +1,3 @@
-
-
 .. code-block:: julia
     
     using Gadfly
@@ -14,20 +12,14 @@
    sin(x) function.
 
 
-
-
 .. figure:: figures/gadfly_formats_test_2_1.png
    :width: 15 cm
 
    cos(x) function.
 
 
-
-
 .. image:: figures/gadfly_formats_test_cos2_fun_1.png
    :width: 15 cm
-
-
 
 
 .. code-block:: julia
@@ -58,13 +50,10 @@ julia> plot(x=x, y = cos(x), Geom.line)
    :width: 15 cm
 
 
-
-
 .. code-block:: julia
     
     x = linspace(0, 2π, 200)
     plot(x=x, y = sin(x), Geom.line)
-    
 
 
 

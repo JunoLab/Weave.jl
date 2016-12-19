@@ -5,7 +5,6 @@
 using Gadfly
 x = 1:10
 plot(x = x, y = x)
-
 ~~~~~~~~~~~~~
 
 
@@ -14,7 +13,6 @@ plot(x = x, y = x)
 
 ~~~~{.julia}
 print(x)
-
 ~~~~~~~~~~~~~
 
 
@@ -26,7 +24,6 @@ print(x)
 
 ~~~~{.julia}
 plot(x = x, y = x)
-
 ~~~~~~~~~~~~~
 
 
@@ -123,7 +120,6 @@ julietta> display(x)
 ~~~~{.julia}
 using Gadfly
 x = 1:10
-
 ~~~~~~~~~~~~~
 
 
@@ -135,7 +131,6 @@ x = 1:10
 
 ~~~~{.julia}
 plot(x = x, y = x)
-
 ~~~~~~~~~~~~~
 
 
@@ -144,7 +139,6 @@ plot(x = x, y = x)
 
 ~~~~{.julia}
 print(x)
-
 ~~~~~~~~~~~~~
 
 
@@ -156,7 +150,6 @@ print(x)
 
 ~~~~{.julia}
 plot(x = x, y = x)
-
 ~~~~~~~~~~~~~
 
 

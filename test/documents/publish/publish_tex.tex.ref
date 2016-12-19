@@ -10,7 +10,6 @@
 
 \includegraphics{figures/publish_test_1_1.pdf}
 
-
 \begin{lstlisting}
 (*@\HLJLnf{plot}@*)(*@\HLJLp{(}@*)(*@\HLJLni{1}@*)(*@\HLJLoB{:}@*)(*@\HLJLni{10}@*)(*@\HLJLp{)}@*)
 \end{lstlisting}

@@ -6,6 +6,7 @@ function pljtest(source, resfile, doctype)
   result =  readstring(open("documents/plotsjl/$resfile"))
   ref =  readstring(open("documents/plotsjl/$resfile.ref"))
   @test result == ref
+  rm("documents/plotsjl/$resfile")
 end
 
 pljtest("plotsjl_test.jmd", "plotsjl_test.md", "pandoc")

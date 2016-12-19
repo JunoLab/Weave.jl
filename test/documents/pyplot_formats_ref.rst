@@ -1,7 +1,3 @@
-
-
-
-
 .. code-block:: julia
     
     using PyPlot
@@ -13,7 +9,7 @@
 ::
     
     1-element Array{Any,1}:
-     PyObject <matplotlib.lines.Line2D object at 0x7f6a209bb518>
+     PyObject <matplotlib.lines.Line2D object at 0x7f1e029e5c18>
 
 
 
@@ -23,12 +19,10 @@
    sin(x) function.
 
 
-
-
 ::
     
     1-element Array{Any,1}:
-     PyObject <matplotlib.lines.Line2D object at 0x7f6a2099c3c8>
+     PyObject <matplotlib.lines.Line2D object at 0x7f1e294769b0>
 
 
 
@@ -38,19 +32,15 @@
    cos(x) function.
 
 
-
-
 ::
     
     1-element Array{Any,1}:
-     PyObject <matplotlib.lines.Line2D object at 0x7f6a20e59780>
+     PyObject <matplotlib.lines.Line2D object at 0x7f1e293d9c88>
 
 
 
 .. image:: figures/pyplot_formats_cos2_fun_1.svg
    :width: 15 cm
-
-
 
 
 .. code-block:: julia
@@ -62,20 +52,18 @@ julia> x = linspace(0, 2π, 200)
 julia> plot(x, sin(x))
 
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7f6a19819208>
+ PyObject <matplotlib.lines.Line2D object at 0x7f1e293bcf60>
 julia> y = 20
 
 20
 julia> plot(x, cos(x))
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7f6a209aed68>
+ PyObject <matplotlib.lines.Line2D object at 0x7f1e02b32710>
 
 
 
 .. image:: figures/pyplot_formats_4_1.svg
    :width: 15 cm
-
-
 
 
 .. code-block:: julia
@@ -87,7 +75,7 @@ julia> plot(x, cos(x))
 
 ::
     
-    PyObject <matplotlib.contour.QuadContourSet object at 0x7f6a193c6668>
+    PyObject <matplotlib.contour.QuadContourSet object at 0x7f1e293217f0>
 
 
 

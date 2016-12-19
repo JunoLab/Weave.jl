@@ -1,11 +1,8 @@
-
-
 ~~~~{.julia}
 using Plots
 pyplot()
 x = linspace(0, 2*pi)
 println(x)
-
 ~~~~~~~~~~~~~
 
 
@@ -23,9 +20,6 @@ p = plot(x, sin(x), size =(900,300))
 ![](figures/plotsjl_test_1_1.png)\ 
 
 
-
-
-
 ~~~~{.julia}
 julia> plot(x, sin(x))
 
@@ -37,8 +31,6 @@ julia> plot(x, sin(x))
 ![](figures/plotsjl_test_2_1.png)\ 
 
 
-
-
 ~~~~{.julia}
 plot(rand(100) / 3,reg=true,fill=(0,:green))
 scatter!(rand(100),markersize=6,c=:orange)
@@ -48,8 +40,6 @@ scatter!(rand(100),markersize=6,c=:orange)
 ![](figures/plotsjl_test_3_1.png)\ 
 
 ![](figures/plotsjl_test_3_1.png)\ 
-
-
 
 
 ~~~~{.julia}
@@ -71,9 +61,6 @@ julia> scatter!(rand(100),markersize=6,c=:orange)
 ![](figures/plotsjl_test_4_2.png)\ 
 
 ![](figures/plotsjl_test_4_1.png)\ 
-
-
-
 
 
 ![A random walk.](figures/plotsjl_test_random_1.png)

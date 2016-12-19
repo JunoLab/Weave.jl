@@ -1,5 +1,3 @@
-
-
 \begin{juliacode}
 using Gadfly
 x = linspace(0, 2π, 200)
@@ -12,19 +10,13 @@ plot(x=x, y = sin(x), Geom.line)
 \label{fig:sin_fun}
 \end{figure}
 
-
-
 \begin{figure}[htpb]
 \center
 \includegraphics[width=\linewidth]{figures/gadfly_formats_test_2_1.ps}
 \caption{cos(x) function.}
 \end{figure}
 
-
-
 \includegraphics[width=\linewidth]{figures/gadfly_formats_test_cos2_fun_1.ps}
-
-
 
 \begin{juliaterm}
 julia> x = linspace(0, 2π, 200)
@@ -44,12 +36,9 @@ julia> plot(x=x, y = cos(x), Geom.line)
 \end{juliaterm}
 \includegraphics[width=\linewidth]{figures/gadfly_formats_test_4_2.ps}
 
-
-
 \begin{juliacode}
 x = linspace(0, 2π, 200)
 plot(x=x, y = sin(x), Geom.line)
-
 \end{juliacode}
 \includegraphics[width=15cm]{figures/gadfly_formats_test_5_1.ps}
 
