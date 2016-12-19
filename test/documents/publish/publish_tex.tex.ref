@@ -8,7 +8,7 @@
 \end{lstlisting}
 
 
-\includegraphics{figures/publish_test_1_1.png}
+\includegraphics{figures/publish_test_1_1.pdf}
 
 
 \begin{lstlisting}
@@ -18,7 +18,7 @@
 
 \begin{figure}[!h]
 \center
-\includegraphics{figures/publish_test_somefig_1.png}
+\includegraphics{figures/publish_test_somefig_1.pdf}
 \caption{Hello}
 \label{fig:somefig}
 \end{figure}
