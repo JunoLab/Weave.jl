@@ -1,6 +1,16 @@
 
 # Release notes for Weave.jl
 
+### v0.3.0
+
+* Add support for YAML title block
+* Use Julia markdown for publishing to pdf and html
+* Add `template`, `highlight_theme`, `latex_cmd` and `css` option to `weave` for customizing html and pdf output
+* Bug fixes
+  * Fix plotting on Windows
+  * Fix extra whitespace from code chunk output
+* Improved GR and GLVisualize support with Plots
+
 ### v0.2.2
 
 * Add IJulia notebook as input format
