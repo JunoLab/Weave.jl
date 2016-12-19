@@ -1,0 +1,25 @@
+
+\section{Header}
+
+\begin{lstlisting}
+(*@\HLJLk{using}@*) (*@\HLJLn{Plots}@*)
+(*@\HLJLnf{gr}@*)(*@\HLJLp{()}@*)
+(*@\HLJLnf{scatter}@*)(*@\HLJLp{(}@*)(*@\HLJLni{1}@*)(*@\HLJLoB{:}@*)(*@\HLJLni{10}@*)(*@\HLJLp{)}@*)
+\end{lstlisting}
+
+
+\includegraphics{figures/publish_test_1_1.png}
+
+
+\begin{lstlisting}
+(*@\HLJLnf{plot}@*)(*@\HLJLp{(}@*)(*@\HLJLni{1}@*)(*@\HLJLoB{:}@*)(*@\HLJLni{10}@*)(*@\HLJLp{)}@*)
+\end{lstlisting}
+
+
+\begin{figure}[!h]
+\center
+\includegraphics{figures/publish_test_somefig_1.png}
+\caption{Hello}
+\label{fig:somefig}
+\end{figure}
+

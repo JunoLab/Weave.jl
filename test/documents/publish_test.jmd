@@ -1,0 +1,17 @@
+---
+title : Test
+author: Matti Pastell
+date : today
+---
+
+# Header
+
+```julia
+using Plots
+gr()
+scatter(1:10)
+```
+
+```julia; fig_cap = "Hello"; label = "somefig"
+plot(1:10)
+```
