@@ -1,11 +1,8 @@
-
-
 \begin{juliacode}
 using DataFrames
 df = DataFrame(letters = 'a':'z', numbers = 1:26)
 
 df
-
 \end{juliacode}
 \begin{juliaout}
 26×2 DataFrames.DataFrame
@@ -59,8 +56,6 @@ display(df)
 │ 26  │ 'z'     │ 26      │
 \end{juliaout}
 
-
-
 \begin{juliacode}
 head(df)
 \end{juliacode}
@@ -75,8 +70,6 @@ head(df)
 │ 5   │ 'e'     │ 5       │
 │ 6   │ 'f'     │ 6       │
 \end{juliaout}
-
-
 
 \begin{juliaterm}
 julia> df
@@ -102,9 +95,6 @@ julia> df
 │ 25  │ 'y'     │ 25      │
 │ 26  │ 'z'     │ 26      │
 \end{juliaterm}
-
-
-
 
 \begin{juliacode}
 m = Base.Markdown.parse("**Some Markdown**")

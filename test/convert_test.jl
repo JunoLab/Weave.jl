@@ -7,8 +7,8 @@ function convert_test(outfile)
   convert_doc(infile, outfile)
   result =  readstring(open(outfile))
   ref =  readstring(open(outfile * ".ref"))
-  rm(outfile)
   @test result == ref
+  rm(outfile)
 end
 
 convert_test("chunk_options.jmd")

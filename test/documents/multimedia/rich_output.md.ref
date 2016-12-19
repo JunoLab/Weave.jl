@@ -1,11 +1,8 @@
-
-
 ~~~~{.julia}
 using DataFrames
 df = DataFrame(letters = 'a':'z', numbers = 1:26)
 
 df
-
 ~~~~~~~~~~~~~
 
 
@@ -67,8 +64,6 @@ display(df)
 
 
 
-
-
 ~~~~{.julia}
 head(df)
 ~~~~~~~~~~~~~
@@ -85,8 +80,6 @@ head(df)
 │ 5   │ 'e'     │ 5       │
 │ 6   │ 'f'     │ 6       │
 ~~~~
-
-
 
 
 
@@ -114,9 +107,6 @@ julia> df
 │ 25  │ 'y'     │ 25      │
 │ 26  │ 'z'     │ 26      │
 ~~~~~~~~~~~~~
-
-
-
 
 
 

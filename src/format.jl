@@ -197,7 +197,10 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
             if chunk.options[:wrap]
                 chunk.output = "\n" * wraplines(chunk.output,
                                         chunk.options[:line_width])
+            else
+              chunk.output = "\n" * rstrip(chunk.output)
             end
+
 
             if haskey(formatdict, :indent)
                 chunk.output = indent(chunk.output, formatdict[:indent])

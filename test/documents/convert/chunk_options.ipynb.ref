@@ -1,13 +1,6 @@
 {
   "cells": [
     {
-      "cell_type": "markdown",
-      "source": [
-        ""
-      ],
-      "metadata": {}
-    },
-    {
       "outputs": [],
       "cell_type": "code",
       "source": [
@@ -15,13 +8,6 @@
       ],
       "metadata": {},
       "execution_count": null
-    },
-    {
-      "cell_type": "markdown",
-      "source": [
-        ""
-      ],
-      "metadata": {}
     },
     {
       "outputs": [],
@@ -33,13 +19,6 @@
       "execution_count": null
     },
     {
-      "cell_type": "markdown",
-      "source": [
-        ""
-      ],
-      "metadata": {}
-    },
-    {
       "outputs": [],
       "cell_type": "code",
       "source": [
@@ -47,13 +26,6 @@
       ],
       "metadata": {},
       "execution_count": null
-    },
-    {
-      "cell_type": "markdown",
-      "source": [
-        ""
-      ],
-      "metadata": {}
     },
     {
       "outputs": [],
@@ -65,13 +37,6 @@
       "execution_count": null
     },
     {
-      "cell_type": "markdown",
-      "source": [
-        ""
-      ],
-      "metadata": {}
-    },
-    {
       "outputs": [],
       "cell_type": "code",
       "source": [
@@ -81,13 +46,6 @@
       "execution_count": null
     },
     {
-      "cell_type": "markdown",
-      "source": [
-        ""
-      ],
-      "metadata": {}
-    },
-    {
       "outputs": [],
       "cell_type": "code",
       "source": [
@@ -95,13 +53,6 @@
       ],
       "metadata": {},
       "execution_count": null
-    },
-    {
-      "cell_type": "markdown",
-      "source": [
-        ""
-      ],
-      "metadata": {}
     },
     {
       "outputs": [],
@@ -129,13 +80,6 @@
       "execution_count": null
     },
     {
-      "cell_type": "markdown",
-      "source": [
-        ""
-      ],
-      "metadata": {}
-    },
-    {
       "outputs": [],
       "cell_type": "code",
       "source": [
@@ -143,13 +87,6 @@
       ],
       "metadata": {},
       "execution_count": null
-    },
-    {
-      "cell_type": "markdown",
-      "source": [
-        ""
-      ],
-      "metadata": {}
     },
     {
       "outputs": [],

@@ -96,7 +96,7 @@ function parse_doc(document::AbstractString, format::MarkupInput)
       else
           optionString=strip(m.captures[1])
       end
-      #@show optionAbstractString
+
       options = Dict{Symbol,Any}()
       if length(optionString) > 0
           expr = parse(optionString)
@@ -105,24 +105,24 @@ function parse_doc(document::AbstractString, format::MarkupInput)
       end
       haskey(options, :label) && (options[:name] = options[:label])
       haskey(options, :name) || (options[:name] = nothing)
-      #options = merge(rcParams[:chunk_defaults], options)
-      #@show options
-      chunk = DocChunk(content, docno, start_line)
-      #chunk =  Dict{Symbol,Any}(:type => "doc", :content => content,
-      #                                 :number => docno,:start_line => start_line)
-      docno += 1
+
+      if !isempty(strip(content))
+        chunk = DocChunk(content, docno, start_line)
+        docno += 1
+        push!(parsed, chunk)
+      end
+
+      content  = ""
       start_line = lineno
-      push!(parsed, chunk)
-      content = ""
+
       continue
+
     end
     if ismatch(codeend, line) && state=="code"
 
+
+
       chunk = CodeChunk(content, codeno, start_line, optionString, options)
-      #chunk =  Dict{Symbol,Any}(:type => "code", :content => content,
-#                                   :number => codeno, :options => options,
-#                                       :optionAbstractString => optionAbstractString,
-#                                       :start_line => start_line)
 
       codeno+=1
       start_line = lineno
