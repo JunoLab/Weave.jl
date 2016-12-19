@@ -135,7 +135,7 @@
         <strong>
           Weave.jl
           <span class="version">
-            v0.2.2+
+            v0.3.0
           </span>
         </strong>
         
@@ -151,7 +151,7 @@
         <ul class="repo">
           <li class="repo-download">
             
-            <a href="https://github.com/mpastell/Weave.jl/archive/v0.2.2+.zip" target="_blank" title="Download" data-action="download">
+            <a href="https://github.com/mpastell/Weave.jl/archive/v0.3.0.zip" target="_blank" title="Download" data-action="download">
               <i class="icon icon-download"></i> Download
             </a>
           </li>
@@ -203,6 +203,16 @@
       
         
       
+      
+        <ul>
+          
+            <li class="anchor">
+              <a title="Templates" href="#templates">
+                Templates
+              </a>
+            </li>
+          
+        </ul>
       
     
   </li>
@@ -279,6 +289,11 @@ date: 15th December 2016
 
 
 <p><strong>Note:</strong> docformats <code>md2pdf</code> and <code>md2html</code> use Julia markdown and <code>pandoc2pdf</code> and <code>pandoc2html</code> use Pandoc.</p>
+<p><a id='Templates-1'></a></p>
+<h2 id="templates">Templates</h2>
+<p>You can use a custom template with <code>md2pdf</code> and <code>md2html</code> formats with <code>template</code> argument (e.g) <code>weave("FIR_design.jl", template = "custom.tpl"</code>). You can use the existing templates as starting point.</p>
+<p>For HTML: <a href="https://github.com/mpastell/Weave.jl/blob/master/templates/julia_html.tpl">julia_html.tpl</a> and LaTex: <a href="https://github.com/mpastell/Weave.jl/blob/master/templates/julia_tex.tpl">julia_tex.tpl</a></p>
+<p>Templates are rendered using <a href="https://github.com/jverzani/Mustache.jl">Mustache.jl</a>.</p>
           <aside class="copyright" role="note">
             
               Matti Pastell 2016 &ndash;

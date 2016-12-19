@@ -1,6 +1,8 @@
-#' % FIR filter design with Julia
-#' % Matti Pastell
-#' % 21th April 2016
+#' ---
+#' title : FIR filter design with Julia
+#' author : Matti Pastell
+#' date : 21th April 2016
+#' ---
 
 #' # Introduction
 

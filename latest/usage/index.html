@@ -135,7 +135,7 @@
         <strong>
           Weave.jl
           <span class="version">
-            v0.2.2+
+            v0.3.0
           </span>
         </strong>
         
@@ -151,7 +151,7 @@
         <ul class="repo">
           <li class="repo-download">
             
-            <a href="https://github.com/mpastell/Weave.jl/archive/v0.2.2+.zip" target="_blank" title="Download" data-action="download">
+            <a href="https://github.com/mpastell/Weave.jl/archive/v0.3.0.zip" target="_blank" title="Download" data-action="download">
               <i class="icon icon-download"></i> Download
             </a>
           </li>
@@ -353,6 +353,7 @@
 <li><code>latex_cmd</code> the command used to make pdf from .tex</li>
 </ul>
 <p><strong>Note:</strong> Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.</p>
+<p><a target='_blank' href='https://github.com/mpastell/Weave.jl/tree/a4891b01a8f20557270f827a9c5a5e5e7c25ec6a/src/Weave.jl#L47-L72' class='documenter-source'>source</a><br></p>
 <p><a id='Weave-from-shell-1'></a></p>
 <h2 id="weave-from-shell">Weave from shell</h2>
 <p>You can also use the <code>weave.jl</code> script under bin directory to weave documents from the shell:</p>
@@ -375,6 +376,7 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
 <li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>: Julia working directory,  <code>"somepath"</code>, directory name as a string e.g <code>"/home/mpastell/weaveout"</code></li>
 </ul>
 <p>or filename as string e.g. ~/outpath/outfile.jl.</p>
+<p><a target='_blank' href='https://github.com/mpastell/Weave.jl/tree/a4891b01a8f20557270f827a9c5a5e5e7c25ec6a/src/Weave.jl#L17-L25' class='documenter-source'>source</a><br></p>
 <p><a id='Supported-formats-1'></a></p>
 <h2 id="supported-formats">Supported formats</h2>
 <p>Weave sets the output format based on the file extension, but you can also set it using <code>doctype</code> option. The rules for detecting the format are:</p>
@@ -411,6 +413,7 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
 <strong><code>Weave.list_out_formats</code></strong> &mdash; <em>Method</em>.</p>
 <p><code>list_out_formats()</code></p>
 <p>List supported output formats</p>
+<p><a target='_blank' href='https://github.com/mpastell/Weave.jl/tree/a4891b01a8f20557270f827a9c5a5e5e7c25ec6a/src/Weave.jl#L5-L9' class='documenter-source'>source</a><br></p>
 <p><a id='Document-syntax-1'></a></p>
 <h2 id="document-syntax">Document syntax</h2>
 <p>Weave uses noweb, markdown or script syntax for defining the code chunks and documentation chunks. You can also weave Jupyter notebooks. The format is detected based on the file extension, but you can also set it manually using the <code>informat</code> parameter.</p>

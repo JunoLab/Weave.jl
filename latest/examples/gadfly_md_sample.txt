@@ -41,7 +41,6 @@ output will be captured.
 using Gadfly
 x = linspace(0, 2*pi)
 println(x)
-
 ~~~~~~~~~~~~~
 
 
