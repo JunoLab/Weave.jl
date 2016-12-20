@@ -5,8 +5,8 @@ function convert_test(outfile)
   outfile = joinpath("documents/convert", outfile)
   infile = "documents/chunk_options.noweb"
   convert_doc(infile, outfile)
-  result =  readstring(open(outfile))
-  ref =  readstring(open(outfile * ".ref"))
+  result =  readstring(outfile)
+  ref =  readstring(outfile * ".ref")
   @test result == ref
   rm(outfile)
 end
@@ -20,8 +20,8 @@ function convert_test_nb(outfile)
   outfile = joinpath("documents/convert", outfile)
   infile = "documents/chunk_options.ipynb"
   convert_doc(infile, outfile)
-  result =  readstring(open(outfile))
-  ref =  readstring(open(outfile * ".ref"))
+  result =  readstring(outfile)
+  ref =  readstring(outfile * ".ref")
   rm(outfile)
   @test result == ref
 end
