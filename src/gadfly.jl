@@ -36,7 +36,7 @@ function Base.display(report::Report, m::MIME"image/svg+xml", p::Plot)
         draw(SVGJS(full_name, w, h), p)
     elseif format == ".tex"
         draw(PGF(full_name, w, h, true ), p)
-    else:
+    else
         warn("Can't save figure. Unsupported format")
     end
 end
