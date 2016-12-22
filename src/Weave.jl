@@ -67,6 +67,7 @@ Weave an input document to output file.
 * `highlight_theme` : Theme (Highlights.AbstractTheme) for used syntax highlighting
 * `css` : CSS (file path) used for md2html format
 * `latex_cmd` the command used to make pdf from .tex
+* `hide_success_msg` controls display of the final success message
 
 **Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """
@@ -74,7 +75,7 @@ function weave(source ; doctype = :auto, plotlib=:auto,
         informat=:auto, out_path=:doc, fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache=:off,
         template = nothing, highlight_theme = nothing, css = nothing,
-        latex_cmd = "pdflatex")
+        latex_cmd = "pdflatex", hide_success_msg=false)
 
     doc = read_doc(source, informat)
     highlight_theme != nothing && (doc.highlight_theme = highlight_theme) #Reserved for themes
@@ -107,7 +108,7 @@ function weave(source ; doctype = :auto, plotlib=:auto,
 
     doc.cwd == pwd() && (outname = basename(outname))
 
-    info("Report weaved to $outname")
+    hide_success_msg || info("Report weaved to $outname")
 end
 
 function weave(doc::AbstractString, doctype::AbstractString)
