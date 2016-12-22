@@ -47,6 +47,7 @@ end
 function read_doc(source::AbstractString, format=:auto)
     format == :auto && (format = detect_informat(source))
     document = readstring(source)
+    document = replace(document, "\r\n", "\n")
     parsed = parse_doc(document, format)
     header = parse_header(parsed[1])
     doc = WeaveDoc(source, parsed, header)
@@ -73,6 +74,7 @@ end
 
 """Parse documents with Weave.jl markup"""
 function parse_doc(document::AbstractString, format::MarkupInput)
+  document = replace(document, "\r\n", "\n")
   lines = split(document, "\n")
 
   codestart = format.codestart
@@ -151,6 +153,7 @@ end
 
 """Parse .jl scripts with Weave.jl markup"""
 function parse_doc(document::AbstractString, format::ScriptInput)
+  document = replace(document, "\r\n", "\n")
   lines = split(document, "\n")
 
   doc_line = format.doc_line
@@ -250,6 +253,7 @@ end
 
 """Parse IJUlia notebook"""
 function parse_doc(document::String, format::NotebookInput)
+  document = replace(document, "\r\n", "\n")
   nb = JSON.parse(document)
   parsed = Any[]
   options = Dict{Symbol,Any}()
