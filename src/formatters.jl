@@ -125,18 +125,7 @@ type MultiMarkdown
   formatdict::Dict{Symbol,Any}
 end
 
-function img_to_base64(fig, ext, cwd)
-  f = open(joinpath(cwd, fig), "r")
-    raw = read(f)
-  close(f)
-  if ext == ".png"
-    return "data:image/png;base64," * stringmime(MIME("image/png"), raw)
-  elseif ext == ".svg"
-    return "data:image/svg+xml;base64," * stringmime(MIME("image/svg+xml"), raw)
-  else
-    return(fig)
-  end
-end
+
 
 function formatfigures(chunk, docformat::JMarkdown2HTML)
     fignames = chunk.figures
@@ -159,10 +148,6 @@ function formatfigures(chunk, docformat::JMarkdown2HTML)
     end
 
     for fig = fignames
-      ext = splitext(fig)[2]
-      if ext == ".png" || ext == ".svg"
-        fig = img_to_base64(fig, ext, docformat.formatdict[:cwd])
-      end
 
       figstring *= """<img src="$fig" $attribs />\n"""
     end

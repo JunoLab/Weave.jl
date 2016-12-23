@@ -28,9 +28,13 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
     doc.doctype = doctype
     doc.format = formats[doctype]
 
-    if (contains(doctype, "2html") || contains(doctype, "2pdf")) && cache == :off
-      fig_path = mktempdir(doc.cwd)
+    if contains(doctype, "2pdf") && cache == :off
+        fig_path = mktempdir(doc.cwd)
+    elseif contains(doctype, "2html")
+        fig_path = mktempdir(doc.cwd)
     end
+    #This is needed for latex and should work on all output formats
+    is_windows() && (fig_path = replace(fig_path, "\\", "/"))
 
     doc.fig_path = fig_path
     set_rc_params(doc.format.formatdict, fig_path, fig_ext)
@@ -70,8 +74,6 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
         if typeof(chunk) == CodeChunk
             options = merge(rcParams[:chunk_defaults], chunk.options)
             merge!(chunk.options, options)
-
-
         end
 
         restore = (cache ==:user && typeof(chunk) == CodeChunk && chunk.options[:cache])
@@ -115,7 +117,39 @@ end
 
 
 function run_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
-    result_chunk = eval_chunk(chunk, report, SandBox)
+    result_chunks = eval_chunk(chunk, report, SandBox)
+    contains(report.formatdict[:doctype], "2html") && (result_chunks = embed_figures(result_chunks, report.cwd))
+    return result_chunks
+end
+
+function embed_figures(chunk::CodeChunk, cwd)
+    chunk.figures = [img2base64(fig, cwd) for fig in chunk.figures]
+    return chunk
+end
+
+function embed_figures(result_chunks, cwd)
+    for i in 1:length(result_chunks)
+        figs = result_chunks[i].figures
+        if !isempty(figs)
+            result_chunks[i].figures = [img2base64(fig, cwd) for fig in figs]
+        end
+    end
+    return result_chunks
+end
+
+
+function img2base64(fig, cwd)
+  ext = splitext(fig)[2]
+  f = open(joinpath(cwd, fig), "r")
+    raw = read(f)
+  close(f)
+  if ext == ".png"
+    return "data:image/png;base64," * stringmime(MIME("image/png"), raw)
+  elseif ext == ".svg"
+    return "data:image/svg+xml;base64," * stringmime(MIME("image/svg+xml"), raw)
+  else
+    return(fig)
+  end
 end
 
 function run_chunk(chunk::DocChunk, report::Report, SandBox::Module)
@@ -229,6 +263,7 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
 
     chunk.result = run_code(chunk, report, SandBox)
 
+
     #Run post_execute chunks
     for hook in postexecute_hooks
       chunk = hook(chunk)
@@ -241,8 +276,6 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     else
         chunks = collect_results(chunk, ScriptResult())
     end
-
-
 
       #else
      #   chunk.options[:fig] && (chunk.figures = copy(report.figures))
@@ -274,7 +307,7 @@ function get_figname(report::Report, chunk; fignum = nothing, ext = nothing)
 
     chunkid = (chunk.options[:name] == nothing) ? chunk.number : chunk.options[:name]
     full_name = joinpath(report.cwd, chunk.options[:fig_path],
-    "$(report.basename)_$(chunkid)_$(fignum)$ext")
+        "$(report.basename)_$(chunkid)_$(fignum)$ext")
     rel_name = "$(chunk.options[:fig_path])/$(report.basename)_$(chunkid)_$(fignum)$ext" #Relative path is used in output
     return full_name, rel_name
 end
@@ -355,6 +388,7 @@ function set_rc_params(formatdict, fig_path, fig_ext)
         docParams[:fig_path] = fig_path
     return nothing
 end
+
 
 function collect_results(chunk::CodeChunk, fmt::ScriptResult)
     content = ""
