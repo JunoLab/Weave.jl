@@ -33,6 +33,8 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
     elseif contains(doctype, "2html")
         fig_path = mktempdir(doc.cwd)
     end
+    #This is needed for latex and should work on all output formats
+    is_windows() && (fig_path = replace(fig_path, "\\", "/"))
 
     doc.fig_path = fig_path
     set_rc_params(doc.format.formatdict, fig_path, fig_ext)
@@ -118,6 +120,11 @@ function run_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     result_chunks = eval_chunk(chunk, report, SandBox)
     contains(report.formatdict[:doctype], "2html") && (result_chunks = embed_figures(result_chunks, report.cwd))
     return result_chunks
+end
+
+function embed_figures(chunk::CodeChunk, cwd)
+    chunk.figures = [img2base64(fig, cwd) for fig in chunk.figures]
+    return chunk
 end
 
 function embed_figures(result_chunks, cwd)
@@ -300,7 +307,7 @@ function get_figname(report::Report, chunk; fignum = nothing, ext = nothing)
 
     chunkid = (chunk.options[:name] == nothing) ? chunk.number : chunk.options[:name]
     full_name = joinpath(report.cwd, chunk.options[:fig_path],
-    "$(report.basename)_$(chunkid)_$(fignum)$ext")
+        "$(report.basename)_$(chunkid)_$(fignum)$ext")
     rel_name = "$(chunk.options[:fig_path])/$(report.basename)_$(chunkid)_$(fignum)$ext" #Relative path is used in output
     return full_name, rel_name
 end
