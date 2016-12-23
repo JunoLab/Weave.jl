@@ -28,7 +28,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
     doc.doctype = doctype
     doc.format = formats[doctype]
 
-    if contains(doctype, "2html") || contains(doctype, "2pdf")
+    if (contains(doctype, "2html") || contains(doctype, "2pdf")) && cache == :off
       fig_path = mktempdir(doc.cwd)
     end
 

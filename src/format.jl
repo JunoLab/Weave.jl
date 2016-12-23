@@ -71,8 +71,6 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
     template = Mustache.template_from_file(doc.template)
   end
 
-  rm(doc.fig_path, force = true, recursive = true)
-
   return Mustache.render(template, themecss = theme_css,
                           highlightcss = css, body = formatted, header_script = doc.header_script,
                           source = wsource, wtime = wtime, wversion = wversion,

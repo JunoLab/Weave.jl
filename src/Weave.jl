@@ -111,6 +111,11 @@ function weave(source ; doctype = :auto, plotlib=:auto,
         outname = get_outname(out_path, doc, ext = "pdf")
     end
 
+    doctype == :auto && (doctype = detect_doctype(doc.source))
+    if (contains(doctype, "2html") || contains(doctype, "2pdf")) && cache == :off
+      rm(doc.fig_path, force = true, recursive = true)
+    end
+
     doc.cwd == pwd() && (outname = basename(outname))
 
     info("Report weaved to $outname")

@@ -1,14 +1,14 @@
 import JLD
 
 function write_cache(doc::WeaveDoc, cache_path)
-    cache_dir = "$(doc.cwd)/$cache_path"
+    cache_dir = joinpath(doc.cwd, cache_path)
     isdir(cache_dir) || mkpath(cache_dir)
-    JLD.save("$cache_dir/$(doc.basename).jld", Dict("doc" => doc))
+    JLD.save(joinpath(cache_dir, doc.basename * ".jld"), Dict("doc" => doc))
     return nothing
 end
 
 function read_cache(doc::WeaveDoc, cache_path)
-    name = "$(doc.cwd)/$cache_path/$(doc.basename).jld"
+    name = joinpath(doc.cwd, cache_path, doc.basename * ".jld")
     isfile(name) || return nothing
     return JLD.load(name)["doc"]
 end
