@@ -90,11 +90,19 @@ function run_latex(doc::WeaveDoc, outname, latex_cmd = "pdflatex")
   xname = basename(outname)
   info("Weaved code to $outname. Running $latex_cmd")
   try
-    out = readstring(`$latex_cmd $xname`)
+    textmp = mktempdir(".")
+    out = readstring(`$latex_cmd --output-directory=$textmp $xname`)
+    pdf = joinpath(textmp, "$(doc.basename).pdf")
+    cp(pdf, "$(doc.basename).pdf", remove_destination=true)
+    rm(textmp, recursive=true)
+    rm(xname)
     cd(old_wd)
+    rm(doc.fig_path, force = true, recursive = true)
+    return true
   catch e
     cd(old_wd)
     warn("Error converting document to pdf. Try running latex manually")
+    return false
     #throw(e)
   end
 end
