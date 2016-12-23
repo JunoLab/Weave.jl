@@ -116,12 +116,12 @@ function weave(doc::AbstractString, doctype::AbstractString)
 end
 
 """
-    weave_include(doc, informat=:auto)
+    include_weave(doc, informat=:auto)
 
 Include code from Weave document calling `include_string` on
 all code from doc. Code is run in the path of the include document.
 """
-function weave_include(source, informat=:auto)
+function include_weave(source, informat=:auto)
   old_path = pwd()
   doc = read_doc(source, informat)
   cd(doc.path)
