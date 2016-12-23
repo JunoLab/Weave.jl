@@ -77,10 +77,11 @@ function weave(source ; doctype = :auto, plotlib=:auto,
         latex_cmd = "pdflatex")
 
     doc = read_doc(source, informat)
-    highlight_theme != nothing && (doc.highlight_theme = highlight_theme) #Reserved for themes
+    highlight_theme != nothing && (doc.highlight_theme = highlight_theme)
     #theme != nothing && (doc.theme = theme) #Reserved for themes
     css != nothing && (doc.css = css)
     template != nothing && (doc.template = template)
+
 
     doc = run(doc, doctype = doctype, plotlib=plotlib,
             out_path=out_path,

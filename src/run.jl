@@ -28,7 +28,11 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
     doc.doctype = doctype
     doc.format = formats[doctype]
 
+    if contains(doctype, "2html") || contains(doctype, "2pdf")
+      fig_path = mktempdir(doc.cwd)
+    end
 
+    doc.fig_path = fig_path
     set_rc_params(doc.format.formatdict, fig_path, fig_ext)
 
     #New sandbox for each document

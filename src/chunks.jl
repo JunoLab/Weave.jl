@@ -12,11 +12,12 @@ type WeaveDoc
     template::AbstractString
     css::AbstractString
     highlight_theme
+    fig_path::AbstractString
     function WeaveDoc(source, chunks, header)
         path, fname = splitdir(abspath(source))
         basename = splitext(fname)[1]
         new(source, basename, path, chunks, "", nothing, "", "", header,
-          "", "", Highlights.Themes.DefaultTheme)
+          "", "", Highlights.Themes.DefaultTheme, "")
     end
 end
 
