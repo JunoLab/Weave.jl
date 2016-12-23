@@ -37,10 +37,10 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
      -V headerscript=$header_script
      -o $outname`)
     println(pandoc_in, formatted)
-
     close(pandoc_in)
     proc_output = readstring(pandoc_out)
     cd(old_wd)
+    rm(doc.fig_path, force = true, recursive = true)
   catch e
     cd(old_wd)
     warn("Error converting document to HTML")
@@ -75,8 +75,9 @@ function pandoc2pdf(formatted::AbstractString, doc::WeaveDoc, outname::AbstractS
     println(pandoc_in, formatted)
 
     close(pandoc_in)
-    proc_output = readall(pandoc_out)
+    proc_output = readstring(pandoc_out)
     cd(old_wd)
+    rm(doc.fig_path, force = true, recursive = true)
   catch e
     cd(old_wd)
     warn("Error converting document to pdf")

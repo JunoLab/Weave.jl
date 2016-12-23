@@ -96,11 +96,15 @@ function weave(source ; doctype = :auto, plotlib=:auto,
 
     #Special for that need external programs
     if doc.doctype == "pandoc2html"
+        mdname = outname
         outname = get_outname(out_path, doc, ext = "html")
         pandoc2html(formatted, doc, outname)
+        rm(mdname)
     elseif doc.doctype == "pandoc2pdf"
+        mdname = outname
         outname = get_outname(out_path, doc, ext = "pdf")
         pandoc2pdf(formatted, doc, outname)
+        rm(mdname)
     elseif doc.doctype == "md2pdf"
         success = run_latex(doc, outname, latex_cmd)
         success || return
