@@ -176,5 +176,5 @@ include("writers.jl")
 
 export weave, list_out_formats, tangle, convert_doc,
         set_chunk_defaults, get_chunk_defaults, restore_chunk_defaults,
-        weave_include
+        include_weave
 end
