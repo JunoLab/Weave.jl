@@ -119,6 +119,7 @@ end
 
 
 function run_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
+    info("Weaving chunk $(chunk.number) from line $(chunk.start_line)")
     result_chunks = eval_chunk(chunk, report, SandBox)
     contains(report.formatdict[:doctype], "2html") && (result_chunks = embed_figures(result_chunks, report.cwd))
     return result_chunks
@@ -168,7 +169,10 @@ function run_inline(inline::InlineCode, report::Report, SandBox::Module)
     chunk = CodeChunk(inline.content, 0, 0, "", Dict(:hold => true, :wrap => false)) 
     options = merge(rcParams[:chunk_defaults], chunk.options)
     merge!(chunk.options, options)
-    chunks = run_chunk(chunk, report, SandBox)
+    
+    chunks = eval_chunk(chunk, report, SandBox)
+    contains(report.formatdict[:doctype], "2html") && (chunks = embed_figures(chunks, report.cwd))
+
     output = chunks[1].output
     startswith(output, "\n") && (output = replace(output, "\n", "", 1))
     inline.output = output
@@ -263,7 +267,7 @@ end
 
 
 function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
-    info("Weaving chunk $(chunk.number) from line $(chunk.start_line)")
+    
 
     if !chunk.options[:eval]
         chunk.output = ""
