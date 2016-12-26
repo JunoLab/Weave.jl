@@ -73,7 +73,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
     for i = 1:n
         chunk = doc.chunks[i]
 
-        if typeof(chunk) == CodeChunk
+        if isa(chunk, CodeChunk)
             options = merge(rcParams[:chunk_defaults], chunk.options)
             merge!(chunk.options, options)
         end
@@ -84,7 +84,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
             result_chunks = restore_chunk(chunk, cached)
         else
 
-        result_chunks = run_chunk(chunk, report, SandBox)
+            result_chunks = run_chunk(chunk, report, SandBox)
         end
 
         executed = [executed; result_chunks]
@@ -155,7 +155,26 @@ function img2base64(fig, cwd)
 end
 
 function run_chunk(chunk::DocChunk, report::Report, SandBox::Module)
+    chunk.content =  [run_inline(c, report, SandBox) for c in chunk.content]
     return chunk
+end
+
+function run_inline(inline::InlineText, report::Report, SandBox::Module)
+    return inline
+end
+
+function run_inline(inline::InlineCode, report::Report, SandBox::Module)
+    #Make a temporary CodeChunk for running code. Collect results and don't wrap
+    chunk = CodeChunk(inline.content, 0, 0, "", Dict(:hold => true, :wrap => false)) 
+    options = merge(rcParams[:chunk_defaults], chunk.options)
+    merge!(chunk.options, options)
+    chunks = run_chunk(chunk, report, SandBox)
+    output = chunks[1].output
+    startswith(output, "\n") && (output = replace(output, "\n", "", 1))
+    inline.output = output
+    inline.rich_output = chunks[1].rich_output
+    inline.figures = chunks[1].figures
+    return inline
 end
 
 function reset_report(report::Report)
@@ -231,8 +250,9 @@ end
 #Parse chunk input to array of expressions
 function parse_input(input::AbstractString)
     parsed = Tuple{AbstractString, Any}[]
+    input = lstrip(input)
     n = length(input)
-    pos = 2 #The first character is extra line end
+    pos = 1 #The first character is extra line end
     while pos ≤ n
         oldpos = pos
         code,  pos = parse(input, pos)

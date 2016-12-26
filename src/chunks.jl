@@ -68,9 +68,13 @@ type InlineCode <: Inline
     content::AbstractString
     si::Int64
     ei::Int64
+    output::AbstractString
+    rich_output::AbstractString
+    figures::Array{AbstractString}
+    function InlineCode(content, si, ei)
+        new(content, si, ei, "", "", AbstractString[])
+    end
 end
-
-
 
 type TermResult
 end
