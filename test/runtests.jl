@@ -10,8 +10,8 @@ using Base.Test
 info("Test: Chunk options")
 include("chunk_options.jl")
 
-#info("Test: Converting")
-#include("convert_test.jl")
+info("Test: Converting")
+include("convert_test.jl")
 
 #info("Test: Caching")
 #include("cache_test.jl")
