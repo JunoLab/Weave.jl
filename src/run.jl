@@ -10,6 +10,7 @@ Run code chunks and capture output from parsed document.
 * `plotlib`: `"PyPlot"`, `"Gadfly"`, or `"Winston"`
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
   `"somepath"`: Path as a AbstractString e.g `"/home/mpastell/weaveout"`
+* `args`: dictionary of arguments to pass to document. Available as WEAVE_ARGS. 
 * `fig_path`: where figures will be generated, relative to out_path
 * `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
 * `cache_path`: where of cached output will be saved.
@@ -19,7 +20,7 @@ Run code chunks and capture output from parsed document.
 **Note:** Run command from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """
 function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
-        out_path=:doc, fig_path = "figures", fig_ext = nothing,
+        out_path=:doc, args=Dict(), fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache = :off)
     #cache :all, :user, :off, :refresh
 
@@ -39,10 +40,11 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
     doc.fig_path = fig_path
     set_rc_params(doc.format.formatdict, fig_path, fig_ext)
 
-    #New sandbox for each document
+    #New sandbox for each document with args exposed
     sandbox = "ReportSandBox$(rcParams[:doc_number])"
-    eval(parse("module $sandbox\nend"))
+    eval(parse("module $sandbox\nWEAVE_ARGS=Dict()\nend"))
     SandBox = eval(parse(sandbox))
+    merge!(SandBox.WEAVE_ARGS, args)
     rcParams[:doc_number] += 1
 
     if haskey(doc.format.formatdict, :mimetypes)
