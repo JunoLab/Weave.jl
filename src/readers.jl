@@ -300,11 +300,10 @@ function parse_inline(text::AbstractString, inline_ex::Regex)
 
     for ic in inline_chunks
         s = ic.offset
-        doc = InlineText(text[e:s], e, s)
+        doc = InlineText(text[e:(s-1)], e, s-1)
         push!(res, doc)
         e = s + length(ic.match)
         push!(res, InlineCode(ic.captures[1], s, e))
-        
     end
     push!(res, InlineText(text[e:end], e, length(text)))
     
