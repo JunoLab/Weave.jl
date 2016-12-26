@@ -5,6 +5,7 @@ pushopt(options::Dict,expr::Expr) = Base.Meta.isexpr(expr,:(=)) && (options[expr
 type MarkupInput
     codestart::Regex
     codeend::Regex
+    inline::Regex
 end
 
 type ScriptInput
@@ -12,23 +13,29 @@ type ScriptInput
   doc_start::Regex
   opt_line::Regex
   opt_start::Regex
+  inline::Regex
 end
 
 type NotebookInput
+  inline
 end
 
 const input_formats = Dict{AbstractString, Any}(
         "noweb" => MarkupInput(r"^<<(.*?)>>=\s*$",
-                    r"^@\s*$"),
+                    r"^@\s*$",
+                    r"`j\s+(.*?)`"s
+                    ),
         "markdown" => MarkupInput(
                       r"^[`~]{3,}(?:\{|\{\.|)julia(?:;|)\s*(.*?)(\}|\s*)$",
-                      r"^[`~]{3,}\s*$"),
+                      r"^[`~]{3,}\s*$",
+                      r"`j\s+(.*?)`"s),
         "script" => ScriptInput(
           r"(^#'.*)|(^#%%.*)|(^# %%.*)",
           r"(^#')|(^#%%)|(^# %%)",
           r"(^#\+.*$)|(^#%%\+.*$)|(^# %%\+.*$)",
-          r"(^#\+)|(^#%%\+)|(^# %%\+)"),
-        "notebook" => NotebookInput()
+          r"(^#\+)|(^#%%\+)|(^# %%\+)",
+          r"`j\s+(.*?)`"s),
+        "notebook" => NotebookInput(nothing) #Don't parse inline code from notebooks
         )
 
 """Detect the input format based on file extension"""
@@ -59,7 +66,7 @@ function parse_header(chunk::CodeChunk)
 end
 
 function parse_header(chunk::DocChunk)
-  m = match(r"^---$(?<header>.+)^---$"ms, chunk.content)
+  m = match(r"^---$(?<header>.+)^---$"ms, chunk.content[1].content)
   if m !== nothing
     header = YAML.load(string(m[:header]))
   else
@@ -109,7 +116,7 @@ function parse_doc(document::AbstractString, format::MarkupInput)
       haskey(options, :name) || (options[:name] = nothing)
 
       if !isempty(strip(content))
-        chunk = DocChunk(content, docno, start_line)
+        chunk = DocChunk(content, docno, start_line, format.inline)
         docno += 1
         push!(parsed, chunk)
       end
@@ -143,7 +150,7 @@ function parse_doc(document::AbstractString, format::MarkupInput)
 
   #Remember the last chunk
   if strip(content) != ""
-    chunk = DocChunk(content, docno, start_line)
+    chunk = DocChunk(content, docno, start_line, format.inline)
     #chunk =  Dict{Symbol,Any}(:type => "doc", :content => content,
     #                                 :number =>  docno, :start_line => start_line)
     push!(parsed, chunk)
@@ -223,7 +230,7 @@ function parse_doc(document::AbstractString, format::ScriptInput)
     elseif state == "doc" && strip(line) != "" && strip(read) != ""
       state = "code"
       (docno > 1) && (read = "\n" * read) # Add whitespace to doc chunk. Needed for markdown output
-      chunk = DocChunk(read, docno, start_line)
+      chunk = DocChunk(read, docno, start_line, format.inline)
       push!(parsed, chunk)
       options = Dict{Symbol,Any}()
       start_line = lineno
@@ -244,7 +251,7 @@ function parse_doc(document::AbstractString, format::ScriptInput)
     chunk = CodeChunk("\n" * strip(read), codeno, start_line, optionString, options)
     push!(parsed, chunk)
   else
-    chunk = DocChunk(read, docno, start_line)
+    chunk = DocChunk(read, docno, start_line, format.inline)
     push!(parsed, chunk)
   end
 
@@ -276,4 +283,30 @@ function parse_doc(document::String, format::NotebookInput)
   end
 
 return parsed
+end
+
+#Use this if regex is undefined
+function parse_inline(text, noex)
+    return Inline[InlineText(text, 1, length(text))]
+end
+
+function parse_inline(text::AbstractString, inline_ex::Regex)
+    ismatch(inline_ex, text) || return Inline[InlineText(text, 1, length(text))]
+
+    inline_chunks = eachmatch(inline_ex, text)
+    s = 1
+    e = 1
+    res = Inline[]
+
+    for ic in inline_chunks
+        s = ic.offset
+        doc = InlineText(text[e:s], e, s)
+        push!(res, doc)
+        e = s + length(ic.match)
+        push!(res, InlineCode(ic.captures[1], s, e))
+        
+    end
+    push!(res, InlineText(text[e:end], e, length(text)))
+    
+    return res
 end
