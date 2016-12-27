@@ -287,25 +287,29 @@ end
 
 #Use this if regex is undefined
 function parse_inline(text, noex)
-    return Inline[InlineText(text, 1, length(text))]
+    return Inline[InlineText(text, 1, length(text), 1)]
 end
 
 function parse_inline(text::AbstractString, inline_ex::Regex)
-    ismatch(inline_ex, text) || return Inline[InlineText(text, 1, length(text))]
+    ismatch(inline_ex, text) || return Inline[InlineText(text, 1, length(text), 1)]
 
     inline_chunks = eachmatch(inline_ex, text)
     s = 1
     e = 1
     res = Inline[]
+    textno = 1
+    codeno = 1
 
     for ic in inline_chunks
         s = ic.offset
-        doc = InlineText(text[e:(s-1)], e, s-1)
+        doc = InlineText(text[e:(s-1)], e, s-1, textno)
+        textno += 1
         push!(res, doc)
         e = s + length(ic.match)
-        push!(res, InlineCode(ic.captures[1], s, e))
+        push!(res, InlineCode(ic.captures[1], s, e, codeno))
+        codeno += 1
     end
-    push!(res, InlineText(text[e:end], e, length(text)))
+    push!(res, InlineText(text[e:end], e, length(text), textno))
     
     return res
 end

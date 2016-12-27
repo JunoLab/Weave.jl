@@ -13,8 +13,8 @@ include("chunk_options.jl")
 info("Test: Converting")
 include("convert_test.jl")
 
-#info("Test: Caching")
-#include("cache_test.jl")
+info("Test: Caching")
+include("cache_test.jl")
 
 info("Testing rich output")
 include("rich_output.jl")

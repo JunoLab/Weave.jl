@@ -60,19 +60,21 @@ end
 
 type InlineText <: Inline
     content::AbstractString
-    si::Int64
-    ei::Int64
+    si::Int
+    ei::Int
+    number::Int
 end
 
 type InlineCode <: Inline
     content::AbstractString
-    si::Int64
-    ei::Int64
+    si::Int
+    ei::Int
+    number::Int
     output::AbstractString
     rich_output::AbstractString
     figures::Array{AbstractString}
-    function InlineCode(content, si, ei)
-        new(content, si, ei, "", "", AbstractString[])
+    function InlineCode(content, si, ei, number)
+        new(content, si, ei, number, "", "", AbstractString[])
     end
 end
 

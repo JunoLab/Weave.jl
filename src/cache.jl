@@ -33,7 +33,28 @@ function restore_chunk(chunk::CodeChunk, cached)
     return new_chunks
 end
 
-#Could be used to restore inline code in future
-function restore_chunk(chunk::DocChunk, cached)
-      return chunk
+#Restore inline code
+function restore_chunk(chunk::DocChunk, cached::WeaveDoc)
+    #Get chunk from cached doc
+    c_chunk = filter(x -> x.number == chunk.number && 
+                    isa(x,  DocChunk), cached.chunks)
+    isempty(c_chunk) && return chunk
+    c_chunk = c_chunk[1]
+
+    #Collect cached code
+    c_inline = filter(x -> isa(x, InlineCode), c_chunk.content)
+    isempty(c_inline) && return chunk
+
+    #Restore cached results for Inline code
+    n = length(chunk.content)    
+    for i in 1:n
+        if isa(chunk.content[i], InlineCode)
+            ci = filter(x -> x.number == chunk.content[i].number, c_inline)
+            isempty(ci) && continue
+            chunk.content[i].output = ci[1].output
+            chunk.content[i].rich_output = ci[1].rich_output
+            chunk.content[i].figures = ci[1].figures
+        end
+    end
+    return chunk
 end
