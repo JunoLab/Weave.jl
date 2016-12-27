@@ -3,6 +3,7 @@
 y= [2, 5, 12]
 @
 
+Some text `j print(10)` and continues with another inline code `j y`.
 
 <<term=true; cache=true>>=
 y= [2, 5, 12]
@@ -26,6 +27,7 @@ y = 1:5
 println(y)
 @
 
+`j y`
 
 <<cache=true>>=
 y = 1:5
