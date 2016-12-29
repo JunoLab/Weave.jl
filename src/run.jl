@@ -28,12 +28,14 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
     doctype == :auto && (doctype = detect_doctype(doc.source))
     doc.doctype = doctype
     doc.format = formats[doctype]
+    isdir(doc.cwd) || mkpath(doc.cwd)
 
     if contains(doctype, "2pdf") && cache == :off
-        fig_path = mktempdir(doc.cwd)
+        fig_path = mktempdir(abspath(doc.cwd))
     elseif contains(doctype, "2html")
-        fig_path = mktempdir(doc.cwd)
+        fig_path = mktempdir(abspath(doc.cwd))
     end
+
     #This is needed for latex and should work on all output formats
     is_windows() && (fig_path = replace(fig_path, "\\", "/"))
 
