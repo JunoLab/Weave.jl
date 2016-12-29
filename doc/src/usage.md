@@ -137,3 +137,28 @@ added to output e.g. to include a Plots figure in markdown you can use:
 ![A plot](`j plot(1:10)`)
 ```
 
+## Passing arguments to documents
+
+You can pass arguments as dictionary to the weaved document using the `args` argument 
+to `weave`. The dictionary will be available as `WEAVE_ARGS` variable in the document.
+
+This makes it possible to create the same report easily for e.g. different 
+date ranges of input data from a database or from files with similar format giving the
+filename as input. 
+
+In order to pass a filename to a document you need call `weave` using:
+
+```julia
+weave("mydoc.jmd", args = Dict("filename" => "somedata.h5"))
+```
+
+and you can access the filename from document as follows:
+
+```
+ ```julia
+ print(WEAVE_ARGS["filename"])
+ ```
+```
+
+You can use the `out_path` argument to control the name of the 
+output document.
