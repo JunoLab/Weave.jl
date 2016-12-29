@@ -120,3 +120,20 @@ Weave will remove the first empty space from each line of documentation.
 
 
 [See sample document:](https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jl)
+
+## Inline code
+
+You can also add inline code to your documents using
+
+```
+`j juliacode`
+``` 
+
+syntax. The code will be replaced with the output of running the code. 
+If the code produces figures the filename or base64 encoded string will be 
+added to output e.g. to include a Plots figure in markdown you can use:
+
+```
+![A plot](`j plot(1:10)`)
+```
+
