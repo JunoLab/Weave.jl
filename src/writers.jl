@@ -80,14 +80,12 @@ function convert_doc(doc::WeaveDoc, format::NotebookOutput)
   cells = []
   ex_count = 1
 
-  doc.chunks[3].content
-
   for chunk in doc.chunks
-    if typeof(chunk) == Weave.DocChunk
+    if isa(chunk, DocChunk)
         push!(cells,
           Dict("cell_type" => "markdown",
              "metadata" => Dict(),
-             "source" => [strip(chunk.content)])
+          "source" => [strip(join([repr(c) for c in chunk.content], ""))])
              )
     else
       push!(cells,
@@ -111,8 +109,8 @@ end
 function convert_doc(doc::WeaveDoc, format::MarkdownOutput)
   output = ""
   for chunk in doc.chunks
-    if typeof(chunk) == Weave.DocChunk
-      output *= chunk.content
+    if isa(chunk, DocChunk)
+      output *= join([repr(c) for c in chunk.content], "")
     else
       output *= "\n" * "```julia"
       isempty(chunk.optionstring) || (output *= ";" * chunk.optionstring)
@@ -128,8 +126,8 @@ end
 function convert_doc(doc::WeaveDoc, format::NowebOutput)
   output = ""
   for chunk in doc.chunks
-    if typeof(chunk) == Weave.DocChunk
-      output *= chunk.content
+    if isa(chunk, DocChunk)
+      output *= join([repr(c) for c in chunk.content], "")
     else
       output *= "\n" * "<<"
       isempty(chunk.optionstring) || (output *= strip(chunk.optionstring))
@@ -147,7 +145,8 @@ function convert_doc(doc::WeaveDoc, format::ScriptOutput)
   output = ""
   for chunk in doc.chunks
     if typeof(chunk) == Weave.DocChunk
-      output *= join(["#' " * s for s in split(chunk.content, "\n")], "\n")
+      content = join([repr(c) for c in chunk.content], "")
+      output *= join(["#' " * s for s in split(content, "\n")], "\n")
     else
       output *= "\n#+ "
       isempty(chunk.optionstring) || (output *= strip(chunk.optionstring))
@@ -157,4 +156,12 @@ function convert_doc(doc::WeaveDoc, format::ScriptOutput)
   end
 
   return output
+end
+
+function Base.repr(c::InlineText)
+  return c.content
+end
+
+function Base.repr(c::InlineCode)
+  return "`j $(c.content)`"
 end

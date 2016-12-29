@@ -105,21 +105,31 @@ function get_titleblock(doc::WeaveDoc)
 end
 
 function strip_header(chunk::DocChunk)
-  if ismatch(r"^---$(?<header>.+)^---$"ms, chunk.content)
-    chunk.content = lstrip(replace(chunk.content, r"^---$(?<header>.+)^---$"ms, ""))
+  if ismatch(r"^---$(?<header>.+)^---$"ms, chunk.content[1].content)
+    chunk.content[1].content = lstrip(replace(chunk.content[1].content, r"^---$(?<header>.+)^---$"ms, ""))
   end
   return chunk
 end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat)
-    return chunk.content
+    return join([format_inline(c) for c in chunk.content], "")
+end
+
+function format_inline(inline::InlineText) 
+    return inline.content
+end
+
+function format_inline(inline::InlineCode)
+    isempty(inline.rich_output) || return inline.rich_output
+    isempty(inline.figures) || return inline.figures[end]
+    isempty(inline.output) || return inline.output
 end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
-    m = Base.Markdown.parse(chunk.content)
+    text = format_chunk(chunk, formatdict, nothing) 
+    m = Base.Markdown.parse(text)
     return string(Documenter.Writers.HTMLWriter.mdconvert(m))
 end
-
 
 #Fixes to Base latex writer
 function Base.Markdown.latex(io::IO, md::Base.Markdown.Paragraph)
@@ -144,7 +154,8 @@ end
 
 
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
-    m = Base.Markdown.parse(chunk.content)
+    text = format_chunk(chunk, formatdict, nothing) 
+    m = Base.Markdown.parse(text)
     return Base.Markdown.latex(m)
 end
 

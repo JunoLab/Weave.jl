@@ -20,7 +20,19 @@ Weave.weave("documents/chunk_cache.noweb", plotlib=nothing, cache=:user);
 cached_result =  readstring(out)
 @test result == cached_result
 
-if VERSION.minor == 3
+# cache = :all
+isdir("documents/cache") && rm("documents/cache", recursive = true)
+out = "documents/chunk_cache.md"
+Weave.weave("documents/chunk_cache.noweb", cache=:all);
+result =  readstring(out)
+rm(out)
+Weave.weave("documents/chunk_cache.noweb", cache=:all);
+cached_result =  readstring(out)
+@test result == cached_result
+
+
+
+if VERSION.minor == 5
   using Gadfly
   isdir("documents/cache") && rm("documents/cache", recursive = true)
   #Caching with Gadfly

@@ -87,46 +87,49 @@ function weave(source ; doctype = :auto, plotlib=:auto,
     css != nothing && (doc.css = css)
     template != nothing && (doc.template = template)
 
+    try
+      doc = run(doc, doctype = doctype, plotlib=plotlib,
+              out_path=out_path, args = args,
+              fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache)
+      formatted = format(doc)
 
-    doc = run(doc, doctype = doctype, plotlib=plotlib,
-            out_path=out_path, args = args,
-            fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache)
-    formatted = format(doc)
+      outname = get_outname(out_path, doc)
 
-    outname = get_outname(out_path, doc)
+      open(outname, "w") do io
+          write(io, formatted)
+      end
 
-    open(outname, "w") do io
-        write(io, formatted)
+      #Special for that need external programs
+      if doc.doctype == "pandoc2html"
+          mdname = outname
+          outname = get_outname(out_path, doc, ext = "html")
+          pandoc2html(formatted, doc, outname)
+          rm(mdname)
+      elseif doc.doctype == "pandoc2pdf"
+          mdname = outname
+          outname = get_outname(out_path, doc, ext = "pdf")
+          pandoc2pdf(formatted, doc, outname)
+          rm(mdname)
+      elseif doc.doctype == "md2pdf"
+          success = run_latex(doc, outname, latex_cmd)
+          success || return
+          outname = get_outname(out_path, doc, ext = "pdf")
+      end
+
+
+      doc.cwd == pwd() && (outname = basename(outname))
+      info("Report weaved to $outname")
+    catch e
+      warn("Something went wrong during weaving")
+      print(e)
+    finally
+      doctype == :auto && (doctype = detect_doctype(doc.source))    
+      if contains(doctype, "2pdf") && cache == :off
+        rm(doc.fig_path, force = true, recursive = true)
+      elseif contains(doctype, "2html")
+        rm(doc.fig_path, force = true, recursive = true)
+      end
     end
-
-    #Special for that need external programs
-    if doc.doctype == "pandoc2html"
-        mdname = outname
-        outname = get_outname(out_path, doc, ext = "html")
-        pandoc2html(formatted, doc, outname)
-        rm(mdname)
-    elseif doc.doctype == "pandoc2pdf"
-        mdname = outname
-        outname = get_outname(out_path, doc, ext = "pdf")
-        pandoc2pdf(formatted, doc, outname)
-        rm(mdname)
-    elseif doc.doctype == "md2pdf"
-        success = run_latex(doc, outname, latex_cmd)
-        success || return
-        outname = get_outname(out_path, doc, ext = "pdf")
-    end
-
-    doctype == :auto && (doctype = detect_doctype(doc.source))
-    
-    if contains(doctype, "2pdf") && cache == :off
-      rm(doc.fig_path, force = true, recursive = true)
-    elseif contains(doctype, "2html")
-      rm(doc.fig_path, force = true, recursive = true)
-    end
-
-    doc.cwd == pwd() && (outname = basename(outname))
-
-    info("Report weaved to $outname")
 end
 
 function weave(doc::AbstractString, doctype::AbstractString)

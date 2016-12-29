@@ -80,4 +80,4 @@ h_ref = """
 and some text
 
 """
-@test htext.content == h_ref
+@test htext.content[1].content == h_ref

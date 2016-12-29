@@ -1,9 +1,12 @@
 
+abstract WeaveChunk
+abstract Inline
+
 type WeaveDoc
     source::AbstractString
     basename::AbstractString
     path::AbstractString
-    chunks::Array
+    chunks::Array{WeaveChunk}
     cwd::AbstractString
     format
     doctype::AbstractString
@@ -29,7 +32,7 @@ immutable ChunkOutput
     figures::Array{AbstractString}
 end
 
-type CodeChunk
+type CodeChunk <: WeaveChunk
     content::AbstractString
     number::Int
     result_no::Int
@@ -45,10 +48,34 @@ type CodeChunk
     end
 end
 
-type DocChunk
-    content::AbstractString
+type DocChunk <: WeaveChunk
+    content::Array{Inline}
     number::Int
     start_line::Int
+    function DocChunk(text::AbstractString, number::Int, start_line::Int, inline_regex = nothing)
+        chunks = parse_inline(text, inline_regex)
+        new(chunks, number, start_line)
+    end
+end
+
+type InlineText <: Inline
+    content::AbstractString
+    si::Int
+    ei::Int
+    number::Int
+end
+
+type InlineCode <: Inline
+    content::AbstractString
+    si::Int
+    ei::Int
+    number::Int
+    output::AbstractString
+    rich_output::AbstractString
+    figures::Array{AbstractString}
+    function InlineCode(content, si, ei, number)
+        new(content, si, ei, number, "", "", AbstractString[])
+    end
 end
 
 type TermResult
