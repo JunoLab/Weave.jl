@@ -115,7 +115,7 @@ function format_chunk(chunk::DocChunk, formatdict, docformat)
     return join([format_inline(c) for c in chunk.content], "")
 end
 
-function format_inline(inline::InlineText) 
+function format_inline(inline::InlineText)
     return inline.content
 end
 
@@ -126,35 +126,37 @@ function format_inline(inline::InlineCode)
 end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
-    text = format_chunk(chunk, formatdict, nothing) 
+    text = format_chunk(chunk, formatdict, nothing)
     m = Base.Markdown.parse(text)
     return string(Documenter.Writers.HTMLWriter.mdconvert(m))
 end
 
+if VERSION < v"v0.6.0-362b271"
 #Fixes to Base latex writer
-function Base.Markdown.latex(io::IO, md::Base.Markdown.Paragraph)
-    println(io)
-    for md in md.content
-        Base.Markdown.latexinline(io, md)
-    end
-    println(io)
-end
+  function Base.Markdown.latex(io::IO, md::Base.Markdown.Paragraph)
+      println(io)
+      for md in md.content
+          Base.Markdown.latexinline(io, md)
+      end
+      println(io)
+  end
 
-function wrapverb(f, io, cmd)
-    print(io, "\\", cmd, "|")
-    f()
-    print(io, "|")
-end
+  function wrapverb(f, io, cmd)
+      print(io, "\\", cmd, "|")
+      f()
+      print(io, "|")
+  end
 
-function Base.Markdown.latexinline(io::IO, code::Base.Markdown.Code)
-    wrapverb(io, "verb") do
-        print(io, code.code)
-    end
+  function Base.Markdown.latexinline(io::IO, code::Base.Markdown.Code)
+      wrapverb(io, "verb") do
+          print(io, code.code)
+      end
+  end
 end
 
 
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
-    text = format_chunk(chunk, formatdict, nothing) 
+    text = format_chunk(chunk, formatdict, nothing)
     m = Base.Markdown.parse(text)
     return Base.Markdown.latex(m)
 end
