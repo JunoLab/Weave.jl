@@ -135,7 +135,7 @@
         <strong>
           Weave.jl
           <span class="version">
-            v0.3.0
+            v0.4.0
           </span>
         </strong>
         
@@ -151,7 +151,7 @@
         <ul class="repo">
           <li class="repo-download">
             
-            <a href="https://github.com/mpastell/Weave.jl/archive/v0.3.0.zip" target="_blank" title="Download" data-action="download">
+            <a href="https://github.com/mpastell/Weave.jl/archive/v0.4.0.zip" target="_blank" title="Download" data-action="download">
               <i class="icon icon-download"></i> Download
             </a>
           </li>
@@ -245,6 +245,18 @@
               </a>
             </li>
           
+            <li class="anchor">
+              <a title="Inline code" href="#inline-code">
+                Inline code
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Passing arguments to documents" href="#passing-arguments-to-documents">
+                Passing arguments to documents
+              </a>
+            </li>
+          
         </ul>
       
     
@@ -318,19 +330,20 @@
 <h2 id="weave">Weave</h2>
 <p>Weave document with markup and julia code using Gadfly for plots, <code>out_path = :pwd</code> makes the results appear in the current working directory.</p>
 <div class="code"><pre><span></span><span class="k">using</span> <span class="n">Weave</span>
-<span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;gadfly_sample.mdw&quot;</span><span class="p">),</span> <span class="n">out_path</span> <span class="o">=</span> <span class="p">:</span><span class="n">pwd</span><span class="p">)</span>
+<span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;gadfly_sample.mdw&quot;</span><span class="p">),</span> <span class="n">out_path</span> <span class="o">=</span> <span class="o">:</span><span class="n">pwd</span><span class="p">)</span>
 </pre></div>
 
 
 <p>Using PyPlot:</p>
-<div class="code"><pre><span></span><span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;julia_sample.mdw&quot;</span><span class="p">),</span> <span class="n">plotlib</span><span class="o">=</span><span class="s">&quot;PyPlot&quot;</span><span class="p">,</span> <span class="n">out_path</span> <span class="o">=</span> <span class="p">:</span><span class="n">pwd</span><span class="p">)</span>
+<div class="code"><pre><span></span><span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;julia_sample.mdw&quot;</span><span class="p">),</span> <span class="n">plotlib</span><span class="o">=</span><span class="s">&quot;PyPlot&quot;</span><span class="p">,</span> <span class="n">out_path</span> <span class="o">=</span> <span class="o">:</span><span class="n">pwd</span><span class="p">)</span>
 </pre></div>
 
 
 <p><a id='Weave.weave-Tuple{Any}' href='#Weave.weave-Tuple{Any}'>#</a>
 <strong><code>Weave.weave</code></strong> &mdash; <em>Method</em>.</p>
 <div class="code"><pre><span></span>weave(source ; doctype = :auto, plotlib=:auto,
-    informat=:auto, out_path=:doc, fig_path = &quot;figures&quot;, fig_ext = nothing,
+    informat=:auto, out_path=:doc, args = Dict(),
+    fig_path = &quot;figures&quot;, fig_ext = nothing,
     cache_path = &quot;cache&quot;, cache=:off,
     template = nothing, highlight_theme = nothing, css = nothing
     latex_cmd = &quot;pdflatex&quot;)
@@ -342,7 +355,8 @@
 <li><code>doctype</code>: :auto = set based on file extension or specify one of the supported formats. See <code>list_out_formats()</code></li>
 <li><code>plotlib</code>: <code>"PyPlot"</code>, <code>"Gadfly"</code> or <code>nothing</code></li>
 <li><code>informat</code>: :auto = set based on file extension or set to  <code>"noweb"</code>, <code>"markdown"</code> or  <code>script</code></li>
-<li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>: Julia working directory, <code>"somepath"</code>: output directory as a String e.g <code>"/home/mpastell/weaveout"</code> or filename as string e.g. ~/outpath/outfile.tex.</li>
+<li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>:   Julia working directory, <code>"somepath"</code>: output directory as a String e.g <code>"/home/mpastell/weaveout"</code> or filename as   string e.g. ~/outpath/outfile.tex.</li>
+<li><code>args</code>: dictionary of arguments to pass to document. Available as WEAVE_ARGS</li>
 <li><code>fig_path</code>: where figures will be generated, relative to out_path</li>
 <li><code>fig_ext</code>: Extension for saved figures e.g. <code>".pdf"</code>, <code>".png"</code>. Default setting depends on <code>doctype</code>.</li>
 <li><code>cache_path</code>: where of cached output will be saved.</li>
@@ -353,7 +367,6 @@
 <li><code>latex_cmd</code> the command used to make pdf from .tex</li>
 </ul>
 <p><strong>Note:</strong> Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.</p>
-<p><a target='_blank' href='https://github.com/mpastell/Weave.jl/tree/a4891b01a8f20557270f827a9c5a5e5e7c25ec6a/src/Weave.jl#L47-L72' class='documenter-source'>source</a><br></p>
 <p><a id='Weave-from-shell-1'></a></p>
 <h2 id="weave-from-shell">Weave from shell</h2>
 <p>You can also use the <code>weave.jl</code> script under bin directory to weave documents from the shell:</p>
@@ -376,7 +389,6 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
 <li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>: Julia working directory,  <code>"somepath"</code>, directory name as a string e.g <code>"/home/mpastell/weaveout"</code></li>
 </ul>
 <p>or filename as string e.g. ~/outpath/outfile.jl.</p>
-<p><a target='_blank' href='https://github.com/mpastell/Weave.jl/tree/a4891b01a8f20557270f827a9c5a5e5e7c25ec6a/src/Weave.jl#L17-L25' class='documenter-source'>source</a><br></p>
 <p><a id='Supported-formats-1'></a></p>
 <h2 id="supported-formats">Supported formats</h2>
 <p>Weave sets the output format based on the file extension, but you can also set it using <code>doctype</code> option. The rules for detecting the format are:</p>
@@ -413,7 +425,6 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
 <strong><code>Weave.list_out_formats</code></strong> &mdash; <em>Method</em>.</p>
 <p><code>list_out_formats()</code></p>
 <p>List supported output formats</p>
-<p><a target='_blank' href='https://github.com/mpastell/Weave.jl/tree/a4891b01a8f20557270f827a9c5a5e5e7c25ec6a/src/Weave.jl#L5-L9' class='documenter-source'>source</a><br></p>
 <p><a id='Document-syntax-1'></a></p>
 <h2 id="document-syntax">Document syntax</h2>
 <p>Weave uses noweb, markdown or script syntax for defining the code chunks and documentation chunks. You can also weave Jupyter notebooks. The format is detected based on the file extension, but you can also set it manually using the <code>informat</code> parameter.</p>
@@ -445,6 +456,35 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
 <p>All lines that are not documentation are treated as code. You can set chunk options using lines starting with <code>#+</code> just before code e.g. <code>#+ term=true</code>.</p>
 <p>The format is identical to <a href="http://mpastell.com/pweave/pypublish.html">Pweave</a> and the concept is similar to publishing documents with MATLAB or using Knitr's <a href="http://yihui.name/knitr/demo/stitch/">spin</a>. Weave will remove the first empty space from each line of documentation.</p>
 <p><a href="https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jl">See sample document:</a></p>
+<p><a id='Inline-code-1'></a></p>
+<h2 id="inline-code">Inline code</h2>
+<p>You can also add inline code to your documents using</p>
+<div class="code"><pre><span></span>`j juliacode`
+</pre></div>
+
+
+<p>syntax. The code will be replaced with the output of running the code.  If the code produces figures the filename or base64 encoded string will be  added to output e.g. to include a Plots figure in markdown you can use:</p>
+<div class="code"><pre><span></span><span class="o">!</span><span class="p">[</span><span class="n">A</span> <span class="n">plot</span><span class="p">](</span><span class="err">`</span><span class="n">j</span> <span class="n">plot</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">10</span><span class="p">)</span><span class="err">`</span><span class="p">)</span>
+</pre></div>
+
+
+<p><a id='Passing-arguments-to-documents-1'></a></p>
+<h2 id="passing-arguments-to-documents">Passing arguments to documents</h2>
+<p>You can pass arguments as dictionary to the weaved document using the <code>args</code> argument  to <code>weave</code>. The dictionary will be available as <code>WEAVE_ARGS</code> variable in the document.</p>
+<p>This makes it possible to create the same report easily for e.g. different  date ranges of input data from a database or from files with similar format giving the filename as input. </p>
+<p>In order to pass a filename to a document you need call <code>weave</code> using:</p>
+<div class="code"><pre><span></span><span class="n">weave</span><span class="p">(</span><span class="s">&quot;mydoc.jmd&quot;</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="kt">Dict</span><span class="p">(</span><span class="s">&quot;filename&quot;</span> <span class="o">=&gt;</span> <span class="s">&quot;somedata.h5&quot;</span><span class="p">))</span>
+</pre></div>
+
+
+<p>and you can access the filename from document as follows:</p>
+<div class="code"><pre><span></span> ```julia
+ print(WEAVE_ARGS[&quot;filename&quot;])
+ ```
+</pre></div>
+
+
+<p>You can use the <code>out_path</code> argument to control the name of the  output document.</p>
           <aside class="copyright" role="note">
             
               Matti Pastell 2016 &ndash;

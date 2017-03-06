@@ -135,7 +135,7 @@
         <strong>
           Weave.jl
           <span class="version">
-            v0.3.0
+            v0.4.0
           </span>
         </strong>
         
@@ -151,7 +151,7 @@
         <ul class="repo">
           <li class="repo-download">
             
-            <a href="https://github.com/mpastell/Weave.jl/archive/v0.3.0.zip" target="_blank" title="Download" data-action="download">
+            <a href="https://github.com/mpastell/Weave.jl/archive/v0.4.0.zip" target="_blank" title="Download" data-action="download">
               <i class="icon icon-download"></i> Download
             </a>
           </li>
@@ -272,13 +272,13 @@
 <p>You can Weave the files to your working directory using:</p>
 <div class="code"><pre><span></span><span class="k">using</span> <span class="n">Weave</span>
 <span class="c">#Markdown</span>
-<span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;gadfly_md_sample.jmd&quot;</span><span class="p">),</span> <span class="n">out_path</span> <span class="o">=</span> <span class="p">:</span><span class="n">pwd</span><span class="p">,</span>
+<span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;gadfly_md_sample.jmd&quot;</span><span class="p">),</span> <span class="n">out_path</span> <span class="o">=</span> <span class="o">:</span><span class="n">pwd</span><span class="p">,</span>
   <span class="n">doctype</span> <span class="o">=</span> <span class="s">&quot;pandoc&quot;</span><span class="p">)</span>
 <span class="c">#HTML</span>
-<span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;gadfly_md_sample.jmd&quot;</span><span class="p">),</span> <span class="n">out_path</span> <span class="o">=</span> <span class="p">:</span><span class="n">pwd</span><span class="p">,</span>
+<span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;gadfly_md_sample.jmd&quot;</span><span class="p">),</span> <span class="n">out_path</span> <span class="o">=</span> <span class="o">:</span><span class="n">pwd</span><span class="p">,</span>
   <span class="n">doctype</span> <span class="o">=</span> <span class="s">&quot;md2html&quot;</span><span class="p">)</span>
 <span class="c">#pdf</span>
-<span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;gadfly_md_sample.jmd&quot;</span><span class="p">),</span> <span class="n">out_path</span> <span class="o">=</span> <span class="p">:</span><span class="n">pwd</span><span class="p">,</span>
+<span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;gadfly_md_sample.jmd&quot;</span><span class="p">),</span> <span class="n">out_path</span> <span class="o">=</span> <span class="o">:</span><span class="n">pwd</span><span class="p">,</span>
   <span class="n">doctype</span> <span class="o">=</span> <span class="s">&quot;md2pdf&quot;</span><span class="p">)</span>
 </pre></div>
           <aside class="copyright" role="note">

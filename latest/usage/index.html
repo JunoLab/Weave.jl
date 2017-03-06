@@ -135,7 +135,7 @@
         <strong>
           Weave.jl
           <span class="version">
-            v0.3.0+
+            v0.4.0
           </span>
         </strong>
         
@@ -151,7 +151,7 @@
         <ul class="repo">
           <li class="repo-download">
             
-            <a href="https://github.com/mpastell/Weave.jl/archive/v0.3.0+.zip" target="_blank" title="Download" data-action="download">
+            <a href="https://github.com/mpastell/Weave.jl/archive/v0.4.0.zip" target="_blank" title="Download" data-action="download">
               <i class="icon icon-download"></i> Download
             </a>
           </li>
@@ -330,12 +330,12 @@
 <h2 id="weave">Weave</h2>
 <p>Weave document with markup and julia code using Gadfly for plots, <code>out_path = :pwd</code> makes the results appear in the current working directory.</p>
 <div class="code"><pre><span></span><span class="k">using</span> <span class="n">Weave</span>
-<span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;gadfly_sample.mdw&quot;</span><span class="p">),</span> <span class="n">out_path</span> <span class="o">=</span> <span class="p">:</span><span class="n">pwd</span><span class="p">)</span>
+<span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;gadfly_sample.mdw&quot;</span><span class="p">),</span> <span class="n">out_path</span> <span class="o">=</span> <span class="o">:</span><span class="n">pwd</span><span class="p">)</span>
 </pre></div>
 
 
 <p>Using PyPlot:</p>
-<div class="code"><pre><span></span><span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;julia_sample.mdw&quot;</span><span class="p">),</span> <span class="n">plotlib</span><span class="o">=</span><span class="s">&quot;PyPlot&quot;</span><span class="p">,</span> <span class="n">out_path</span> <span class="o">=</span> <span class="p">:</span><span class="n">pwd</span><span class="p">)</span>
+<div class="code"><pre><span></span><span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;julia_sample.mdw&quot;</span><span class="p">),</span> <span class="n">plotlib</span><span class="o">=</span><span class="s">&quot;PyPlot&quot;</span><span class="p">,</span> <span class="n">out_path</span> <span class="o">=</span> <span class="o">:</span><span class="n">pwd</span><span class="p">)</span>
 </pre></div>
 
 
@@ -473,7 +473,7 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
 <p>You can pass arguments as dictionary to the weaved document using the <code>args</code> argument  to <code>weave</code>. The dictionary will be available as <code>WEAVE_ARGS</code> variable in the document.</p>
 <p>This makes it possible to create the same report easily for e.g. different  date ranges of input data from a database or from files with similar format giving the filename as input. </p>
 <p>In order to pass a filename to a document you need call <code>weave</code> using:</p>
-<div class="code"><pre><span></span><span class="n">weave</span><span class="p">(</span><span class="s">&quot;mydoc.jmd&quot;</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">(</span><span class="s">&quot;filename&quot;</span> <span class="o">=&gt;</span> <span class="s">&quot;somedata.h5&quot;</span><span class="p">))</span>
+<div class="code"><pre><span></span><span class="n">weave</span><span class="p">(</span><span class="s">&quot;mydoc.jmd&quot;</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="kt">Dict</span><span class="p">(</span><span class="s">&quot;filename&quot;</span> <span class="o">=&gt;</span> <span class="s">&quot;somedata.h5&quot;</span><span class="p">))</span>
 </pre></div>
 
 
