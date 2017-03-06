@@ -23,6 +23,14 @@ and figures.
 * Simple caching of results
 * Convert to and from IJulia notebooks
 
+## Installation
+
+You can install the latest release using Julia package manager:
+
+```julia
+Pkg.add("Weave")
+```
+
 ## Usage
 
 Run from julia using Gadfly for plots:
