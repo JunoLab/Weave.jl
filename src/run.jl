@@ -10,7 +10,7 @@ Run code chunks and capture output from parsed document.
 * `plotlib`: `"PyPlot"`, `"Gadfly"`, or `"Winston"`
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
   `"somepath"`: Path as a AbstractString e.g `"/home/mpastell/weaveout"`
-* `args`: dictionary of arguments to pass to document. Available as WEAVE_ARGS. 
+* `args`: dictionary of arguments to pass to document. Available as WEAVE_ARGS.
 * `fig_path`: where figures will be generated, relative to out_path
 * `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
 * `cache_path`: where of cached output will be saved.
@@ -168,10 +168,10 @@ end
 
 function run_inline(inline::InlineCode, report::Report, SandBox::Module)
     #Make a temporary CodeChunk for running code. Collect results and don't wrap
-    chunk = CodeChunk(inline.content, 0, 0, "", Dict(:hold => true, :wrap => false)) 
+    chunk = CodeChunk(inline.content, 0, 0, "", Dict(:hold => true, :wrap => false))
     options = merge(rcParams[:chunk_defaults], chunk.options)
     merge!(chunk.options, options)
-    
+
     chunks = eval_chunk(chunk, report, SandBox)
     contains(report.formatdict[:doctype], "2html") && (chunks = embed_figures(chunks, report.cwd))
 
@@ -211,7 +211,11 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
 
     #Save figures only in the end of chunk for PyPlot
     if rcParams[:plotlib] == "PyPlot"
-        savefigs_pyplot(report::Report)
+        #Work around "old world"
+        (@eval savep1(x) = savefigs_pyplot(x))
+        savep2(x) = eval(Expr(:call, function() savep1( x ) end))
+        savep2(report)
+        #savep(report)
     end
 
     return results
@@ -269,7 +273,7 @@ end
 
 
 function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
-    
+
 
     if !chunk.options[:eval]
         chunk.output = ""

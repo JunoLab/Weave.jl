@@ -1,4 +1,4 @@
-__precompile__()
+__precompile__(false)
 module Weave
 import Highlights
 
@@ -58,10 +58,10 @@ Weave an input document to output file.
   See `list_out_formats()`
 * `plotlib`: `"PyPlot"`, `"Gadfly"` or `nothing`
 * `informat`: :auto = set based on file extension or set to  `"noweb"`, `"markdown"` or  `script`
-* `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: 
-   Julia working directory, `"somepath"`: output directory as a String e.g `"/home/mpastell/weaveout"` or filename as 
+* `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`:
+   Julia working directory, `"somepath"`: output directory as a String e.g `"/home/mpastell/weaveout"` or filename as
    string e.g. ~/outpath/outfile.tex.
-*  `args`: dictionary of arguments to pass to document. Available as WEAVE_ARGS 
+*  `args`: dictionary of arguments to pass to document. Available as WEAVE_ARGS
 * `fig_path`: where figures will be generated, relative to out_path
 * `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
 * `cache_path`: where of cached output will be saved.
@@ -120,10 +120,11 @@ function weave(source ; doctype = :auto, plotlib=:auto,
       doc.cwd == pwd() && (outname = basename(outname))
       info("Report weaved to $outname")
     catch e
+      rethrow(e)
       warn("Something went wrong during weaving")
       print(e)
     finally
-      doctype == :auto && (doctype = detect_doctype(doc.source))    
+      doctype == :auto && (doctype = detect_doctype(doc.source))
       if contains(doctype, "2pdf") && cache == :off
         rm(doc.fig_path, force = true, recursive = true)
       elseif contains(doctype, "2html")

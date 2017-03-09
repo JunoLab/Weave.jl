@@ -30,11 +30,11 @@ function Base.display(report::Report, data)
     #Set preferred mimetypes for report based on format
     for m in report.mimetypes
         if mimewritable(m, data)
+            info(data)
             try
               display(report, m, data)
             catch
               warn("Failed to save image in \"$m\" format")
-              #rethrow()
               continue
             end
             #Always show plain text as well for term mode

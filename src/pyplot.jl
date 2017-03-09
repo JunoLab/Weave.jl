@@ -8,7 +8,6 @@ function savefigs_pyplot(report::Report)
     isdir(figpath) || mkdir(figpath)
     chunkid = (chunk.options[:name] == nothing) ? chunk.number : chunk.options[:name]
     #Iterate over all open figures, save them and store names
-    
 
     for fig = plt[:get_fignums]()
         full_name, rel_name = get_figname(report, chunk, fignum=fig)
@@ -18,5 +17,4 @@ function savefigs_pyplot(report::Report)
         plt[:draw]()
         plt[:close]()
     end
-    #return fignames
 end
