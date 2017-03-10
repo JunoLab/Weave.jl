@@ -213,9 +213,8 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
     if rcParams[:plotlib] == "PyPlot"
         #Work around "old world"
         (@eval savep1(x) = savefigs_pyplot(x))
-        savep2(x) = eval(Expr(:call, function() savep1( x ) end))
+        savep2(x) = eval(Expr(:call, function() savep1(x) end))
         savep2(report)
-        #savep(report)
     end
 
     return results

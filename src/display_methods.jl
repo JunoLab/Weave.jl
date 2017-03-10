@@ -30,7 +30,6 @@ function Base.display(report::Report, data)
     #Set preferred mimetypes for report based on format
     for m in report.mimetypes
         if mimewritable(m, data)
-            info(data)
             try
               display(report, m, data)
             catch

@@ -1,6 +1,7 @@
+using Compat
 
-abstract WeaveChunk
-abstract Inline
+@compat abstract type WeaveChunk end
+@compat abstract type Inline end
 
 type WeaveDoc
     source::AbstractString
