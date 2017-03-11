@@ -34,7 +34,9 @@ if VERSION < v"0.6-"
 
   info("Test: Weaving with Plots.jl")
   include("plotsjl_test.jl")
-  include("publish_test.jl")
+
+  info("Test publishing documents")
+  haskey(ENV, "APPVEYOR") ||  include("publish_test.jl")
 end
 
 #Fails on travis, works locally.
