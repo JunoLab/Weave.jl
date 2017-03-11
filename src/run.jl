@@ -211,10 +211,13 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
 
     #Save figures only in the end of chunk for PyPlot
     if rcParams[:plotlib] == "PyPlot"
-        #Work around "old world"
-        (@eval savep1(x) = savefigs_pyplot(x))
-        savep2(x) = eval(Expr(:call, function() savep1(x) end))
-        savep2(report)
+        #Fix "world-age" issue
+        if VERSION >= v"0.5.0"
+            savep(x) = eval(Expr(:call, x-> savefigs_pyplot(x), x))
+            savep(report)
+        else
+            savefigs_pyplot(report)
+        end
     end
 
     return results
