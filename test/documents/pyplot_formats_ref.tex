@@ -5,7 +5,7 @@ plot(x, sin(x))
 \end{juliacode}
 \begin{juliaout}
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7f8aa1b99588>
+ PyObject <matplotlib.lines.Line2D object at 0x7fbd66371c50>
 \end{juliaout}
 \begin{figure}[ht]
 \center
@@ -16,7 +16,7 @@ plot(x, sin(x))
 
 \begin{juliaout}
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7f8aa1d6cf60>
+ PyObject <matplotlib.lines.Line2D object at 0x7fbd66325a20>
 \end{juliaout}
 \begin{figure}[htpb]
 \center
@@ -26,25 +26,26 @@ plot(x, sin(x))
 
 \begin{juliaout}
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7f8aa1cd9f28>
+ PyObject <matplotlib.lines.Line2D object at 0x7fbd6629cf28>
 \end{juliaout}
 \includegraphics[width=\linewidth]{figures/pyplot_formats_cos2_fun_1.pdf}
 
 \begin{juliaterm}
 julia> x = linspace(0, 2π, 200)
-
 200-element LinSpace{Float64}:
  0.0,0.0315738,0.0631476,0.0947214,0.126295,…,6.18846,6.22004,6.25161,6.28319
+
 julia> plot(x, sin(x))
-
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7f8aa1cc0ba8>
-julia> y = 20
+ PyObject <matplotlib.lines.Line2D object at 0x7fbd600ca588>
 
+julia> y = 20
 20
+
 julia> plot(x, cos(x))
 1-element Array{Any,1}:
- PyObject <matplotlib.lines.Line2D object at 0x7f8aa1cc0e10>
+ PyObject <matplotlib.lines.Line2D object at 0x7fbd600f4c18>
+
 \end{juliaterm}
 \includegraphics[width=\linewidth]{figures/pyplot_formats_4_1.pdf}
 
@@ -53,6 +54,6 @@ x = randn(100, 100)
 contourf(x)
 \end{juliacode}
 \begin{juliaout}
-PyObject <matplotlib.contour.QuadContourSet object at 0x7f8aa1c2f198>
+PyObject <matplotlib.contour.QuadContourSet object at 0x7fbd600ba9b0>
 \end{juliaout}
 \includegraphics[width=15cm]{figures/pyplot_formats_5_1.pdf}

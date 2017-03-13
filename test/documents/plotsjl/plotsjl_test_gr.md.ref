@@ -21,10 +21,9 @@ p = plot(x, sin(x), size =(900,300))
 ~~~~{.julia}
 julia> plot(x, sin(x))
 
+
 ~~~~~~~~~~~~~
 
-
-![](figures/plotsjl_test_gr_2_1.png)\ 
 
 
 ~~~~{.julia}
@@ -33,26 +32,15 @@ scatter!(rand(100),markersize=6,c=:orange)
 ~~~~~~~~~~~~~
 
 
-![](figures/plotsjl_test_gr_3_1.png)\ 
-
 
 ~~~~{.julia}
 julia> plot(rand(100) / 3,reg=true,fill=(0,:green))
 
 
-~~~~~~~~~~~~~
-
-
-![](figures/plotsjl_test_gr_4_1.png)\ 
-
-
-~~~~{.julia}
 julia> scatter!(rand(100),markersize=6,c=:orange)
 
+
 ~~~~~~~~~~~~~
 
 
-![](figures/plotsjl_test_gr_4_2.png)\ 
 
-
-![A random walk.](figures/plotsjl_test_gr_random_1.png)

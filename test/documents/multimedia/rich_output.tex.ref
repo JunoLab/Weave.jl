@@ -94,6 +94,7 @@ julia> df
 │ 24  │ 'x'     │ 24      │
 │ 25  │ 'y'     │ 25      │
 │ 26  │ 'z'     │ 26      │
+
 \end{juliaterm}
 
 \begin{juliacode}

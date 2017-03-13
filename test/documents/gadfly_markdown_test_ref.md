@@ -5,9 +5,9 @@
 julia> using Gadfly
 
 julia> x = linspace(0, 2π, 200)
-
 200-element LinSpace{Float64}:
  0.0,0.0315738,0.0631476,0.0947214,0.126295,…,6.18846,6.22004,6.25161,6.28319
+
 julia> plot(x=x, y = sin(x), Geom.line)
 
 ````
@@ -17,9 +17,10 @@ julia> plot(x=x, y = sin(x), Geom.line)
 
 ````julia
 julia> y = 20
-
 20
+
 julia> plot(x=x, y = cos(x), Geom.line)
+
 ````
 
 
@@ -41,9 +42,9 @@ linspace(0.0,200.0,50)
 julia> using Gadfly
 
 julia> x = linspace(0, 2π, 200)
-
 200-element LinSpace{Float64}:
  0.0,0.0315738,0.0631476,0.0947214,0.126295,…,6.18846,6.22004,6.25161,6.28319
+
 julia> plot(x=x, y = sin(x), Geom.line)
 
 ````
@@ -53,9 +54,10 @@ julia> plot(x=x, y = sin(x), Geom.line)
 
 ````julia
 julia> y = 20
-
 20
+
 julia> plot(x=x, y = cos(x), Geom.line)
+
 ````
 
 

@@ -15,6 +15,7 @@ p = plot(x, sin(x), size =(900,300))
 \begin{juliaterm}
 julia> plot(x, sin(x))
 
+
 \end{juliaterm}
 \includegraphics[width=\linewidth]{figures/plotsjl_test_2_1.pdf}
 
@@ -33,6 +34,7 @@ julia> plot(rand(100) / 3,reg=true,fill=(0,:green))
 
 \begin{juliaterm}
 julia> scatter!(rand(100),markersize=6,c=:orange)
+
 
 \end{juliaterm}
 \includegraphics[width=\linewidth]{figures/plotsjl_test_4_2.pdf}
