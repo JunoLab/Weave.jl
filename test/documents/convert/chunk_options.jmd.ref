@@ -3,6 +3,12 @@
 y= [2, 5, 12]
 ```
 
+```julia;term=true
+x = 1:10
+d = Dict("Weave" => "testing")
+y = [2, 4 ,8]
+```
+
 ```julia
 x = [12, 10]
 println(y)

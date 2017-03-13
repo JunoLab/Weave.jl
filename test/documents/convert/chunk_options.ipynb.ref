@@ -13,6 +13,15 @@
       "outputs": [],
       "cell_type": "code",
       "source": [
+        "x = 1:10\nd = Dict(\"Weave\" => \"testing\")\ny = [2, 4 ,8]"
+      ],
+      "metadata": {},
+      "execution_count": null
+    },
+    {
+      "outputs": [],
+      "cell_type": "code",
+      "source": [
         "x = [12, 10]\nprintln(y)\nprintln(x)"
       ],
       "metadata": {},

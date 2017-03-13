@@ -182,7 +182,7 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
 
     if !chunk.options[:eval]
         if chunk.options[:echo]
-            result = "$(formatdict[:codestart])$(chunk.content)\n$(formatdict[:codeend])"
+            result = "$(formatdict[:codestart])\n$(chunk.content)$(formatdict[:codeend])"
             return result
         else
             r = ""
@@ -196,7 +196,7 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
 
     if chunk.options[:echo]
       #Convert to output format and highlight (html, tex...) if needed
-        result = "$(formatdict[:codestart])$(chunk.content)\n$(formatdict[:codeend])\n"
+        result = "$(formatdict[:codestart])$(chunk.content)$(formatdict[:codeend])\n"
     else
         result = ""
     end

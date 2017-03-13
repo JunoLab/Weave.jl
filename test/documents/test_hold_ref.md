@@ -49,8 +49,8 @@ display(x)
 julia> using Gadfly
 
 julia> x = 1:10
-
 1:10
+
 julia> plot(x = x, y = x)
 
 ~~~~~~~~~~~~~
@@ -73,6 +73,7 @@ julia> plot(x = x, y = x)
 ~~~~{.julia}
 julia> display(x)
 1:10
+
 ~~~~~~~~~~~~~
 
 
@@ -85,8 +86,8 @@ julia> display(x)
 julietta> using Gadfly
 
 julietta> x = 1:10
-
 1:10
+
 julietta> plot(x = x, y = x)
 
 ~~~~~~~~~~~~~
@@ -109,6 +110,7 @@ julietta> plot(x = x, y = x)
 ~~~~{.julia}
 julietta> display(x)
 1:10
+
 ~~~~~~~~~~~~~
 
 
@@ -175,8 +177,8 @@ display(x)
 julia> using Gadfly
 
 julia> x = 1:10
-
 1:10
+
 julia> plot(x = x, y = x)
 
 ~~~~~~~~~~~~~
@@ -199,6 +201,7 @@ julia> plot(x = x, y = x)
 ~~~~{.julia}
 julia> display(x)
 1:10
+
 ~~~~~~~~~~~~~
 
 
@@ -219,8 +222,7 @@ display(x)
 
 
 ~~~~
-1:10
-1:10
+1:101:10
 ~~~~
 
 

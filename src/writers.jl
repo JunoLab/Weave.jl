@@ -115,7 +115,7 @@ function convert_doc(doc::WeaveDoc, format::MarkdownOutput)
       output *= "\n" * "```julia"
       isempty(chunk.optionstring) || (output *= ";" * chunk.optionstring)
       output *= "\n" * lstrip(chunk.content)
-      output *= "\n```\n"
+      output *= "```\n"
     end
   end
 
@@ -133,7 +133,7 @@ function convert_doc(doc::WeaveDoc, format::NowebOutput)
       isempty(chunk.optionstring) || (output *= strip(chunk.optionstring))
       output *= ">>="
       output *= "\n" * lstrip(chunk.content)
-      output *= "\n@\n"
+      output *= "@\n"
     end
   end
 
@@ -151,7 +151,7 @@ function convert_doc(doc::WeaveDoc, format::ScriptOutput)
       output *= "\n#+ "
       isempty(chunk.optionstring) || (output *= strip(chunk.optionstring))
       output *= "\n\n" * lstrip(chunk.content)
-      output *= "\n\n"
+      output *= "\n"
     end
   end
 

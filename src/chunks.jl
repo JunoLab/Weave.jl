@@ -45,7 +45,7 @@ type CodeChunk <: WeaveChunk
     figures::Array{AbstractString}
     result::Array{ChunkOutput}
     function CodeChunk(content, number, start_line, optionstring, options)
-        new(rstrip(content), number, 0, start_line, optionstring, options, "","", AbstractString[], ChunkOutput[])
+        new(rstrip(content) * "\n", number, 0, start_line, optionstring, options, "","", AbstractString[], ChunkOutput[])
     end
 end
 
