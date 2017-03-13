@@ -2,7 +2,6 @@ julia 0.5
 Cairo
 Gadfly
 PyPlot
-#Winston
 GR
 DSP
 Plots

@@ -10,7 +10,7 @@ and Sweave.
 
 * Noweb, markdown or script syntax for input documents.
 * Execute code as terminal or "script" chunks.
-* Capture Plots, Gadfly, PyPlot and Winston figures.
+* Capture Plots, Gadfly and PyPlot figures.
 * Supports LaTex, Pandoc, Github markdown, MultiMarkdown, Asciidoc and reStructuredText output
 * Publish markdown directly to html and pdf using julia or Pandoc markdown.
 * Simple caching of results

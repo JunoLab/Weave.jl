@@ -7,7 +7,7 @@ Run code chunks and capture output from parsed document.
 
 * `doctype`: :auto = set based on file extension or specify one of the supported formats.
   See `list_out_formats()`
-* `plotlib`: `"PyPlot"`, `"Gadfly"`, or `"Winston"`
+* `plotlib`: `"PyPlot"`, `"Gadfly"`, or `"Plots`
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
   `"somepath"`: Path as a AbstractString e.g `"/home/mpastell/weaveout"`
 * `args`: dictionary of arguments to pass to document. Available as WEAVE_ARGS.
@@ -355,10 +355,8 @@ function init_plotting(plotlib)
     else
         l_plotlib = lowercase(plotlib)
         rcParams[:chunk_defaults][:fig] = true
-        if l_plotlib  == "winston"
-            eval(parse("""include("$srcdir/winston.jl")"""))
-            rcParams[:plotlib] = "Winston"
-        elseif l_plotlib == "pyplot"
+
+        if l_plotlib == "pyplot"
             eval(parse("""include("$srcdir/pyplot.jl")"""))
             rcParams[:plotlib] = "PyPlot"
         elseif l_plotlib == "plots"
@@ -497,5 +495,4 @@ function detect_plotlib(chunk::CodeChunk)
   end
   isdefined(:PyPlot) && init_plotting("PyPlot") && return
   isdefined(:Gadfly) && init_plotting("Gadfly") && return
-  isdefined(:Winston) && init_plotting("Winston") && return
 end
