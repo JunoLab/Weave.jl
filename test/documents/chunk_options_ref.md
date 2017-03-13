@@ -4,6 +4,25 @@ julia> y= [2, 5, 12]
   2
   5
  12
+
+~~~~~~~~~~~~~
+
+
+
+~~~~{.julia}
+julia> x = 1:10
+1:10
+
+julia> d = Dict("Weave" => "testing")
+Dict{String,String} with 1 entry:
+  "Weave" => "testing"
+
+julia> y = [2, 4 ,8]
+3-element Array{Int64,1}:
+ 2
+ 4
+ 8
+
 ~~~~~~~~~~~~~
 
 
@@ -15,7 +34,7 @@ println(y)
 
 
 ~~~~
-[2,5,12]
+[2,4,8]
 ~~~~
 
 
@@ -44,6 +63,7 @@ Results without code
 
 
 ~~~~{.julia}
+
 y = randn(5)
 println("Don't eval, but show code")
 ~~~~~~~~~~~~~

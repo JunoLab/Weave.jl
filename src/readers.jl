@@ -129,8 +129,6 @@ function parse_doc(document::AbstractString, format::MarkupInput)
     end
     if ismatch(codeend, line) && state=="code"
 
-
-
       chunk = CodeChunk(content, codeno, start_line, optionString, options)
 
       codeno+=1
@@ -142,7 +140,7 @@ function parse_doc(document::AbstractString, format::MarkupInput)
     end
 
     if lineno == 1
-      content *= line
+       content *= line
     else
       content *= "\n" * line
     end
@@ -310,6 +308,6 @@ function parse_inline(text::AbstractString, inline_ex::Regex)
         codeno += 1
     end
     push!(res, InlineText(text[e:end], e, length(text), textno))
-    
+
     return res
 end
