@@ -3,9 +3,11 @@ using Base.Test
 
 cleanup = true
 
+VER = "$(VERSION.major).$(VERSION.minor)"
+
 weave("documents/chunk_options.noweb", plotlib=nothing)
 result =  readstring("documents/chunk_options.md")
-ref =  readstring("documents/chunk_options_ref.md")
+ref =  readstring("documents/$VER/chunk_options_ref.md")
 @test result == ref
 cleanup && rm("documents/chunk_options.md")
 
