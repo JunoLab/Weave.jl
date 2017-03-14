@@ -1,5 +1,6 @@
 using Weave
 using Base.Test
+import Plots
 
 function publish_test(outfile, format)
   outfile = joinpath("documents/publish", outfile)

@@ -3,7 +3,7 @@ using Weave
 using Base.Test
 
 
-weave("documents/gadfly_formats_test.txt", "tex")
+weave("documents/gadfly_formats_test.txt", doctype = "tex", plotlib="gadfly")
 result =  readstring("documents/gadfly_formats_test.tex")
 ref =  readstring("documents/gadfly_formats_test_ref.tex")
 @test result == ref

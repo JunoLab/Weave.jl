@@ -487,12 +487,14 @@ function collect_results(chunk::CodeChunk, fmt::CollectResult)
 end
 
 function detect_plotlib(chunk::CodeChunk)
+
   if isdefined(:Plots)
     init_plotting("Plots")
     #Need to set size before plots are created
     plots_set_size(chunk)
     return
   end
+
   isdefined(:PyPlot) && init_plotting("PyPlot") && return
   isdefined(:Gadfly) && init_plotting("Gadfly") && return
 end

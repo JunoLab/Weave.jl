@@ -1,3 +1,4 @@
+import PyPlot
 using Weave
 using Base.Test
 
@@ -13,7 +14,7 @@ include("formatter_test.jl")
 if VERSION < v"0.6-"
   info("Testing rich output")
   include("rich_output.jl")
-  
+
   info("Test: Caching")
   include("cache_test.jl")
 
@@ -26,7 +27,7 @@ if VERSION < v"0.6-"
   info("Test: Weaving with PyPlot")
   include("pyplot_formats.jl")
 
-  #info("Test: Weaving with Plots.jl")
-  #include("plotsjl_test.jl")
-  #include("publish_test.jl")
+  info("Test: Weaving with Plots.jl")
+  include("plotsjl_test.jl")
+  include("publish_test.jl")
 end

@@ -1,5 +1,6 @@
 using Weave
 using Base.Test
+import Plots
 
 function pljtest(source, resfile, doctype)
   weave("documents/$source", out_path = "documents/plotsjl/$resfile", doctype=doctype)
