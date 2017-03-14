@@ -11,10 +11,11 @@ include("convert_test.jl")
 info("Testing formatters")
 include("formatter_test.jl")
 
-if VERSION < v"0.6-"
-  info("Testing rich output")
-  include("rich_output.jl")
+info("Testing rich output")
+include("rich_output.jl")
 
+
+if VERSION < v"0.6-"
   info("Test: Caching")
   include("cache_test.jl")
 
