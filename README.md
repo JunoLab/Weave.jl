@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/mpastell/Weave.jl.svg?branch=master)](https://travis-ci.org/mpastell/Weave.jl)
 [![Build status](https://ci.appveyor.com/api/projects/status/r97pwi9x8ard6xk6/branch/master?svg=true)](https://ci.appveyor.com/project/mpastell/weave-jl/branch/master)
 [![Coverage Status](https://img.shields.io/coveralls/mpastell/Weave.jl.svg)](https://coveralls.io/r/mpastell/Weave.jl?branch=master)
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://mpastell.github.io/Weave.jl/stable)
 
 
 Weave is a scientific report generator/literate programming tool
@@ -23,6 +24,10 @@ and figures.
 * Simple caching of results
 * Convert to and from IJulia notebooks
 
+**Note about Julia 0.6**: Weave has been updated to support 0.6, but most of the depencies and plotting libraries have not. Plotting currently (14th March 2017) only works using PyPlot master.
+
+![Weave code and output](http://mpastell.com/images/weave_demo.png)
+
 ## Installation
 
 You can install the latest release using Julia package manager:
@@ -36,6 +41,9 @@ Pkg.add("Weave")
 Run from julia using Gadfly for plots:
 
 ```julia
+#First add depencies for the example
+Pkg.add.(["Cairo", "Fontconfig", "Gadfly"])
+#Use Weave
 using Weave
 weave(Pkg.dir("Weave","examples","gadfly_sample.mdw"))
 ```
@@ -46,8 +54,6 @@ If you have Pandoc installed you can also weave directly to html and pdf.
 weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), informat="markdown",
   out_path = :pwd, doctype = "md2html")
 ```
-
-![Weave code and output](http://mpastell.com/images/weave_demo.png)
 
 ## Documentation
 

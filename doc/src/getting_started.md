@@ -14,7 +14,13 @@ output in different formats:
 
 *Producing pdf output requires that you have pdflatex installed.*
 
-You can Weave the files to your working directory using:
+Add depencies for the example if needed:
+
+```julia
+Pkg.add.(["Cairo", "Fontconfig", "Gadfly"])
+```
+
+Weave the files to your working directory using:
 
 ```julia
 using Weave
