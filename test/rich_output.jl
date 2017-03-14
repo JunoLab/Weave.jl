@@ -4,8 +4,8 @@ using Base.Test
 function mmtest(source, resfile, doctype)
   VER = "$(VERSION.major).$(VERSION.minor)"
   weave("documents/$source", out_path = "documents/multimedia/$resfile", doctype=doctype, plotlib=nothing)
-  result =  readstring(open("documents/multimedia/$resfile"))
-  ref =  readstring(open("documents/multimedia/$VER/$resfile.ref"))
+  result =  readstring("documents/multimedia/$resfile")
+  ref =  readstring("documents/multimedia/$VER/$resfile.ref")
   @test result == ref
   rm("documents/multimedia/$resfile")
 end
