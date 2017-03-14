@@ -1,6 +1,19 @@
 
 # Release notes for Weave.jl
 
+### v0.4.1
+* Disable precompilation due to warnings from depencies
+* Fix deprecation warnings for Julia 0.6
+* Fix PyPlot for Julia 0.6
+* Support citations in `pandoc2html` and `pandoc2pdf` output
+* Fix extra whitespace when `term=true`
+
+### V0.4.0
+* Support passing arguments to document using `args` option
+* Add `include_weave` for including code from Weave documents
+* Add support for inline code chunks
+* Remove generated figure files when publishing to html and pdf
+
 ### v0.3.0
 
 * Add support for YAML title block

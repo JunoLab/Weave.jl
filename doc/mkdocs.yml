@@ -29,7 +29,7 @@ google_analytics:
   - 'auto'
 
 extra:
-  version: 'v0.4.0'
+  version: 'v0.4.1'
   author:
     twitter: 'mpastell'
 
