@@ -67,7 +67,7 @@ const pdoc2html = Pandoc("Markdown to HTML (requires Pandoc)",
                               :extension=> "md",
                               :mimetypes => ["image/png", "image/svg+xml", "image/jpg",
                                   "text/html", "text/markdown",  "text/plain"],
-                              :doctype=> "md2html"))
+                              :doctype=> "pandoc2html"))
 
 type Markdown
    description::AbstractString
@@ -98,7 +98,7 @@ const md2html = JMarkdown2HTML("Julia markdown to html", Dict{Symbol,Any}(
         :outputend=> "</pre>\n",
         :fig_ext=> ".png",
         :mimetypes => ["image/png", "image/jpg", "image/svg+xml",
-                       "text/latex", "text/plain"],
+                       "text/html", "text/markdown", "text/plain"],
         :extension=> "html",
         :doctype=> "md2html"))
 

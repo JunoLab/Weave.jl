@@ -7,6 +7,7 @@
 * Fix PyPlot for Julia 0.6
 * Support citations in `pandoc2html` and `pandoc2pdf` output
 * Fix extra whitespace when `term=true`
+* Fix mime type priority for `md2html`
 
 ### V0.4.0
 * Support passing arguments to document using `args` option
