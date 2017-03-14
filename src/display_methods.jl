@@ -31,14 +31,20 @@ function Base.display(report::Report, data)
     for m in report.mimetypes
         if mimewritable(m, data)
             try
-              display(report, m, data)
-            catch
-              warn("Failed to save image in \"$m\" format")
-              continue
+              if VERSION >= v"0.6-alpha"
+                  new_dp(x, y, z) = eval(
+                                Expr(:call, (x, y, z) -> display(x, y, z), x, y, z))
+                  new_dp(report, m, data)
+              else
+                  display(report, m, data)
+              end
+            catch e
+                warn("Failed to display data in \"$m\" format")
+                continue
             end
             #Always show plain text as well for term mode
             if m ≠ "text/plain" && report.cur_chunk.options[:term]
-              display(report, "text/plain", data)
+                display(report, "text/plain", data)
             end
             break
         end

@@ -1,3 +1,4 @@
+
 """
 `run(doc::WeaveDoc; doctype = :auto, plotlib="Gadfly",
         out_path=:doc, fig_path = "figures", fig_ext = nothing,
@@ -212,7 +213,7 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
     #Save figures only in the end of chunk for PyPlot
     if rcParams[:plotlib] == "PyPlot"
         #Fix "world-age" issue
-        if VERSION >= v"0.5.0"
+        if VERSION >= v"0.6-alpha"
             savep(x) = eval(Expr(:call, x-> savefigs_pyplot(x), x))
             savep(report)
         else
