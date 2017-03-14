@@ -4,7 +4,6 @@ function format(doc::WeaveDoc)
     formatted = AbstractString[]
     docformat = doc.format
 
-
     #Complete format dictionaries with defaults
     formatdict = docformat.formatdict
     get!(formatdict, :termstart, formatdict[:codestart])
@@ -19,7 +18,9 @@ function format(doc::WeaveDoc)
 
     #strip header
     if isa(doc.chunks[1], DocChunk)
-      doc.chunks[1] = strip_header(doc.chunks[1])
+        if contains(doc.doctype, "md2")
+            doc.chunks[1] = strip_header(doc.chunks[1])
+        end
     end
 
     for chunk in copy(doc.chunks)
