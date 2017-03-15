@@ -135,7 +135,7 @@
         <strong>
           Weave.jl
           <span class="version">
-            v0.4.0
+            v0.4.1
           </span>
         </strong>
         
@@ -151,7 +151,7 @@
         <ul class="repo">
           <li class="repo-download">
             
-            <a href="https://github.com/mpastell/Weave.jl/archive/v0.4.0.zip" target="_blank" title="Download" data-action="download">
+            <a href="https://github.com/mpastell/Weave.jl/archive/v0.4.1.zip" target="_blank" title="Download" data-action="download">
               <i class="icon icon-download"></i> Download
             </a>
           </li>
@@ -269,7 +269,12 @@
 <li>pdf: <a href="../examples/gadfly_md_sample.pdf">gadfly_md_sample.pdf</a></li>
 </ul>
 <p><em>Producing pdf output requires that you have pdflatex installed.</em></p>
-<p>You can Weave the files to your working directory using:</p>
+<p>Add depencies for the example if needed:</p>
+<div class="code"><pre><span></span><span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="p">([</span><span class="s">&quot;Cairo&quot;</span><span class="p">,</span> <span class="s">&quot;Fontconfig&quot;</span><span class="p">,</span> <span class="s">&quot;Gadfly&quot;</span><span class="p">])</span>
+</pre></div>
+
+
+<p>Weave the files to your working directory using:</p>
 <div class="code"><pre><span></span><span class="k">using</span> <span class="n">Weave</span>
 <span class="c">#Markdown</span>
 <span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;gadfly_md_sample.jmd&quot;</span><span class="p">),</span> <span class="n">out_path</span> <span class="o">=</span> <span class="o">:</span><span class="n">pwd</span><span class="p">,</span>

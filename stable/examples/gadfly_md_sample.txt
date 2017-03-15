@@ -1,3 +1,11 @@
+---
+title : Intro to Weave.jl with Gadfly
+author : Matti Pastell
+date : 13th December 2016
+---
+
+# Intro
+
 This a sample [Julia](http://julialang.org/) markdown document that can
 be executed using [Weave.jl](https://github.com/mpastell/Weave.jl).
 
@@ -11,6 +19,7 @@ You can create markdown output or pdf (with xelatex) and HTML directly using
 the weave command as follows:
 
 ~~~~{.julia}
+
 using Weave
 #Markdown
 weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), informat="markdown",
@@ -32,7 +41,7 @@ weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), informat="markdown",
 The documents will be written to the Julia working directory when you
 use the `out_path = :pwd`.
 
-## Capturing code
+# Capturing code
 
 The basic code chunk will be run with default options and the code and
 output will be captured.
@@ -65,17 +74,18 @@ using chunk options. Here is an example of a chunk that behaves like a repl.
 
 ~~~~{.julia}
 julia> x = 1:10
-
 1:10
-julia> d = Dict("Weave" => "testing")
 
+julia> d = Dict("Weave" => "testing")
 Dict{String,String} with 1 entry:
   "Weave" => "testing"
+
 julia> y = [2, 4 ,8]
 3-element Array{Int64,1}:
  2
  4
  8
+
 ~~~~~~~~~~~~~
 
 
@@ -90,7 +100,7 @@ syntax from the source document):
 
 
 
-## Whats next
+# Whats next
 
 Read the documentation:
 
