@@ -132,7 +132,7 @@ function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
     return string(Documenter.Writers.HTMLWriter.mdconvert(m))
 end
 
-if VERSION < v"v0.6-alpha"
+if VERSION < v"0.6.0-dev.1965"
 #Fixes to Base latex writer, included in JuliaLang/julia#19842 and JuliaLang/julia#19832.
   function Base.Markdown.latex(io::IO, md::Base.Markdown.Paragraph)
       println(io)

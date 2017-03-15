@@ -31,7 +31,7 @@ function Base.display(report::Report, data)
     for m in report.mimetypes
         if mimewritable(m, data)
             try
-              if VERSION >= v"0.6-alpha"
+              if VERSION >= v"0.6.0-dev.1671"
                   new_dp(x, y, z) = eval(
                                 Expr(:call, (x, y, z) -> display(x, y, z), x, y, z))
                   new_dp(report, m, data)
