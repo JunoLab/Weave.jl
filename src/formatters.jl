@@ -85,6 +85,28 @@ const github = Markdown("Github markdown",
                                 :doctype=> "github"
                                                ))
 
+"""
+Formatter for Hugo: https://gohugo.io/
+
+When `uglyURLs` is `false`, prepend figure path by `..`.
+"""
+immutable Hugo
+    description::AbstractString
+    formatdict::Dict{Symbol,Any}
+    uglyURLs::Bool
+end
+
+const hugo = Hugo("Hugo markdown (using shortcodes)",
+                  Dict{Symbol,Any}(
+                      :codestart => "````julia",
+                      :codeend => "````\n\n",
+                      :outputstart => "````",
+                      :outputend => "````\n\n",
+                      :fig_ext => ".png",
+                      :extension => "md",
+                      :doctype => "hugo"),
+                  false)
+
 #Julia markdown
 type JMarkdown2HTML
  description::AbstractString
@@ -394,6 +416,14 @@ function formatfigures(chunk, docformat::Markdown)
     return result
 end
 
+function formatfigures(chunk, docformat::Hugo)
+    relpath = docformat.uglyURLs ? "" : ".."
+    function format_shortcode(fig)
+        "{{< figure src=\"$(joinpath(relpath, fig))\" > }}"
+    end
+    mapreduce(format_shortcode, *, "", chunk.figures)
+end
+
 function formatfigures(chunk, docformat::MultiMarkdown)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
@@ -480,6 +510,7 @@ const formats = Dict{AbstractString, Any}("tex" => tex,
                                           "pandoc2pdf" => pandoc,
                                           "md2pdf" => md2tex,
                                           "github" => github,
+                                          "hugo" => hugo,
                                           "multimarkdown" => multimarkdown,
                                           "rst" => rst,
                                           "asciidoc" => adoc,
