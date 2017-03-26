@@ -418,10 +418,18 @@ end
 
 function formatfigures(chunk, docformat::Hugo)
     relpath = docformat.uglyURLs ? "" : ".."
-    function format_shortcode(fig)
-        "{{< figure src=\"$(joinpath(relpath, fig))\" > }}"
+    function format_shortcode(index_and_fig)
+        index, fig = index_and_fig
+        if index > 1
+            warn("Only the first figure gets a caption.")
+            title_spec = ""
+        else
+            caption = chunk.options[:fig_cap]
+            title_spec = caption == nothing ? "" : "title=\"$(caption)\" "
+        end
+        "{{< figure src=\"$(joinpath(relpath, fig))\" $(title_spec) > }}"
     end
-    mapreduce(format_shortcode, *, "", chunk.figures)
+    mapreduce(format_shortcode, *, "", enumerate(chunk.figures))
 end
 
 function formatfigures(chunk, docformat::MultiMarkdown)
