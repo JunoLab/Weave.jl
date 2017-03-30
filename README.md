@@ -24,6 +24,9 @@ and figures.
 * Simple caching of results
 * Convert to and from IJulia notebooks
 
+**Citing Weave:** *Pastell, Matti. 2017. Weave.jl: Scientific Reports Using Julia. The Journal of Open Source Software. http://dx.doi.org/10.21105/joss.00204*
+
+
 **Note about Julia 0.6**: Weave has been updated to support 0.6, but most of the depencies and plotting libraries have not. Plotting currently (14th March 2017) only works using PyPlot master.
 
 ![Weave code and output](http://mpastell.com/images/weave_demo.png)
