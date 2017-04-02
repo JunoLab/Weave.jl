@@ -427,7 +427,7 @@ function formatfigures(chunk, docformat::Hugo)
             caption = chunk.options[:fig_cap]
             title_spec = caption == nothing ? "" : "title=\"$(caption)\" "
         end
-        "{{< figure src=\"$(joinpath(relpath, fig))\" $(title_spec) > }}"
+        "{{< figure src=\"$(joinpath(relpath, fig))\" $(title_spec) >}}"
     end
     mapreduce(format_shortcode, *, "", enumerate(chunk.figures))
 end
