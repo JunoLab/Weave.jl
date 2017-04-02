@@ -177,7 +177,6 @@ function run_inline(inline::InlineCode, report::Report, SandBox::Module)
     contains(report.formatdict[:doctype], "2html") && (chunks = embed_figures(chunks, report.cwd))
 
     output = chunks[1].output
-    startswith(output, "\n") && (output = replace(output, "\n", "", 1))
     endswith(output, "\n") && (output = output[1:end-1])
     inline.output = output
     inline.rich_output = chunks[1].rich_output
