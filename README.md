@@ -27,7 +27,9 @@ and figures.
 **Citing Weave:** *Pastell, Matti. 2017. Weave.jl: Scientific Reports Using Julia. The Journal of Open Source Software. http://dx.doi.org/10.21105/joss.00204*
 
 
-**Note about Julia 0.6**: Weave has been updated to support 0.6, but most of the depencies and plotting libraries have not. Plotting currently (14th March 2017) only works using PyPlot master.
+**Note about Julia 0.6**: Weave has been updated to support 0.6, current master
+requires using `Compat` master (`Compat.invokelatest`). PyPlot, Gadfly and Plots now
+also work (12th May 2017).
 
 ![Weave code and output](http://mpastell.com/images/weave_demo.png)
 

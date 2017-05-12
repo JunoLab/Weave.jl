@@ -1,4 +1,5 @@
 import Mustache, Highlights, Documenter
+using Compat
 
 function format(doc::WeaveDoc)
     formatted = AbstractString[]
@@ -128,7 +129,9 @@ end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
     text = format_chunk(chunk, formatdict, nothing)
-    m = Base.Markdown.parse(text)
+    #invokelatest seems to be needed here
+    #to fix "invalid age range" on 0.6 #21653
+    m = @compat Compat.invokelatest(Base.Markdown.parse, text)
     return string(Documenter.Writers.HTMLWriter.mdconvert(m))
 end
 

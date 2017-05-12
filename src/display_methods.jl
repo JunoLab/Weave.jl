@@ -1,3 +1,5 @@
+using Compat
+
 #Contains report global properties
 type Report <: Display
   cwd::AbstractString
@@ -31,13 +33,7 @@ function Base.display(report::Report, data)
     for m in report.mimetypes
         if mimewritable(m, data)
             try
-              if VERSION >= v"0.6.0-dev.1671"
-                  new_dp(x, y, z) = eval(
-                                Expr(:call, (x, y, z) -> display(x, y, z), x, y, z))
-                  new_dp(report, m, data)
-              else
-                  display(report, m, data)
-              end
+                @compat Compat.invokelatest(display, report, m, data)
             catch e
                 warn("Failed to display data in \"$m\" format")
                 continue

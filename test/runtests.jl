@@ -27,8 +27,8 @@ if VERSION < v"0.6-"
 
   info("Test: Weaving with PyPlot")
   include("pyplot_formats.jl")
-
-  info("Test: Weaving with Plots.jl")
-  include("plotsjl_test.jl")
-  include("publish_test.jl")
 end
+
+info("Test: Weaving with Plots.jl")
+include("plotsjl_test.jl")
+include("publish_test.jl")

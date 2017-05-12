@@ -1,6 +1,7 @@
 __precompile__(false)
 module Weave
 import Highlights
+using Compat
 
 """
 `list_out_formats()`
