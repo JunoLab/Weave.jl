@@ -31,4 +31,4 @@ end
 
 info("Test: Weaving with Plots.jl")
 include("plotsjl_test.jl")
-include("publish_test.jl")
+#include("publish_test.jl")

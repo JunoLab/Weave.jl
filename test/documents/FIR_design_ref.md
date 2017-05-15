@@ -89,6 +89,7 @@ The next code chunk is executed in term mode, see the [script](FIR_design.jl) fo
 ~~~~{.julia}
 julia> plot(y = h_db, x = ws, Geom.line,
       Guide.xlabel("Frequency (Hz)"), Guide.ylabel("Magnitude (db)"))
+Plot(...)
 
 ~~~~~~~~~~~~~
 

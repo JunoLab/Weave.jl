@@ -9,6 +9,7 @@ julia> x = linspace(0, 2π, 200)
  0.0,0.0315738,0.0631476,0.0947214,0.126295,…,6.18846,6.22004,6.25161,6.28319
 
 julia> plot(x=x, y = sin(x), Geom.line)
+Plot(...)
 
 ````
 
@@ -20,6 +21,7 @@ julia> y = 20
 20
 
 julia> plot(x=x, y = cos(x), Geom.line)
+Plot(...)
 
 ````
 
@@ -46,6 +48,7 @@ julia> x = linspace(0, 2π, 200)
  0.0,0.0315738,0.0631476,0.0947214,0.126295,…,6.18846,6.22004,6.25161,6.28319
 
 julia> plot(x=x, y = sin(x), Geom.line)
+Plot(...)
 
 ````
 
@@ -57,6 +60,7 @@ julia> y = 20
 20
 
 julia> plot(x=x, y = cos(x), Geom.line)
+Plot(...)
 
 ````
 
