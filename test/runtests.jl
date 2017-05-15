@@ -14,7 +14,6 @@ include("formatter_test.jl")
 info("Testing rich output")
 include("rich_output.jl")
 
-
 if VERSION < v"0.6-"
   info("Test: Caching")
   include("cache_test.jl")
