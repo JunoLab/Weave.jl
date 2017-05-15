@@ -2,6 +2,10 @@ import Gadfly
 
 Gadfly.set_default_plot_format(:svg)
 
+function Base.display(report::Report, m::MIME"image/png", p::Gadfly.Plot)
+    display(report, MIME("image/svg+xml"), p)
+end
+
 #Gadfly doesn't call the default display methods, this catches
 #all Gadfly plots
 function Base.display(report::Report, m::MIME"image/svg+xml", p::Gadfly.Plot)
