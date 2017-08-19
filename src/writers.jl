@@ -65,8 +65,8 @@ function convert_doc(doc::WeaveDoc, format::NotebookOutput)
 
   kernelspec = Dict()
   kernelspec["language"] =  "julia"
-  kernelspec["name"] =  "julia-0.5"
-  kernelspec["display_name"] = "Julia 0.5.0"
+  kernelspec["name"] =  "julia-$(VERSION.major).$(VERSION.minor)"
+  kernelspec["display_name"] = "Julia $(VERSION.major).$(VERSION.minor).$(VERSION.patch)"
   metadata["kernelspec"] = kernelspec
 
 
@@ -74,7 +74,7 @@ function convert_doc(doc::WeaveDoc, format::NotebookOutput)
   language_info["file_extension"] = ".jl"
   language_info["mimetype"] = "application/julia"
   language_info["name"]=  "julia"
-  language_info["version"] = "0.5.0"
+  language_info["version"] = "$(VERSION.major).$(VERSION.minor).$(VERSION.patch)"
   metadata["language_info"] = language_info
 
   cells = []
