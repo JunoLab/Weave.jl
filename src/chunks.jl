@@ -1,9 +1,9 @@
 using Compat
 
-@compat abstract type WeaveChunk end
-@compat abstract type Inline end
+abstract type WeaveChunk end
+abstract type Inline end
 
-type WeaveDoc
+mutable struct WeaveDoc
     source::AbstractString
     basename::AbstractString
     path::AbstractString
@@ -25,7 +25,7 @@ type WeaveDoc
     end
 end
 
-immutable ChunkOutput
+struct ChunkOutput
     code::AbstractString
     stdout::AbstractString
     displayed::AbstractString
@@ -33,7 +33,7 @@ immutable ChunkOutput
     figures::Array{AbstractString}
 end
 
-type CodeChunk <: WeaveChunk
+mutable struct CodeChunk <: WeaveChunk
     content::AbstractString
     number::Int
     result_no::Int
@@ -49,7 +49,7 @@ type CodeChunk <: WeaveChunk
     end
 end
 
-type DocChunk <: WeaveChunk
+mutable struct DocChunk <: WeaveChunk
     content::Array{Inline}
     number::Int
     start_line::Int
@@ -59,14 +59,14 @@ type DocChunk <: WeaveChunk
     end
 end
 
-type InlineText <: Inline
+mutable struct InlineText <: Inline
     content::AbstractString
     si::Int
     ei::Int
     number::Int
 end
 
-type InlineCode <: Inline
+mutable struct InlineCode <: Inline
     content::AbstractString
     si::Int
     ei::Int
@@ -79,11 +79,11 @@ type InlineCode <: Inline
     end
 end
 
-type TermResult
+mutable struct TermResult
 end
 
-type ScriptResult
+mutable struct ScriptResult
 end
 
-type CollectResult
+mutable struct CollectResult
 end
