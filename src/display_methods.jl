@@ -1,7 +1,7 @@
 using Compat
 
 #Contains report global properties
-type Report <: Display
+mutable struct Report <: Display
   cwd::AbstractString
   basename::AbstractString
   formatdict::Dict{Symbol,Any}
@@ -33,7 +33,7 @@ function Base.display(report::Report, data)
     for m in report.mimetypes
         if mimewritable(m, data)
             try
-                @compat Compat.invokelatest(display, report, m, data)
+                Compat.invokelatest(display, report, m, data)
             catch e
                 warn("Failed to display data in \"$m\" format")
                 continue

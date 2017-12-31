@@ -212,7 +212,7 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
 
     #Save figures only in the end of chunk for PyPlot
     if rcParams[:plotlib] == "PyPlot"
-        @compat Compat.invokelatest(savefigs_pyplot, report)
+        Compat.invokelatest(savefigs_pyplot, report)
     end
 
     return results
@@ -279,7 +279,7 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
 
     #Run preexecute_hooks
     for hook in preexecute_hooks
-      chunk = @compat Compat.invokelatest(hook, chunk)
+      chunk = Compat.invokelatest(hook, chunk)
     end
 
     report.fignum = 1
@@ -294,7 +294,7 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
 
     #Run post_execute chunks
     for hook in postexecute_hooks
-      chunk = @compat Compat.invokelatest(hook, chunk)
+      chunk = Compat.invokelatest(hook, chunk)
     end
 
     if chunk.options[:term]
@@ -485,7 +485,7 @@ function detect_plotlib(chunk::CodeChunk)
   if isdefined(:Plots)
     init_plotting("Plots")
     #Need to set size before plots are created
-    @compat Compat.invokelatest(plots_set_size, chunk)
+    Compat.invokelatest(plots_set_size, chunk)
     return
   end
 
