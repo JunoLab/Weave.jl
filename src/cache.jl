@@ -1,18 +1,17 @@
-import JLD
+import JLD2, FileIO
 
 function write_cache(doc::WeaveDoc, cache_path)
     cache_dir = joinpath(doc.cwd, cache_path)
     isdir(cache_dir) || mkpath(cache_dir)
-    JLD.save(joinpath(cache_dir, doc.basename * ".jld"), Dict("doc" => doc))
+    FileIO.save(joinpath(cache_dir, doc.basename * ".jld2"), Dict("doc" => doc))
     return nothing
 end
 
 function read_cache(doc::WeaveDoc, cache_path)
-    name = joinpath(doc.cwd, cache_path, doc.basename * ".jld")
+    name = joinpath(doc.cwd, cache_path, doc.basename * ".jld2")
     isfile(name) || return nothing
-    return JLD.load(name)["doc"]
+    return FileIO.load(name, "doc")
 end
-
 
 function restore_chunk(chunk::CodeChunk, cached)
     chunks = filter(x -> x.number == chunk.number &&

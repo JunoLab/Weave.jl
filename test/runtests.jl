@@ -14,8 +14,8 @@ info("Testing rich output")
 include("rich_output.jl")
 
 
-#info("Test: Caching")
-#include("cache_test.jl")
+info("Test: Caching")
+include("cache_test.jl")
 
 #info("Test: Chunk options with Gadfly")
 #include("chunk_opts_gadfly.jl")
