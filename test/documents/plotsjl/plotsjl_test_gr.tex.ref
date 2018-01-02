@@ -1,0 +1,33 @@
+\begin{juliacode}
+using Plots
+gr()
+x = linspace(0, 2*pi)
+println(x)
+\end{juliacode}
+\begin{juliaout}
+0.0:0.1282282715750936:6.283185307179586
+\end{juliaout}
+
+\begin{juliacode}
+p = plot(x, sin.(x), size =(900,300))
+p
+\end{juliacode}
+\includegraphics[width=\linewidth]{figures/plotsjl_test_gr_1_1.pdf}
+
+\begin{juliacode}
+plot(x, sin.(x))
+\end{juliacode}
+\includegraphics[width=\linewidth]{figures/plotsjl_test_gr_2_1.pdf}
+
+\begin{juliacode}
+plot(rand(100) / 3,reg=true,fill=(0,:green))
+scatter!(rand(100),markersize=6,c=:orange)
+\end{juliacode}
+\includegraphics[width=\linewidth]{figures/plotsjl_test_gr_3_1.pdf}
+
+\begin{figure}[htpb]
+\center
+\includegraphics[width=\linewidth]{figures/plotsjl_test_gr_random_1.pdf}
+\caption{A random walk.}
+\label{fig:random}
+\end{figure}
