@@ -2,13 +2,13 @@ import JSON, YAML
 
 pushopt(options::Dict,expr::Expr) = Base.Meta.isexpr(expr,:(=)) && (options[expr.args[1]] = expr.args[2])
 
-type MarkupInput
+mutable struct MarkupInput
     codestart::Regex
     codeend::Regex
     inline::Regex
 end
 
-type ScriptInput
+mutable struct ScriptInput
   doc_line::Regex
   doc_start::Regex
   opt_line::Regex
@@ -16,7 +16,7 @@ type ScriptInput
   inline::Regex
 end
 
-type NotebookInput
+mutable struct NotebookInput
   inline
 end
 
