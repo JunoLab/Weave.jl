@@ -1,15 +1,15 @@
 import JSON
 
-type NotebookOutput
+mutable struct NotebookOutput
 end
 
-type MarkdownOutput
+mutable struct MarkdownOutput
 end
 
-type NowebOutput
+mutable struct NowebOutput
 end
 
-type ScriptOutput
+mutable struct ScriptOutput
 end
 
 const output_formats = Dict{String, Any}(

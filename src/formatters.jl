@@ -1,4 +1,4 @@
-type Tex
+mutable struct Tex
     description::AbstractString
     formatdict::Dict{Symbol,Any}
 end
@@ -36,7 +36,7 @@ const texminted = Tex("Latex using minted for highlighting",
                                          :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"]
                                          ))
 
-type Pandoc
+mutable struct Pandoc
   description::AbstractString
   formatdict::Dict{Symbol,Any}
 end
@@ -69,7 +69,7 @@ const pdoc2html = Pandoc("Markdown to HTML (requires Pandoc)",
                                   "text/html", "text/markdown",  "text/plain"],
                               :doctype=> "pandoc2html"))
 
-type Markdown
+mutable struct Markdown
    description::AbstractString
    formatdict::Dict{Symbol,Any}
 end
@@ -90,7 +90,7 @@ Formatter for Hugo: https://gohugo.io/
 
 When `uglyURLs` is `false`, prepend figure path by `..`.
 """
-immutable Hugo
+struct Hugo
     description::AbstractString
     formatdict::Dict{Symbol,Any}
     uglyURLs::Bool
@@ -108,7 +108,7 @@ const hugo = Hugo("Hugo markdown (using shortcodes)",
                   false)
 
 #Julia markdown
-type JMarkdown2HTML
+mutable struct JMarkdown2HTML
  description::AbstractString
  formatdict::Dict{Symbol,Any}
 end
@@ -125,7 +125,7 @@ const md2html = JMarkdown2HTML("Julia markdown to html", Dict{Symbol,Any}(
         :doctype=> "md2html"))
 
 #Julia markdown
-type JMarkdown2tex
+mutable struct JMarkdown2tex
  description::AbstractString
  formatdict::Dict{Symbol,Any}
 end
@@ -142,7 +142,7 @@ const md2tex = JMarkdown2tex("Julia markdown to latex", Dict{Symbol,Any}(
         :doctype=> "md2tex"))
 
 
-type MultiMarkdown
+mutable struct MultiMarkdown
   description::AbstractString
   formatdict::Dict{Symbol,Any}
 end
@@ -201,7 +201,7 @@ const multimarkdown = MultiMarkdown("MultiMarkdown",
                                                ))
 
 
-type Rest
+mutable struct Rest
     description::AbstractString
     formatdict::Dict{Symbol,Any}
 end
@@ -219,7 +219,7 @@ const rst = Rest("reStructuredText and Sphinx",
                                 :doctype => "rst"
                                 ))
 
-type AsciiDoc
+mutable struct AsciiDoc
     description::AbstractString
     formatdict::Dict{Symbol,Any}
 end

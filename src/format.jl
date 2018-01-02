@@ -131,32 +131,10 @@ function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
     text = format_chunk(chunk, formatdict, nothing)
     #invokelatest seems to be needed here
     #to fix "invalid age range" on 0.6 #21653
-    m = @compat Compat.invokelatest(Base.Markdown.parse, text)
+    m = Compat.invokelatest(Base.Markdown.parse, text)
     return string(Documenter.Writers.HTMLWriter.mdconvert(m))
 end
 
-if VERSION < v"0.6.0-dev.1965"
-#Fixes to Base latex writer, included in JuliaLang/julia#19842 and JuliaLang/julia#19832.
-  function Base.Markdown.latex(io::IO, md::Base.Markdown.Paragraph)
-      println(io)
-      for md in md.content
-          Base.Markdown.latexinline(io, md)
-      end
-      println(io)
-  end
-
-  function wrapverb(f, io, cmd)
-      print(io, "\\", cmd, "|")
-      f()
-      print(io, "|")
-  end
-
-  function Base.Markdown.latexinline(io::IO, code::Base.Markdown.Code)
-      wrapverb(io, "verb") do
-          print(io, code.code)
-      end
-  end
-end
 
 
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
