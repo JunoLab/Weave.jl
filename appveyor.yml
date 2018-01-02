@@ -1,6 +1,6 @@
 environment:
   matrix:
-  - JULIA_URL: "https://julialang-s3.julialang.org/bin/winnt/x64/0.5/julia-0.5-latest-win64.exe"
+  - JULIA_URL: "https://julialang-s3.julialang.org/bin/winnt/x64/0.6/julia-0.6-latest-win64.exe"
 
 branches:
   only:
@@ -25,7 +25,7 @@ install:
 build_script:
 # Need to convert from shallow to complete for Pkg.clone to work
   - IF EXIST .git\shallow (git fetch --unshallow)
-  - C:\projects\julia\bin\julia -e "ENV[\"PYTHON\"]=\"\"; Pkg.add(\"PyPlot\")"
+  #- C:\projects\julia\bin\julia -e "ENV[\"PYTHON\"]=\"\"; Pkg.add(\"PyPlot\")"
   - C:\projects\julia\bin\julia -e "Pkg.clone(pwd(), \"Weave\"); versioninfo(); Pkg.build(\"Weave\")"
 
 test_script:
