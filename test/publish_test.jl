@@ -14,4 +14,4 @@ end
 
 #Test formatters
 publish_test("publish_tex.tex", "md2tex")
-!is_windows() && publish_test("publish_test.html", "md2html")
+#!is_windows() && publish_test("publish_test.html", "md2html")
