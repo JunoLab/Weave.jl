@@ -3,4 +3,4 @@ Cairo
 GR
 DSP
 Plots
-DataFrames
+DataFrames 0.10.1
