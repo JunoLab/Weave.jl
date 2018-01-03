@@ -10,6 +10,9 @@ include("convert_test.jl")
 info("Testing formatters")
 include("formatter_test.jl")
 
+info("Testing figure formatters")
+include("figureformatter_test.jl")
+
 info("Testing rich output")
 include("rich_output.jl")
 
