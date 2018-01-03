@@ -14,6 +14,8 @@ chunk.figures = ["figs/figures_plot1.png"]
 @test Weave.formatfigures(chunk, Weave.github) == "![](figs/figures_plot1.png)\n"
 @test Weave.formatfigures(chunk, Weave.hugo) == "{{< figure src=\"../figs/figures_plot1.png\"  >}}"
 @test Weave.formatfigures(chunk, Weave.multimarkdown) == "![][figs/figures_plot1.png]\n\n[figs/figures_plot1.png]: figs/figures_plot1.png \n"
+@test Weave.formatfigures(chunk, Weave.adoc) == "image::figs/figures_plot1.png[width=nothing]\n"
+@test Weave.formatfigures(chunk, Weave.rst) == ".. image:: figs/figures_plot1.png\n   :width: nothing\n\n"
 @test Weave.formatfigures(chunk, Weave.md2html) == "<img src=\"figs/figures_plot1.png\"  />\n"
 
 
