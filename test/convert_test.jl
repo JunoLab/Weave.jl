@@ -33,7 +33,10 @@ infile = "documents/chunk_options.noweb"
 convert_doc(infile, outfile)
 input = contents(Weave.read_doc(infile))  
 output = contents(Weave.read_doc(outfile))
+@test input == output
 rm(outfile)
 
-@test input == output
-
+# Test script reader
+@test contents(
+    Weave.read_doc("documents/chunk_options.noweb")) == contents(
+      Weave.read_doc("documents/chunk_options.jl"))
