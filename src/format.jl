@@ -279,6 +279,7 @@ function format_termchunk(chunk, formatdict, docformat::JMarkdown2tex)
         #flush(buf)
         #result = readstring(buf)
         #close(buf)
+        result = strip(chunk.output)
         return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
     else
         result = ""
