@@ -1,6 +1,4 @@
-
-
-```julia
+~~~~{.julia}
 import Base
 function Base.show(io::IO, m::MIME"text/html", x::Array)
     print(io, "<table>")
@@ -38,14 +36,42 @@ end
 x = [collect(1:3) collect(1:3)]
 ca = collect('a':'d')
 ca
-```
+~~~~~~~~~~~~~
 
-```julia; hold=true
+
+
+-----
+| a | 
+| b | 
+| c | 
+| d | 
+-----
+
+~~~~{.julia}
 display(ca)
 display(x)
-```
+~~~~~~~~~~~~~
 
-```julia
+
+
+-----
+| a | 
+| b | 
+| c | 
+| d | 
+-----
+-----
+| 1 | 1 | 
+| 2 | 2 | 
+| 3 | 3 | 
+-----
+
+~~~~{.julia}
 m = Base.Markdown.parse("**Some Markdown**")
 m
-```
+~~~~~~~~~~~~~
+
+
+
+**Some Markdown**
+
