@@ -1,22 +1,29 @@
 
 
 ```julia
-using DataFrames
-df = DataFrame(letters = 'a':'z', numbers = 1:26)
-
-df
-z = 51
-display(df)
+import Base
+function Base.show(io::IO, m::MIME"text/html", x::Array)
+    print(io, "<table>")
+    for i in 1:size(x,1)
+        print(io, "<tr>")
+        [print(io, "<td>$r</td>") for r in x[i,:]]
+        print(io, "</tr>")
+    end
+    print(io, "</table>")
+end
+x = [collect(1:3) collect(1:3)]
+ca = collect('a':'d')
+ca
 ```
 
 ```julia; hold=true
-head(df)
+display(ca)
+display(x)
 ```
 
 ```julia; term=true
-df
+ca
 ```
-
 
 ```julia
 m = Base.Markdown.parse("**Some Markdown**")
