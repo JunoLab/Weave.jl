@@ -133,8 +133,8 @@ end
 const md2tex = JMarkdown2tex("Julia markdown to latex", Dict{Symbol,Any}(
         :codestart => "",
         :codeend=> "",
-        :outputstart=> "\\begin{lstlisting}",
-        :outputend=> "\\end{lstlisting}\n",
+        :outputstart=> "\\begin{verbatim}",
+        :outputend=> "\\end{verbatim}\n",
         :fig_ext=> ".pdf",
         :extension=> "tex",
         :mimetypes => ["application/pdf", "image/png", "image/jpg",
