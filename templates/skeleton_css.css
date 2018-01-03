@@ -180,6 +180,8 @@ optgroup {
   font-weight: bold;
 }
 table {
+  font-family: monospace, monospace;
+  font-size : 0.8em;
   border-collapse: collapse;
   border-spacing: 0;
 }

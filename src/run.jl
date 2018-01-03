@@ -239,10 +239,7 @@ function capture_output(expr, SandBox::Module, term, disp, plotlib,
         #This shows images and lone variables, result can
         #Handle last line sepately
         elseif lastline && obj != nothing
-          #elseif mimewritable("image/png", obj) && expr.head == :call
-          if expr.head == :call
-            display(obj)
-          end
+            (expr.head != :toplevel && expr.head != :(=)) && display(obj)
         end
     finally
         redirect_stdout(oldSTDOUT)

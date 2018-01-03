@@ -184,19 +184,18 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
     end
 
     if (strip(chunk.output)!= "" || strip(chunk.rich_output) != "") && (chunk.options[:results] != "hidden")
-        chunk.output = format_output(chunk.output, docformat)
         if chunk.options[:results] != "markup" && chunk.options[:results] != "hold"
             strip(chunk.output) ≠ "" && (result *= "$(chunk.output)\n")
             strip(chunk.rich_output) ≠ "" && (result *= "$(chunk.rich_output)\n")
         else
             if chunk.options[:wrap]
-                chunk.output = "\n" * wraplines(chunk.output,
-                                        chunk.options[:line_width])
+                chunk.output = "\n" * wraplines(chunk.output, chunk.options[:line_width])
+                chunk.output = format_output(chunk.output, docformat)
             else
-              chunk.output = "\n" * rstrip(chunk.output)
+                chunk.output = "\n" * rstrip(chunk.output)
+                chunk.output = format_output(chunk.output, docformat)
             end
-
-
+            
             if haskey(formatdict, :indent)
                 chunk.output = indent(chunk.output, formatdict[:indent])
             end
