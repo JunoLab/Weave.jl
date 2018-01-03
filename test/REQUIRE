@@ -3,6 +3,4 @@ Cairo
 Fontconfig
 Gadfly
 GR
-DSP
 Plots
-DataFrames 0.10.1 0.11-

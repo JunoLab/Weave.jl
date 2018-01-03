@@ -1,6 +1,4 @@
-
-
-```julia
+\begin{juliacode}
 import Base
 function Base.show(io::IO, m::MIME"text/html", x::Array)
     print(io, "<table>")
@@ -38,14 +36,37 @@ end
 x = [collect(1:3) collect(1:3)]
 ca = collect('a':'d')
 ca
-```
+\end{juliacode}
 
-```julia; hold=true
+\begin{tabular}
+a & \\ \hline
+b & \\ \hline
+c & \\ \hline
+d & \\ \hline
+\end{tabular
+
+\begin{juliacode}
 display(ca)
 display(x)
-```
+\end{juliacode}
 
-```julia
+\begin{tabular}
+a & \\ \hline
+b & \\ \hline
+c & \\ \hline
+d & \\ \hline
+\end{tabular
+\begin{tabular}
+1 & 1 & \\ \hline
+2 & 2 & \\ \hline
+3 & 3 & \\ \hline
+\end{tabular
+
+\begin{juliacode}
 m = Base.Markdown.parse("**Some Markdown**")
 m
-```
+\end{juliacode}
+
+\textbf{Some Markdown}
+
+
