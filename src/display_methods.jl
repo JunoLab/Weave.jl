@@ -61,7 +61,11 @@ end
 
 #Text is written to stdout, called from "term" mode chunks
 function Base.display(report::Report, m::MIME"text/plain", data)
-    s = reprmime(m, data)
+    io = PipeBuffer()
+    show(IOContext(io, :limit => true), m, data)
+    flush(io)
+    s = readstring(io)
+    close(io)
     println(s)
 end
 
