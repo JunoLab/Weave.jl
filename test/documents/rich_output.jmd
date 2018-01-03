@@ -45,6 +45,12 @@ display(ca)
 display(x)
 ```
 
+```julia; term=true
+x
+ca
+```
+
+
 ```julia
 m = Base.Markdown.parse("**Some Markdown**")
 m

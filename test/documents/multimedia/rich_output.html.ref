@@ -55,6 +55,21 @@
 <table><tr><td>a</td></tr><tr><td>b</td></tr><tr><td>c</td></tr><tr><td>d</td></tr></table>
 <table><tr><td>1</td><td>1</td></tr><tr><td>2</td><td>2</td></tr><tr><td>3</td><td>3</td></tr></table>
 
+<pre class='hljl'>
+<span class='hljl-nB'>julia&gt; </span><span class='hljl-n'>x</span><span class='hljl-t'>
+3×2 Array{Int64,2}:
+ 1  1
+ 2  2
+ 3  3
+
+</span><span class='hljl-nB'>julia&gt; </span><span class='hljl-n'>ca</span><span class='hljl-t'>
+4-element Array{Char,1}:
+ &#39;a&#39;
+ &#39;b&#39;
+ &#39;c&#39;
+ &#39;d&#39;</span>
+</pre>
+
 
 <pre class='hljl'>
 <span class='hljl-n'>m</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>Base</span><span class='hljl-oB'>.</span><span class='hljl-n'>Markdown</span><span class='hljl-oB'>.</span><span class='hljl-nf'>parse</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;**Some Markdown**&quot;</span><span class='hljl-p'>)</span><span class='hljl-t'>

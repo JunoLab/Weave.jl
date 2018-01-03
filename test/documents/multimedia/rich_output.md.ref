@@ -67,6 +67,24 @@ display(x)
 -----
 
 ~~~~{.julia}
+julia> x
+3×2 Array{Int64,2}:
+ 1  1
+ 2  2
+ 3  3
+
+julia> ca
+4-element Array{Char,1}:
+ 'a'
+ 'b'
+ 'c'
+ 'd'
+
+~~~~~~~~~~~~~
+
+
+
+~~~~{.julia}
 m = Base.Markdown.parse("**Some Markdown**")
 m
 ~~~~~~~~~~~~~

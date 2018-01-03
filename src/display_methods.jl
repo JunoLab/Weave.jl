@@ -33,15 +33,17 @@ function Base.display(report::Report, data)
     for m in report.mimetypes
         if mimewritable(m, data)
             try
-                Compat.invokelatest(display, report, m, data)
+                if !istextmime(m)
+                    Compat.invokelatest(display, report, m, data)   
+                elseif report.cur_chunk.options[:term]
+                    display(report, "text/plain", data)
+                else   
+                    Compat.invokelatest(display, report, m, data)
+                end
             catch e
                 warn("Failed to display data in \"$m\" format")
                 continue
             end
-            #Always show plain text as well for term mode
-            #if m ≠ "text/plain" && report.cur_chunk.options[:term]
-            #    display(report, "text/plain", data)
-            #end
             break
         end
     end
