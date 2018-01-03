@@ -1,21 +1,25 @@
 
 \section{Header}
 
-\begin{lstlisting}
-(*@\HLJLk{using}@*) (*@\HLJLn{Plots}@*)
-(*@\HLJLnf{gr}@*)(*@\HLJLp{()}@*)
-(*@\HLJLnf{scatter}@*)(*@\HLJLp{(}@*)(*@\HLJLni{1}@*)(*@\HLJLoB{:}@*)(*@\HLJLni{10}@*)(*@\HLJLp{)}@*)
-\end{lstlisting}
+\begin{minted}[mathescape, fontsize=\small, xleftmargin=0.5em]{julia}
 
-\includegraphics{figures/publish_test_1_1.pdf}
+using Plots
+gr()
+scatter(1:10)
 
-\begin{lstlisting}
-(*@\HLJLnf{plot}@*)(*@\HLJLp{(}@*)(*@\HLJLni{1}@*)(*@\HLJLoB{:}@*)(*@\HLJLni{10}@*)(*@\HLJLp{)}@*)
-\end{lstlisting}
+\end{minted}
+
+\includegraphics[width=\linewidth]{figures/publish_test_1_1.pdf}
+
+\begin{minted}[mathescape, fontsize=\small, xleftmargin=0.5em]{julia}
+
+plot(1:10)
+
+\end{minted}
 
 \begin{figure}[!h]
 \center
-\includegraphics{figures/publish_test_somefig_1.pdf}
+\includegraphics[width=\linewidth]{figures/publish_test_somefig_1.pdf}
 \caption{Hello}
 \label{fig:somefig}
 \end{figure}
