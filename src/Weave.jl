@@ -51,7 +51,7 @@ end
         fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache=:off,
         template = nothing, highlight_theme = nothing, css = nothing
-        latex_cmd = "pdflatex")
+        latex_cmd = "xelatex")
 
 Weave an input document to output file.
 
@@ -80,7 +80,7 @@ function weave(source ; doctype = :auto, plotlib=:auto,
         fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache=:off,
         template = nothing, highlight_theme = nothing, css = nothing,
-        latex_cmd = "pdflatex")
+        latex_cmd = "xelatex")
 
     doc = read_doc(source, informat)
     highlight_theme != nothing && (doc.highlight_theme = highlight_theme)
@@ -113,6 +113,7 @@ function weave(source ; doctype = :auto, plotlib=:auto,
           rm(mdname)
       elseif doc.doctype == "md2pdf"
           success = run_latex(doc, outname, latex_cmd)
+          success || rm(doc.fig_path, force = true, recursive = true)
           success || return
           outname = get_outname(out_path, doc, ext = "pdf")
       end
@@ -124,7 +125,7 @@ function weave(source ; doctype = :auto, plotlib=:auto,
       println(e)
     finally
       doctype == :auto && (doctype = detect_doctype(doc.source))
-      if contains(doctype, "2pdf") && cache == :off
+      if contains(doctype, "pandoc2pdf") && cache == :off
         rm(doc.fig_path, force = true, recursive = true)
       elseif contains(doctype, "2html")
         rm(doc.fig_path, force = true, recursive = true)

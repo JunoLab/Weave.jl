@@ -133,10 +133,11 @@ end
 const md2tex = JMarkdown2tex("Julia markdown to latex", Dict{Symbol,Any}(
         :codestart => "",
         :codeend=> "",
-        :outputstart=> "\\begin{lstlisting}",
-        :outputend=> "\\end{lstlisting}\n",
+        :outputstart=> "\\begin{minted}[fontsize=\\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}",
+        :outputend=> "\\end{minted}\n",
         :fig_ext=> ".pdf",
         :extension=> "tex",
+        :out_width => "\\linewidth",
         :mimetypes => ["application/pdf", "image/png", "image/jpg",
                        "text/latex", "text/plain"],
         :doctype=> "md2tex"))
@@ -146,8 +147,6 @@ mutable struct MultiMarkdown
   description::AbstractString
   formatdict::Dict{Symbol,Any}
 end
-
-
 
 function formatfigures(chunk, docformat::JMarkdown2HTML)
     fignames = chunk.figures

@@ -195,7 +195,7 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
                 chunk.output = "\n" * rstrip(chunk.output)
                 chunk.output = format_output(chunk.output, docformat)
             end
-            
+
             if haskey(formatdict, :indent)
                 chunk.output = indent(chunk.output, formatdict[:indent])
             end
@@ -230,13 +230,14 @@ function format_code(result::AbstractString, docformat)
 end
 
 function format_code(result::AbstractString, docformat::JMarkdown2tex)
-  buf = PipeBuffer()
-  Highlights.highlight(buf, MIME("text/latex"), strip(result),
-      Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
-  flush(buf)
-  highlighted = readstring(buf)
-  close(buf)
-  return highlighted
+  #buf = PipeBuffer()
+  #Highlights.highlight(buf, MIME("text/latex"), strip(result),
+  #    Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
+  #flush(buf)
+  #highlighted = readstring(buf)
+  #close(buf)
+  #return highlighted
+  return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
 end
 
 function format_code(result::AbstractString, docformat::JMarkdown2HTML)
@@ -273,11 +274,12 @@ end
 
 function format_termchunk(chunk, formatdict, docformat::JMarkdown2tex)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"
-        buf = PipeBuffer()
-        Highlights.highlight(buf, MIME("text/latex"), strip(chunk.output), Highlights.Lexers.JuliaConsoleLexer)
-        flush(buf)
-        result = readstring(buf)
-        close(buf)
+        #buf = PipeBuffer()
+        #Highlights.highlight(buf, MIME("text/latex"), strip(chunk.output), Highlights.Lexers.JuliaConsoleLexer)
+        #flush(buf)
+        #result = readstring(buf)
+        #close(buf)
+        return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
     else
         result = ""
     end

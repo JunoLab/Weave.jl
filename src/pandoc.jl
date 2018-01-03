@@ -100,17 +100,19 @@ function pandoc2pdf(formatted::AbstractString, doc::WeaveDoc, outname::AbstractS
   end
 end
 
-function run_latex(doc::WeaveDoc, outname, latex_cmd = "pdflatex")
+function run_latex(doc::WeaveDoc, outname, latex_cmd = "xelatex")
   old_wd = pwd()
   cd(doc.cwd)
   xname = basename(outname)
   info("Weaved code to $outname. Running $latex_cmd")
   try
     textmp = mktempdir(".")
-    out = readstring(`$latex_cmd --output-directory=$textmp $xname`)
-    pdf = joinpath(textmp, "$(doc.basename).pdf")
-    cp(pdf, "$(doc.basename).pdf", remove_destination=true)
-    rm(textmp, recursive=true)
+    #out = readstring(`$latex_cmd -shell-escape --output-directory=$textmp $xname`)
+    out = readstring(`$latex_cmd -shell-escape $xname`)
+    #info(out)
+    #pdf = joinpath(textmp, "$(doc.basename).pdf")
+    #cp(pdf, "$(doc.basename).pdf", remove_destination=true)
+    #rm(textmp, recursive=true)
     rm(xname)
     cd(old_wd)
     return true

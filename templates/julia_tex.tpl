@@ -8,6 +8,7 @@
 \usepackage{hyperref}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1.2ex}
+\usepackage{minted}
 
 \usepackage{ifxetex,ifluatex}
 \newif\ifxetexorluatex
@@ -43,15 +44,13 @@
 \date{ {{{ :date }}} }
 {{/:date}}
 
-{{{ :highlight }}}
-
-\ifxetexorluatex
-  \usepackage{fontspec}
-  \setmainfont{CMU Serif Roman}
-  \setmonofont{CMU Typewriter Text}
-  \usepackage{unicode-math}
-  \setmathfont{Latin Modern Math}
-\fi
+%\ifxetexorluatex
+%  \usepackage{fontspec}
+%  \setmainfont{CMU Serif Roman}
+%  \setmonofont{CMU Typewriter Text}
+%  \usepackage{unicode-math}
+%  \setmathfont{Latin Modern Math}
+%\fi
 
 \begin{document}
 
