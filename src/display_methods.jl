@@ -39,9 +39,9 @@ function Base.display(report::Report, data)
                 continue
             end
             #Always show plain text as well for term mode
-            if m ≠ "text/plain" && report.cur_chunk.options[:term]
-                display(report, "text/plain", data)
-            end
+            #if m ≠ "text/plain" && report.cur_chunk.options[:term]
+            #    display(report, "text/plain", data)
+            #end
             break
         end
     end

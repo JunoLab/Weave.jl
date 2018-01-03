@@ -52,7 +52,6 @@ julia> x = 1:10
 1:10
 
 julia> plot(x = x, y = x)
-Plot(...)
 
 ~~~~~~~~~~~~~
 
@@ -64,7 +63,6 @@ Plot(...)
 julia> print(x)
 1:10
 julia> plot(x = x, y = x)
-Plot(...)
 
 ~~~~~~~~~~~~~
 
@@ -91,7 +89,6 @@ julietta> x = 1:10
 1:10
 
 julietta> plot(x = x, y = x)
-Plot(...)
 
 ~~~~~~~~~~~~~
 
@@ -103,7 +100,6 @@ Plot(...)
 julietta> print(x)
 1:10
 julietta> plot(x = x, y = x)
-Plot(...)
 
 ~~~~~~~~~~~~~
 
@@ -184,7 +180,6 @@ julia> x = 1:10
 1:10
 
 julia> plot(x = x, y = x)
-Plot(...)
 
 ~~~~~~~~~~~~~
 
@@ -196,7 +191,6 @@ Plot(...)
 julia> print(x)
 1:10
 julia> plot(x = x, y = x)
-Plot(...)
 
 ~~~~~~~~~~~~~
 
