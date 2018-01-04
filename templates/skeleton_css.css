@@ -189,6 +189,13 @@ td,
 th {
   padding: 0;
 }
+thead th {
+    border-bottom: 1px solid black;
+    background-color: white;
+}
+tr:nth-child(odd){
+  background-color: rgb(248,248,248);
+}
 
 
 /*
