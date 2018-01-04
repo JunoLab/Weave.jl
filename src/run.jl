@@ -153,6 +153,8 @@ function img2base64(fig, cwd)
     return "data:image/png;base64," * stringmime(MIME("image/png"), raw)
   elseif ext == ".svg"
     return "data:image/svg+xml;base64," * stringmime(MIME("image/svg+xml"), raw)
+  elseif ext == ".gif"
+    return "data:image/gif;base64," * stringmime(MIME("image/gif"), raw)
   else
     return(fig)
   end

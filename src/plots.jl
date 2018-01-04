@@ -1,5 +1,6 @@
 import Plots
 
+
 """Pre-execute hooks to set the plot size for the chunk """
 function plots_set_size(chunk)
   w = chunk.options[:fig_width] * chunk.options[:dpi]
@@ -72,4 +73,23 @@ end
 
 function Base.display(report::Report, m::MIME"image/svg+xml", plot::Plots.Plot)
     add_plots_figure(report, plot, ".svg")
+end
+
+# write out html to view Animated gif
+function Base.display(report::Report, ::MIME"text/html", agif::Plots.AnimatedGif)
+  ext = agif.filename[end-2:end]
+  res = ""
+  if ext == "gif"
+      img = stringmime(MIME("image/gif"), read(agif.filename))
+      res = "<img src=\"data:image/gif;base64,$img\" />"
+  elseif ext in ("mov", "mp4")
+      #Uncomment to embed mp4, make global or chunk option?
+      #img = stringmime(MIME("video/$ext"), read(agif.filename))
+      #res = "<video controls><source src=\"data:video/$(ext);base64,$img\" type=\"video/$ext\"></video>"
+      res = "<video controls><source src=\"$(relpath(agif.filename))\" type=\"video/$ext\"></video>"
+  else
+      error("Cannot show animation with extension $ext: $agif")
+  end
+
+  report.rich_output *= "\n" * res * "\n"
 end
