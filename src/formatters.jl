@@ -56,11 +56,15 @@ const pandoc = Pandoc("Pandoc markdown",
                                 :doctype=>"pandoc"
                                                ))
 
-
-const pdoc2html = Pandoc("Markdown to HTML (requires Pandoc)",
+struct Pandoc2HTML
+description::AbstractString
+formatdict::Dict{Symbol,Any}
+end
+                                              
+const pdoc2html = Pandoc2HTML("Markdown to HTML (requires Pandoc)",
                       Dict{Symbol,Any}(
-                              :codestart => "````julia",
-                              :codeend=> "````\n\n",
+                              :codestart => "\n",
+                              :codeend=> "\n",
                               :outputstart=> "````",
                               :outputend=> "````\n\n",
                               :fig_ext=> ".png",
@@ -69,7 +73,7 @@ const pdoc2html = Pandoc("Markdown to HTML (requires Pandoc)",
                                   "text/html", "text/markdown",  "text/plain"],
                               :doctype=> "pandoc2html"))
 
-mutable struct Markdown
+struct Markdown
    description::AbstractString
    formatdict::Dict{Symbol,Any}
 end

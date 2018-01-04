@@ -250,6 +250,17 @@ function format_code(result::AbstractString, docformat::JMarkdown2HTML)
   return highlighted
 end
 
+function format_code(result::AbstractString, docformat::Pandoc2HTML)
+    buf = PipeBuffer()
+    Highlights.highlight(buf, MIME("text/html"), strip(result),
+      Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
+    flush(buf)
+    highlighted = readstring(buf)
+    close(buf)
+    return highlighted
+  end
+  
+
 function format_termchunk(chunk, formatdict, docformat)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"
         result = "$(formatdict[:termstart])$(chunk.output)\n" * "$(formatdict[:termend])\n"
@@ -271,6 +282,20 @@ function format_termchunk(chunk, formatdict, docformat::JMarkdown2HTML)
     end
     return result
 end
+
+function format_termchunk(chunk, formatdict, docformat::Pandoc2HTML)
+    if chunk.options[:echo] && chunk.options[:results] != "hidden"
+        buf = PipeBuffer()
+        Highlights.highlight(buf, MIME("text/html"), strip(chunk.output), Highlights.Lexers.JuliaConsoleLexer)
+        flush(buf)
+        result = readstring(buf)
+        close(buf)
+    else
+        result = ""
+    end
+    return result
+end
+
 
 function format_termchunk(chunk, formatdict, docformat::JMarkdown2tex)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"

@@ -9,6 +9,7 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
   weavedir = dirname(@__FILE__)
   html_template = joinpath(weavedir, "../templates/pandoc_skeleton.html")
   css_template = joinpath(weavedir, "../templates/pandoc_skeleton.css")
+  css = stylesheet(MIME("text/html"), doc.highlight_theme)
 
   path, wsource = splitdir(abspath(doc.source))
   wversion = string(Pkg.installed("Weave"))
@@ -38,10 +39,11 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
   outname = basename(outname)
 
   try
-    pandoc_out, pandoc_in, proc = readandwrite(`pandoc -R -s --mathjax="" --highlight-style=tango
+    pandoc_out, pandoc_in, proc = readandwrite(`pandoc -R -s --mathjax="" 
     $filt $citeproc
     --template $html_template -H $css_template $self_contained
      -V wversion=$wversion -V wtime=$wtime -V wsource=$wsource
+     -V highlightcss=$css
      -V headerscript=$header_script
      -o $outname`)
     println(pandoc_in, formatted)
