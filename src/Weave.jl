@@ -147,9 +147,9 @@ path. **Ignores** all chunk options.
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, 
    `:pwd`: Julia working directory, `"somepath"`: Path as a 
     String e.g `"/home/mpastell/weaveout"`
-
+* nbconvert cell timeout in seconds. Defaults to -1 (no timeout)
 """
-function notebook(source::String, out_path=:pwd)
+function notebook(source::String, out_path=:pwd, timeout=-1)
   doc = read_doc(source)
   converted = convert_doc(doc, NotebookOutput())
   doc.cwd = get_cwd(doc, out_path)
@@ -160,7 +160,7 @@ function notebook(source::String, out_path=:pwd)
   end
 
   info("Running nbconvert")
-  out = readstring(`jupyter nbconvert --to notebook --execute $outfile --output $outfile`)
+  out = readstring(`jupyter nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile --output $outfile`)
 end
 
 """
