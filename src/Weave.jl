@@ -138,6 +138,34 @@ function weave(doc::AbstractString, doctype::AbstractString)
 end
 
 """
+  notebook(source::String, out_path=:pwd)
+
+Convert Weave document to Jupyter notebook and execute the code 
+using nbconvert. You need to have nbconvert installed and in your 
+path. **Ignores** all chunk options.
+
+* 
+* `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, 
+   `:pwd`: Julia working directory, `"somepath"`: Path as a 
+    String e.g `"/home/mpastell/weaveout"`
+
+
+"""
+function notebook(source::String, out_path=:pwd)
+  doc = read_doc(source)
+  converted = convert_doc(doc, NotebookOutput())
+  doc.cwd = get_cwd(doc, out_path)
+  outfile = get_outname(out_path, doc, ext="ipynb")
+
+  open(outfile, "w") do f
+    write(f, converted)
+  end
+
+  info("Running nbconvert")
+  out = readstring(`jupyter nbconvert --to notebook --execute $outfile --output $outfile`)
+end
+
+"""
     include_weave(doc, informat=:auto)
 
 Include code from Weave document calling `include_string` on
@@ -178,7 +206,7 @@ include("format.jl")
 include("pandoc.jl")
 include("writers.jl")
 
-export weave, list_out_formats, tangle, convert_doc,
+export weave, list_out_formats, tangle, convert_doc, notebook,
         set_chunk_defaults, get_chunk_defaults, restore_chunk_defaults,
         include_weave
 end
