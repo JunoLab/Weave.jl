@@ -140,15 +140,13 @@ end
 """
   notebook(source::String, out_path=:pwd)
 
-Convert Weave document to Jupyter notebook and execute the code 
+Convert Weave document `source` to Jupyter notebook and execute the code 
 using nbconvert. You need to have nbconvert installed and in your 
 path. **Ignores** all chunk options.
 
-* 
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, 
    `:pwd`: Julia working directory, `"somepath"`: Path as a 
     String e.g `"/home/mpastell/weaveout"`
-
 
 """
 function notebook(source::String, out_path=:pwd)
