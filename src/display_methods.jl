@@ -15,10 +15,12 @@ mutable struct Report <: Display
   mimetypes::Array{AbstractString}
   first_plot::Bool
   header_script::String
+  throw_errors::Bool
 end
 
-function Report(cwd, basename, formatdict, mimetypes)
-    Report(cwd, basename, formatdict, "", "", "", 1, AbstractString[], :text, nothing, mimetypes, true, "")
+function Report(cwd, basename, formatdict, mimetypes, throw_errors)
+    Report(cwd, basename, formatdict, "", "", "", 1, AbstractString[], :text, nothing, 
+        mimetypes, true, "", throw_errors)
 end
 
 
@@ -31,7 +33,7 @@ const default_mime_types = ["image/svg+xml", "image/png", "text/html", "text/pla
 function Base.display(report::Report, data)
     #Set preferred mimetypes for report based on format
     for m in report.mimetypes
-        if mimewritable(m, data)
+        if mimewritable(m, data)     
             try
                 if !istextmime(m)
                     Compat.invokelatest(display, report, m, data)   
@@ -41,6 +43,7 @@ function Base.display(report::Report, data)
                     Compat.invokelatest(display, report, m, data)
                 end
             catch e
+                throw(e)
                 warn("Failed to display data in \"$m\" format")
                 continue
             end
@@ -71,6 +74,20 @@ function Base.display(report::Report, m::MIME"text/plain", data)
     println(s)
 end
 
+function Base.display(report::Report, m::MIME"text/plain", data::Exception)
+    println(sprint(showerror, data))
+end
+
+function Base.display(report::Report, m::MIME"text/html", data::Exception)
+    report.rich_output = sprint(show, m, data)
+end
+
+function Base.show(io, m::MIME"text/html", data::Exception)
+    println(io ,"<pre class=\"julia-error\">")
+    println(io, Base.Markdown.htmlesc(sprint(showerror, data)))
+    println(io ,"</pre>")    
+end
+
 #Catch "rich_output"
 function Base.display(report::Report, m::MIME"text/html", data)
     s = reprmime(m, data)
@@ -88,6 +105,11 @@ function Base.display(report::Report, m::MIME"text/latex", data)
     report.rich_output *= "\n" * s
 end
 
+function showstring(data, f::Function=show)
+    io = IOBuffer()
+    f(io, data)
+    return String(take!(io))
+end
 
 """Add saved figure name to results and return the name"""
 function add_figure(report::Report, data, m, ext)
