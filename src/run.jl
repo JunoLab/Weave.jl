@@ -37,6 +37,8 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
         fig_path = mktempdir(abspath(doc.cwd))
     end
 
+    cache == :off || @eval import FileIO, JLD2
+
     #This is needed for latex and should work on all output formats
     is_windows() && (fig_path = replace(fig_path, "\\", "/"))
 
