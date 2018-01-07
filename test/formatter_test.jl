@@ -15,7 +15,7 @@ f = Weave.format_chunk(dchunk, pformat.formatdict, pformat)
 @test f == content
 
 docformat = Weave.formats["md2html"]
-f_check = "<div><h1>Test chunk</h1><p>Test rendering <span>\$\alpha\$</span></p></div>"
+f_check = "<h1>Test chunk</h1>\n<p>Test rendering <span class=\"math\">\$\alpha\$</span></p>\n"
 f = Weave.format_chunk(dchunk, docformat.formatdict, docformat)
 @test f_check == f
 
