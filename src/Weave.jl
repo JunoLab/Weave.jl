@@ -68,6 +68,8 @@ Weave an input document to output file.
 * `cache_path`: where of cached output will be saved.
 * `cache`: controls caching of code: `:off` = no caching, `:all` = cache everything,
   `:user` = cache based on chunk options, `:refresh`, run all code chunks and save new cache.
+* `throw_errors` if `false` errors are included in output document and the whole document is 
+    executed. if `true` errors are thrown when they occur.
 * `template` : Template (file path) for md2html or md2tex formats.
 * `highlight_theme` : Theme (Highlights.AbstractTheme) for used syntax highlighting
 * `css` : CSS (file path) used for md2html format
@@ -79,6 +81,7 @@ function weave(source ; doctype = :auto, plotlib=:auto,
         informat=:auto, out_path=:doc, args = Dict(),
         fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache=:off,
+        throw_errors = false,
         template = nothing, highlight_theme = nothing, css = nothing,
         latex_cmd = "xelatex")
 
@@ -91,7 +94,8 @@ function weave(source ; doctype = :auto, plotlib=:auto,
     try
       doc = run(doc, doctype = doctype, plotlib=plotlib,
               out_path=out_path, args = args,
-              fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache)
+              fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache,
+              throw_errors = throw_errors)
       formatted = format(doc)
 
       outname = get_outname(out_path, doc)

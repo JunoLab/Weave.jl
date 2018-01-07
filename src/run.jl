@@ -22,7 +22,7 @@ Run code chunks and capture output from parsed document.
 """
 function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
         out_path=:doc, args=Dict(), fig_path = "figures", fig_ext = nothing,
-        cache_path = "cache", cache = :off)
+        cache_path = "cache", cache = :off, throw_errors=false)
     #cache :all, :user, :off, :refresh
 
     doc.cwd = get_cwd(doc, out_path)
@@ -60,7 +60,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
     rcParams[:plotlib_set] = false
     plotlib == :auto || init_plotting(plotlib)
 
-    report = Report(doc.cwd, doc.basename, doc.format.formatdict, mimetypes)
+    report = Report(doc.cwd, doc.basename, doc.format.formatdict, mimetypes, throw_errors)
     pushdisplay(report)
 
     if cache != :off && cache != :refresh
@@ -204,7 +204,7 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
         lastline = (result_no == N)
         rcParams[:plotlib_set] || detect_plotlib(chunk) #Try to autodetect plotting library
         (obj, out) = capture_output(expr, SandBox, chunk.options[:term],
-                      chunk.options[:display], rcParams[:plotlib], lastline)
+                      chunk.options[:display], rcParams[:plotlib], lastline, report.throw_errors)
         figures = report.figures #Captured figures
         result = ChunkOutput(str_expr, out, report.cur_result, report.rich_output, figures)
         report.rich_output = ""
@@ -223,7 +223,7 @@ end
 getstdout() = Base.STDOUT
 
 function capture_output(expr, SandBox::Module, term, disp, plotlib,
-                        lastline)
+                        lastline, throw_errors=false)
     #oldSTDOUT = STDOUT
     oldSTDOUT = getstdout()
     out = nothing
@@ -243,6 +243,10 @@ function capture_output(expr, SandBox::Module, term, disp, plotlib,
         elseif lastline && obj != nothing
             (expr.head != :toplevel && expr.head != :(=)) && display(obj)
         end
+    catch E
+        throw_errors && throw(E)
+        display(E)
+        warn("ERROR: $(typeof(E)) occurred, including output in Weaved document")    
     finally
         redirect_stdout(oldSTDOUT)
         close(wr)

@@ -518,6 +518,10 @@ pre.sourceCode.julia {
   border-radius: 4px;
 }
 
+pre.julia-error {
+  color : red
+}
+
 code,
 kbd,
 pre,

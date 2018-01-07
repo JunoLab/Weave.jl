@@ -4,6 +4,9 @@ using Base.Test
 info("Test: Chunk options")
 include("chunk_options.jl")
 
+info("Testing error handling")
+include("errors_test.jl")
+
 info("Test: Converting")
 include("convert_test.jl")
 
@@ -32,4 +35,3 @@ include("chunk_opts_gadfly.jl")
 info("Test: Weaving with Plots.jl")
 include("plotsjl_test.jl")
 include("publish_test.jl")
-
