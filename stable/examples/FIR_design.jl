@@ -68,7 +68,7 @@ h = FIRfreqz(f, w)
 #' The next code chunk is executed in term mode, see the [script](FIR_design.jl) for syntax.
 #+ term=true
 
-h_db = log10(abs(h));
+h_db = log10(abs.(h));
 ws = w/pi*(fs/2)
 
 #+

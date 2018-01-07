@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8}]
+\PYG{n}{h\PYGZus{}phase} \PYG{o}{=} \PYG{n}{unwrap}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{n}{atan2}\PYG{p}{(}\PYG{n}{imag}\PYG{p}{(}\PYG{n}{h}\PYG{p}{),}\PYG{n}{real}\PYG{p}{(}\PYG{n}{h}\PYG{p}{)))}
+\PYG{n}{plot}\PYG{p}{(}\PYG{n}{y} \PYG{o}{=} \PYG{n}{h\PYGZus{}phase}\PYG{p}{,} \PYG{n}{x} \PYG{o}{=} \PYG{n}{ws}\PYG{p}{,} \PYG{n}{Geom}\PYG{o}{.}\PYG{n}{line}\PYG{p}{,}
+    \PYG{n}{Guide}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Frequency (Hz)\PYGZdq{}}\PYG{p}{),} \PYG{n}{Guide}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Phase (radians)\PYGZdq{}}\PYG{p}{))}
+\end{Verbatim}

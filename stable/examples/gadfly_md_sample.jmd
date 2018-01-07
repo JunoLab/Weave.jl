@@ -46,7 +46,7 @@ output will be captured.
 using Gadfly
 x = linspace(0, 2*pi)
 println(x)
-plot(x = x, y = sin(x))
+plot(x = x, y = sin.(x))
 ```
 
 You can also control the way the results are captured, plot size etc.
