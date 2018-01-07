@@ -1,7 +1,7 @@
 
 # Working with Jupyter notebooks
 
-## Weaving
+## Weaving from Jupyter notebooks
 
 Weave supports using Jupyter notebooks as input format, this means you
 can weave notebooks to any supported formats. You can't use chunk options with notebooks.
@@ -10,8 +10,18 @@ can weave notebooks to any supported formats. You can't use chunk options with n
 weave("notebook.ipynb")
 ```
 
-In order to output notebooks from other formats you need to convert the
-document to a notebook and run the code using IJulia.
+## Output to Jupyter notebooks
+
+As of Weave 0.5.1. there is new `notebook` method to convert Weave documents
+to Jupyter notebooks using [nbconvert](http://nbconvert.readthedocs.io/en/latest/execute_api.html). The code **is not executed by Weave** 
+and the output doesn't always work properly, 
+see [#116](https://github.com/mpastell/Weave.jl/issues/116).
+
+```@docs
+notebook(source::String, out_path=:pwd)
+```
+
+You might wan't to use the `convert_doc` method below instead and run the code in Jupyter.
 
 ## Converting between formats
 

@@ -162,3 +162,12 @@ and you can access the filename from document as follows:
 
 You can use the `out_path` argument to control the name of the 
 output document.
+
+## Include Weave document in Julia
+
+You can call `include_weave` on a Weave document to run the contents
+of all code chunks in Julia.
+
+```@docs
+include_weave(doc, informat=:auto)
+```

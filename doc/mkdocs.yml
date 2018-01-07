@@ -1,6 +1,6 @@
 site_name: Weave.jl
 site_author: Matti Pastell
-copyright: Matti Pastell 2016
+copyright: Matti Pastell 2016-2018
 repo_url: https://github.com/mpastell/Weave.jl
 
 theme: material
@@ -29,9 +29,9 @@ google_analytics:
   - 'auto'
 
 extra:
-  version: 'v0.4.1'
-  author:
-    twitter: 'mpastell'
+  social:
+  - type: 'twitter'
+    link: 'https://twitter.com/mpastell'
 
 docs_dir: 'build'
 
