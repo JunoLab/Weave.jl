@@ -19,7 +19,7 @@ mutable struct Report <: Display
 end
 
 function Report(cwd, basename, formatdict, mimetypes, throw_errors)
-    Report(cwd, basename, formatdict, "", "", "", 1, AbstractString[], :text, nothing, 
+    Report(cwd, basename, formatdict, "", "", "", 1, AbstractString[], :text, nothing,
         mimetypes, true, "", throw_errors)
 end
 
@@ -33,13 +33,13 @@ const default_mime_types = ["image/svg+xml", "image/png", "text/html", "text/pla
 function Base.display(report::Report, data)
     #Set preferred mimetypes for report based on format
     for m in report.mimetypes
-        if mimewritable(m, data)     
+        if mimewritable(m, data)
             try
                 if !istextmime(m)
-                    Compat.invokelatest(display, report, m, data)   
+                    Compat.invokelatest(display, report, m, data)
                 elseif report.cur_chunk.options[:term]
                     Compat.invokelatest(display, report, "text/plain", data)
-                else   
+                else
                     Compat.invokelatest(display, report, m, data)
                 end
             catch e
@@ -75,7 +75,7 @@ function Base.display(report::Report, m::MIME"text/plain", data)
 end
 
 function Base.display(report::Report, m::MIME"text/plain", data::Exception)
-    println(sprint(showerror, data))
+    println("Error: " * sprint(showerror, data))
 end
 
 function Base.display(report::Report, m::MIME"text/html", data::Exception)
@@ -84,8 +84,8 @@ end
 
 function Base.show(io, m::MIME"text/html", data::Exception)
     println(io ,"<pre class=\"julia-error\">")
-    println(io, Base.Markdown.htmlesc(sprint(showerror, data)))
-    println(io ,"</pre>")    
+    println(io, Base.Markdown.htmlesc("ERROR: " * sprint(showerror, data)))
+    println(io ,"</pre>")
 end
 
 #Catch "rich_output"
@@ -103,12 +103,6 @@ end
 function Base.display(report::Report, m::MIME"text/latex", data)
     s = reprmime(m, data)
     report.rich_output *= "\n" * s
-end
-
-function showstring(data, f::Function=show)
-    io = IOBuffer()
-    f(io, data)
-    return String(take!(io))
 end
 
 """Add saved figure name to results and return the name"""

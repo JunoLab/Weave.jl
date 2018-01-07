@@ -246,7 +246,7 @@ function capture_output(expr, SandBox::Module, term, disp, plotlib,
     catch E
         throw_errors && throw(E)
         display(E)
-        warn("$(typeof(E)) occurred, including output in Weaved document")    
+        warn("ERROR: $(typeof(E)) occurred, including output in Weaved document")    
     finally
         redirect_stdout(oldSTDOUT)
         close(wr)
