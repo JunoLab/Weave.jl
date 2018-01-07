@@ -1,4 +1,4 @@
-__precompile__(false)
+__precompile__()
 module Weave
 import Highlights
 using Compat
@@ -204,6 +204,7 @@ include("readers.jl")
 include("run.jl")
 include("cache.jl")
 include("formatters.jl")
+include("Markdown2HTML.jl")
 include("format.jl")
 include("pandoc.jl")
 include("writers.jl")
