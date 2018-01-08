@@ -12,6 +12,7 @@ include("convert_test.jl")
 
 info("Testing formatters")
 include("formatter_test.jl")
+include("markdown_test.jl")
 
 info("Testing figure formatters")
 include("figureformatter_test.jl")
