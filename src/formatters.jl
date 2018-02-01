@@ -369,7 +369,10 @@ end
 
 function formatfigures(chunk, docformat::Pandoc)
     fignames = chunk.figures
+    length(fignames) > 0 || (return "")
+
     caption = chunk.options[:fig_cap]
+    label = get(chunk.options, :label, nothing)
     result = ""
     figstring = ""
     attribs = ""
@@ -377,21 +380,21 @@ function formatfigures(chunk, docformat::Pandoc)
     height = chunk.options[:out_height]
 
     #Build figure attibutes
-    width == nothing || (attribs = "width=$width")
-    (attribs ≠ "" && height ≠ nothing ) && (attribs *= " ")
-    height == nothing   || (attribs *= "height=$height")
-    attribs == ""    || (attribs = "{$attribs}")
-    length(fignames) > 0 || (return "")
+    attribs = String[]
+    width == nothing  || push!(attribs, "width=$width")
+    height == nothing || push!(attribs, "height=$height")
+    label == nothing  || push!(attribs, "#fig:$label")
+    attribs = join(attribs, " ")
 
     if caption != nothing
-        result *= "![$caption]($(fignames[1]))$attribs\n"
+        result *= "![$caption]($(fignames[1])){$attribs}\n"
         for fig = fignames[2:end]
-            result *= "![]($fig)$attribs\n"
+            result *= "![]($fig){$attribs}\n"
             println("Warning, only the first figure gets a caption\n")
         end
     else
         for fig in fignames
-            result *= "![]($fig)$attribs\\ \n\n"
+            result *= "![]($fig){$attribs}\\ \n\n"
         end
     end
     return result
