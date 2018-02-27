@@ -68,7 +68,7 @@ Weave an input document to output file.
 * `cache_path`: where of cached output will be saved.
 * `cache`: controls caching of code: `:off` = no caching, `:all` = cache everything,
   `:user` = cache based on chunk options, `:refresh`, run all code chunks and save new cache.
-* `throw_errors` if `false` errors are included in output document and the whole document is 
+* `throw_errors` if `false` errors are included in output document and the whole document is
     executed. if `true` errors are thrown when they occur.
 * `template` : Template (file path) for md2html or md2tex formats.
 * `highlight_theme` : Theme (Highlights.AbstractTheme) for used syntax highlighting
@@ -144,12 +144,11 @@ end
 """
   notebook(source::String, out_path=:pwd)
 
-Convert Weave document `source` to Jupyter notebook and execute the code 
-using nbconvert. You need to have nbconvert installed and in your 
-path. **Ignores** all chunk options.
+Convert Weave document `source` to Jupyter notebook and execute the code
+using nbconvert. Requires IJulia. **Ignores** all chunk options
 
-* `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, 
-   `:pwd`: Julia working directory, `"somepath"`: Path as a 
+* `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document,
+   `:pwd`: Julia working directory, `"somepath"`: Path as a
     String e.g `"/home/mpastell/weaveout"`
 * nbconvert cell timeout in seconds. Defaults to -1 (no timeout)
 """
@@ -164,7 +163,8 @@ function notebook(source::String, out_path=:pwd, timeout=-1)
   end
 
   info("Running nbconvert")
-  out = readstring(`jupyter nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile --output $outfile`)
+  eval(parse("using IJulia"))
+  out = readstring(`$(IJulia.jupyter)-nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile --output $outfile`)
 end
 
 """
