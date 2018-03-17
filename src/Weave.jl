@@ -191,7 +191,7 @@ end
 #but note that Weave hooks take the chunk as input
 const preexecute_hooks = Function[]
 push_preexecute_hook(f::Function) = push!(preexecute_hooks, f)
-pop_preexecute_hook(f::Function) = splice!(preexecute_hooks, findfirst(pretexecute_hooks, f))
+pop_preexecute_hook(f::Function) = splice!(preexecute_hooks, findfirst(preexecute_hooks, f))
 
 const postexecute_hooks = Function[]
 push_postexecute_hook(f::Function) = push!(postexecute_hooks, f)
