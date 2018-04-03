@@ -51,10 +51,14 @@ end
 
 
 """Read and parse input document"""
-function read_doc(source::AbstractString, format=:auto)
+function read_doc(source::AbstractString, format=:auto; preprocess = identity)
     format == :auto && (format = detect_informat(source))
     document = readstring(source)
     document = replace(document, "\r\n", "\n")
+
+    # let user do some custom pre-processing
+    document = preprocess(document)
+
     parsed = parse_doc(document, format)
     header = parse_header(parsed[1])
     doc = WeaveDoc(source, parsed, header)

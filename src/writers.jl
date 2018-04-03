@@ -30,7 +30,7 @@ function detect_outformat(outfile::String)
 end
 
 """
-`convert_doc(infile::AbstractString, outfile::AbstractString; format = nothing)`
+`convert_doc(infile::AbstractString, outfile::AbstractString; format = nothing, preprocess = identity, postprocess = identity)`
 
 Convert Weave documents between different formats
 
@@ -38,15 +38,23 @@ Convert Weave documents between different formats
 * `outfile` = Name of the output document
 * `format` = Output format (optional). Detected from outfile extension, but can
   be set to `"script"`, `"markdown"`, `"notebook"` or `"noweb"`.
+* `preprocess`,`postprocess`: custom pre- and post processing functions.
+  The functions should accept a string and return a processed string.
+  `preprocess` is called on the raw string read from `infile` and `postprocess`
+  called on the string just before writing to file.
 """
-function convert_doc(infile::AbstractString, outfile::AbstractString; format = nothing)
-  doc = read_doc(infile)
+function convert_doc(infile::AbstractString, outfile::AbstractString; format = nothing,
+                     preprocess = identity, postprocess = identity)
+  doc = read_doc(infile, preprocess = preprocess)
 
   if format == nothing
     format = detect_outformat(outfile)
   end
 
   converted = convert_doc(doc, output_formats[format])
+
+  # let user do some custom post-processing
+  converted = postprocess(converted)
 
   open(outfile, "w") do f
     write(f, converted)
