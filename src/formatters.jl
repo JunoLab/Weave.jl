@@ -384,17 +384,17 @@ function formatfigures(chunk, docformat::Pandoc)
     width == nothing  || push!(attribs, "width=$width")
     height == nothing || push!(attribs, "height=$height")
     label == nothing  || push!(attribs, "#fig:$label")
-    attribs = join(attribs, " ")
+    attribs = isempty(attribs) ? "" : "{" * join(attribs, " ") * "}"
 
     if caption != nothing
-        result *= "![$caption]($(fignames[1])){$attribs}\n"
+        result *= "![$caption]($(fignames[1]))$attribs\n"
         for fig = fignames[2:end]
-            result *= "![]($fig){$attribs}\n"
+            result *= "![]($fig)$attribs\n"
             println("Warning, only the first figure gets a caption\n")
         end
     else
         for fig in fignames
-            result *= "![]($fig){$attribs}\\ \n\n"
+            result *= "![]($fig)$attribs\\ \n\n"
         end
     end
     return result
