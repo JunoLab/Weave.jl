@@ -41,6 +41,6 @@ function Base.display(report::Report, m::MIME"image/svg+xml", p::Gadfly.Plot)
     elseif format == ".tex"
         Gadfly.draw(Gadfly.PGF(full_name, w, h, true ), p)
     else
-        warn("Can't save figure. Unsupported format")
+        @warn("Can't save figure. Unsupported format")
     end
 end

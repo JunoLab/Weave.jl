@@ -48,11 +48,11 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
      -o $outname`)
     println(pandoc_in, formatted)
     close(pandoc_in)
-    proc_output = readstring(pandoc_out)
+    proc_output = read(pandoc_out, String)
     cd(old_wd)
   catch e
     cd(old_wd)
-    warn("Error converting document to HTML")
+    @warn("Error converting document to HTML")
     throw(e)
   end
 end
@@ -84,7 +84,7 @@ function pandoc2pdf(formatted::AbstractString, doc::WeaveDoc, outname::AbstractS
     citeproc = []
   end
 
-  info("Done executing code. Running xelatex")
+  @info("Done executing code. Running xelatex")
   try
     pandoc_out, pandoc_in, proc = readandwrite(`pandoc -R -s  --latex-engine=xelatex --highlight-style=tango
      $filt $citeproc
@@ -93,11 +93,11 @@ function pandoc2pdf(formatted::AbstractString, doc::WeaveDoc, outname::AbstractS
     println(pandoc_in, formatted)
 
     close(pandoc_in)
-    proc_output = readstring(pandoc_out)
+    proc_output = read(pandoc_out, String)
     cd(old_wd)
   catch e
     cd(old_wd)
-    warn("Error converting document to pdf")
+    @warn("Error converting document to pdf")
     throw(e)
   end
 end
@@ -110,7 +110,7 @@ function run_latex(doc::WeaveDoc, outname, latex_cmd = "xelatex")
   try
     textmp = mktempdir(".")
     #out = readstring(`$latex_cmd -shell-escape --output-directory=$textmp $xname`)
-    out = readstring(`$latex_cmd -shell-escape $xname`)
+    out = read(`$latex_cmd -shell-escape $xname`, String)
     #info(out)
     #pdf = joinpath(textmp, "$(doc.basename).pdf")
     #cp(pdf, "$(doc.basename).pdf", remove_destination=true)
@@ -120,7 +120,7 @@ function run_latex(doc::WeaveDoc, outname, latex_cmd = "xelatex")
     return true
   catch e
     cd(old_wd)
-    warn("Error converting document to pdf. Try running latex manually")
+    @warn("Error converting document to pdf. Try running latex manually")
     return false
     #throw(e)
   end

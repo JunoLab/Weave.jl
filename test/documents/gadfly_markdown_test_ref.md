@@ -4,7 +4,7 @@
 ````julia
 julia> using Gadfly
 
-julia> x = linspace(0, 2π, 200)
+julia> x = range(0, stop=2π, length=200)
 200-element LinSpace{Float64}:
  0.0,0.0315738,0.0631476,0.0947214,0.126295,…,6.18846,6.22004,6.25161,6.28319
 
@@ -29,7 +29,7 @@ Plot(...)
 ![](figures/gadfly_markdown_test_1_2.png)
 
 ````julia
-x = linspace(0, 200)
+x = range(0, stop=200, length=50)
 println(x)
 ````
 
@@ -43,7 +43,7 @@ linspace(0.0,200.0,50)
 ````julia
 julia> using Gadfly
 
-julia> x = linspace(0, 2π, 200)
+julia> x = range(0, stop=2π, length=200)
 200-element LinSpace{Float64}:
  0.0,0.0315738,0.0631476,0.0947214,0.126295,…,6.18846,6.22004,6.25161,6.28319
 
@@ -68,7 +68,7 @@ Plot(...)
 ![](figures/gadfly_markdown_test_3_2.png)
 
 ````julia
-x = linspace(0, 200)
+x = range(0, stop=200, length=50)
 println(x)
 ````
 

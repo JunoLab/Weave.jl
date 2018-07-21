@@ -424,7 +424,7 @@ function formatfigures(chunk, docformat::Hugo)
     function format_shortcode(index_and_fig)
         index, fig = index_and_fig
         if index > 1
-            warn("Only the first figure gets a caption.")
+            @warn("Only the first figure gets a caption.")
             title_spec = ""
         else
             caption = chunk.options[:fig_cap]

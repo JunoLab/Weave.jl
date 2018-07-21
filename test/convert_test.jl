@@ -1,11 +1,11 @@
 using Weave
-using Base.Test
+using Test
 
 function convert_test(outfile, infile="documents/chunk_options.noweb")
   outfile = joinpath("documents/convert", outfile)
   convert_doc(infile, outfile)
-  result =  readstring(outfile)
-  ref =  readstring(outfile * ".ref")
+  result =  read(outfile, String)
+  ref =  read(outfile * ".ref", String)
   @test result == ref
   rm(outfile)
 end
