@@ -1,6 +1,7 @@
 import Mustache, Highlights
 import .Markdown2HTML
 using Compat
+using Dates
 
 function format(doc::WeaveDoc)
     formatted = AbstractString[]
@@ -59,7 +60,8 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
   css = stylesheet(MIME("text/html"), doc.highlight_theme)
   title, author, date = get_titleblock(doc)
   path, wsource = splitdir(abspath(doc.source))
-  wversion = string(Pkg.installed("Weave"))
+  #wversion = string(Pkg.installed("Weave"))
+  wversion = ""
   wtime =  string(Date(now()))
 
   if isempty(doc.css)
@@ -86,7 +88,8 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2tex)
   title, author, date = get_titleblock(doc)
 
   path, wsource = splitdir(abspath(doc.source))
-  wversion = string(Pkg.installed("Weave"))
+  #wversion = string(Pkg.installed("Weave"))
+  wversion = ""
   wtime =  string(Date(now()))
 
   if isempty(doc.template)
@@ -261,7 +264,7 @@ function format_code(result::AbstractString, docformat::Pandoc2HTML)
     close(buf)
     return highlighted
   end
-  
+
 
 function format_termchunk(chunk, formatdict, docformat)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"
