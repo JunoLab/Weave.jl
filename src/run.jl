@@ -31,9 +31,9 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
     doc.format = formats[doctype]
     isdir(doc.cwd) || mkpath(doc.cwd)
 
-    if contains(doctype, "2pdf") && cache == :off
+    if occursin(doctype, "2pdf") && cache == :off
         fig_path = mktempdir(abspath(doc.cwd))
-    elseif contains(doctype, "2html")
+    elseif occursin(doctype, "2html")
         fig_path = mktempdir(abspath(doc.cwd))
     end
 
@@ -114,19 +114,19 @@ end
 function detect_doctype(source::AbstractString)
   ext = lowercase(splitext(source)[2])
   ext == ".jl" && return "md2html"
-  contains(ext, "md") && return "md2html"
-  contains(ext, "rst") && return "rst"
-  contains(ext, "tex") && return "texminted"
-  contains(ext, "txt") && return "asciidoc"
+  occursin(ext, "md") && return "md2html"
+  occursin(ext, "rst") && return "rst"
+  occursin(ext, "tex") && return "texminted"
+  occursin(ext, "txt") && return "asciidoc"
 
   return "pandoc"
 end
 
 
 function run_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
-    info("Weaving chunk $(chunk.number) from line $(chunk.start_line)")
+    @info("Weaving chunk $(chunk.number) from line $(chunk.start_line)")
     result_chunks = eval_chunk(chunk, report, SandBox)
-    contains(report.formatdict[:doctype], "2html") && (result_chunks = embed_figures(result_chunks, report.cwd))
+    occursin(report.formatdict[:doctype], "2html") && (result_chunks = embed_figures(result_chunks, report.cwd))
     return result_chunks
 end
 
@@ -178,7 +178,7 @@ function run_inline(inline::InlineCode, report::Report, SandBox::Module)
     merge!(chunk.options, options)
 
     chunks = eval_chunk(chunk, report, SandBox)
-    contains(report.formatdict[:doctype], "2html") && (chunks = embed_figures(chunks, report.cwd))
+    occursin(report.formatdict[:doctype], "2html") && (chunks = embed_figures(chunks, report.cwd))
 
     output = chunks[1].output
     endswith(output, "\n") && (output = output[1:end-1])
@@ -222,7 +222,7 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
     return results
 end
 
-getstdout() = Base.STDOUT
+getstdout() = stdout
 
 function capture_output(expr, SandBox::Module, term, disp, plotlib,
                         lastline, throw_errors=false)
@@ -231,9 +231,9 @@ function capture_output(expr, SandBox::Module, term, disp, plotlib,
     out = nothing
     obj = nothing
     rw, wr = redirect_stdout()
-    reader = @async readstring(rw)
+    reader = @async read(rw, String)
     try
-        obj = eval(SandBox, expr)
+        obj = Core.eval(SandBox, expr)
         if (term || disp) && typeof(expr) == Expr && expr.head != :toplevel
             obj != nothing && display(obj)
         elseif typeof(expr) == Symbol
@@ -248,11 +248,11 @@ function capture_output(expr, SandBox::Module, term, disp, plotlib,
     catch E
         throw_errors && throw(E)
         display(E)
-        warn("ERROR: $(typeof(E)) occurred, including output in Weaved document")    
+        warn("ERROR: $(typeof(E)) occurred, including output in Weaved document")
     finally
         redirect_stdout(oldSTDOUT)
         close(wr)
-        out = wait(reader)
+        out = fetch(reader)
         close(rw)
     end
     return (obj, out)
@@ -267,7 +267,7 @@ function parse_input(input::AbstractString)
     pos = 1 #The first character is extra line end
     while pos ≤ n
         oldpos = pos
-        code,  pos = parse(input, pos)
+        code,  pos = Meta.parse(input, pos)
         push!(parsed, (input[oldpos:pos-1] , code ))
     end
     parsed
@@ -275,7 +275,7 @@ end
 
 
 function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
-    
+
     if !chunk.options[:eval]
         chunk.output = ""
         chunk.options[:fig] = false
@@ -487,13 +487,13 @@ end
 
 function detect_plotlib(chunk::CodeChunk)
 
-  if isdefined(:Plots)
+  if isdefined(Base, :Plots)
     init_plotting("Plots")
     #Need to set size before plots are created
     Compat.invokelatest(plots_set_size, chunk)
     return
   end
 
-  isdefined(:PyPlot) && init_plotting("PyPlot") && return
-  isdefined(:Gadfly) && init_plotting("Gadfly") && return
+  isdefined(Base, :PyPlot) && init_plotting("PyPlot") && return
+  isdefined(Base, :Gadfly) && init_plotting("Gadfly") && return
 end

@@ -12,7 +12,8 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
   css = stylesheet(MIME("text/html"), doc.highlight_theme)
 
   path, wsource = splitdir(abspath(doc.source))
-  wversion = string(Pkg.installed("Weave"))
+  #wversion = string(Pkg.installed("Weave"))
+  wversion = ""
   wtime =  string(Date(now()))
 
   #Header is inserted from displayed plots
@@ -39,7 +40,7 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
   outname = basename(outname)
 
   try
-    pandoc_out, pandoc_in, proc = readandwrite(`pandoc -R -s --mathjax="" 
+    pandoc_out, pandoc_in, proc = readandwrite(`pandoc -R -s --mathjax=""
     $filt $citeproc
     --template $html_template -H $css_template $self_contained
      -V wversion=$wversion -V wtime=$wtime -V wsource=$wsource
@@ -67,7 +68,8 @@ function pandoc2pdf(formatted::AbstractString, doc::WeaveDoc, outname::AbstractS
   header_template = joinpath(weavedir, "../templates/pandoc_header.txt")
 
   path, wsource = splitdir(abspath(doc.source))
-  wversion = string(Pkg.installed("Weave"))
+  #wversion = string(Pkg.installed("Weave"))
+  wversion = ""
   wtime =  Date(now())
   outname = basename(outname)
 
@@ -106,7 +108,7 @@ function run_latex(doc::WeaveDoc, outname, latex_cmd = "xelatex")
   old_wd = pwd()
   cd(doc.cwd)
   xname = basename(outname)
-  info("Weaved code to $outname. Running $latex_cmd")
+  @info("Weaved code to $outname. Running $latex_cmd")
   try
     textmp = mktempdir(".")
     #out = readstring(`$latex_cmd -shell-escape --output-directory=$textmp $xname`)

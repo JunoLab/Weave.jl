@@ -41,7 +41,7 @@ function tangle(source ; out_path=:doc, informat=:auto)
     end
   end
   doc.cwd == pwd()  && (outname = basename(outname))
-  info("Writing to file $outname")
+  @info("Writing to file $outname")
 end
 
 
@@ -123,15 +123,15 @@ function weave(source ; doctype = :auto, plotlib=:auto,
       end
 
       doc.cwd == pwd() && (outname = basename(outname))
-      info("Report weaved to $outname")
+      @info("Report weaved to $outname")
     catch e
       @warn("Something went wrong during weaving")
       println(e)
     finally
       doctype == :auto && (doctype = detect_doctype(doc.source))
-      if contains(doctype, "pandoc2pdf") && cache == :off
+      if occursin(doctype, "pandoc2pdf") && cache == :off
         rm(doc.fig_path, force = true, recursive = true)
-      elseif contains(doctype, "2html")
+    elseif occursin(doctype, "2html")
         rm(doc.fig_path, force = true, recursive = true)
       end
     end

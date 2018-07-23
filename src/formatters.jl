@@ -1,3 +1,5 @@
+using Printf
+
 mutable struct Tex
     description::AbstractString
     formatdict::Dict{Symbol,Any}
@@ -60,7 +62,7 @@ struct Pandoc2HTML
 description::AbstractString
 formatdict::Dict{Symbol,Any}
 end
-                                              
+
 const pdoc2html = Pandoc2HTML("Markdown to HTML (requires Pandoc)",
                       Dict{Symbol,Any}(
                               :codestart => "\n",
@@ -73,12 +75,12 @@ const pdoc2html = Pandoc2HTML("Markdown to HTML (requires Pandoc)",
                                   "text/html", "text/markdown",  "text/plain"],
                               :doctype=> "pandoc2html"))
 
-struct Markdown
+struct GithubMarkdown
    description::AbstractString
    formatdict::Dict{Symbol,Any}
 end
 
-const github = Markdown("Github markdown",
+const github = GithubMarkdown("Github markdown",
                         Dict{Symbol,Any}(
                                 :codestart => "````julia",
                                 :codeend=> "````\n\n",
@@ -397,7 +399,7 @@ function formatfigures(chunk, docformat::Pandoc)
     return result
 end
 
-function formatfigures(chunk, docformat::Markdown)
+function formatfigures(chunk, docformat::GithubMarkdown)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
     result = ""

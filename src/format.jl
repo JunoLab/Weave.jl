@@ -2,7 +2,7 @@ import Mustache, Highlights
 import .Markdown2HTML
 using Compat
 using Dates
-using Printf
+using Markdown
 
 function format(doc::WeaveDoc)
     formatted = AbstractString[]
@@ -22,7 +22,7 @@ function format(doc::WeaveDoc)
 
     #strip header
     if isa(doc.chunks[1], DocChunk)
-        if contains(doc.doctype, "md2")
+        if occursin(doc.doctype, "md2")
             doc.chunks[1] = strip_header(doc.chunks[1])
         end
     end
@@ -113,7 +113,7 @@ end
 
 function strip_header(chunk::DocChunk)
   if occursin(r"^---$(?<header>.+)^---$"ms, chunk.content[1].content)
-    chunk.content[1].content = lstrip(replace(chunk.content[1].content, r"^---$(?<header>.+)^---$"ms, ""))
+    chunk.content[1].content = lstrip(replace(chunk.content[1].content, r"^---$(?<header>.+)^---$"ms => ""))
   end
   return chunk
 end
@@ -136,7 +136,7 @@ function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
     text = format_chunk(chunk, formatdict, nothing)
     #invokelatest seems to be needed here
     #to fix "invalid age range" on 0.6 #21653
-    m = Compat.invokelatest(Base.Markdown.parse, text)
+    m = Compat.invokelatest(Markdown.parse, text)
 
     return string(Markdown2HTML.html(m))
 end
@@ -145,8 +145,8 @@ end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
     text = format_chunk(chunk, formatdict, nothing)
-    m = Base.Markdown.parse(text)
-    return Base.Markdown.latex(m)
+    m = Markdown.parse(text)
+    return Markdown.latex(m)
 end
 
 function format_chunk(chunk::CodeChunk, formatdict, docformat)
@@ -228,7 +228,7 @@ function format_output(result::AbstractString, docformat)
 end
 
 function format_output(result::AbstractString, docformat::JMarkdown2HTML)
-  return(Base.Markdown.htmlesc(result))
+  return(Markdown.htmlesc(result))
 end
 
 function format_code(result::AbstractString, docformat)
