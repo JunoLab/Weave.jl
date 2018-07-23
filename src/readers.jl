@@ -158,7 +158,7 @@ end
 
 """Parse .jl scripts with Weave.jl markup"""
 function parse_doc(document::AbstractString, format::ScriptInput)
-  document = replace(document, "\r\n", "\n")
+  document = replace(document, "\r\n" => "\n")
   lines = split(document, "\n")
 
   doc_line = format.doc_line
@@ -184,9 +184,9 @@ function parse_doc(document::AbstractString, format::ScriptInput)
   for lineno in 1:length(lines)
     line = lines[lineno]
     if (m = match(doc_line, line)) != nothing && (m = match(opt_line, line)) == nothing
-          line = replace(line, doc_start, "", 1)
+          line = replace(line, doc_start => "", count=1)
       if startswith(line, " ")
-          line = replace(line, " ", "", 1)
+          line = replace(line, " " => "", count=1)
       end
       if state == "code"  && strip(read) != ""
           chunk = CodeChunk("\n" * strip(read), codeno, start_line, optionString, options)
@@ -212,7 +212,7 @@ function parse_doc(document::AbstractString, format::ScriptInput)
           docno += 1
       end
 
-      optionString = replace(line, opt_start, "", 1)
+      optionString = replace(line, opt_start => "", count=1)
       #Get options
       options = Dict{Symbol,Any}()
       if length(optionString) > 0

@@ -434,7 +434,7 @@ function formatfigures(chunk, docformat::Hugo)
         end
         "{{< figure src=\"$(joinpath(relpath, fig))\" $(title_spec) >}}"
     end
-    mapreduce(format_shortcode, *, "", enumerate(chunk.figures))
+    mapreduce(format_shortcode, *, enumerate(chunk.figures), init="")
 end
 
 function formatfigures(chunk, docformat::MultiMarkdown)

@@ -40,7 +40,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
     cache == :off || @eval import FileIO, JLD2
 
     #This is needed for latex and should work on all output formats
-    Sys.iswindows() && (fig_path = replace(fig_path, "\\", "/"))
+    Sys.iswindows() && (fig_path = replace(fig_path, "\\" => "/"))
 
     doc.fig_path = fig_path
     set_rc_params(doc.format.formatdict, fig_path, fig_ext)
