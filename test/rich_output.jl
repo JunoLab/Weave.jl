@@ -1,11 +1,11 @@
 using Weave
-using Base.Test
+using Test
 
 function mmtest(source, resfile, doctype)
   weave("documents/$source", out_path = "documents/multimedia/$resfile", 
     doctype=doctype, plotlib=nothing, template = "templates/mini.tpl")
-  result =  readstring("documents/multimedia/$resfile")
-  ref =  readstring("documents/multimedia/$resfile.ref")
+  result =  read("documents/multimedia/$resfile", String)
+  ref =  read("documents/multimedia/$resfile.ref", String)
   @test result == ref
   rm("documents/multimedia/$resfile")
 end

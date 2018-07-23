@@ -1,6 +1,6 @@
 module Markdown2HTML
 # Markdown to HTML writer, Modified from Julia Base.Markdown html writer
-using Base.Markdown: MD, Header, Code, Paragraph, BlockQuote, Footnote,
+using Markdown: MD, Header, Code, Paragraph, BlockQuote, Footnote,
       Admonition, List, HorizontalRule, Bold, Italic, Image, Link, LineBreak,
       LaTeX, isordered
 

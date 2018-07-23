@@ -33,9 +33,9 @@
 using Plots, DSP
 plotly()
 
-function FIRfreqz(b::Array, w = linspace(0, π, 1024))
+function FIRfreqz(b::Array, w = range(0, stop=π, length=1024))
     n = length(w)
-    h = Array{Complex64}(n)
+    h = Array{ComplexF32}(n)
     sw = 0
     for i = 1:n
       for j = 1:length(b)
@@ -60,7 +60,7 @@ end
 
 fs = 20
 f = digitalfilter(Lowpass(5, fs = fs), FIRWindow(hamming(61)))
-w = linspace(0, pi, 1024)
+w = range(0, stop=pi, length=1024)
 h = FIRfreqz(f, w)
 
 #' ## Plot the frequency and impulse response
@@ -78,6 +78,6 @@ plot(ws, h_db,
 
 #' And again with default options
 
-h_phase = unwrap(-atan2(imag(h),real(h)))
+h_phase = unwrap(-atan(imag(h),real(h)))
 plot(ws, h_phase,
     xlabel = "Frequency (Hz)", ylabel = "Phase (radians)")

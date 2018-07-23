@@ -1,10 +1,10 @@
 using Weave
-using Base.Test
+using Test
 
 function pljtest(source, resfile, doctype)
   weave("documents/$source", out_path = "documents/plotsjl/$resfile", doctype=doctype)
-  result =  readstring("documents/plotsjl/$resfile")
-  ref =  readstring("documents/plotsjl/$resfile.ref")
+  result =  read("documents/plotsjl/$resfile", String)
+  ref =  read("documents/plotsjl/$resfile.ref", String)
   @test result == ref
   rm("documents/plotsjl/$resfile")
 end

@@ -1,6 +1,7 @@
 import Mustache, Highlights
 import .Markdown2HTML
 using Compat
+using Dates
 
 function format(doc::WeaveDoc)
     formatted = AbstractString[]
@@ -50,7 +51,7 @@ function stylesheet(m::MIME, theme)
   buf = PipeBuffer()
   Highlights.stylesheet(buf, m, theme)
   flush(buf)
-  style = readstring(buf)
+  style = read(buf, String)
   close(buf)
   return style
 end
@@ -59,13 +60,14 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
   css = stylesheet(MIME("text/html"), doc.highlight_theme)
   title, author, date = get_titleblock(doc)
   path, wsource = splitdir(abspath(doc.source))
-  wversion = string(Pkg.installed("Weave"))
+  #wversion = string(Pkg.installed("Weave"))
+  wversion = ""
   wtime =  string(Date(now()))
 
   if isempty(doc.css)
-    theme_css = readstring(joinpath(dirname(@__FILE__), "../templates/skeleton_css.css"))
+    theme_css = read(joinpath(dirname(@__FILE__), "../templates/skeleton_css.css"), String)
   else
-    theme_css = readstring(doc.css)
+    theme_css = read(doc.css, String)
   end
 
   if isempty(doc.template)
@@ -86,7 +88,8 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2tex)
   title, author, date = get_titleblock(doc)
 
   path, wsource = splitdir(abspath(doc.source))
-  wversion = string(Pkg.installed("Weave"))
+  #wversion = string(Pkg.installed("Weave"))
+  wversion = ""
   wtime =  string(Date(now()))
 
   if isempty(doc.template)
@@ -108,7 +111,7 @@ function get_titleblock(doc::WeaveDoc)
 end
 
 function strip_header(chunk::DocChunk)
-  if ismatch(r"^---$(?<header>.+)^---$"ms, chunk.content[1].content)
+  if occursin(r"^---$(?<header>.+)^---$"ms, chunk.content[1].content)
     chunk.content[1].content = lstrip(replace(chunk.content[1].content, r"^---$(?<header>.+)^---$"ms, ""))
   end
   return chunk
@@ -247,7 +250,7 @@ function format_code(result::AbstractString, docformat::JMarkdown2HTML)
   Highlights.highlight(buf, MIME("text/html"), strip(result),
     Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
   flush(buf)
-  highlighted = readstring(buf)
+  highlighted = read(buf, String)
   close(buf)
   return highlighted
 end
@@ -257,11 +260,11 @@ function format_code(result::AbstractString, docformat::Pandoc2HTML)
     Highlights.highlight(buf, MIME("text/html"), strip(result),
       Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
     flush(buf)
-    highlighted = readstring(buf)
+    highlighted = read(buf, String)
     close(buf)
     return highlighted
   end
-  
+
 
 function format_termchunk(chunk, formatdict, docformat)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"
@@ -277,7 +280,7 @@ function format_termchunk(chunk, formatdict, docformat::JMarkdown2HTML)
         buf = PipeBuffer()
         Highlights.highlight(buf, MIME("text/html"), strip(chunk.output), Highlights.Lexers.JuliaConsoleLexer)
         flush(buf)
-        result = readstring(buf)
+        result = read(buf, String)
         close(buf)
     else
         result = ""
@@ -290,7 +293,7 @@ function format_termchunk(chunk, formatdict, docformat::Pandoc2HTML)
         buf = PipeBuffer()
         Highlights.highlight(buf, MIME("text/html"), strip(chunk.output), Highlights.Lexers.JuliaConsoleLexer)
         flush(buf)
-        result = readstring(buf)
+        result = read(buf, String)
         close(buf)
     else
         result = ""

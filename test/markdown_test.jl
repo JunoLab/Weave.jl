@@ -1,4 +1,4 @@
-using Base.Test
+using Test
 import Weave: Markdown2HTML
 
 # Test markdown2html writer

@@ -40,15 +40,15 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
     cache == :off || @eval import FileIO, JLD2
 
     #This is needed for latex and should work on all output formats
-    is_windows() && (fig_path = replace(fig_path, "\\", "/"))
+    Sys.iswindows() && (fig_path = replace(fig_path, "\\", "/"))
 
     doc.fig_path = fig_path
     set_rc_params(doc.format.formatdict, fig_path, fig_ext)
 
     #New sandbox for each document with args exposed
     sandbox = "ReportSandBox$(rcParams[:doc_number])"
-    eval(parse("module $sandbox\nWEAVE_ARGS=Dict()\nend"))
-    SandBox = eval(parse(sandbox))
+    eval(Meta.parse("module $sandbox\nWEAVE_ARGS=Dict()\nend"))
+    SandBox = eval(Meta.parse(sandbox))
     merge!(SandBox.WEAVE_ARGS, args)
     rcParams[:doc_number] += 1
 
@@ -67,7 +67,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
 
     if cache != :off && cache != :refresh
         cached = read_cache(doc, cache_path)
-        cached == nothing && info("No cached results found, running code")
+        cached == nothing && @info("No cached results found, running code")
     else
         cached = nothing
     end
@@ -324,9 +324,9 @@ end
 
 #Set all variables to nothing
 function clear_sandbox(SandBox::Module)
-    for name = names(SandBox, true)
+    for name = names(SandBox, all=true)
         if name != :eval && name != names(SandBox)[1]
-            try eval(SandBox, parse(AbstractString(AbstractString(name), "=nothing"))) end
+            try eval(SandBox, Meta.parse(AbstractString(AbstractString(name), "=nothing"))) catch; end
         end
     end
 end
@@ -356,13 +356,13 @@ function init_plotting(plotlib)
         rcParams[:chunk_defaults][:fig] = true
 
         if l_plotlib == "pyplot"
-            eval(parse("""include("$srcdir/pyplot.jl")"""))
+            eval(Meta.parse("""include("$srcdir/pyplot.jl")"""))
             rcParams[:plotlib] = "PyPlot"
         elseif l_plotlib == "plots"
-            eval(parse("""include("$srcdir/plots.jl")"""))
+            eval(Meta.parse("""include("$srcdir/plots.jl")"""))
             rcParams[:plotlib] = "Plots"
         elseif l_plotlib == "gadfly"
-            eval(parse("""include("$srcdir/gadfly.jl")"""))
+            eval(Meta.parse("""include("$srcdir/gadfly.jl")"""))
             rcParams[:plotlib] = "Gadfly"
       end
     end
