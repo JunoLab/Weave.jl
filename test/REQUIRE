@@ -1,6 +1,0 @@
-julia 0.6
-Cairo
-Fontconfig
-Gadfly
-GR
-Plots
