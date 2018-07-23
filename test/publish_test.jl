@@ -1,13 +1,13 @@
 using Weave
-using Base.Test
+using Test
 import Plots
 
 function publish_test(outfile, format)
   outfile = joinpath("documents/publish", outfile)
   infile = "documents/publish_test.jmd"
   weave(infile, doctype = format, out_path = outfile, template = "templates/mini.tpl")
-  result =  readstring(outfile)
-  ref =  readstring(outfile * ".ref")
+  result =  read(outfile, String)
+  ref =  read(outfile * ".ref", String)
   @test result == ref
   rm(outfile)
 end

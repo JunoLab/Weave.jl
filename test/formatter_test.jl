@@ -1,5 +1,5 @@
 using Weave
-using Base.Test
+using Test
 
 # Test rendering of doc chunks
 content = """

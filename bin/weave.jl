@@ -54,7 +54,7 @@ elseif args["out_path"] == ":pwd"
 end
 
 for (key, val) in args
-    push!(args_col, (parse(key), val))
+    push!(args_col, (Meta.parse(key), val))
 end
 
 for s=source

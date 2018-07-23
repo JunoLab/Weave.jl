@@ -53,7 +53,7 @@ end
 """Read and parse input document"""
 function read_doc(source::AbstractString, format=:auto)
     format == :auto && (format = detect_informat(source))
-    document = readstring(source)
+    document = read(source, String)
     document = replace(document, "\r\n", "\n")
     parsed = parse_doc(document, format)
     header = parse_header(parsed[1])
@@ -108,7 +108,7 @@ function parse_doc(document::AbstractString, format::MarkupInput)
 
       options = Dict{Symbol,Any}()
       if length(optionString) > 0
-          expr = parse(optionString)
+          expr = Meta.parse(optionString)
           Base.Meta.isexpr(expr,:(=)) && (options[expr.args[1]] = expr.args[2])
           Base.Meta.isexpr(expr,:toplevel) && map(pushopt,fill(options,length(expr.args)),expr.args)
       end
@@ -127,7 +127,7 @@ function parse_doc(document::AbstractString, format::MarkupInput)
       continue
 
     end
-    if ismatch(codeend, line) && state=="code"
+    if occursin(codeend, line) && state=="code"
 
       chunk = CodeChunk(content, codeno, start_line, optionString, options)
 
@@ -216,7 +216,7 @@ function parse_doc(document::AbstractString, format::ScriptInput)
       #Get options
       options = Dict{Symbol,Any}()
       if length(optionString) > 0
-          expr = parse(optionString)
+          expr = Meta.parse(optionString)
           Base.Meta.isexpr(expr,:(=)) && (options[expr.args[1]] = expr.args[2])
           Base.Meta.isexpr(expr,:toplevel) && map(pushopt,fill(options,length(expr.args)),expr.args)
       end
@@ -289,7 +289,7 @@ function parse_inline(text, noex)
 end
 
 function parse_inline(text::AbstractString, inline_ex::Regex)
-    ismatch(inline_ex, text) || return Inline[InlineText(text, 1, length(text), 1)]
+    occursin(inline_ex, text) || return Inline[InlineText(text, 1, length(text), 1)]
 
     inline_chunks = eachmatch(inline_ex, text)
     s = 1

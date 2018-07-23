@@ -14,7 +14,7 @@ push_preexecute_hook(plots_set_size)
 #PNG or SVG is not working, output html
 function Base.display(report::Report, m::MIME"image/svg+xml", data::Plots.Plot{Plots.PlotlyBackend})#
   #Remove extra spaces from start of line for pandoc
-  s = reprmime(MIME("text/html"), data)
+  s = repr(MIME("text/html"), data)
   splitted = split(s, "\n")
   start = split(splitted[1], r"(?=<div)")
   #script = lstrip(start[1]) #local

@@ -1,6 +1,6 @@
 ````julia
 using Gadfly
-x = linspace(0, 2π, 200)
+x = range(0, stop=2π, length=200)
 plot(x=x, y = sin(x), Geom.line)
 ````
 
@@ -12,7 +12,7 @@ plot(x=x, y = sin(x), Geom.line)
 ![](figures/gadfly_formats_test_cos2_fun_1.js.svg)
 
 ````julia
-julia> x = linspace(0, 2π, 200)
+julia> x = range(0, stop=2π, length=200)
 200-element LinSpace{Float64}:
  0.0,0.0315738,0.0631476,0.0947214,0.126295,…,6.18846,6.22004,6.25161,6.28319
 
@@ -37,7 +37,7 @@ Plot(...)
 ![](figures/gadfly_formats_test_4_2.js.svg)
 
 ````julia
-x = linspace(0, 2π, 200)
+x = range(0, stop=2π, length=200)
 plot(x=x, y = sin(x), Geom.line)
 ````
 

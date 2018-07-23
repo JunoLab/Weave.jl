@@ -125,7 +125,7 @@ function weave(source ; doctype = :auto, plotlib=:auto,
       doc.cwd == pwd() && (outname = basename(outname))
       info("Report weaved to $outname")
     catch e
-      warn("Something went wrong during weaving")
+      @warn("Something went wrong during weaving")
       println(e)
     finally
       doctype == :auto && (doctype = detect_doctype(doc.source))
@@ -162,9 +162,9 @@ function notebook(source::String, out_path=:pwd, timeout=-1)
     write(f, converted)
   end
 
-  info("Running nbconvert")
-  eval(parse("using IJulia"))
-  out = readstring(`$(IJulia.jupyter)-nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile --output $outfile`)
+  @info("Running nbconvert")
+  eval(Meta.parse("using IJulia"))
+  out = read(`$(IJulia.jupyter)-nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile --output $outfile`, String)
 end
 
 """

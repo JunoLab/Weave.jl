@@ -1,7 +1,7 @@
 using Compat
 
 #Contains report global properties
-mutable struct Report <: Display
+mutable struct Report <: AbstractDisplay
   cwd::AbstractString
   basename::AbstractString
   formatdict::Dict{Symbol,Any}
@@ -69,7 +69,7 @@ function Base.display(report::Report, m::MIME"text/plain", data)
     io = PipeBuffer()
     show(IOContext(io, :limit => true), m, data)
     flush(io)
-    s = readstring(io)
+    s = read(io, String)
     close(io)
     println(s)
 end
@@ -90,18 +90,18 @@ end
 
 #Catch "rich_output"
 function Base.display(report::Report, m::MIME"text/html", data)
-    s = reprmime(m, data)
+    s = repr(m, data)
     report.rich_output *= "\n" * s
 end
 
 #Catch "rich_output"
 function Base.display(report::Report, m::MIME"text/markdown", data)
-    s = reprmime(m, data)
+    s = repr(m, data)
     report.rich_output *= "\n" * s
 end
 
 function Base.display(report::Report, m::MIME"text/latex", data)
-    s = reprmime(m, data)
+    s = repr(m, data)
     report.rich_output *= "\n" * s
 end
 

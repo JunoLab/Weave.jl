@@ -1,5 +1,5 @@
 using Weave
-using Base.Test
+using Test
 
 # Make a dummy codehunk with figure
 chunk = Weave.CodeChunk("plot(x)", 1, 1, "", Dict())
