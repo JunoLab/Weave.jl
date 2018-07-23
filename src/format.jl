@@ -2,6 +2,7 @@ import Mustache, Highlights
 import .Markdown2HTML
 using Compat
 using Dates
+using Printf
 
 function format(doc::WeaveDoc)
     formatted = AbstractString[]
