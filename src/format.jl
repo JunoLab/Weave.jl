@@ -49,13 +49,12 @@ function render_doc(formatted, doc::WeaveDoc, format)
   return formatted
 end
 
+function highlight(mime::MIME, source::AbstractString, lexer, theme=Highlights.Themes.DefaultTheme)
+    return sprint( (io, x) -> Highlights.highlight(io, mime, x, lexer, theme), source)
+end
+
 function stylesheet(m::MIME, theme)
-  buf = PipeBuffer()
-  Highlights.stylesheet(buf, m, theme)
-  flush(buf)
-  style = read(buf, String)
-  close(buf)
-  return style
+  return sprint( (io, x) ->  Highlights.stylesheet(io, m, x), theme)
 end
 
 function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
@@ -239,13 +238,9 @@ function format_code(result::AbstractString, docformat)
 end
 
 function format_code(result::AbstractString, docformat::JMarkdown2tex)
-  buf = PipeBuffer()
-  Highlights.highlight(buf, MIME("text/latex"), strip(result),
-      Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
-  flush(buf)
-  highlighted = uc2tex(read(buf, String))
-  close(buf)
-  return highlighted
+  highlighted = highlight(MIME("text/latex"), strip(result),
+        Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
+  return uc2tex(highlighted)
   #return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
 end
 
@@ -262,25 +257,14 @@ function uc2tex(s, escape=false)
 end
 
 function format_code(result::AbstractString, docformat::JMarkdown2HTML)
-  buf = PipeBuffer()
-  Highlights.highlight(buf, MIME("text/html"), strip(result),
+  return highlight(MIME("text/html"), strip(result),
     Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
-  flush(buf)
-  highlighted = read(buf, String)
-  close(buf)
-  return highlighted
 end
 
 function format_code(result::AbstractString, docformat::Pandoc2HTML)
-    buf = PipeBuffer()
-    Highlights.highlight(buf, MIME("text/html"), strip(result),
+    return highlight(MIME("text/html"), strip(result),
       Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
-    flush(buf)
-    highlighted = read(buf, String)
-    close(buf)
-    return highlighted
-  end
-
+end
 
 function format_termchunk(chunk, formatdict, docformat)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"
@@ -293,11 +277,8 @@ end
 
 function format_termchunk(chunk, formatdict, docformat::JMarkdown2HTML)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"
-        buf = PipeBuffer()
-        Highlights.highlight(buf, MIME("text/html"), strip(chunk.output), Highlights.Lexers.JuliaConsoleLexer)
-        flush(buf)
-        result = read(buf, String)
-        close(buf)
+        result = highlight(MIME("text/html"), strip(chunk.output),
+          Highlights.Lexers.JuliaConsoleLexer, docformat.formatdict[:theme])
     else
         result = ""
     end
@@ -306,26 +287,19 @@ end
 
 function format_termchunk(chunk, formatdict, docformat::Pandoc2HTML)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"
-        buf = PipeBuffer()
-        Highlights.highlight(buf, MIME("text/html"), strip(chunk.output), Highlights.Lexers.JuliaConsoleLexer)
-        flush(buf)
-        result = read(buf, String)
-        close(buf)
+        result = Highlights.highlight(MIME("text/html"), strip(chunk.output),
+          Highlights.Lexers.JuliaConsoleLexer, docformat.formatdict[:theme])
     else
         result = ""
     end
     return result
 end
 
-
 function format_termchunk(chunk, formatdict, docformat::JMarkdown2tex)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"
-        buf = PipeBuffer()
-        Highlights.highlight(buf, MIME("text/latex"), strip(chunk.output), Highlights.Lexers.JuliaConsoleLexer)
-        flush(buf)
-        result = read(buf, String)
-        close(buf)
-        result = strip(chunk.output)
+        result = highlight(MIME("text/latex"), strip(chunk.output),
+                  Highlights.Lexers.JuliaConsoleLexer,
+                  docformat.formatdict[:theme])
         #return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
     else
         result = ""
@@ -350,7 +324,6 @@ function wraplines(text, line_width=75)
         end
     end
 
-    #return result
     return strip(join(result, "\n"))
 end
 
