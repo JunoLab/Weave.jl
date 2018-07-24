@@ -3,6 +3,7 @@ import .Markdown2HTML
 using Compat
 using Dates
 using Markdown
+using REPL.REPLCompletions: latex_symbols
 
 function format(doc::WeaveDoc)
     formatted = AbstractString[]
@@ -93,6 +94,7 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2tex)
   wversion = ""
   wtime =  string(Date(now()))
 
+
   if isempty(doc.template)
     template = Mustache.template_from_file(joinpath(dirname(@__FILE__), "../templates/julia_tex.tpl"))
   else
@@ -141,12 +143,10 @@ function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
     return string(Markdown2HTML.html(m))
 end
 
-
-
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
     text = format_chunk(chunk, formatdict, nothing)
     m = Markdown.parse(text)
-    return Markdown.latex(m)
+    return uc2tex(Markdown.latex(m))
 end
 
 function format_chunk(chunk::CodeChunk, formatdict, docformat)
@@ -160,7 +160,6 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
     if chunk.options[:fig_cap] != nothing && chunk.options[:fig_env] == nothing
         (chunk.options[:fig_env] =  formatdict[:fig_env])
     end
-
 
     if haskey(formatdict, :indent)
         chunk.content = indent(chunk.content, formatdict[:indent])
@@ -224,11 +223,15 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
 end
 
 function format_output(result::AbstractString, docformat)
-  return(result)
+  return result
 end
 
 function format_output(result::AbstractString, docformat::JMarkdown2HTML)
-  return(Markdown.htmlesc(result))
+  return Markdown.htmlesc(result)
+end
+
+function format_output(result::AbstractString, docformat::JMarkdown2tex)
+  return uc2tex(result, true)
 end
 
 function format_code(result::AbstractString, docformat)
@@ -236,14 +239,26 @@ function format_code(result::AbstractString, docformat)
 end
 
 function format_code(result::AbstractString, docformat::JMarkdown2tex)
-  #buf = PipeBuffer()
-  #Highlights.highlight(buf, MIME("text/latex"), strip(result),
-  #    Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
-  #flush(buf)
-  #highlighted = readstring(buf)
-  #close(buf)
-  #return highlighted
-  return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
+  buf = PipeBuffer()
+  Highlights.highlight(buf, MIME("text/latex"), strip(result),
+      Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
+  flush(buf)
+  highlighted = uc2tex(read(buf, String))
+  close(buf)
+  return highlighted
+  #return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
+end
+
+#Convert unicode to tex, escape listings if needed
+function uc2tex(s, escape=false)
+    for key in keys(latex_symbols)
+        if escape
+            s = replace(s, latex_symbols[key] => "(*@\\ensuremath{$key}@*)")
+        else
+            s = replace(s, latex_symbols[key] => "\\ensuremath{$key}")
+        end
+    end
+    return s
 end
 
 function format_code(result::AbstractString, docformat::JMarkdown2HTML)
@@ -305,13 +320,13 @@ end
 
 function format_termchunk(chunk, formatdict, docformat::JMarkdown2tex)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"
-        #buf = PipeBuffer()
-        #Highlights.highlight(buf, MIME("text/latex"), strip(chunk.output), Highlights.Lexers.JuliaConsoleLexer)
-        #flush(buf)
-        #result = readstring(buf)
-        #close(buf)
+        buf = PipeBuffer()
+        Highlights.highlight(buf, MIME("text/latex"), strip(chunk.output), Highlights.Lexers.JuliaConsoleLexer)
+        flush(buf)
+        result = read(buf, String)
+        close(buf)
         result = strip(chunk.output)
-        return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
+        #return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
     else
         result = ""
     end

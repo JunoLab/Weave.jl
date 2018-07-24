@@ -8,19 +8,6 @@
 \usepackage{hyperref}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1.2ex}
-\usepackage{minted}
-
-\usepackage{ifxetex,ifluatex}
-\newif\ifxetexorluatex
-\ifxetex
-  \xetexorluatextrue
-\else
-  \ifluatex
-    \xetexorluatextrue
-  \else
-    \xetexorluatexfalse
-  \fi
-\fi
 
 \hypersetup
        {   pdfauthor = { {{{:author}}} },
@@ -30,7 +17,6 @@
            citecolor=blue,
            urlcolor=blue
        }
-
 
 {{#:title}}
 \title{ {{{ :title }}} }
@@ -44,13 +30,7 @@
 \date{ {{{ :date }}} }
 {{/:date}}
 
-%\ifxetexorluatex
-%  \usepackage{fontspec}
-%  \setmainfont{CMU Serif Roman}
-%  \setmonofont{CMU Typewriter Text}
-%  \usepackage{unicode-math}
-%  \setmathfont{Latin Modern Math}
-%\fi
+{{ :highlight }}
 
 \begin{document}
 

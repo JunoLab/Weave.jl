@@ -139,8 +139,8 @@ end
 const md2tex = JMarkdown2tex("Julia markdown to latex", Dict{Symbol,Any}(
         :codestart => "",
         :codeend=> "",
-        :outputstart=> "\\begin{minted}[fontsize=\\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}",
-        :outputend=> "\\end{minted}\n",
+        :outputstart=> "\\begin{lstlisting}",
+        :outputend=> "\\end{lstlisting}\n",
         :fig_ext=> ".pdf",
         :extension=> "tex",
         :out_width => "\\linewidth",
@@ -468,7 +468,6 @@ function formatfigures(chunk, docformat::MultiMarkdown)
     return result
 end
 
-
 function formatfigures(chunk, docformat::Rest)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
@@ -489,7 +488,6 @@ function formatfigures(chunk, docformat::Rest)
         return result
     end
 end
-
 
 function formatfigures(chunk, docformat::AsciiDoc)
     fignames = chunk.figures
@@ -513,7 +511,6 @@ function formatfigures(chunk, docformat::AsciiDoc)
         return result
     end
 end
-
 
 #Add new supported formats here
 const formats = Dict{AbstractString, Any}("tex" => tex,
