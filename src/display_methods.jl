@@ -1,4 +1,5 @@
 using Compat
+using Markdown
 
 #Contains report global properties
 mutable struct Report <: AbstractDisplay
@@ -44,7 +45,7 @@ function Base.display(report::Report, data)
                 end
             catch e
                 throw(e)
-                warn("Failed to display data in \"$m\" format")
+                @warn("Failed to display data in \"$m\" format")
                 continue
             end
             break
@@ -84,7 +85,7 @@ end
 
 function Base.show(io, m::MIME"text/html", data::Exception)
     println(io ,"<pre class=\"julia-error\">")
-    println(io, Base.Markdown.htmlesc("ERROR: " * sprint(showerror, data)))
+    println(io, Markdown.htmlesc("ERROR: " * sprint(showerror, data)))
     println(io ,"</pre>")
 end
 

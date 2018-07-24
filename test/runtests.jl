@@ -5,8 +5,8 @@ using Test
 @info("Test: Chunk options")
 include("chunk_options.jl")
 
-#@info("Testing error handling")
-#include("errors_test.jl")
+@info("Testing error handling")
+include("errors_test.jl")
 
 @info("Test: Converting")
 include("convert_test.jl")
