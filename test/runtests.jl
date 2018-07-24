@@ -18,8 +18,8 @@ include("markdown_test.jl")
 @info("Testing figure formatters")
 include("figureformatter_test.jl")
 
-#@info("Testing rich output")
-#include("rich_output.jl")
+@info("Testing rich output")
+include("rich_output.jl")
 
 #@info("Test: Caching")
 #include("cache_test.jl")

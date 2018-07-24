@@ -15,7 +15,7 @@ function Base.show(io::IO, m::MIME"text/latex", x::Array)
     println(io, "\\begin{tabular}")
     for i in 1:size(x,1)
         [print(io, "$r & ") for r in x[i,:]]
-        print(io,"\\\\")
+        print(io, "\\\\")
         println(io, " \\hline")
     end
     print(io, "\\end{tabular")
@@ -85,7 +85,8 @@ julia> ca
 
 
 ~~~~{.julia}
-m = Base.Markdown.parse("**Some Markdown**")
+using Markdown
+m = Markdown.parse("**Some Markdown**")
 m
 ~~~~~~~~~~~~~
 
