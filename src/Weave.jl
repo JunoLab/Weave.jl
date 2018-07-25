@@ -64,8 +64,8 @@ Weave an input document to output file.
    Julia working directory, `"somepath"`: output directory as a String e.g `"/home/mpastell/weaveout"` or filename as
    string e.g. ~/outpath/outfile.tex.
 * `args`: dictionary of arguments to pass to document. Available as WEAVE_ARGS
-* `mod`: Module where Weave `eval`s code. Defaults to `Main`. Use `:sandbox`
-   to create new sandbox module for source.
+* `mod`: Module where Weave `eval`s code. Defaults to `:sandbox`
+   to create new sandbox module, you can also pass a module e.g. `Main`.
 * `fig_path`: where figures will be generated, relative to out_path
 * `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
 * `cache_path`: where of cached output will be saved.
@@ -82,7 +82,7 @@ Weave an input document to output file.
 """
 function weave(source ; doctype = :auto, plotlib=:auto,
         informat=:auto, out_path=:doc, args = Dict(),
-        mod::Union{Module, Symbol} = Main,
+        mod::Union{Module, Symbol} = :sandbox,
         fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache=:off,
         throw_errors = false,

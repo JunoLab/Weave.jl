@@ -31,5 +31,5 @@ wdoc = weavestring(smod)
 @test wdoc.chunks[2].output == "x"
 
 sdoc = weavestring(smod, mod=:sandbox)
-@test occursin(r"Weave.ReportSandBox[0-9]*.TestMod\n", sdoc.chunks[1].output)
+@test occursin(r"Main.WeaveSandBox[0-9]*.TestMod\n", sdoc.chunks[1].output)
 @test sdoc.chunks[2].output == "x"
