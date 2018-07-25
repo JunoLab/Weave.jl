@@ -1,7 +1,6 @@
 using Weave
 using Test
 
-
 @info("Test: Chunk options")
 include("chunk_options.jl")
 

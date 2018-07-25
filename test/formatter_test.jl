@@ -41,7 +41,7 @@ rendered = Weave.render_doc("Hello", doc, doc.format)
 parsed = Weave.read_doc("documents/chunk_options.noweb")
 doc = Weave.run(parsed, doctype = "md2tex")
 
-c_check = "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n\nprintln(x)\n\n\\end{minted}\n"
+c_check = "\\begin{lstlisting}\n(*@\\HLJLnf{println}@*)(*@\\HLJLp{(}@*)(*@\\HLJLn{x}@*)(*@\\HLJLp{)}@*)\n\\end{lstlisting}\n"
 doc.format.formatdict[:theme] = doc.highlight_theme
 c = Weave.format_code(doc.chunks[4].content, doc.format)
 @test c_check == c
