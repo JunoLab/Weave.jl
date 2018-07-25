@@ -1,24 +1,35 @@
 using Weave
 using Test
 
-@info("Test: Chunk options")
-include("chunk_options.jl")
+@testset "Weave" begin
+    @testset "Chunk options" begin
+        @info("Test: Chunk options")
+        include("chunk_options.jl")
+    end
 
-@info("Testing error handling")
-include("errors_test.jl")
+    @testset "Error handling " begin
+        @info("Testing error handling")
+        include("errors_test.jl")
+    end
 
-@info("Test: Converting")
-include("convert_test.jl")
+    @testset "Conversions" begin
+        @info("Test: Converting")
+        include("convert_test.jl")
+    end
 
-@info("Testing formatters")
-include("formatter_test.jl")
-include("markdown_test.jl")
+    @testset "Formatters" begin
+        @info("Testing formatters")
+        include("formatter_test.jl")
+        include("markdown_test.jl")
+        @info("Testing figure formatters")
+        include("figureformatter_test.jl")
+    end
 
-@info("Testing figure formatters")
-include("figureformatter_test.jl")
-
-@info("Testing rich output")
-include("rich_output.jl")
+    @testset "Rich output" begin
+        @info("Testing rich output")
+        include("rich_output.jl")
+    end
+end
 
 #@info("Test: Caching")
 #include("cache_test.jl")
