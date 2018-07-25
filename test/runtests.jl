@@ -12,6 +12,10 @@ using Test
         include("errors_test.jl")
     end
 
+    @testset "Eval in module" begin
+        include("sandbox_test.jl")
+    end
+
     @testset "Conversions" begin
         @info("Test: Converting")
         include("convert_test.jl")
