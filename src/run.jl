@@ -1,8 +1,9 @@
 
 """
-`run(doc::WeaveDoc; doctype = :auto, plotlib="Gadfly",
-        out_path=:doc, fig_path = "figures", fig_ext = nothing,
-        cache_path = "cache", cache = :off)`
+    run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
+        mod::Union{Module, Symbol} = Main, out_path=:doc,
+        args=Dict(), fig_path = "figures", fig_ext = nothing,
+        cache_path = "cache", cache = :off, throw_errors=false)
 
 Run code chunks and capture output from parsed document.
 
@@ -12,16 +13,19 @@ Run code chunks and capture output from parsed document.
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
   `"somepath"`: Path as a AbstractString e.g `"/home/mpastell/weaveout"`
 * `args`: dictionary of arguments to pass to document. Available as WEAVE_ARGS.
+* `mod`: Module where Weave `eval`s code. Defaults to `Main`. Use `:sandbox`
+   to create new sandbox module for source.
 * `fig_path`: where figures will be generated, relative to out_path
 * `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
 * `cache_path`: where of cached output will be saved.
 * `cache`: controls caching of code: `:off` = no caching, `:all` = cache everything,
- `:user` = cache based on chunk options, `:refresh`, run all code chunks and save new cache.
+  `:user` = cache based on chunk options, `:refresh`, run all code chunks and save new cache.
 
 **Note:** Run command from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """
 function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
-        out_path=:doc, args=Dict(), fig_path = "figures", fig_ext = nothing,
+        mod::Union{Module, Symbol} = Main, out_path=:doc,
+        args=Dict(), fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache = :off, throw_errors=false)
     #cache :all, :user, :off, :refresh
 
@@ -46,10 +50,14 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
     set_rc_params(doc.format.formatdict, fig_path, fig_ext)
 
     #New sandbox for each document with args exposed
-    sandbox = "ReportSandBox$(rcParams[:doc_number])"
-    eval(Meta.parse("module $sandbox\nWEAVE_ARGS=Dict()\nend"))
-    SandBox = eval(Meta.parse(sandbox))
-    merge!(SandBox.WEAVE_ARGS, args)
+    if mod == :sandbox
+        sandbox = "ReportSandBox$(rcParams[:doc_number])"
+        eval(Meta.parse("module $sandbox\nend"))
+        mod = eval(Meta.parse(sandbox))
+    end
+    @eval mod WEAVE_ARGS = Dict()
+    merge!(mod.WEAVE_ARGS, args)
+
     rcParams[:doc_number] += 1
 
     if haskey(doc.format.formatdict, :mimetypes)
@@ -88,8 +96,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
         if cached != nothing && (cache == :all || restore)
             result_chunks = restore_chunk(chunk, cached)
         else
-
-            result_chunks = run_chunk(chunk, report, SandBox)
+            result_chunks = run_chunk(chunk, report, mod)
         end
 
         executed = [executed; result_chunks]
@@ -100,7 +107,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
     popdisplay(report)
 
     #Clear variables from used sandbox
-    clear_sandbox(SandBox)
+    mod == :sandbox && clear_sandbox(SandBox)
     doc.chunks = executed
 
     if cache != :off
