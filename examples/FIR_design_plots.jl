@@ -1,6 +1,8 @@
-#' % FIR filter design with Julia
-#' % Matti Pastell
-#' % 21th April 2016
+#' ---
+#' title: FIR filter design with Julia
+#' author: Matti Pastell
+#' date: 21th April 2016
+#' ---
 
 #' # Introduction
 
@@ -31,11 +33,11 @@
 #' the frequency response of a FIR filter so we define it:
 
 using Plots, DSP
-plotly()
+gr()
 
 function FIRfreqz(b::Array, w = range(0, stop=π, length=1024))
     n = length(w)
-    h = Array{ComplexF32}(n)
+    h = Array{ComplexF32}(undef, n)
     sw = 0
     for i = 1:n
       for j = 1:length(b)
@@ -68,7 +70,7 @@ h = FIRfreqz(f, w)
 #' The next code chunk is executed in term mode, see the [script](FIR_design.jl) for syntax.
 #+ term=true
 
-h_db = log10(abs(h));
+h_db = log10.(abs.(h));
 ws = w/pi*(fs/2)
 
 #+
@@ -78,6 +80,6 @@ plot(ws, h_db,
 
 #' And again with default options
 
-h_phase = unwrap(-atan(imag(h),real(h)))
+h_phase = unwrap(-atan.(imag.(h),real.(h)))
 plot(ws, h_phase,
     xlabel = "Frequency (Hz)", ylabel = "Phase (radians)")
