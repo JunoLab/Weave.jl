@@ -287,7 +287,7 @@ end
 
 function format_termchunk(chunk, formatdict, docformat::Pandoc2HTML)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"
-        result = Highlights.highlight(MIME("text/html"), strip(chunk.output),
+        result = highlight(MIME("text/html"), strip(chunk.output),
           Highlights.Lexers.JuliaConsoleLexer, docformat.formatdict[:theme])
     else
         result = ""

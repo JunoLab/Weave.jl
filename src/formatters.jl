@@ -1,6 +1,6 @@
 using Printf
 
-mutable struct Tex
+struct Tex
     description::AbstractString
     formatdict::Dict{Symbol,Any}
 end
@@ -38,7 +38,7 @@ const texminted = Tex("Latex using minted for highlighting",
                                          :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"]
                                          ))
 
-mutable struct Pandoc
+struct Pandoc
   description::AbstractString
   formatdict::Dict{Symbol,Any}
 end
@@ -59,8 +59,8 @@ const pandoc = Pandoc("Pandoc markdown",
                                                ))
 
 struct Pandoc2HTML
-description::AbstractString
-formatdict::Dict{Symbol,Any}
+    description::AbstractString
+    formatdict::Dict{Symbol,Any}
 end
 
 const pdoc2html = Pandoc2HTML("Markdown to HTML (requires Pandoc)",
@@ -114,7 +114,7 @@ const hugo = Hugo("Hugo markdown (using shortcodes)",
                   false)
 
 #Julia markdown
-mutable struct JMarkdown2HTML
+struct JMarkdown2HTML
  description::AbstractString
  formatdict::Dict{Symbol,Any}
 end
@@ -131,9 +131,9 @@ const md2html = JMarkdown2HTML("Julia markdown to html", Dict{Symbol,Any}(
         :doctype=> "md2html"))
 
 #Julia markdown
-mutable struct JMarkdown2tex
- description::AbstractString
- formatdict::Dict{Symbol,Any}
+struct JMarkdown2tex
+    description::AbstractString
+    formatdict::Dict{Symbol,Any}
 end
 
 const md2tex = JMarkdown2tex("Julia markdown to latex", Dict{Symbol,Any}(
@@ -149,7 +149,7 @@ const md2tex = JMarkdown2tex("Julia markdown to latex", Dict{Symbol,Any}(
         :doctype=> "md2tex"))
 
 
-mutable struct MultiMarkdown
+struct MultiMarkdown
   description::AbstractString
   formatdict::Dict{Symbol,Any}
 end
@@ -206,7 +206,7 @@ const multimarkdown = MultiMarkdown("MultiMarkdown",
                                                ))
 
 
-mutable struct Rest
+struct Rest
     description::AbstractString
     formatdict::Dict{Symbol,Any}
 end
@@ -224,7 +224,7 @@ const rst = Rest("reStructuredText and Sphinx",
                                 :doctype => "rst"
                                 ))
 
-mutable struct AsciiDoc
+struct AsciiDoc
     description::AbstractString
     formatdict::Dict{Symbol,Any}
 end
