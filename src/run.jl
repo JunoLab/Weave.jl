@@ -152,7 +152,6 @@ function embed_figures(result_chunks, cwd)
     return result_chunks
 end
 
-
 function img2base64(fig, cwd)
   ext = splitext(fig)[2]
   f = open(joinpath(cwd, fig), "r")
@@ -211,7 +210,7 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
     for (str_expr, expr) = expressions
         reset_report(report)
         lastline = (result_no == N)
-        rcParams[:plotlib_set] || detect_plotlib(chunk) #Try to autodetect plotting library
+        rcParams[:plotlib_set] || detect_plotlib(chunk, SandBox) #Try to autodetect plotting library
         (obj, out) = capture_output(expr, SandBox, chunk.options[:term],
                       chunk.options[:display], rcParams[:plotlib], lastline, report.throw_errors)
         figures = report.figures #Captured figures
@@ -492,15 +491,16 @@ function collect_results(chunk::CodeChunk, fmt::CollectResult)
     return [chunk]
 end
 
-function detect_plotlib(chunk::CodeChunk)
+function detect_plotlib(chunk::CodeChunk, mod)
 
-  if isdefined(Base, :Plots)
-    init_plotting("Plots")
-    #Need to set size before plots are created
-    Compat.invokelatest(plots_set_size, chunk)
-    return
-  end
+    if isdefined(mod, :Plots)
+        init_plotting("Plots")
+        @info("Init Plots")
+        #Need to set size before plots are created
+        Compat.invokelatest(plots_set_size, chunk)
+        return
+    end
 
-  isdefined(Base, :PyPlot) && init_plotting("PyPlot") && return
-  isdefined(Base, :Gadfly) && init_plotting("Gadfly") && return
+    isdefined(mod, :PyPlot) && init_plotting("PyPlot") && return
+    isdefined(mod, :Gadfly) && init_plotting("Gadfly") && return
 end
