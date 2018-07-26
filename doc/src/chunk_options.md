@@ -5,7 +5,7 @@ I've mostly followed [Knitr](http://yihui.name/knitr/options)'s naming for chunk
 Options are separated using ";" and need to be valid Julia expressions. Example: A code chunk that saves and displays a 12 cm wide image and hides the source code:
 
 ```julia
-<<fig_width=5; echo=false >>=
+<<out_width="12cm"; echo=false >>=
 using Gadfly
 x = linspace(0, 2π, 200)
 plot(x=x, y = sin(x), Geom.line)
@@ -29,9 +29,10 @@ Weave currently supports the following chunk options with the following defaults
 
 ## Options for figures
 
-* `fig_width`. Figure width defined in markup, default depends on the output format.
-* `out_width`. Width of saved figure.
-* `out_height`. Height of saved figure.
+* `fig_width`. Figure width passed to plotting library e.g. `800`
+* `fig_height` Figure height passed to plotting library
+* `out_width`. Width of saved figure in output markup e.g. "50%", "12cm", `\\0.5linewidth`
+* `out_height`. Height of saved figure in output markup
 * `dpi`=96. Resolution of saved figures.
 * `fig_cap`. Figure caption.
 * `label`. Chunk label, will be used for figure labels in Latex as fig:label
@@ -42,7 +43,7 @@ Weave currently supports the following chunk options with the following defaults
 
 ## Set default chunk options
 
-You can set or alter the default chunk options for a document either before
+You can set or change the default chunk options for a document either before
 running weave or inside the weaved document. You can e.g. use a hidden chunk
 in the beginning of the source document to set the options:
 
