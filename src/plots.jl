@@ -1,5 +1,6 @@
+module WeavePlots
 import Plots
-
+import Weave
 
 """Pre-execute hooks to set the plot size for the chunk """
 function plots_set_size(chunk)
@@ -9,10 +10,10 @@ function plots_set_size(chunk)
   return chunk
 end
 
-push_preexecute_hook(plots_set_size)
+Weave.push_preexecute_hook(plots_set_size)
 
 #PNG or SVG is not working, output html
-function Base.display(report::Report, m::MIME"image/svg+xml", data::Plots.Plot{Plots.PlotlyBackend})#
+function Base.display(report::Weave.Report, m::MIME"image/svg+xml", data::Plots.Plot{Plots.PlotlyBackend})#
   #Remove extra spaces from start of line for pandoc
   s = repr(MIME("text/html"), data)
   splitted = split(s, "\n")
@@ -30,13 +31,13 @@ function Base.display(report::Report, m::MIME"image/svg+xml", data::Plots.Plot{P
     report.rich_output *= "\n" * div * "\n" * plot
 end
 
-function Base.display(report::Report, m::MIME"image/png", data::Plots.Plot{Plots.PlotlyBackend})#
+function Base.display(report::Weave.Report, m::MIME"image/png", data::Plots.Plot{Plots.PlotlyBackend})#
   display(report, MIME("image/svg+xml"), data)
 end
 
 
 #PNG or SVG is not working, output html
-function Base.display(report::Report, m::MIME"image/svg+xml", plot::Plots.Plot{Plots.PlotlyJSBackend})
+function Base.display(report::Weave.Report, m::MIME"image/svg+xml", plot::Plots.Plot{Plots.PlotlyJSBackend})
   body = Plots.PlotlyJS.html_body(plot.o.plot)
 
   if report.first_plot
@@ -47,15 +48,15 @@ function Base.display(report::Report, m::MIME"image/svg+xml", plot::Plots.Plot{P
   report.rich_output *= "\n" * body
 end
 
-function Base.display(report::Report, m::MIME"image/png", plot::Plots.Plot{Plots.PlotlyJSBackend})
+function Base.display(report::Weave.Report, m::MIME"image/png", plot::Plots.Plot{Plots.PlotlyJSBackend})
   display(report, MIME("image/svg+xml"), data)
 end
 
 
 """Add saved figure name to results and return the name"""
-function add_plots_figure(report::Report, plot::Plots.Plot, ext)
+function add_plots_figure(report::Weave.Report, plot::Plots.Plot, ext)
   chunk = report.cur_chunk
-  full_name, rel_name = get_figname(report, chunk, ext = ext)
+  full_name, rel_name = Weave.get_figname(report, chunk, ext = ext)
 
   Plots.savefig(plot, full_name)
   push!(report.figures, rel_name)
@@ -63,20 +64,20 @@ function add_plots_figure(report::Report, plot::Plots.Plot, ext)
   return full_name
 end
 
-function Base.display(report::Report, m::MIME"application/pdf", plot::Plots.Plot)
+function Base.display(report::Weave.Report, m::MIME"application/pdf", plot::Plots.Plot)
     add_plots_figure(report, plot, ".pdf")
 end
 
-function Base.display(report::Report, m::MIME"image/png", plot::Plots.Plot)
+function Base.display(report::Weave.Report, m::MIME"image/png", plot::Plots.Plot)
     add_plots_figure(report, plot, ".png")
 end
 
-function Base.display(report::Report, m::MIME"image/svg+xml", plot::Plots.Plot)
+function Base.display(report::Weave.Report, m::MIME"image/svg+xml", plot::Plots.Plot)
     add_plots_figure(report, plot, ".svg")
 end
 
 # write out html to view Animated gif
-function Base.display(report::Report, ::MIME"text/html", agif::Plots.AnimatedGif)
+function Base.display(report::Weave.Report, ::MIME"text/html", agif::Plots.AnimatedGif)
   ext = agif.filename[end-2:end]
   res = ""
   if ext == "gif"
@@ -92,4 +93,6 @@ function Base.display(report::Report, ::MIME"text/html", agif::Plots.AnimatedGif
   end
 
   report.rich_output *= "\n" * res * "\n"
+end
+
 end
