@@ -130,15 +130,15 @@ function weave(source ; doctype = :auto, plotlib=:auto,
       doc.cwd == pwd() && (outname = basename(outname))
       @info("Report weaved to $outname")
     catch e
-      @warn("Something went wrong during weaving")
-      println(e)
+        @warn("Something went wrong during weaving")
+        println(e)
     finally
-      doctype == :auto && (doctype = detect_doctype(doc.source))
-      if occursin(doctype, "pandoc2pdf") && cache == :off
-        rm(doc.fig_path, force = true, recursive = true)
-    elseif occursin(doctype, "2html")
-        rm(doc.fig_path, force = true, recursive = true)
-      end
+        doctype == :auto && (doctype = detect_doctype(doc.source))
+        if occursin("pandoc2pdf", doctype) && cache == :off
+            rm(doc.fig_path, force = true, recursive = true)
+    elseif occursin("2html", doctype)
+            rm(doc.fig_path, force = true, recursive = true)
+        end
     end
 end
 

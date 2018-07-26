@@ -33,10 +33,13 @@ using Test
         @info("Testing rich output")
         include("rich_output.jl")
     end
+
+    #@testset "Caching" begin
+    #    @info("Test: Caching")
+    #    include("cache_test.jl")
+    #end
 end
 
-#@info("Test: Caching")
-#include("cache_test.jl")
 
 #@info("Test: Chunk options with Gadfly")
 #include("chunk_opts_gadfly.jl")

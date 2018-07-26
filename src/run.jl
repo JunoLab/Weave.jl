@@ -1,3 +1,4 @@
+using Base64
 
 """
     run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
@@ -35,9 +36,9 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
     doc.format = formats[doctype]
     isdir(doc.cwd) || mkpath(doc.cwd)
 
-    if occursin(doctype, "2pdf") && cache == :off
+    if occursin("2pdf", doctype) && cache == :off
         fig_path = mktempdir(abspath(doc.cwd))
-    elseif occursin(doctype, "2html")
+    elseif occursin("2html", doctype)
         fig_path = mktempdir(abspath(doc.cwd))
     end
 
@@ -120,10 +121,10 @@ end
 function detect_doctype(source::AbstractString)
   ext = lowercase(splitext(source)[2])
   ext == ".jl" && return "md2html"
-  occursin(ext, "md") && return "md2html"
-  occursin(ext, "rst") && return "rst"
-  occursin(ext, "tex") && return "texminted"
-  occursin(ext, "txt") && return "asciidoc"
+  occursin("md", ext) && return "md2html"
+  occursin("rst", ext) && return "rst"
+  occursin("tex", ext) && return "texminted"
+  occursin("txt", ext) && return "asciidoc"
 
   return "pandoc"
 end
@@ -132,7 +133,7 @@ end
 function run_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     @info("Weaving chunk $(chunk.number) from line $(chunk.start_line)")
     result_chunks = eval_chunk(chunk, report, SandBox)
-    occursin(report.formatdict[:doctype], "2html") && (result_chunks = embed_figures(result_chunks, report.cwd))
+    occursin("2html", report.formatdict[:doctype]) && (result_chunks = embed_figures(result_chunks, report.cwd))
     return result_chunks
 end
 
@@ -184,7 +185,7 @@ function run_inline(inline::InlineCode, report::Report, SandBox::Module)
     merge!(chunk.options, options)
 
     chunks = eval_chunk(chunk, report, SandBox)
-    occursin(report.formatdict[:doctype], "2html") && (chunks = embed_figures(chunks, report.cwd))
+    occursin("2html", report.formatdict[:doctype]) && (chunks = embed_figures(chunks, report.cwd))
 
     output = chunks[1].output
     endswith(output, "\n") && (output = output[1:end-1])

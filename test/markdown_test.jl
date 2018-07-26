@@ -1,5 +1,6 @@
 using Test
 import Weave: Markdown2HTML
+import Markdown
 
 # Test markdown2html writer
 
