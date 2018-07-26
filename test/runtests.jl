@@ -34,6 +34,11 @@ using Test
         include("rich_output.jl")
     end
 
+    @testset "Plots" begin
+        info("Test: Weaving with Plots.jl")
+        include("plotsjl_test.jl")
+    end
+
     #@testset "Caching" begin
     #    @info("Test: Caching")
     #    include("cache_test.jl")

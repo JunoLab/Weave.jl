@@ -2,6 +2,11 @@ __precompile__()
 module Weave
 import Highlights
 using Compat
+using Requires
+
+function __init__()
+    @require Plots="91a5bcdd-55d7-5caf-9e0b-520d859cae80" include("plots.jl")
+end
 
 """
 `list_out_formats()`
@@ -46,7 +51,7 @@ end
 
 
 """
-    weave(source ; doctype = :auto, plotlib=:auto,
+    weave(source ; doctype = :auto,
         informat=:auto, out_path=:doc, args = Dict(),
         mod::Union{Module, Symbol} = Main,
         fig_path = "figures", fig_ext = nothing,
@@ -58,7 +63,6 @@ Weave an input document to output file.
 
 * `doctype`: :auto = set based on file extension or specify one of the supported formats.
   See `list_out_formats()`
-* `plotlib`: `"PyPlot"`, `"Gadfly"` or `nothing`
 * `informat`: :auto = set based on file extension or set to  `"noweb"`, `"markdown"` or  `script`
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`:
    Julia working directory, `"somepath"`: output directory as a String e.g `"/home/mpastell/weaveout"` or filename as
@@ -80,7 +84,7 @@ Weave an input document to output file.
 
 **Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """
-function weave(source ; doctype = :auto, plotlib=:auto,
+function weave(source ; doctype = :auto,
         informat=:auto, out_path=:doc, args = Dict(),
         mod::Union{Module, Symbol} = :sandbox,
         fig_path = "figures", fig_ext = nothing,
@@ -96,7 +100,7 @@ function weave(source ; doctype = :auto, plotlib=:auto,
     template != nothing && (doc.template = template)
 
     try
-      doc = run(doc, doctype = doctype, plotlib=plotlib,
+      doc = run(doc, doctype = doctype,
               mod = mod,
               out_path=out_path, args = args,
               fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache,
@@ -213,6 +217,8 @@ include("Markdown2HTML.jl")
 include("format.jl")
 include("pandoc.jl")
 include("writers.jl")
+
+
 
 export weave, list_out_formats, tangle, convert_doc, notebook,
         set_chunk_defaults, get_chunk_defaults, restore_chunk_defaults,

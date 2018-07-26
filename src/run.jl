@@ -1,7 +1,7 @@
 using Base64
 
 """
-    run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
+    run(doc::WeaveDoc; doctype = :auto,
         mod::Union{Module, Symbol} = :sandbox, out_path=:doc,
         args=Dict(), fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache = :off, throw_errors=false)
@@ -10,7 +10,6 @@ Run code chunks and capture output from parsed document.
 
 * `doctype`: :auto = set based on file extension or specify one of the supported formats.
   See `list_out_formats()`
-* `plotlib`: `"PyPlot"`, `"Gadfly"`, or `"Plots`
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
   `"somepath"`: Path as a AbstractString e.g `"/home/mpastell/weaveout"`
 * `args`: dictionary of arguments to pass to document. Available as WEAVE_ARGS.
@@ -24,7 +23,7 @@ Run code chunks and capture output from parsed document.
 
 **Note:** Run command from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """
-function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
+function Base.run(doc::WeaveDoc; doctype = :auto,
         mod::Union{Module, Symbol} = :sandbox, out_path=:doc,
         args=Dict(), fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache = :off, throw_errors=false)
@@ -65,10 +64,6 @@ function Base.run(doc::WeaveDoc; doctype = :auto, plotlib=:auto,
     else
       mimetypes = default_mime_types
     end
-
-    #Reset plotting
-    rcParams[:plotlib_set] = false
-    plotlib == :auto || init_plotting(plotlib)
 
     report = Report(doc.cwd, doc.basename, doc.format.formatdict, mimetypes, throw_errors)
     pushdisplay(report)
@@ -210,27 +205,20 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
     for (str_expr, expr) = expressions
         reset_report(report)
         lastline = (result_no == N)
-        rcParams[:plotlib_set] || detect_plotlib(chunk, SandBox) #Try to autodetect plotting library
         (obj, out) = capture_output(expr, SandBox, chunk.options[:term],
-                      chunk.options[:display], rcParams[:plotlib], lastline, report.throw_errors)
+                      chunk.options[:display], lastline, report.throw_errors)
         figures = report.figures #Captured figures
         result = ChunkOutput(str_expr, out, report.cur_result, report.rich_output, figures)
         report.rich_output = ""
         push!(results, result)
         result_no += 1
     end
-
-    #Save figures only in the end of chunk for PyPlot
-    if rcParams[:plotlib] == "PyPlot"
-        Compat.invokelatest(savefigs_pyplot, report)
-    end
-
     return results
 end
 
 getstdout() = stdout
 
-function capture_output(expr, SandBox::Module, term, disp, plotlib,
+function capture_output(expr, SandBox::Module, term, disp,
                         lastline, throw_errors=false)
     #oldSTDOUT = STDOUT
     oldSTDOUT = getstdout()
@@ -244,8 +232,6 @@ function capture_output(expr, SandBox::Module, term, disp, plotlib,
             obj != nothing && display(obj)
         elseif typeof(expr) == Symbol
             display(obj)
-        elseif plotlib == "Gadfly" && typeof(obj) == Gadfly.Plot
-            obj != nothing && display(obj)
         #This shows images and lone variables, result can
         #Handle last line sepately
         elseif lastline && obj != nothing
@@ -349,30 +335,6 @@ function get_figname(report::Report, chunk; fignum = nothing, ext = nothing)
         "$(report.basename)_$(chunkid)_$(fignum)$ext")
     rel_name = "$(chunk.options[:fig_path])/$(report.basename)_$(chunkid)_$(fignum)$ext" #Relative path is used in output
     return full_name, rel_name
-end
-
-
-function init_plotting(plotlib)
-    srcdir = escape_string(dirname(@__FILE__))
-    rcParams[:plotlib_set] = true
-    if plotlib == nothing
-        rcParams[:plotlib] = nothing
-    else
-        l_plotlib = lowercase(plotlib)
-        rcParams[:chunk_defaults][:fig] = true
-
-        if l_plotlib == "pyplot"
-            eval(Meta.parse("""include("$srcdir/pyplot.jl")"""))
-            rcParams[:plotlib] = "PyPlot"
-        elseif l_plotlib == "plots"
-            eval(Meta.parse("""include("$srcdir/plots.jl")"""))
-            rcParams[:plotlib] = "Plots"
-        elseif l_plotlib == "gadfly"
-            eval(Meta.parse("""include("$srcdir/gadfly.jl")"""))
-            rcParams[:plotlib] = "Gadfly"
-      end
-    end
-    return true
 end
 
 function get_cwd(doc::WeaveDoc, out_path)
@@ -489,18 +451,4 @@ function collect_results(chunk::CodeChunk, fmt::CollectResult)
         chunk.figures = [chunk.figures; r.figures]
     end
     return [chunk]
-end
-
-function detect_plotlib(chunk::CodeChunk, mod)
-
-    if isdefined(mod, :Plots)
-        init_plotting("Plots")
-        @info("Init Plots")
-        #Need to set size before plots are created
-        Compat.invokelatest(plots_set_size, chunk)
-        return
-    end
-
-    isdefined(mod, :PyPlot) && init_plotting("PyPlot") && return
-    isdefined(mod, :Gadfly) && init_plotting("Gadfly") && return
 end

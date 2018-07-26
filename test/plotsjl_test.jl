@@ -6,11 +6,8 @@ function pljtest(source, resfile, doctype)
   result =  read("documents/plotsjl/$resfile", String)
   ref =  read("documents/plotsjl/$resfile.ref", String)
   @test result == ref
-  #rm("documents/plotsjl/$resfile")
+  rm("documents/plotsjl/$resfile")
 end
-
-#pljtest("plotsjl_test.jmd", "plotsjl_test.md", "pandoc")
-#pljtest("plotsjl_test.jmd", "plotsjl_test.tex", "tex")
 
 pljtest("plotsjl_test_gr.jmd", "plotsjl_test_gr.md", "pandoc")
 pljtest("plotsjl_test_gr.jmd", "plotsjl_test_gr.tex", "tex")

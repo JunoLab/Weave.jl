@@ -2,11 +2,9 @@
 
 #Default options
 const defaultParams =
-      Dict{Symbol,Any}(:plotlib => nothing,
-                            :plotlib_set => false,
-                            :storeresults => false,
-                            :doc_number => 0,
-                            :chunk_defaults =>
+      Dict{Symbol,Any}(:storeresults => false,
+                                :doc_number => 0,
+                                :chunk_defaults =>
                                 Dict{Symbol,Any}(
                                 :echo=> true,
                                 :results=> "markup",

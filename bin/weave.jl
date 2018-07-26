@@ -41,7 +41,6 @@ source = args["source"]
 delete!(args, "source")
 args_col = []
 
-args["plotlib"] == "nothing" && (args["plotlib"] = nothing)
 #Check for special values of out_path
 
 #args["informat"] == ":auto" && (args["informat"] = :auto)
