@@ -62,7 +62,7 @@ function Base.display(report::Report, m::MIME"image/svg+xml", data)
 end
 
 function Base.display(report::Report, m::MIME"application/pdf", data)
-    figname = add_figure(report, m, data, ".pdf")
+    figname = add_figure(report, data, m, ".pdf")
 end
 
 #Text is written to stdout, called from "term" mode chunks
@@ -112,7 +112,11 @@ function add_figure(report::Report, data, m, ext)
   full_name, rel_name = get_figname(report, chunk, ext = ext)
 
   open(full_name, "w") do io
-    show(io, m, data)
+      if ext == ".pdf"
+          write(io, repr(m, data))
+      else
+          show(io, m, data)
+      end
   end
 
   push!(report.figures, rel_name)
