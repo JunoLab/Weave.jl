@@ -371,7 +371,10 @@ end
 
 function formatfigures(chunk, docformat::Pandoc)
     fignames = chunk.figures
+    length(fignames) > 0 || (return "")
+
     caption = chunk.options[:fig_cap]
+    label = get(chunk.options, :label, nothing)
     result = ""
     figstring = ""
     attribs = ""
@@ -379,11 +382,11 @@ function formatfigures(chunk, docformat::Pandoc)
     height = chunk.options[:out_height]
 
     #Build figure attibutes
-    width == nothing || (attribs = "width=$width")
-    (attribs ≠ "" && height ≠ nothing ) && (attribs *= " ")
-    height == nothing   || (attribs *= "height=$height")
-    attribs == ""    || (attribs = "{$attribs}")
-    length(fignames) > 0 || (return "")
+    attribs = String[]
+    width == nothing  || push!(attribs, "width=$width")
+    height == nothing || push!(attribs, "height=$height")
+    label == nothing  || push!(attribs, "#fig:$label")
+    attribs = isempty(attribs) ? "" : "{" * join(attribs, " ") * "}"
 
     if caption != nothing
         result *= "![$caption]($(fignames[1]))$attribs\n"
