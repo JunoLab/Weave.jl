@@ -4,6 +4,8 @@ author : Matti Pastell
 date : 13th December 2016
 ---
 
+# Intro
+
 This a sample [Julia](http://julialang.org/) markdown document that can
 be executed using [Weave.jl](https://github.com/mpastell/Weave.jl).
 
@@ -35,7 +37,7 @@ weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), informat="markdown",
 The documents will be written to the Julia working directory when you
 use the `out_path = :pwd`.
 
-## Capturing code
+# Capturing code
 
 The basic code chunk will be run with default options and the code and
 output will be captured.
@@ -44,7 +46,7 @@ output will be captured.
 using Gadfly
 x = linspace(0, 2*pi)
 println(x)
-plot(x = x, y = sin(x))
+plot(x = x, y = sin.(x))
 ```
 
 You can also control the way the results are captured, plot size etc.
@@ -64,7 +66,7 @@ syntax from the source document):
 plot(y = cumsum(randn(1000, 1)), Geom.line)
 ```
 
-## Whats next
+# Whats next
 
 Read the documentation:
 

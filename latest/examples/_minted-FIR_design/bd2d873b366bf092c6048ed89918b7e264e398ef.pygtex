@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8}]
+\PYG{n}{julia}\PYG{o}{\PYGZgt{}} \PYG{n}{h\PYGZus{}db} \PYG{o}{=} \PYG{n}{log10}\PYG{p}{(}\PYG{n}{abs}\PYG{o}{.}\PYG{p}{(}\PYG{n}{h}\PYG{p}{));}
+
+\PYG{n}{julia}\PYG{o}{\PYGZgt{}} \PYG{n}{ws} \PYG{o}{=} \PYG{n}{w}\PYG{o}{/}\PYG{n+nb}{pi}\PYG{o}{*}\PYG{p}{(}\PYG{n}{fs}\PYG{o}{/}\PYG{l+m+mi}{2}\PYG{p}{)}
+\PYG{l+m+mf}{0.0}\PYG{o}{:}\PYG{l+m+mf}{0.009775171065493646}\PYG{o}{:}\PYG{l+m+mf}{10.0}
+\end{Verbatim}
