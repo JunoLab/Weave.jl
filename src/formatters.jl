@@ -63,12 +63,12 @@ struct Pandoc2HTML
     formatdict::Dict{Symbol,Any}
 end
 
-const pdoc2html = Pandoc2HTML("Markdown to HTML (requires Pandoc)",
+const pdoc2html = Pandoc2HTML("Markdown to HTML (requires Pandoc 2)",
                       Dict{Symbol,Any}(
                               :codestart => "\n",
                               :codeend=> "\n",
-                              :outputstart=> "````",
-                              :outputend=> "````\n\n",
+                              :outputstart=> "\n",
+                              :outputend=> "\n",
                               :fig_ext=> ".png",
                               :extension=> "md",
                               :mimetypes => ["image/png", "image/svg+xml", "image/jpg",
@@ -368,6 +368,7 @@ function formatfigures(chunk, docformat::JMarkdown2tex)
   return result
 end
 
+formatfigures(chunk, docformat::Pandoc2HTML) = formatfigures(chunk, pandoc)
 
 function formatfigures(chunk, docformat::Pandoc)
     fignames = chunk.figures

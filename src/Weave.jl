@@ -56,7 +56,8 @@ end
         mod::Union{Module, Symbol} = Main,
         fig_path = "figures", fig_ext = nothing,
         cache_path = "cache", cache=:off,
-        template = nothing, highlight_theme = nothing, css = nothing
+        template = nothing, highlight_theme = nothing, css = nothing,
+        pandoc_options = "",
         latex_cmd = "xelatex")
 
 Weave an input document to output file.
@@ -80,6 +81,8 @@ Weave an input document to output file.
 * `template` : Template (file path) for md2html or md2tex formats.
 * `highlight_theme` : Theme (Highlights.AbstractTheme) for used syntax highlighting
 * `css` : CSS (file path) used for md2html format
+* `pandoc_options` = String array of options to pass to pandoc for `pandoc2html` and
+   `pandoc2pdf` formats e.g. ["--toc", "-N"]
 * `latex_cmd` the command used to make pdf from .tex
 
 **Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
@@ -91,6 +94,7 @@ function weave(source ; doctype = :auto,
         cache_path = "cache", cache=:off,
         throw_errors = false,
         template = nothing, highlight_theme = nothing, css = nothing,
+        pandoc_options = String[]::Array{String},
         latex_cmd = "xelatex")
 
     doc = read_doc(source, informat)
@@ -117,12 +121,12 @@ function weave(source ; doctype = :auto,
       if doc.doctype == "pandoc2html"
           mdname = outname
           outname = get_outname(out_path, doc, ext = "html")
-          pandoc2html(formatted, doc, outname)
+          pandoc2html(formatted, doc, outname, pandoc_options)
           rm(mdname)
       elseif doc.doctype == "pandoc2pdf"
           mdname = outname
           outname = get_outname(out_path, doc, ext = "pdf")
-          pandoc2pdf(formatted, doc, outname)
+          pandoc2pdf(formatted, doc, outname, pandoc_options)
           rm(mdname)
       elseif doc.doctype == "md2pdf"
           success = run_latex(doc, outname, latex_cmd)
@@ -133,14 +137,14 @@ function weave(source ; doctype = :auto,
 
       doc.cwd == pwd() && (outname = basename(outname))
       @info("Report weaved to $outname")
-    catch e
-        @warn("Something went wrong during weaving")
-        println(e)
+    #    catch err
+    #    @warn("Something went wrong during weaving")
+    #    println(e)
     finally
         doctype == :auto && (doctype = detect_doctype(doc.source))
         if occursin("pandoc2pdf", doctype) && cache == :off
             rm(doc.fig_path, force = true, recursive = true)
-    elseif occursin("2html", doctype)
+        elseif occursin("2html", doctype)
             rm(doc.fig_path, force = true, recursive = true)
         end
     end
