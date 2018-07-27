@@ -38,4 +38,4 @@ scatter!(rand(100),markersize=6,c=:orange)
 ![](figures/plotsjl_test_gr_3_1.png)\ 
 
 
-![A random walk.](figures/plotsjl_test_gr_random_1.png)
+![A random walk.](figures/plotsjl_test_gr_random_1.png){#fig:random}
