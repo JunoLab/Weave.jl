@@ -29,3 +29,5 @@ chunk.options[:out_width] = "100%"
 @test Weave.formatfigures(chunk, Weave.multimarkdown) == "![Nice plot][figs/figures_plot1.png]\n\n[figs/figures_plot1.png]: figs/figures_plot1.png width=100%\n"
 @test Weave.formatfigures(chunk, Weave.adoc) == "image::figs/figures_plot1.png[width=100%,title=\"Nice plot\"]"
 
+chunk.options[:label] = "somefig"
+@test Weave.formatfigures(chunk, Weave.pandoc) == "![Nice plot](figs/figures_plot1.png){width=100% #fig:somefig}\n"
