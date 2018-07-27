@@ -6,7 +6,7 @@ function savefigs_pyplot(report::Report)
     ext = report.formatdict[:fig_ext]
     figpath = joinpath(report.cwd, chunk.options[:fig_path])
     isdir(figpath) || mkdir(figpath)
-    chunkid = (chunk.options[:name] == nothing) ? chunk.number : chunk.options[:name]
+    chunkid = (chunk.options[:label] == nothing) ? chunk.number : chunk.options[:label]
     #Iterate over all open figures, save them and store names
 
     for fig = PyPlot.plt[:get_fignums]()

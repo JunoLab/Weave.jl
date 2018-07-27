@@ -291,8 +291,8 @@ function formatfigures(chunk, docformat::Tex)
         result *= figstring
     end
 
-    if chunk.options[:name] != nothing && f_env !=nothing
-        label = chunk.options[:name]
+    if chunk.options[:label] != nothing && f_env !=nothing
+        label = chunk.options[:label]
         result *= "\\label{fig:$label}\n"
     end
 
@@ -355,8 +355,8 @@ function formatfigures(chunk, docformat::JMarkdown2tex)
       result *= figstring
   end
 
-  if chunk.options[:name] != nothing && f_env !=nothing
-      label = chunk.options[:name]
+  if chunk.options[:label] != nothing && f_env !=nothing
+      label = chunk.options[:label]
       result *= "\\label{fig:$label}\n"
   end
 

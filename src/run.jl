@@ -330,7 +330,7 @@ function get_figname(report::Report, chunk; fignum = nothing, ext = nothing)
     ext == nothing && (ext = chunk.options[:fig_ext])
     fignum == nothing && (fignum = report.fignum)
 
-    chunkid = (chunk.options[:name] == nothing) ? chunk.number : chunk.options[:name]
+    chunkid = (chunk.options[:label] == nothing) ? chunk.number : chunk.options[:label]
     full_name = joinpath(report.cwd, chunk.options[:fig_path],
         "$(report.basename)_$(chunkid)_$(fignum)$ext")
     rel_name = "$(chunk.options[:fig_path])/$(report.basename)_$(chunkid)_$(fignum)$ext" #Relative path is used in output
