@@ -19,3 +19,10 @@ Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 
 [compat]
 Highlights="0.3.0"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+
+[targets]
+test = ["Test", "Plots"]
