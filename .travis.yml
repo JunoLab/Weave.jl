@@ -2,24 +2,17 @@
 language: julia
 julia:
   - 0.7
+  - 1.0
   - nightly
 matrix:
   allow_failures:
     - julia: nightly
+    - julia: 1.0
 notifications:
   email: false
-before_install:
-  #- sudo apt-get update -qq -y
-  #- sudo apt-get install python-matplotlib -y
-  #- wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
-  #- chmod +x miniconda.sh
-  #- ./miniconda.sh -b
-  #- export PATH=/home/travis/miniconda2/bin:$PATH
-  #- conda update --yes conda
-  #- conda install --yes matplotlib
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.build("Weave")'
-  - xvfb-run julia -e 'Pkg.test("Weave", coverage=true)'
+  - julia --check-bounds=yes -e 'using Pkg; Pkg.clone(pwd()); Pkg.build("Weave")'
+  - xvfb-run julia -e 'using Pkg; Pkg.test("Weave", coverage=true)'
 after_success:
   - julia -e 'cd(Pkg.dir("Weave")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
