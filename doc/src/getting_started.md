@@ -4,20 +4,20 @@
 The best way to get started using Weave.jl is to look at the example input and
 output documents. Examples for different formats are included in the packages `examples` directory.
 
-First have a look at source document using markdown code chunks and Gadfly for
-figures: [gadfly_md_sample.jmd](examples/gadfly_md_sample.jmd) and then see the
+First have a look at source document using markdown code chunks and Plots.jl for
+figures: [FIR_design.jmd](examples/FIR_design.jmd) and then see the
 output in different formats:
 
-  - Pandoc markdown: [gadfly_md_sample.md](examples/gadfly_md_sample.txt)
-  - HTML: [gadfly_md_sample.html](examples/gadfly_md_sample.html)
-  - pdf: [gadfly_md_sample.pdf](examples/gadfly_md_sample.pdf)
+  - Pandoc markdown: [FIR_design.txt](examples/FIR_design.txt)
+  - HTML: [FIR_design.html](examples/FIR_design.html)
+  - pdf: [FIR_design.pdf](examples/FIR_design.pdf)
 
 *Producing pdf output requires that you have pdflatex installed.*
 
-Add depencies for the example if needed:
+Add dependencies for the example if needed:
 
 ```julia
-Pkg.add.(["Cairo", "Fontconfig", "Gadfly"])
+using Pkg; Pkg.add.(["Plots", "DSP"])
 ```
 
 Weave the files to your working directory using:
@@ -25,12 +25,15 @@ Weave the files to your working directory using:
 ```julia
 using Weave
 #Markdown
-weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), out_path = :pwd,
-  doctype = "pandoc")
+weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"),
+    doctype="pandoc"
+    out_path=:pwd)
 #HTML
-weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), out_path = :pwd,
+weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"),
+  out_path=:pwd,
   doctype = "md2html")
 #pdf
-weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), out_path = :pwd,
+weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"),
+  out_path=:pwd,
   doctype = "md2pdf")
 ```

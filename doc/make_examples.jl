@@ -1,21 +1,21 @@
 using Weave
 
-weave("../examples/gadfly_md_sample.jmd",
+weave("../examples/FIR_design.jmd",
      informat="markdown", out_path = "build/examples", doctype = "pandoc")
 
- weave("../examples/gadfly_md_sample.jmd",
+weave("../examples/FIR_design.jmd",
       informat="markdown", out_path = "build/examples", doctype = "md2html")
 
-weave("../examples/gadfly_md_sample.jmd",
+weave("../examples/FIR_design.jmd",
         informat="markdown", out_path = "build/examples", doctype = "md2pdf")
 
-cp("../examples/gadfly_md_sample.jmd",
-    "build/examples/gadfly_md_sample.jmd", force = true)
+cp("../examples/FIR_design.jmd",
+    "build/examples/FIR_design.jmd", force = true)
 
-cp("build/examples/gadfly_md_sample.md",
-      "build/examples/gadfly_md_sample.txt", force = true)
+cp("build/examples/FIR_design.md",
+      "build/examples/FIR_design.txt", force = true)
 
-weave("../examples/FIR_design.jl", out_path = "build/examples")
-weave("../examples/FIR_design.jl", doctype = "md2pdf", out_path = "build/examples")
-cp("../examples/FIR_design.jl",
-    "build/examples/FIR_design.jl", force = true)
+weave("../examples/FIR_design_plots.jl", out_path = "build/examples")
+weave("../examples/FIR_design_plots.jl", doctype = "md2pdf", out_path = "build/examples")
+cp("../examples/FIR_design_plots.jl",
+    "build/examples/FIR_design_plots.jl", force = true)

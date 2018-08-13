@@ -26,7 +26,7 @@ build_script:
 # Need to convert from shallow to complete for Pkg.clone to work
   - IF EXIST .git\shallow (git fetch --unshallow)
   #- C:\projects\julia\bin\julia -e "ENV[\"PYTHON\"]=\"\"; Pkg.add(\"PyPlot\")"
-  - C:\projects\julia\bin\julia -e "using Pkg; Pkg.build()"
+  - C:\projects\julia\bin\julia -e "using Pkg; Pkg.build("Weave")"
 
 test_script:
   - C:\projects\julia\bin\julia --check-bounds=yes -e "Pkg.test(\"Weave\")"

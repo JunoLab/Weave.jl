@@ -15,11 +15,11 @@ date: 15th December 2016
 
 Here is a a sample document and output:
 
-[FIR_design.jl](examples/FIR_design.jl), [FIR_design.html](examples/FIR_design.html) , [FIR_design.pdf](examples/FIR_design.pdf).
+[FIR_design_plots.jl](examples/FIR_design_plots.jl), [FIR_design_plots.html](examples/FIR_design_plots.html) , [FIR_design_plots.pdf](examples/FIR_design_plots.pdf).
 
 ```julia
-weave("FIR_design.jl")
-weave("FIR_design.jl", docformat = "md2pdf")
+weave("FIR_design_plots.jl")
+weave("FIR_design_plots.jl", docformat = "md2pdf")
 ```
 
 **Note:** docformats `md2pdf` and `md2html` use Julia markdown and `pandoc2pdf` and `pandoc2html`
@@ -28,7 +28,7 @@ use Pandoc.
 ## Templates
 
 You can use a custom template with `md2pdf` and `md2html` formats with `template`
-argument (e.g) `weave("FIR_design.jl", template = "custom.tpl"`). You can use
+argument (e.g) `weave("FIR_design_plots.jl", template = "custom.tpl"`). You can use
 the existing templates as starting point.
 
 For HTML: [julia_html.tpl](https://github.com/mpastell/Weave.jl/blob/master/templates/julia_html.tpl) and LaTex: [julia_tex.tpl](https://github.com/mpastell/Weave.jl/blob/master/templates/julia_tex.tpl)

@@ -5,34 +5,18 @@ syntax and use `weave` function to execute to document to capture results and fi
 
 ## Weave
 
-Weave document with markup and julia code using Gadfly for plots,
+Weave document with markup and julia code using `Plots.jl` for plots,
 `out_path = :pwd` makes the results appear in the current working directory.
 
 ```julia
+#First add depencies for the example
+using Pkg; Pkg.add.(["Plots", "DSP"])
 using Weave
-weave(Pkg.dir("Weave","examples","gadfly_sample.mdw"), out_path = :pwd)
-```
-
-Using PyPlot:
-
-```julia
-weave(Pkg.dir("Weave","examples","julia_sample.mdw"), plotlib="PyPlot", out_path = :pwd)
+weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"), out_path=:pwd)
 ```
 
 ```@docs
 weave(source)
-```
-
-## Weave from shell
-
-You can also use the `weave.jl` script under bin directory to weave documents
-from the shell:
-
-```
-$ ./weave.jl
-usage: weave.jl [--doctype DOCTYPE] [--plotlib PLOTLIB]
-                [--informat INFORMAT] [--out_path OUT_PATH]
-                [--fig_path FIG_PATH] [--fig_ext FIG_EXT] source...
 ```
 
 ## Tangle
@@ -56,7 +40,6 @@ contains(ext, ".tex") && return "texminted"
 contains(ext, ".txt") && return "asciidoc"
 return "pandoc"
 ```
-
 
 You can get a list of supported output formats:
 
@@ -127,10 +110,10 @@ You can also add inline code to your documents using
 
 ```
 `j juliacode`
-``` 
+```
 
-syntax. The code will be replaced with the output of running the code. 
-If the code produces figures the filename or base64 encoded string will be 
+syntax. The code will be replaced with the output of running the code.
+If the code produces figures the filename or base64 encoded string will be
 added to output e.g. to include a Plots figure in markdown you can use:
 
 ```
@@ -139,12 +122,12 @@ added to output e.g. to include a Plots figure in markdown you can use:
 
 ## Passing arguments to documents
 
-You can pass arguments as dictionary to the weaved document using the `args` argument 
+You can pass arguments as dictionary to the weaved document using the `args` argument
 to `weave`. The dictionary will be available as `WEAVE_ARGS` variable in the document.
 
-This makes it possible to create the same report easily for e.g. different 
+This makes it possible to create the same report easily for e.g. different
 date ranges of input data from a database or from files with similar format giving the
-filename as input. 
+filename as input.
 
 In order to pass a filename to a document you need call `weave` using:
 
@@ -160,7 +143,7 @@ and you can access the filename from document as follows:
  ```
 ```
 
-You can use the `out_path` argument to control the name of the 
+You can use the `out_path` argument to control the name of the
 output document.
 
 ## Include Weave document in Julia
