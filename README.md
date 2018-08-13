@@ -12,17 +12,18 @@ and Sweave.
 
 You can write your documentation and code in input document using Noweb,
 Markdown, Script syntax and use `weave` function to execute to document to capture results
-and figures.
+and figures. **Weave will support Julia 1.0 as soon as all dependencies are up to date, use 0.7 for now**
 
 **Current features**
 
 * Noweb, markdown or script syntax for input documents.
 * Execute code as terminal or "script" chunks.
-* Capture Plots, Gadfly and PyPlot figures.
+* Capture Plots.jl figures *(or Gadfly and PyPlot on julia 0.6)*.
 * Supports LaTex, Pandoc, Github markdown, MultiMarkdown, Asciidoc and reStructuredText output
 * Publish markdown directly to html and pdf using Julia or Pandoc markdown.
 * Simple caching of results
 * Convert to and from IJulia notebooks
+
 
 **Citing Weave:** *Pastell, Matti. 2017. Weave.jl: Scientific Reports Using Julia. The Journal of Open Source Software. http://dx.doi.org/10.21105/joss.00204*
 
@@ -33,26 +34,27 @@ and figures.
 You can install the latest release using Julia package manager:
 
 ```julia
+using Pkg
 Pkg.add("Weave")
 ```
 
 ## Usage
 
-Run from julia using Gadfly for plots:
+Run from julia using Plots.jl for plots:
 
 ```julia
 #First add depencies for the example
-Pkg.add.(["Cairo", "Fontconfig", "Gadfly"])
+using Pkg; Pkg.add.(["Plots", "DSP"])
 #Use Weave
 using Weave
-weave(Pkg.dir("Weave","examples","gadfly_sample.mdw"))
+weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"), out_path=:pwd)
 ```
 
-If you have Pandoc installed you can also weave directly to html and pdf.
+If you have LaTeX installed you can also weave directly to pdf.
 
 ```julia
-weave(Pkg.dir("Weave","examples","gadfly_md_sample.jmd"), informat="markdown",
-  out_path = :pwd, doctype = "md2html")
+weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"),
+    out_path=:pwd, doctype="md2pdf")
 ```
 
 ## Documentation
@@ -66,20 +68,6 @@ Documenter.jl with MKDocs generated documentation:
 
 I have made [language-weave](https://atom.io/packages/language-weave) package
 for Atom to do the syntax highlighting correctly.
-
-Noweb documents work well with ESS as well, to set doc-mode for .mdw files to markdown
-and code to Julia you can do:
-
-```clojure
-(defun mdw-mode ()
-       (ess-noweb-mode)
-       (setq ess-noweb-default-code-mode 'ess-julia-mode)
-       (setq ess-noweb-doc-mode 'markdown-mode))
-
-(setq auto-mode-alist (append (list (cons "\\.mdw$" 'mdw-mode))
-                   auto-mode-alist))
-```
-
 
 ## Contributing
 
