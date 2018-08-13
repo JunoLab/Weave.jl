@@ -12,7 +12,7 @@ notifications:
   email: false
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia --check-bounds=yes -e 'using Pkg; Pkg.clone(pwd()); Pkg.build("Weave")'
+  - julia --check-bounds=yes -e 'using Pkg; Pkg.build()'
   - xvfb-run julia -e 'using Pkg; Pkg.test("Weave", coverage=true)'
 after_success:
-  - julia -e 'cd(Pkg.dir("Weave")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
+  - julia -e 'using Pkg; cd(Pkg.dir("Weave")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
