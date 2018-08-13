@@ -21,6 +21,10 @@
       
         <meta name="lang:search.language" content="en">
       
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
         <meta name="lang:search.result.none" content="No matching documents">
       
         <meta name="lang:search.result.one" content="1 matching document">
@@ -30,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-0.17.2, mkdocs-material-2.2.6">
+      <meta name="generator" content="mkdocs-1.0, mkdocs-material-3.0.3">
     
     
       
@@ -38,38 +42,62 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/application.6525f7f6.css">
+      <link rel="stylesheet" href="../assets/stylesheets/application.451f80e5.css">
+      
       
     
     
       <script src="../assets/javascripts/modernizr.1aa3b519.js"></script>
     
     
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
       
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
         <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
       
-      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
     
       <link rel="stylesheet" href="../assets/Documenter.css">
     
     
   </head>
   
-    <body>
+    <body dir="ltr">
   
     <svg class="md-svg">
       <defs>
         
         
-          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448"
+    viewBox="0 0 416 448" id="__github">
+  <path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19-18.125
+        8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19 18.125-8.5
+        18.125 8.5 10.75 19 3.125 20.5zM320 304q0 10-3.125 20.5t-10.75
+        19-18.125 8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19
+        18.125-8.5 18.125 8.5 10.75 19 3.125 20.5zM360
+        304q0-30-17.25-51t-46.75-21q-10.25 0-48.75 5.25-17.75 2.75-39.25
+        2.75t-39.25-2.75q-38-5.25-48.75-5.25-29.5 0-46.75 21t-17.25 51q0 22 8
+        38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0
+        37.25-1.75t35-7.375 30.5-15 20.25-25.75 8-38.375zM416 260q0 51.75-15.25
+        82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5-41.75
+        1.125q-19.5 0-35.5-0.75t-36.875-3.125-38.125-7.5-34.25-12.875-30.25-20.25-21.5-28.75q-15.5-30.75-15.5-82.75
+        0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25
+        30.875q36.75-8.75 77.25-8.75 37 0 70 8 26.25-20.5
+        46.75-30.25t47.25-9.75q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34
+        99.5z" />
+</svg>
         
       </defs>
     </svg>
-    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="drawer">
-    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="search">
-    <label class="md-overlay" data-md-component="overlay" for="drawer"></label>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="../#using-weave" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid">
@@ -82,7 +110,7 @@
         </a>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--menu md-header-nav__button" for="drawer"></label>
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
@@ -101,15 +129,17 @@
       <div class="md-flex__cell md-flex__cell--shrink">
         
           
-            <label class="md-icon md-icon--search md-header-nav__button" for="search"></label>
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
             
 <div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="search"></label>
-  <div class="md-search__inner">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" required placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query">
-      <label class="md-icon md-search__icon" for="search"></label>
-      <button type="reset" class="md-icon md-search__icon" data-md-component="reset">&#xE5CD;</button>
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" data-md-scrollfix>
@@ -139,7 +169,7 @@
     
       <div class="md-source__icon">
         <svg viewBox="0 0 24 24" width="24" height="24">
-          <use xlink:href="#github" width="24" height="24"></use>
+          <use xlink:href="#__github" width="24" height="24"></use>
         </svg>
       </div>
     
@@ -168,12 +198,12 @@
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" data-md-level="0">
-  <label class="md-nav__title md-nav__title--site" for="drawer">
-    <span class="md-nav__button md-logo">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href=".." title="Weave.jl" class="md-nav__button md-logo">
       
         <i class="md-icon"></i>
       
-    </span>
+    </a>
     Weave.jl
   </label>
   
@@ -188,7 +218,7 @@
     
       <div class="md-source__icon">
         <svg viewBox="0 0 24 24" width="24" height="24">
-          <use xlink:href="#github" width="24" height="24"></use>
+          <use xlink:href="#__github" width="24" height="24"></use>
         </svg>
       </div>
     
@@ -234,12 +264,12 @@
 
   <li class="md-nav__item md-nav__item--active">
     
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="toc">
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     
       
     
     
-      <label class="md-nav__link md-nav__link--active" for="toc">
+      <label class="md-nav__link md-nav__link--active" for="__toc">
         Using Weave
       </label>
     
@@ -254,19 +284,12 @@
     
   
   
-    <label class="md-nav__title" for="toc">Table of contents</label>
+    <label class="md-nav__title" for="__toc">Table of contents</label>
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
   <a href="#weave" title="Weave" class="md-nav__link">
     Weave
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#weave-from-shell" title="Weave from shell" class="md-nav__link">
-    Weave from shell
   </a>
   
 </li>
@@ -353,6 +376,8 @@
   </a>
   
 </li>
+      
+      
       
       
       
@@ -428,19 +453,12 @@
     
   
   
-    <label class="md-nav__title" for="toc">Table of contents</label>
+    <label class="md-nav__title" for="__toc">Table of contents</label>
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
   <a href="#weave" title="Weave" class="md-nav__link">
     Weave
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#weave-from-shell" title="Weave from shell" class="md-nav__link">
-    Weave from shell
   </a>
   
 </li>
@@ -530,6 +548,8 @@
       
       
       
+      
+      
     </ul>
   
 </nav>
@@ -550,24 +570,23 @@
 <p>You can write your documentation and code in input document using Noweb, Markdown or script syntax and use <code>weave</code> function to execute to document to capture results and figures.</p>
 <p><a id='Weave-1'></a></p>
 <h2 id="weave">Weave</h2>
-<p>Weave document with markup and julia code using Gadfly for plots, <code>out_path = :pwd</code> makes the results appear in the current working directory.</p>
-<div class="code"><pre><span></span><span class="k">using</span> <span class="n">Weave</span>
-<span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;gadfly_sample.mdw&quot;</span><span class="p">),</span> <span class="n">out_path</span> <span class="o">=</span> <span class="o">:</span><span class="n">pwd</span><span class="p">)</span>
-</pre></div>
-
-
-<p>Using PyPlot:</p>
-<div class="code"><pre><span></span><span class="n">weave</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="s">&quot;Weave&quot;</span><span class="p">,</span><span class="s">&quot;examples&quot;</span><span class="p">,</span><span class="s">&quot;julia_sample.mdw&quot;</span><span class="p">),</span> <span class="n">plotlib</span><span class="o">=</span><span class="s">&quot;PyPlot&quot;</span><span class="p">,</span> <span class="n">out_path</span> <span class="o">=</span> <span class="o">:</span><span class="n">pwd</span><span class="p">)</span>
+<p>Weave document with markup and julia code using <code>Plots.jl</code> for plots, <code>out_path = :pwd</code> makes the results appear in the current working directory.</p>
+<div class="code"><pre><span></span><span class="c">#First add depencies for the example</span>
+<span class="k">using</span> <span class="n">Pkg</span><span class="p">;</span> <span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="p">([</span><span class="s">&quot;Plots&quot;</span><span class="p">,</span> <span class="s">&quot;DSP&quot;</span><span class="p">])</span>
+<span class="k">using</span> <span class="n">Weave</span>
+<span class="n">weave</span><span class="p">(</span><span class="n">joinpath</span><span class="p">(</span><span class="n">dirname</span><span class="p">(</span><span class="n">pathof</span><span class="p">(</span><span class="n">Weave</span><span class="p">)),</span> <span class="s">&quot;../examples&quot;</span><span class="p">,</span> <span class="s">&quot;FIR_design.jmd&quot;</span><span class="p">),</span> <span class="n">out_path</span><span class="o">=:</span><span class="n">pwd</span><span class="p">)</span>
 </pre></div>
 
 
 <p><a id='Weave.weave-Tuple{Any}' href='#Weave.weave-Tuple{Any}'>#</a>
 <strong><code>Weave.weave</code></strong> &mdash; <em>Method</em>.</p>
-<div class="code"><pre><span></span>weave(source ; doctype = :auto, plotlib=:auto,
+<div class="code"><pre><span></span>weave(source ; doctype = :auto,
     informat=:auto, out_path=:doc, args = Dict(),
+    mod::Union{Module, Symbol} = Main,
     fig_path = &quot;figures&quot;, fig_ext = nothing,
     cache_path = &quot;cache&quot;, cache=:off,
-    template = nothing, highlight_theme = nothing, css = nothing
+    template = nothing, highlight_theme = nothing, css = nothing,
+    pandoc_options = &quot;&quot;,
     latex_cmd = &quot;xelatex&quot;)
 </pre></div>
 
@@ -575,32 +594,23 @@
 <p>Weave an input document to output file.</p>
 <ul>
 <li><code>doctype</code>: :auto = set based on file extension or specify one of the supported formats. See <code>list_out_formats()</code></li>
-<li><code>plotlib</code>: <code>"PyPlot"</code>, <code>"Gadfly"</code> or <code>nothing</code></li>
 <li><code>informat</code>: :auto = set based on file extension or set to  <code>"noweb"</code>, <code>"markdown"</code> or  <code>script</code></li>
 <li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>:  Julia working directory, <code>"somepath"</code>: output directory as a String e.g <code>"/home/mpastell/weaveout"</code> or filename as  string e.g. ~/outpath/outfile.tex.</li>
 <li><code>args</code>: dictionary of arguments to pass to document. Available as WEAVE_ARGS</li>
+<li><code>mod</code>: Module where Weave <code>eval</code>s code. Defaults to <code>:sandbox</code>  to create new sandbox module, you can also pass a module e.g. <code>Main</code>.</li>
 <li><code>fig_path</code>: where figures will be generated, relative to out_path</li>
 <li><code>fig_ext</code>: Extension for saved figures e.g. <code>".pdf"</code>, <code>".png"</code>. Default setting depends on <code>doctype</code>.</li>
 <li><code>cache_path</code>: where of cached output will be saved.</li>
 <li><code>cache</code>: controls caching of code: <code>:off</code> = no caching, <code>:all</code> = cache everything, <code>:user</code> = cache based on chunk options, <code>:refresh</code>, run all code chunks and save new cache.</li>
-<li><code>throw_errors</code> if <code>false</code> errors are included in output document and the whole document is    executed. if <code>true</code> errors are thrown when they occur.</li>
+<li><code>throw_errors</code> if <code>false</code> errors are included in output document and the whole document is   executed. if <code>true</code> errors are thrown when they occur.</li>
 <li><code>template</code> : Template (file path) for md2html or md2tex formats.</li>
 <li><code>highlight_theme</code> : Theme (Highlights.AbstractTheme) for used syntax highlighting</li>
 <li><code>css</code> : CSS (file path) used for md2html format</li>
+<li><code>pandoc_options</code> = String array of options to pass to pandoc for <code>pandoc2html</code> and  <code>pandoc2pdf</code> formats e.g. ["–toc", "-N"]</li>
 <li><code>latex_cmd</code> the command used to make pdf from .tex</li>
 </ul>
 <p><strong>Note:</strong> Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.</p>
-<p><a target='_blank' href='https://github.com/mpastell/Weave.jl/blob/eead8f24a85fbe7354bc704e1f9ed71701470fc0/src/Weave.jl#L48-L79' class='documenter-source'>source</a><br></p>
-<p><a id='Weave-from-shell-1'></a></p>
-<h2 id="weave-from-shell">Weave from shell</h2>
-<p>You can also use the <code>weave.jl</code> script under bin directory to weave documents from the shell:</p>
-<div class="code"><pre><span></span>$ ./weave.jl
-usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span> <span class="o">[</span>--plotlib PLOTLIB<span class="o">]</span>
-                <span class="o">[</span>--informat INFORMAT<span class="o">]</span> <span class="o">[</span>--out_path OUT_PATH<span class="o">]</span>
-                <span class="o">[</span>--fig_path FIG_PATH<span class="o">]</span> <span class="o">[</span>--fig_ext FIG_EXT<span class="o">]</span> source...
-</pre></div>
-
-
+<p><a target='_blank' href='https://github.com/mpastell/Weave.jl/blob/d0a2291aa87fbb4472f2862b47444302e26f8878/src/Weave.jl#L53-L89' class='documenter-source'>source</a><br></p>
 <p><a id='Tangle-1'></a></p>
 <h2 id="tangle">Tangle</h2>
 <p>Tangling extracts the code from document:</p>
@@ -613,7 +623,7 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
 <li><code>out_path</code>: Path where the output is generated. Can be: <code>:doc</code>: Path of the source document, <code>:pwd</code>: Julia working directory,  <code>"somepath"</code>, directory name as a string e.g <code>"/home/mpastell/weaveout"</code></li>
 </ul>
 <p>or filename as string e.g. ~/outpath/outfile.jl.</p>
-<p><a target='_blank' href='https://github.com/mpastell/Weave.jl/blob/eead8f24a85fbe7354bc704e1f9ed71701470fc0/src/Weave.jl#L18-L26' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/mpastell/Weave.jl/blob/d0a2291aa87fbb4472f2862b47444302e26f8878/src/Weave.jl#L23-L31' class='documenter-source'>source</a><br></p>
 <p><a id='Supported-formats-1'></a></p>
 <h2 id="supported-formats">Supported formats</h2>
 <p>Weave sets the output format based on the file extension, but you can also set it using <code>doctype</code> option. The rules for detecting the format are:</p>
@@ -633,7 +643,7 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
 
 <div class="code"><pre><span></span><span class="n">github</span><span class="o">:</span> <span class="n">Github</span> <span class="n">markdown</span>
 <span class="n">md2tex</span><span class="o">:</span> <span class="n">Julia</span> <span class="n">markdown</span> <span class="n">to</span> <span class="n">latex</span>
-<span class="n">pandoc2html</span><span class="o">:</span> <span class="n">Markdown</span> <span class="n">to</span> <span class="n">HTML</span> <span class="o">(</span><span class="n">requires</span> <span class="n">Pandoc</span><span class="o">)</span>
+<span class="n">pandoc2html</span><span class="o">:</span> <span class="n">Markdown</span> <span class="n">to</span> <span class="n">HTML</span> <span class="o">(</span><span class="n">requires</span> <span class="n">Pandoc</span> <span class="mi">2</span><span class="o">)</span>
 <span class="n">pandoc</span><span class="o">:</span> <span class="n">Pandoc</span> <span class="n">markdown</span>
 <span class="n">pandoc2pdf</span><span class="o">:</span> <span class="n">Pandoc</span> <span class="n">markdown</span>
 <span class="n">tex</span><span class="o">:</span> <span class="n">Latex</span> <span class="k">with</span> <span class="n">custom</span> <span class="n">code</span> <span class="n">environments</span>
@@ -651,7 +661,7 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
 <strong><code>Weave.list_out_formats</code></strong> &mdash; <em>Method</em>.</p>
 <p><code>list_out_formats()</code></p>
 <p>List supported output formats</p>
-<p><a target='_blank' href='https://github.com/mpastell/Weave.jl/blob/eead8f24a85fbe7354bc704e1f9ed71701470fc0/src/Weave.jl#L6-L10' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/mpastell/Weave.jl/blob/d0a2291aa87fbb4472f2862b47444302e26f8878/src/Weave.jl#L11-L15' class='documenter-source'>source</a><br></p>
 <p><a id='Document-syntax-1'></a></p>
 <h2 id="document-syntax">Document syntax</h2>
 <p>Weave uses noweb, markdown or script syntax for defining the code chunks and documentation chunks. You can also weave Jupyter notebooks. The format is detected based on the file extension, but you can also set it manually using the <code>informat</code> parameter.</p>
@@ -667,7 +677,7 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
 <h2 id="noweb-format">Noweb format</h2>
 <p><a id='Code-chunks-1'></a></p>
 <h3 id="code-chunks">Code chunks</h3>
-<p>start with a line marked with <code>&lt;&lt;&gt;&gt;=</code> or <code>&lt;&lt;options&gt;&gt;=</code> and end with line marked with <code>@</code>. The code between the start and end markers is executed and the output is captured to the output document. See <a href="../../chunk_options/">chunk options</a>.</p>
+<p>start with a line marked with <code>&lt;&lt;&gt;&gt;=</code> or <code>&lt;&lt;options&gt;&gt;=</code> and end with line marked with <code>@</code>. The code between the start and end markers is executed and the output is captured to the output document. See <a href="../chunk_options/">chunk options</a>.</p>
 <p><a id='Documentation-chunks-1'></a></p>
 <h3 id="documentation-chunks">Documentation chunks</h3>
 <p>Are the rest of the document (between <code>@</code> and <code>&lt;&lt;&gt;&gt;=</code> lines and the first chunk be default) and can be written with several different markup languages.</p>
@@ -690,15 +700,15 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
 </pre></div>
 
 
-<p>syntax. The code will be replaced with the output of running the code.  If the code produces figures the filename or base64 encoded string will be  added to output e.g. to include a Plots figure in markdown you can use:</p>
+<p>syntax. The code will be replaced with the output of running the code. If the code produces figures the filename or base64 encoded string will be added to output e.g. to include a Plots figure in markdown you can use:</p>
 <div class="code"><pre><span></span><span class="o">!</span><span class="p">[</span><span class="n">A</span> <span class="n">plot</span><span class="p">](</span><span class="err">`</span><span class="n">j</span> <span class="n">plot</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">10</span><span class="p">)</span><span class="err">`</span><span class="p">)</span>
 </pre></div>
 
 
 <p><a id='Passing-arguments-to-documents-1'></a></p>
 <h2 id="passing-arguments-to-documents">Passing arguments to documents</h2>
-<p>You can pass arguments as dictionary to the weaved document using the <code>args</code> argument  to <code>weave</code>. The dictionary will be available as <code>WEAVE_ARGS</code> variable in the document.</p>
-<p>This makes it possible to create the same report easily for e.g. different  date ranges of input data from a database or from files with similar format giving the filename as input. </p>
+<p>You can pass arguments as dictionary to the weaved document using the <code>args</code> argument to <code>weave</code>. The dictionary will be available as <code>WEAVE_ARGS</code> variable in the document.</p>
+<p>This makes it possible to create the same report easily for e.g. different date ranges of input data from a database or from files with similar format giving the filename as input.</p>
 <p>In order to pass a filename to a document you need call <code>weave</code> using:</p>
 <div class="code"><pre><span></span><span class="n">weave</span><span class="p">(</span><span class="s">&quot;mydoc.jmd&quot;</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="kt">Dict</span><span class="p">(</span><span class="s">&quot;filename&quot;</span> <span class="o">=&gt;</span> <span class="s">&quot;somedata.h5&quot;</span><span class="p">))</span>
 </pre></div>
@@ -711,7 +721,7 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
 </pre></div>
 
 
-<p>You can use the <code>out_path</code> argument to control the name of the  output document.</p>
+<p>You can use the <code>out_path</code> argument to control the name of the output document.</p>
 <p><a id='Include-Weave-document-in-Julia-1'></a></p>
 <h2 id="include-weave-document-in-julia">Include Weave document in Julia</h2>
 <p>You can call <code>include_weave</code> on a Weave document to run the contents of all code chunks in Julia.</p>
@@ -722,13 +732,15 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
 
 
 <p>Include code from Weave document calling <code>include_string</code> on all code from doc. Code is run in the path of the include document.</p>
-<p><a target='_blank' href='https://github.com/mpastell/Weave.jl/blob/eead8f24a85fbe7354bc704e1f9ed71701470fc0/src/Weave.jl#L170-L175' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/mpastell/Weave.jl/blob/d0a2291aa87fbb4472f2862b47444302e26f8878/src/Weave.jl#L183-L188' class='documenter-source'>source</a><br></p>
                 
                   
                 
               
               
                 
+
+
               
             </article>
           </div>
@@ -782,7 +794,7 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
           </div>
         
         powered by
-        <a href="http://www.mkdocs.org">MkDocs</a>
+        <a href="https://www.mkdocs.org">MkDocs</a>
         and
         <a href="https://squidfunk.github.io/mkdocs-material/">
           Material for MkDocs</a>
@@ -790,8 +802,7 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
       
         
   <div class="md-footer-social">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../assets/fonts/font-awesome.css">
     
       <a href="https://twitter.com/mpastell" class="md-footer-social__link fa fa-twitter"></a>
     
@@ -804,14 +815,14 @@ usage: weave.jl <span class="o">[</span>--doctype DOCTYPE<span class="o">]</span
       
     </div>
     
-      <script src="../assets/javascripts/application.cae2244d.js"></script>
+      <script src="../assets/javascripts/application.583bbe55.js"></script>
       
-      <script>app.initialize({version:"0.17.2",url:{base:".."}})</script>
+      <script>app.initialize({version:"1.0",url:{base:".."}})</script>
       
     
     
       
-        <script>!function(e,a,t,n,o,c,i){e.GoogleAnalyticsObject=o,e.ga=e.ga||function(){(e.ga.q=e.ga.q||[]).push(arguments)},e.ga.l=1*new Date,c=a.createElement(t),i=a.getElementsByTagName(t)[0],c.async=1,c.src="https://www.google-analytics.com/analytics.js",i.parentNode.insertBefore(c,i)}(window,document,"script",0,"ga"),ga("create","UA-6474352-10","auto"),ga("set","anonymizeIp",!0),ga("send","pageview");var links=document.getElementsByTagName("a");Array.prototype.map.call(links,function(e){e.host!=document.location.host&&e.addEventListener("click",function(){var a=e.getAttribute("data-md-action")||"follow";ga("send","event","outbound",a,e.href)})});var query=document.forms.search.query;query.addEventListener("blur",function(){if(this.value){var e=document.location.pathname;ga("send","pageview",e+"?q="+this.value)}})</script>
+        <script>!function(e,a,t,n,o,c,i){e.GoogleAnalyticsObject=o,e.ga=e.ga||function(){(e.ga.q=e.ga.q||[]).push(arguments)},e.ga.l=1*new Date,c=a.createElement(t),i=a.getElementsByTagName(t)[0],c.async=1,c.src="https://www.google-analytics.com/analytics.js",i.parentNode.insertBefore(c,i)}(window,document,"script",0,"ga"),ga("create","UA-6474352-10","auto"),ga("set","anonymizeIp",!0),ga("send","pageview");var links=document.getElementsByTagName("a");if(Array.prototype.map.call(links,function(e){e.host!=document.location.host&&e.addEventListener("click",function(){var a=e.getAttribute("data-md-action")||"follow";ga("send","event","outbound",a,e.href)})}),document.forms.search){var query=document.forms.search.query;query.addEventListener("blur",function(){if(this.value){var e=document.location.pathname;ga("send","pageview",e+"?q="+this.value)}})}</script>
       
     
   </body>

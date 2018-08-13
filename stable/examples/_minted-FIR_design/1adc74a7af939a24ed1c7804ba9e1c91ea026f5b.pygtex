@@ -1,6 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8}]
-\PYG{n}{fs} \PYG{o}{=} \PYG{l+m+mi}{20}
-\PYG{n}{f} \PYG{o}{=} \PYG{n}{digitalfilter}\PYG{p}{(}\PYG{n}{Lowpass}\PYG{p}{(}\PYG{l+m+mi}{5}\PYG{p}{,} \PYG{n}{fs} \PYG{o}{=} \PYG{n}{fs}\PYG{p}{),} \PYG{n}{FIRWindow}\PYG{p}{(}\PYG{n}{hamming}\PYG{p}{(}\PYG{l+m+mi}{61}\PYG{p}{)))}
-\PYG{n}{w} \PYG{o}{=} \PYG{n}{linspace}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n+nb}{pi}\PYG{p}{,} \PYG{l+m+mi}{1024}\PYG{p}{)}
-\PYG{n}{h} \PYG{o}{=} \PYG{n}{FIRfreqz}\PYG{p}{(}\PYG{n}{f}\PYG{p}{,} \PYG{n}{w}\PYG{p}{)}
-\end{Verbatim}

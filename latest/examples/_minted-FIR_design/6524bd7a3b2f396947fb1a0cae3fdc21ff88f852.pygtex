@@ -1,4 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8}]
-\PYG{n}{plot}\PYG{p}{(}\PYG{n}{y} \PYG{o}{=} \PYG{n}{h\PYGZus{}db}\PYG{p}{,} \PYG{n}{x} \PYG{o}{=} \PYG{n}{ws}\PYG{p}{,} \PYG{n}{Geom}\PYG{o}{.}\PYG{n}{line}\PYG{p}{,}
-      \PYG{n}{Guide}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Frequency (Hz)\PYGZdq{}}\PYG{p}{),} \PYG{n}{Guide}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Magnitude (db)\PYGZdq{}}\PYG{p}{))}
-\end{Verbatim}

@@ -1,5 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8}]
-\PYG{k}{using} \PYG{n}{Gadfly}
-\PYG{n}{x} \PYG{o}{=} \PYG{n}{linspace}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n+nb}{pi}\PYG{p}{)}
-\PYG{n}{println}\PYG{p}{(}\PYG{n}{x}\PYG{p}{)}
-\end{Verbatim}

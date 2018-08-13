@@ -1,60 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-    
     <url>
-     <loc>/</loc>
-     <lastmod>2018-01-07</lastmod>
+     <loc>None</loc>
+     <lastmod>2018-08-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/getting_started/</loc>
-     <lastmod>2018-01-07</lastmod>
+     <loc>None</loc>
+     <lastmod>2018-08-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/usage/</loc>
-     <lastmod>2018-01-07</lastmod>
+     <loc>None</loc>
+     <lastmod>2018-08-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/publish/</loc>
-     <lastmod>2018-01-07</lastmod>
+     <loc>None</loc>
+     <lastmod>2018-08-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/chunk_options/</loc>
-     <lastmod>2018-01-07</lastmod>
+     <loc>None</loc>
+     <lastmod>2018-08-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/notebooks/</loc>
-     <lastmod>2018-01-07</lastmod>
+     <loc>None</loc>
+     <lastmod>2018-08-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/function_index/</loc>
-     <lastmod>2018-01-07</lastmod>
+     <loc>None</loc>
+     <lastmod>2018-08-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
 </urlset>
