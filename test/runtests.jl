@@ -35,7 +35,7 @@ using Test
     end
 
     @testset "Plots" begin
-        info("Test: Weaving with Plots.jl")
+        @info("Test: Weaving with Plots.jl")
         include("plotsjl_test.jl")
     end
 

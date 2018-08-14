@@ -1,7 +1,7 @@
 ~~~~{.julia}
 using Plots
 gr()
-x = linspace(0, 2*pi)
+x = range(0, stop=2π, length=50)
 println(x)
 ~~~~~~~~~~~~~
 
