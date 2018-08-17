@@ -1,6 +1,6 @@
 name = "Weave"
 uuid = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
-version="0.6.0"
+version="0.6.1"
 
 [deps]
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
@@ -20,6 +20,8 @@ Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 [compat]
 Highlights = ">=0.3.1"
 Plots = ">=0.19.0"
+YAML = ">=0.3.0"
+Mustache = ">=0.4.1"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

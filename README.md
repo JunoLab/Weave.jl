@@ -12,7 +12,7 @@ and Sweave.
 
 You can write your documentation and code in input document using Noweb,
 Markdown, Script syntax and use `weave` function to execute to document to capture results
-and figures. **Weave will support Julia 1.0 as soon as all dependencies are up to date, use 0.7 for now**
+and figures.
 
 **Current features**
 
