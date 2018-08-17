@@ -18,7 +18,7 @@ YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 
 [compat]
-Highlights = ">=0.3.0"
+Highlights = ">=0.3.1"
 Plots = ">=0.19.0"
 
 [extras]
