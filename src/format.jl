@@ -4,6 +4,7 @@ using Compat
 using Dates
 using Markdown
 using REPL.REPLCompletions: latex_symbols
+import Markdown.latex
 
 function format(doc::WeaveDoc)
     formatted = AbstractString[]
@@ -301,7 +302,6 @@ function indent(text, nindent)
                     string(repeat(" ", nindent), x), split(text, "\n")), "\n")
 end
 
-
 function wraplines(text, line_width=75)
     result = AbstractString[]
     lines = split(text, "\n")
@@ -323,4 +323,8 @@ result = ""
         text = text[(line_width+1):end]
     end
 result *= text
+end
+
+function latex(io::IO, tex::Markdown.LaTeX)
+    write(io, string("\n\\begin{align}\n", tex.formula, "\n\\end{align}\n"))
 end
