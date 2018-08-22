@@ -303,7 +303,7 @@ function parse_inline(text::AbstractString, inline_ex::Regex)
         doc = InlineText(text[e:(s-1)], e, s-1, textno)
         textno += 1
         push!(res, doc)
-        e = s + endof(ic.match)
+        e = s + lastindex(ic.match)
         push!(res, InlineCode(ic.captures[1], s, e, codeno))
         codeno += 1
     end
