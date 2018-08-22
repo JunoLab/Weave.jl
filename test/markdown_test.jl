@@ -30,7 +30,7 @@ Some **text** with different [^note] *formatting* and \$math\$ and text.
 2. List two
 
 ```julia
-x = 3 
+x = 3
 ```
 
 !!! note "Something"
@@ -49,7 +49,11 @@ ref_html = """<h1>H1</h1>
 <div class=\"footnote\" id=\"footnote-note\"><p class=\"footnote-title\">note</p><p>test note</p>
 </div>
 <hr />
-<p class=\"math\">\\[more math\\]</p>
+<p class=\"math\">\\[
+\\begin{align}
+more math
+\\end{align}
+\\]</p>
 <ul>
 <li><p>List one</p>
 </li>
@@ -62,7 +66,7 @@ ref_html = """<h1>H1</h1>
 <li><p>List two</p>
 </li>
 </ol>
-<pre><code class=\"language-julia\">x &#61; 3 </code></pre>
+<pre><code class=\"language-julia\">x &#61; 3</code></pre>
 <div class=\"admonition note\"><p class=\"admonition-title\">Something</p><p>Test admonition with <img src=\"link/to/image.png\" alt=\"Image\" /></p>
 </div>
 <blockquote>
