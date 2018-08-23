@@ -112,6 +112,7 @@ function run_latex(doc::WeaveDoc, outname, latex_cmd = "xelatex")
   textmp = mktempdir(".")
   try
     out = read(`$latex_cmd -shell-escape $xname -aux-directory $textmp -include-directory $(doc.cwd)`, String)
+    out = read(`$latex_cmd -shell-escape $xname -aux-directory $textmp -include-directory $(doc.cwd)`, String)
     rm(xname)
     rm(textmp, recursive=true)
     cd(old_wd)
