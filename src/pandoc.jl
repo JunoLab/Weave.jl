@@ -88,7 +88,8 @@ function pandoc2pdf(formatted::AbstractString, doc::WeaveDoc, outname::AbstractS
 
   @info("Done executing code. Running xelatex")
   try
-    cmd = `pandoc -f markdown+raw_tex -s  --pdf-engine=xelatex --highlight-style=tango
+    engine_cmd = get_pandoc_version() > "2.0.0.0" ? "--pdf-engine" : "--latex-engine"
+    cmd = `pandoc -f markdown+raw_tex -s  $engine_cmd=xelatex --highlight-style=tango
      $filt $citeproc $pandoc_options
      --include-in-header=$header_template
      -V fontsize=12pt -o $outname`
@@ -123,4 +124,13 @@ function run_latex(doc::WeaveDoc, outname, latex_cmd = "xelatex")
     rm(textmp)
     return false
   end
+end
+
+"""
+`get_pandoc_version()`
+
+Returns a string containing pandoc's version number
+"""
+function get_pandoc_version()
+  match(r"pandoc (?<version>[\d.]+)\n", read(`pandoc --version`, String))["version"]
 end
