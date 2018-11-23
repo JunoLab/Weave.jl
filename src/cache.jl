@@ -1,19 +1,19 @@
-#FileIO and JLD2 are imported only if cache is used
+#Serialization is imported only if cache is used
 
 function write_cache(doc::WeaveDoc, cache_path)
     cache_dir = joinpath(doc.cwd, cache_path)
     isdir(cache_dir) || mkpath(cache_dir)
-    open(joinpath(cache_dir, doc.basename * ".jld2"),"w") do io
-      serialize(io, doc)
+    open(joinpath(cache_dir, doc.basename * ".cache"),"w") do io
+        Serialization.serialize(io, doc)
     end
     return nothing
 end
 
 function read_cache(doc::WeaveDoc, cache_path)
-    name = joinpath(doc.cwd, cache_path, doc.basename * ".jld2")
+    name = joinpath(doc.cwd, cache_path, doc.basename * ".cache")
     isfile(name) || return nothing
     open(name,"r") do io
-      doc = deserialize(io)
+        doc = Serialization.deserialize(io)
     end
     return doc
 end
