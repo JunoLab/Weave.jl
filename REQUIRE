@@ -1,6 +1,5 @@
 julia 0.7
-JLD2
-FileIO
+Serialization
 JSON
 Highlights 0.3.0
 Mustache

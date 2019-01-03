@@ -1,16 +1,21 @@
-#FileIO and JLD2 are imported only if cache is used
+#Serialization is imported only if cache is used
 
 function write_cache(doc::WeaveDoc, cache_path)
     cache_dir = joinpath(doc.cwd, cache_path)
     isdir(cache_dir) || mkpath(cache_dir)
-    Base.invokelatest(FileIO.save, joinpath(cache_dir, doc.basename * ".jld2"), Dict("doc" => doc))
+    open(joinpath(cache_dir, doc.basename * ".cache"),"w") do io
+        Serialization.serialize(io, doc)
+    end
     return nothing
 end
 
 function read_cache(doc::WeaveDoc, cache_path)
-    name = joinpath(doc.cwd, cache_path, doc.basename * ".jld2")
+    name = joinpath(doc.cwd, cache_path, doc.basename * ".cache")
     isfile(name) || return nothing
-    return Base.invokelatest(FileIO.load, name, "doc")
+    open(name,"r") do io
+        doc = Serialization.deserialize(io)
+    end
+    return doc
 end
 
 function restore_chunk(chunk::CodeChunk, cached)
@@ -35,7 +40,7 @@ end
 #Restore inline code
 function restore_chunk(chunk::DocChunk, cached::WeaveDoc)
     #Get chunk from cached doc
-    c_chunk = filter(x -> x.number == chunk.number && 
+    c_chunk = filter(x -> x.number == chunk.number &&
                     isa(x,  DocChunk), cached.chunks)
     isempty(c_chunk) && return chunk
     c_chunk = c_chunk[1]
@@ -45,7 +50,7 @@ function restore_chunk(chunk::DocChunk, cached::WeaveDoc)
     isempty(c_inline) && return chunk
 
     #Restore cached results for Inline code
-    n = length(chunk.content)    
+    n = length(chunk.content)
     for i in 1:n
         if isa(chunk.content[i], InlineCode)
             ci = filter(x -> x.number == chunk.content[i].number, c_inline)
