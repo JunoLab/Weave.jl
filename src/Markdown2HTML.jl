@@ -226,11 +226,4 @@ htmlinline(io::IO, x) = tohtml(io, x)
 
 html(md) = sprint(html, md)
 
-function Base.show(io::IO, ::MIME"text/html", md::MD)
-    withtag(io, :div, :class=>"markdown") do
-        html(io, md)
-    end
-end
-
-
 end
