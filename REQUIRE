@@ -1,5 +1,4 @@
-julia 0.7
-Serialization
+julia 1.0
 JSON
 Highlights 0.3.0
 Mustache
