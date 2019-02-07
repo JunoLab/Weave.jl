@@ -39,15 +39,11 @@ using Test
         include("plotsjl_test.jl")
     end
 
-    #@testset "Caching" begin
-    #    @info("Test: Caching")
-    #    include("cache_test.jl")
-    #end
+    @testset "Gadfly" begin
+        @info("Test: Weaving with Gadfly.jl")
+        include("cache_test.jl")
+    end
 end
-
-
-#@info("Test: Chunk options with Gadfly")
-#include("chunk_opts_gadfly.jl")
 
 #@info("Test: Weaving with Plots.jl")
 #include("plotsjl_test.jl")

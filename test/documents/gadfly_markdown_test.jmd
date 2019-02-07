@@ -1,30 +1,12 @@
 
 # Gadfly
 
-```{julia;term=true;fig_width=5}
+```{julia;fig_ext=".svg";dpi=300}
 using Gadfly
-x = linspace(0, 2π, 200)
-plot(x=x, y = sin(x), Geom.line)
-y = 20
-plot(x=x, y = cos(x), Geom.line)
+x = collect(range(0, stop=2π, length=200))
+plot(
+    layer(x=x, y = sin.(x), Geom.line),
+    layer(x=x, y = cos.(x), Geom.line, Theme(default_color=colorant"red")),
+    Guide.manual_color_key("Legend", ["sin", "cos"], ["deepskyblue", "red"])
+)
 ```
-
-
-```julia
-x = linspace(0, 200)
-println(x)
-```
-
-
-~~~{julia;term=true;fig_width=5}
-using Gadfly
-x = linspace(0, 2π, 200)
-plot(x=x, y = sin(x), Geom.line)
-y = 20
-plot(x=x, y = cos(x), Geom.line)
-~~~
-
-~~~julia
-x = linspace(0, 200)
-println(x)
-~~~
