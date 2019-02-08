@@ -41,7 +41,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto,
         fig_path = mktempdir(abspath(doc.cwd))
     end
 
-    cache == :off || @eval import FileIO, JLD2
+    cache == :off || @eval import Serialization
 
     #This is needed for latex and should work on all output formats
     Sys.iswindows() && (fig_path = replace(fig_path, "\\" => "/"))
@@ -155,7 +155,7 @@ function img2base64(fig, cwd)
   if ext == ".png"
     return "data:image/png;base64," * stringmime(MIME("image/png"), raw)
   elseif ext == ".svg"
-    return "data:image/svg+xml;base64," * stringmime(MIME("image/svg+xml"), raw)
+    return "data:image/svg+xml;base64," * stringmime(MIME("image/svg"), raw)
   elseif ext == ".gif"
     return "data:image/gif;base64," * stringmime(MIME("image/gif"), raw)
   else
