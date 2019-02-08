@@ -31,7 +31,7 @@ const default_mime_types = ["image/svg+xml", "image/png", "text/html", "text/pla
 #From IJulia as a reminder
 #const supported_mime_types = [ "text/html", "text/latex", "image/svg+xml", "image/png", "image/jpeg", "text/plain", "text/markdown" ]
 
-const mimetype_from_fig_ext =
+const mimetype_ext =
     Dict(".png" => "image/png",
          ".jpg" => "image/jpeg",
          ".jpeg" => "image/jpeg",
@@ -41,7 +41,7 @@ const mimetype_from_fig_ext =
 function Base.display(report::Report, data)
     #Set preferred mimetypes for report based on format
     fig_ext = report.cur_chunk.options[:fig_ext]
-    for m in Iterators.flatten(((mimetype_from_fig_ext[fig_ext], ), report.mimetypes))
+    for m in unique([mimetype_ext[fig_ext] ; report.mimetypes])
         if showable(m, data)
             try
                 if !istextmime(m)
