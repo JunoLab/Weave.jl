@@ -518,8 +518,9 @@ pre.sourceCode.julia {
 pre.output {
   filter : brightness(90%);
   border : none;
-  margin : 1ex 2em 2ex 2em;
-  padding : 1ex 1ex 1ex 1ex;
+  /* matching hard-coded values in Highlights.jl */
+  margin : 5px;  
+  padding : 5px;
 }
 
 pre.julia-error {
