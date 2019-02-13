@@ -179,7 +179,7 @@ function notebook(source::String, out_path=:pwd, timeout=-1, nbconvert_options="
 
   @info("Running nbconvert")
   eval(Meta.parse("using IJulia"))
-  out = read(`$(IJulia.jupyter)-nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile  $nbconvert_options --output $outfile`, String)
+  out = read(`$(IJulia.JUPYTER)-nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile  $nbconvert_options --output $outfile`, String)
 end
 
 """
