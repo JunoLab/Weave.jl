@@ -6,6 +6,7 @@ using Requires
 
 function __init__()
     @require Plots="91a5bcdd-55d7-5caf-9e0b-520d859cae80" Base.include(Main, "plots.jl")
+    @require Gadfly="c91e804a-d5a3-530f-b6f0-dfbca275c004" Base.include(Main, "gadfly.jl")
 end
 
 """
