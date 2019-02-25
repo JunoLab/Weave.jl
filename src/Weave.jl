@@ -1,4 +1,3 @@
-__precompile__()
 module Weave
 import Highlights
 using Compat
