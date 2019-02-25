@@ -156,7 +156,7 @@ function weave(doc::AbstractString, doctype::AbstractString)
 end
 
 """
-  notebook(source::String, out_path=:pwd)
+  notebook(source::String, out_path=:pwd, timeout=-1, nbconvert_options="")
 
 Convert Weave document `source` to Jupyter notebook and execute the code
 using nbconvert. Requires IJulia. **Ignores** all chunk options
@@ -164,9 +164,10 @@ using nbconvert. Requires IJulia. **Ignores** all chunk options
 * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document,
    `:pwd`: Julia working directory, `"somepath"`: Path as a
     String e.g `"/home/mpastell/weaveout"`
-* nbconvert cell timeout in seconds. Defaults to -1 (no timeout)
+* `timeout`: nbconvert cell timeout in seconds. Defaults to -1 (no timeout)
+* `nbconvert_options`: string of additional options to pass to nbconvert, such as `--allow-errors`
 """
-function notebook(source::String, out_path=:pwd, timeout=-1)
+function notebook(source::String, out_path=:pwd, timeout=-1, nbconvert_options="")
   doc = read_doc(source)
   converted = convert_doc(doc, NotebookOutput())
   doc.cwd = get_cwd(doc, out_path)
@@ -178,7 +179,7 @@ function notebook(source::String, out_path=:pwd, timeout=-1)
 
   @info("Running nbconvert")
   eval(Meta.parse("using IJulia"))
-  out = read(`$(IJulia.jupyter)-nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile --output $outfile`, String)
+  out = read(`$(IJulia.JUPYTER)-nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile  $nbconvert_options --output $outfile`, String)
 end
 
 """
