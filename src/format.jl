@@ -320,7 +320,7 @@ function wrapline(text, line_width=75)
     result = ""
     while length(text) > line_width
         result*= first(text, line_width) * "\n"
-        text = chop(text, head=line_width)
+        text = chop(text, head=line_width, tail=0)
     end
     result *= text
 end
