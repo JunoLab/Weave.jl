@@ -166,7 +166,7 @@ using nbconvert. Requires IJulia. **Ignores** all chunk options
 * `timeout`: nbconvert cell timeout in seconds. Defaults to -1 (no timeout)
 * `nbconvert_options`: string of additional options to pass to nbconvert, such as `--allow-errors`
 """
-function notebook(source::String, out_path=:pwd, timeout=-1, nbconvert_options="")
+function notebook(source::String, out_path=:pwd, timeout=-1, nbconvert_options=[])
   doc = read_doc(source)
   converted = convert_doc(doc, NotebookOutput())
   doc.cwd = get_cwd(doc, out_path)
@@ -177,8 +177,8 @@ function notebook(source::String, out_path=:pwd, timeout=-1, nbconvert_options="
   end
 
   @info("Running nbconvert")
-  eval(Meta.parse("using IJulia"))
-  out = read(`$(IJulia.JUPYTER)-nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile  $nbconvert_options --output $outfile`, String)
+  Base.eval(Main, Meta.parse("import IJulia"))
+  out = read(`$(Main.IJulia.JUPYTER) nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile  $nbconvert_options --output $outfile`, String)
 end
 
 """
