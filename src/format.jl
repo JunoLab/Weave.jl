@@ -317,12 +317,12 @@ function wraplines(text, line_width=75)
 end
 
 function wrapline(text, line_width=75)
-result = ""
+    result = ""
     while length(text) > line_width
-        result*= text[1:line_width] * "\n"
-        text = text[(line_width+1):end]
+        result*= first(text, line_width) * "\n"
+        text = chop(text, head=line_width)
     end
-result *= text
+    result *= text
 end
 
 function latex(io::IO, tex::Markdown.LaTeX)
