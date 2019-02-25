@@ -7,6 +7,33 @@ using Requires
 function __init__()
     @require Plots="91a5bcdd-55d7-5caf-9e0b-520d859cae80" Base.include(Main, "plots.jl")
     @require Gadfly="c91e804a-d5a3-530f-b6f0-dfbca275c004" Base.include(Main, "gadfly.jl")
+    @require IJulia="7073ff75-c697-5162-941a-fcdaad2a7d2a" begin
+        """
+          notebook(source::String, out_path=:pwd)
+
+        Convert Weave document `source` to Jupyter notebook and execute the code
+        using nbconvert. Requires IJulia. **Ignores** all chunk options
+
+        * `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document,
+           `:pwd`: Julia working directory, `"somepath"`: Path as a
+            String e.g `"/home/mpastell/weaveout"`
+        * nbconvert cell timeout in seconds. Defaults to -1 (no timeout)
+        """
+        function notebook(source::String, out_path=:pwd, timeout=-1)
+          doc = read_doc(source)
+          converted = convert_doc(doc, NotebookOutput())
+          doc.cwd = get_cwd(doc, out_path)
+          outfile = get_outname(out_path, doc, ext="ipynb")
+
+          open(outfile, "w") do f
+            write(f, converted)
+          end
+
+          @info("Running nbconvert")
+          eval(Meta.parse("using IJulia"))
+          out = read(`$(IJulia.jupyter)-nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile --output $outfile`, String)
+        end
+    end
 end
 
 """
@@ -153,32 +180,6 @@ end
 
 function weave(doc::AbstractString, doctype::AbstractString)
     weave(doc, doctype=doctype)
-end
-
-"""
-  notebook(source::String, out_path=:pwd)
-
-Convert Weave document `source` to Jupyter notebook and execute the code
-using nbconvert. Requires IJulia. **Ignores** all chunk options
-
-* `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document,
-   `:pwd`: Julia working directory, `"somepath"`: Path as a
-    String e.g `"/home/mpastell/weaveout"`
-* nbconvert cell timeout in seconds. Defaults to -1 (no timeout)
-"""
-function notebook(source::String, out_path=:pwd, timeout=-1)
-  doc = read_doc(source)
-  converted = convert_doc(doc, NotebookOutput())
-  doc.cwd = get_cwd(doc, out_path)
-  outfile = get_outname(out_path, doc, ext="ipynb")
-
-  open(outfile, "w") do f
-    write(f, converted)
-  end
-
-  @info("Running nbconvert")
-  eval(Meta.parse("using IJulia"))
-  out = read(`$(IJulia.jupyter)-nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile --output $outfile`, String)
 end
 
 """
