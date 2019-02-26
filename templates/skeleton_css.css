@@ -515,6 +515,14 @@ pre.sourceCode.julia {
   border-radius: 4px;
 }
 
+pre.output {
+  filter : brightness(90%);
+  border : none;
+  /* matching hard-coded values in Highlights.jl */
+  margin : 5px;  
+  padding : 5px;
+}
+
 pre.julia-error {
   color : red
 }

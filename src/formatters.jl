@@ -122,7 +122,7 @@ end
 const md2html = JMarkdown2HTML("Julia markdown to html", Dict{Symbol,Any}(
         :codestart => "\n",
         :codeend=> "\n",
-        :outputstart=> "<pre class=\"hljl\">",
+        :outputstart=> "<pre class=\"output\">",
         :outputend=> "</pre>\n",
         :fig_ext=> ".png",
         :mimetypes => ["image/png", "image/jpg", "image/svg+xml",
