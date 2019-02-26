@@ -94,3 +94,8 @@ wcows = Weave.wrapline(cows)
 @test wcows == testcows
 @test length(split(wcows, "\n")[1]) == 75
 @test length(split(wcows, "\n")[2]) == 25
+
+
+tfied = "\\ensuremath{\\bm{\\mathrm{L}}} \\ensuremath{\\bm{\\mathfrak{F}}} \\ensuremath{\\bm{\\iota}} \\ensuremath{\\mathfrak{A}} \\ensuremath{\\bm{\\varTheta}}"
+
+@test Weave.uc2tex("𝐋 𝕱 𝛊 𝔄 𝚹") == tfied

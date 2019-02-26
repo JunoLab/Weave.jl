@@ -238,12 +238,29 @@ end
 function uc2tex(s, escape=false)
     for key in keys(latex_symbols)
         if escape
-            s = replace(s, latex_symbols[key] => "(*@\\ensuremath{$key}@*)")
+            s = replace(s, latex_symbols[key] => "(*@\\ensuremath{$(texify(key))}@*)")
         else
-            s = replace(s, latex_symbols[key] => "\\ensuremath{$key}")
+            s = replace(s, latex_symbols[key] => "\\ensuremath{$(texify(key))}")
         end
     end
     return s
+end
+
+# Make julia symbols (\bf* etc.) valid latex
+function texify(s)
+    ts = ""
+    if occursin(r"^\\bf[A-Z]$", s)
+        ts = replace(s, "\\bf" => "\\bm{\\mathrm{") * "}}"
+    elseif startswith(s, "\\bfrak")
+        ts = replace(s, "\\bfrak" => "\\bm{\\mathfrak{") * "}}"
+    elseif startswith(s, "\\bf")
+        ts = replace(s, "\\bf" => "\\bm{\\") * "}"
+    elseif startswith(s, "\\frak")
+        ts = replace(s, "\\frak" => "\\mathfrak{") * "}"
+    else
+        ts = s
+    end
+    return ts
 end
 
 function format_code(result::AbstractString, docformat::JMarkdown2HTML)
