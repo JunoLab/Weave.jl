@@ -1,4 +1,5 @@
 import JSON
+import Mustache
 
 mutable struct NotebookOutput
 end
@@ -57,52 +58,59 @@ end
 
 """Convert Weave document to Jupyter notebook format"""
 function convert_doc(doc::WeaveDoc, format::NotebookOutput)
-  nb = Dict()
-  nb["nbformat"] =  4
-  nb["nbformat_minor"] = 2
+    nb = Dict()
+    nb["nbformat"] =  4
+    nb["nbformat_minor"] = 2
+    metadata = Dict()
+    kernelspec = Dict()
+    kernelspec["language"] =  "julia"
+    kernelspec["name"] =  "julia-$(VERSION.major).$(VERSION.minor)"
+    kernelspec["display_name"] = "Julia $(VERSION.major).$(VERSION.minor).$(VERSION.patch)"
+    metadata["kernelspec"] = kernelspec
+    language_info = Dict()
+    language_info["file_extension"] = ".jl"
+    language_info["mimetype"] = "application/julia"
+    language_info["name"]=  "julia"
+    language_info["version"] = "$(VERSION.major).$(VERSION.minor).$(VERSION.patch)"
+    metadata["language_info"] = language_info
+    cells = []
+    ex_count = 1
 
-  metadata = Dict()
+    # Handle header
+    head_tpl = """
+    {{#:title}}# {{:title}}{{/:title}}
+    {{#:author}}### {{{:author}}}{{/:author}}
+    {{#:date}}### {{{:date}}}{{/:date}}
+    """
 
-  kernelspec = Dict()
-  kernelspec["language"] =  "julia"
-  kernelspec["name"] =  "julia-$(VERSION.major).$(VERSION.minor)"
-  kernelspec["display_name"] = "Julia $(VERSION.major).$(VERSION.minor).$(VERSION.patch)"
-  metadata["kernelspec"] = kernelspec
-
-
-  language_info = Dict()
-  language_info["file_extension"] = ".jl"
-  language_info["mimetype"] = "application/julia"
-  language_info["name"]=  "julia"
-  language_info["version"] = "$(VERSION.major).$(VERSION.minor).$(VERSION.patch)"
-  metadata["language_info"] = language_info
-
-  cells = []
-  ex_count = 1
-
-  for chunk in doc.chunks
-    if isa(chunk, DocChunk)
-        push!(cells,
-          Dict("cell_type" => "markdown",
-             "metadata" => Dict(),
-          "source" => [strip(join([repr(c) for c in chunk.content], ""))])
-             )
-    else
-      push!(cells,
-        Dict("cell_type" => "code",
-           "metadata" => Dict(),
-           "source" => [strip(chunk.content)],
-           "execution_count" => nothing,
-           "outputs" => []
-           ))
+    if isa(doc.chunks[1], DocChunk)
+        doc.chunks[1] = strip_header(doc.chunks[1])
+        doc.chunks[1].content[1].content *= Mustache.render(head_tpl; [Pair(Symbol(k), v) for (k,v) in doc.header]...)
     end
-  end
 
-  nb["cells"] = cells
-  nb["metadata"] = metadata
+    for chunk in doc.chunks
+        if isa(chunk, DocChunk)
+            push!(cells,
+              Dict("cell_type" => "markdown",
+                 "metadata" => Dict(),
+              "source" => [strip(join([repr(c) for c in chunk.content], ""))])
+                 )
+        else
+            push!(cells,
+            Dict("cell_type" => "code",
+               "metadata" => Dict(),
+               "source" => [strip(chunk.content)],
+               "execution_count" => nothing,
+               "outputs" => []
+               ))
+       end
+   end
 
-  json_nb = JSON.json(nb, 2)
-  return json_nb
+    nb["cells"] = cells
+    nb["metadata"] = metadata
+
+    json_nb = JSON.json(nb, 2)
+    return json_nb
 end
 
 """Convert Weave document to Jupyter notebook format"""
