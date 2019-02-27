@@ -157,7 +157,7 @@ end
 
 function html(io::IO, tex::LaTeX)
     withtag(io, :p, :class => "math") do
-        write(io, string("\\[\n\\begin{align}\n", tex.formula, "\n\\end{align}\n\\]"))
+        write(io, string("\\[\n", tex.formula, "\n\\]"))
     end
 end
 
