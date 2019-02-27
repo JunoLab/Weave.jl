@@ -40,7 +40,12 @@ ca
 
 
 
-<table><tr><td>a</td></tr><tr><td>b</td></tr><tr><td>c</td></tr><tr><td>d</td></tr></table>
+-----
+| a | 
+| b | 
+| c | 
+| d | 
+-----
 
 ````julia
 display(ca)
@@ -49,8 +54,17 @@ display(x)
 
 
 
-<table><tr><td>a</td></tr><tr><td>b</td></tr><tr><td>c</td></tr><tr><td>d</td></tr></table>
-<table><tr><td>1</td><td>1</td></tr><tr><td>2</td><td>2</td></tr><tr><td>3</td><td>3</td></tr></table>
+-----
+| a | 
+| b | 
+| c | 
+| d | 
+-----
+-----
+| 1 | 1 | 
+| 2 | 2 | 
+| 3 | 3 | 
+-----
 
 ````julia
 julia> x
@@ -78,5 +92,5 @@ m
 
 
 
-<div class="markdown"><p><strong>Some Markdown</strong></p>
-</div>
+**Some Markdown**
+

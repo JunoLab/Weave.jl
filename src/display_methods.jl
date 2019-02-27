@@ -106,7 +106,16 @@ end
 #Catch "rich_output"
 function Base.display(report::Report, m::MIME"text/markdown", data)
     s = repr(m, data)
-    report.rich_output *= "\n" * s
+    # Convert to "richer" type of possible
+    for m in report.mimetypes
+        if m == "text/html" || m == "text/latex"
+            display(Markdown.parse(s))
+            break
+        elseif m == "text/markdown"
+            report.rich_output *= "\n" * s
+            break
+        end
+    end
 end
 
 function Base.display(report::Report, m::MIME"text/latex", data)

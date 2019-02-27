@@ -81,7 +81,6 @@ and some text
 """
 @test htext.content[1].content == h_ref
 
-
 # Test wrapping
 
 cows = repeat("🐄", 100)
@@ -90,6 +89,7 @@ testcows = """
 🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄"""
 
 wcows = Weave.wrapline(cows)
+println(wcows)
 
 @test wcows == testcows
 @test length(split(wcows, "\n")[1]) == 75
@@ -99,3 +99,17 @@ wcows = Weave.wrapline(cows)
 tfied = "\\ensuremath{\\bm{\\mathrm{L}}} \\ensuremath{\\bm{\\mathfrak{F}}} \\ensuremath{\\bm{\\iota}} \\ensuremath{\\mathfrak{A}} \\ensuremath{\\bm{\\varTheta}}"
 
 @test Weave.uc2tex("𝐋 𝕱 𝛊 𝔄 𝚹") == tfied
+
+# Test markdown output from chunks
+parsed = Weave.read_doc("documents/markdown_output.jmd")
+doc = Weave.run(parsed, doctype = "md2html")
+@test doc.chunks[1].rich_output == "\n<div class=\"markdown\"><h3>Small markdown sample</h3>\n<p><strong>Hello</strong> from <code>code</code> block.</p>\n</div>"
+@test doc.chunks[2].rich_output == "\n<div class=\"markdown\"><ul>\n<li><p>one</p>\n</li>\n<li><p>two</p>\n</li>\n<li><p>three</p>\n</li>\n</ul>\n</div>"
+
+ldoc = Weave.run(parsed, doctype = "md2tex")
+@test ldoc.chunks[1].rich_output == "\n\\subsubsection{Small markdown sample}\n\\textbf{Hello} from \\texttt{code} block.\n\n"
+@test ldoc.chunks[2].rich_output == "\n\\begin{itemize}\n\\item one\n\n\n\\item two\n\n\n\\item three\n\n\\end{itemize}\n"
+
+mdoc = Weave.run(parsed, doctype = "github")
+@test mdoc.chunks[1].rich_output == "\n\n### Small markdown sample\n\n**Hello** from `code` block.\n\n"
+@test mdoc.chunks[2].rich_output == "\n\n* one\n* two\n* three\n\n"

@@ -1,0 +1,31 @@
+
+
+```julia
+display("text/markdown",
+"""
+
+### Small markdown sample
+
+**Hello** from `code` block.
+
+""")
+```
+
+
+```julia
+struct  Dummy
+  s::String
+end
+
+function Base.show(io::IO, m::MIME"text/markdown", d::Dummy)
+    print(io, d.s)
+end
+
+Dummy("""
+
+* one
+* two
+* three
+
+""")
+```

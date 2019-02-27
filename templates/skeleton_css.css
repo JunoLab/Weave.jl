@@ -500,16 +500,15 @@ pre {
 }
 
 pre.hljl {
+  margin: 0 0 10px;
   display: block;
   background: #f5f5f5;
   border-radius: 4px;
+  padding : 5px;
 }
 
 pre.output {
   background: #ffffff;
-  /* matching hard-coded values in Highlights.jl */
-  margin : 5px;
-  padding : 5px;
 }
 
 pre.julia-error {

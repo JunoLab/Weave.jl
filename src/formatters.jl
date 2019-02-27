@@ -88,6 +88,7 @@ const github = GithubMarkdown("Github markdown",
                                 :outputend=> "````\n\n",
                                 :fig_ext=> ".png",
                                 :extension=> "md",
+                                :mimetypes => ["image/png", "image/svg+xml", "image/jpg", "text/markdown",  "text/plain"],
                                 :doctype=> "github"
                                                ))
 
@@ -144,8 +145,8 @@ const md2tex = JMarkdown2tex("Julia markdown to latex", Dict{Symbol,Any}(
         :fig_ext=> ".pdf",
         :extension=> "tex",
         :out_width => "\\linewidth",
-        :mimetypes => ["application/pdf", "image/png", "image/jpg",
-                       "text/latex", "text/plain"],
+        :mimetypes => ["application/pdf", "image/png", "image/jpg", "text/latex",
+                        "text/markdown", "text/plain"],
         :doctype=> "md2tex"))
 
 
