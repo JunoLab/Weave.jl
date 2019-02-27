@@ -343,5 +343,9 @@ function wrapline(text, line_width=75)
 end
 
 function latex(io::IO, tex::Markdown.LaTeX)
-    write(io, string("\n\\begin{align}\n", tex.formula, "\n\\end{align}\n"))
+    math_envs = ["align", "equation", "eqnarray"]
+    use_dollars = !any([occursin("\\begin{$me", tex.formula) for me in math_envs])
+    use_dollars && write(io, "\\[")
+    write(io, string("\n", tex.formula, "\n"))
+    use_dollars && write(io, "\\]\n")
 end

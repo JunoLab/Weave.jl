@@ -50,9 +50,7 @@ ref_html = """<h1>H1</h1>
 </div>
 <hr />
 <p class=\"math\">\\[
-\\begin{align}
 more math
-\\end{align}
 \\]</p>
 <ul>
 <li><p>List one</p>
