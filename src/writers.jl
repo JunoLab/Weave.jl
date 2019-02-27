@@ -89,12 +89,15 @@ function convert_doc(doc::WeaveDoc, format::NotebookOutput)
     end
 
     for chunk in doc.chunks
+
         if isa(chunk, DocChunk)
             push!(cells,
               Dict("cell_type" => "markdown",
                  "metadata" => Dict(),
               "source" => [strip(join([repr(c) for c in chunk.content], ""))])
                  )
+        elseif haskey(chunk.options, :skip) && chunk.options[:skip] == "notebook"
+            continue
         else
             push!(cells,
             Dict("cell_type" => "code",
