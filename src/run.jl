@@ -247,6 +247,7 @@ function capture_output(expr, SandBox::Module, term, disp,
         out = fetch(reader)
         close(rw)
     end
+    out = replace(out, r"\u001b\[.*?m" => "") #Remove ANSI color codes
     return (obj, out)
 end
 
