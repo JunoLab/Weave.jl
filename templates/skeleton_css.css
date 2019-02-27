@@ -493,33 +493,22 @@ pre {
   margin: 0 0 10px;
   font-size: 13px;
   line-height: 1.42857143;
-  color: #333;
   word-break: break-all;
   word-wrap: break-word;
-  background-color: #ffffff;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-pre.sourceCode.julia {
+pre.hljl {
   display: block;
-  padding: 9.5px;
-  margin: 0 0 10px;
-  font-size: 13px;
-  line-height: 1.42857143;
-  color: #333;
-  word-break: break-all;
-  word-wrap: break-word;
-  background-color: #f5f5f5;
-  border: 1px solid #ccc;
+  background: #f5f5f5;
   border-radius: 4px;
 }
 
 pre.output {
-  filter : brightness(90%);
-  border : none;
+  background: #ffffff;
   /* matching hard-coded values in Highlights.jl */
-  margin : 5px;  
+  margin : 5px;
   padding : 5px;
 }
 
