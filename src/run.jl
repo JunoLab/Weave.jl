@@ -235,7 +235,7 @@ function capture_output(expr, SandBox::Module, term, disp,
         #This shows images and lone variables, result can
         #Handle last line sepately
         elseif lastline && obj != nothing
-            (expr.head != :toplevel && expr.head != :(=)) && display(obj)
+            (expr.head != :toplevel) && display(obj)
         end
     catch E
         throw_errors && throw(E)
