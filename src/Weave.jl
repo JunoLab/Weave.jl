@@ -213,6 +213,7 @@ pop_postexecute_hook(f::Function) = splice!(postexecute_hooks, findfirst(postexe
 
 include("config.jl")
 include("chunks.jl")
+include("WeaveMarkdown/markdown.jl")
 include("display_methods.jl")
 include("readers.jl")
 include("run.jl")
@@ -222,7 +223,6 @@ include("Markdown2HTML.jl")
 include("format.jl")
 include("pandoc.jl")
 include("writers.jl")
-
 
 
 export weave, list_out_formats, tangle, convert_doc, notebook,

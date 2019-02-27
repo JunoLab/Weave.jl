@@ -1,5 +1,6 @@
 import Mustache, Highlights
 import .Markdown2HTML
+import .WeaveMarkdown
 using Compat
 using Dates
 using Markdown
@@ -127,14 +128,14 @@ function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
     text = format_chunk(chunk, formatdict, nothing)
     #invokelatest seems to be needed here
     #to fix "invalid age range" on 0.6 #21653
-    m = Compat.invokelatest(Markdown.parse, text)
-
+    #m = Compat.invokelatest(Markdown.parse, text)
+    m = Markdown.parse(text, flavor=WeaveMarkdown.weavemd)
     return string(Markdown2HTML.html(m))
 end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
     text = format_chunk(chunk, formatdict, nothing)
-    m = Markdown.parse(text)
+    m = Markdown.parse(text, flavor=WeaveMarkdown.weavemd)
     return uc2tex(Markdown.latex(m))
 end
 

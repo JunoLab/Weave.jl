@@ -1,5 +1,6 @@
 using Compat
 using Markdown
+import .WeaveMarkdown
 
 #Contains report global properties
 mutable struct Report <: AbstractDisplay
@@ -109,7 +110,7 @@ function Base.display(report::Report, m::MIME"text/markdown", data)
     # Convert to "richer" type of possible
     for m in report.mimetypes
         if m == "text/html" || m == "text/latex"
-            display(Markdown.parse(s))
+            display(Markdown.parse(s, flavor=WeaveMarkdown.weavemd))
             break
         elseif m == "text/markdown"
             report.rich_output *= "\n" * s
