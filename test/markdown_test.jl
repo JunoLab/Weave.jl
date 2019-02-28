@@ -100,3 +100,20 @@ Multiple lines
 
 @test WeaveMarkdown.html(md.content[2]) == "<p class=\"math\">\\[\nx = 2\n\\]</p>"
 @test WeaveMarkdown.html(md.content[4]) == "\n<!-- \nMultiple lines\n  -->\n"
+
+##
+using Revise
+import Weave: WeaveMarkdown
+
+md = """
+
+[@Bezanson2017]
+
+citing [@pastell_filtering_2018; @someref]
+
+cite [@Bezanson2017] again
+
+"""
+
+m = WeaveMarkdown.parse_markdown(md, "test/documents/bibtex/testdocs.bib");
+m
