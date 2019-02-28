@@ -434,8 +434,7 @@ ol ol,
 ol ul {
   margin: 1.5rem 0 1.5rem 3rem;
   font-size: 90%; }
-li {
-  margin-bottom: 1rem; }
+li > p {margin : 0;}
 th,
 td {
   padding: 12px 15px;
@@ -464,7 +463,7 @@ p,
 ul,
 ol,
 form {
-  margin-bottom: 2.5rem; }
+  margin-bottom: 1.0rem; }
 .u-full-width {
   width: 100%;
   box-sizing: border-box; }
@@ -511,6 +510,10 @@ pre.output {
   background: #ffffff;
 }
 
+pre.code {
+  background: #ffffff;
+}
+
 pre.julia-error {
   color : red
 }
@@ -520,14 +523,9 @@ kbd,
 pre,
 samp {
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 13px;
 }
-code {
-  padding: 2px 4px;
-  font-size: 90%;
 
-  background-color: #ffffff;
-  border-radius: 4px;
-}
 
 @media (min-width: 400px) {}
 @media (min-width: 550px) {}
