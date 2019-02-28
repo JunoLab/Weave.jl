@@ -1,10 +1,10 @@
 using Test
-import Weave: Markdown2HTML
+import Weave: WeaveMarkdown
 import Markdown
 
 # Test markdown2html writer
 
-html = Markdown2HTML.html(Markdown.parse("""
+html = WeaveMarkdown.html(Markdown.parse("""
 
 # H1
 
@@ -39,7 +39,7 @@ x = 3
 
 > Some important quote
 
-"""))
+""", flavor = WeaveMarkdown.weavemd))
 
 ref_html = """<h1>H1</h1>
 <h2>H2</h2>
@@ -73,3 +73,30 @@ more math
 """
 
 @test html == ref_html
+
+#Test Weave additions
+md = Markdown.parse("""
+
+Multiline equations
+
+\$\$
+x = 2
+\$\$
+
+And comments <!-- inline -->
+
+<!--
+Multiple lines
+ -->
+""", flavor = WeaveMarkdown.weavemd);
+
+@test md.content[2].formula  == "x = 2"
+@test typeof(md.content[3].content[2]) == WeaveMarkdown.Comment
+@test md.content[3].content[2].text == " inline "
+@test md.content[4].text == "\nMultiple lines\n "
+
+@test WeaveMarkdown.latex(md.content[2]) == "\\[\nx = 2\n\\]\n"
+@test WeaveMarkdown.latex(md.content[4]) == "% \n% Multiple lines\n%  \n"
+
+@test WeaveMarkdown.html(md.content[2]) == "<p class=\"math\">\\[\nx = 2\n\\]</p>"
+@test WeaveMarkdown.html(md.content[4]) == "\n<!-- \nMultiple lines\n  -->\n"

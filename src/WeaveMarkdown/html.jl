@@ -1,4 +1,4 @@
-module Markdown2HTML
+#module Markdown2HTML
 # Markdown to HTML writer, Modified from Julia Base.Markdown html writer
 using Markdown: MD, Header, Code, Paragraph, BlockQuote, Footnote,
       Admonition, List, HorizontalRule, Bold, Italic, Image, Link, LineBreak,
@@ -21,6 +21,8 @@ end
 function tohtml(m::MIME"image/svg+xml", img)
     show(io, m, img)
 end
+
+
 
 # AbstractDisplay infrastructure
 
@@ -161,6 +163,10 @@ function html(io::IO, tex::LaTeX)
     end
 end
 
+function html(io::IO, comment::Comment)
+    write(io, "\n<!-- $(comment.text) -->\n")
+end
+
 html(io::IO, x) = tohtml(io, x)
 
 # Inline elements
@@ -220,10 +226,14 @@ function htmlinline(io::IO, br::LineBreak)
     tag(io, :br)
 end
 
+function htmlinline(io::IO, comment::Comment)
+    write(io, "<!-- $(comment.text) -->")
+end
+
 htmlinline(io::IO, x) = tohtml(io, x)
 
 # API
 
 html(md) = sprint(html, md)
 
-end
+#end

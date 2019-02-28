@@ -1,11 +1,10 @@
 import Mustache, Highlights
-import .Markdown2HTML
 import .WeaveMarkdown
 using Compat
 using Dates
 using Markdown
 using REPL.REPLCompletions: latex_symbols
-import Markdown.latex
+
 
 function format(doc::WeaveDoc)
     formatted = AbstractString[]
@@ -130,7 +129,7 @@ function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
     #to fix "invalid age range" on 0.6 #21653
     #m = Compat.invokelatest(Markdown.parse, text)
     m = Markdown.parse(text, flavor=WeaveMarkdown.weavemd)
-    return string(Markdown2HTML.html(m))
+    return string(WeaveMarkdown.html(m))
 end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
@@ -341,12 +340,4 @@ function wrapline(text, line_width=75)
         text = chop(text, head=line_width, tail=0)
     end
     result *= text
-end
-
-function latex(io::IO, tex::Markdown.LaTeX)
-    math_envs = ["align", "equation", "eqnarray"]
-    use_dollars = !any([occursin("\\begin{$me", tex.formula) for me in math_envs])
-    use_dollars && write(io, "\\[")
-    write(io, string("\n", tex.formula, "\n"))
-    use_dollars && write(io, "\\]\n")
 end
