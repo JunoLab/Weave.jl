@@ -38,6 +38,7 @@
 
           {{{ :body }}}
 
+          {{{ :references }}}
 
           <HR/>
           <div class="footer"><p>

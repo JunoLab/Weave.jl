@@ -74,12 +74,6 @@ function comment(stream::IO, md::MD)
     end
 end
 
-global const CITATIONS = Dict{Symbol, Any}(
-    :no => 1,
-    :bibtex => Dict(),
-    :references => []
-    )
-
 @trigger '[' ->
 function citation(stream::IO, md::MD)
     withstream(stream) do
@@ -123,6 +117,13 @@ for key in keys(Markdown.julia.inner)
     end
 end
 
+const CITATIONS = Dict{Symbol, Any}(
+    :no => 1,
+    :bibtex => Dict(),
+    :references => Dict(),
+    :refnumbers => Dict()
+    )
+
 #Init dictionary for parsing citations
 function init_parser(bibfile)
     CITATIONS[:no] = 1
@@ -132,10 +133,18 @@ function init_parser(bibfile)
     CITATIONS[:refnumbers] = Dict()
 end
 
+function reset_parser()
+    CITATIONS[:no] = 1
+    CITATIONS[:references] = Dict()
+    CITATIONS[:bibtex] = Dict()
+    CITATIONS[:refnumbers] = Dict()
+end
+
 function parse(text)
     Markdown.parse(text, flavor = weavemd);
 end
 
 include("html.jl")
 include("latex.jl")
+include("bibliography.jl")
 end

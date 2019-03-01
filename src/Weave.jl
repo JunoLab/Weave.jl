@@ -121,6 +121,8 @@ function weave(source ; doctype = :auto,
           write(io, formatted)
       end
 
+      WeaveMarkdown.reset_parser()
+
       #Special for that need external programs
       if doc.doctype == "pandoc2html"
           mdname = outname

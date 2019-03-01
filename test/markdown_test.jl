@@ -132,3 +132,6 @@ end
 Mustache.render(tpl, ref)
 r2 = Dict("author" => "Matti Pastell", "title" => "Some paper", "article" => "true")
 Mustache.render(tpl, r2)
+
+WeaveMarkdown.list_references(MIME"text/html"())
+isempty(WeaveMarkdown.CITATIONS[:references])
