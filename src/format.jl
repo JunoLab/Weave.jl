@@ -77,9 +77,16 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
     template = Mustache.template_from_file(doc.template)
   end
 
+  if isempty(WeaveMarkdown.CITATIONS[:references])
+      references = ""
+  else
+      references = WeaveMarkdown.list_references(MIME"text/html"())
+  end
+
   return Mustache.render(template; themecss = theme_css,
                           highlightcss = css, body = formatted, header_script = doc.header_script,
                           source = wsource, wtime = wtime, wversion = wversion,
+                          references = references,
                           [Pair(Symbol(k), v) for (k,v) in doc.header]...)
 end
 

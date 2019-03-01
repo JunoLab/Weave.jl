@@ -1,4 +1,3 @@
-#module Markdown2HTML
 # Markdown to HTML writer, Modified from Julia Base.Markdown html writer
 using Markdown: MD, Header, Code, Paragraph, BlockQuote, Footnote,
       Admonition, List, HorizontalRule, Bold, Italic, Image, Link, LineBreak,
@@ -230,10 +229,21 @@ function htmlinline(io::IO, comment::Comment)
     write(io, "<!-- $(comment.text) -->")
 end
 
+function htmlinline(io::IO, citations::Citations)
+    withtag(io, :span, :class => "citation") do
+        cites = []
+        for c in citations.content
+            if c.no == 0
+                push!(cites, "<span class=\"missing\">?</span>")
+            else
+                push!(cites, c.no)
+            end
+        end
+    write(io, string("[", join(cites, ","), "]"))
+    end
+end
+
 htmlinline(io::IO, x) = tohtml(io, x)
 
 # API
-
 html(md) = sprint(html, md)
-
-#end

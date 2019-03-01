@@ -100,3 +100,38 @@ Multiple lines
 
 @test WeaveMarkdown.html(md.content[2]) == "<p class=\"math\">\\[\nx = 2\n\\]</p>"
 @test WeaveMarkdown.html(md.content[4]) == "\n<!-- \nMultiple lines\n  -->\n"
+
+##
+using Revise
+import Weave: WeaveMarkdown
+import Mustache
+
+md = """
+
+[@Bezanson2017]
+
+citing [@pastell_filtering_2018; @someref]
+
+cite [@Bezanson2017] again
+
+"""
+
+WeaveMarkdown.init_parser(joinpath(@__DIR__, "documents/bibtex/testdocs.bib"))
+m = WeaveMarkdown.parse(md);
+m.content
+# Render references
+tpl = Mustache.template_from_file(joinpath(@__DIR__, "../templates/html_citations.tpl"))
+ref = WeaveMarkdown.CITATIONS[:references]["Bezanson2017"]
+ref[ref["type"]] = "true"
+ref["author"] = replace(ref["author"], r"\sand\s"i => ", ")
+for key in keys(ref)
+    ref[key] = replace(ref[key], r"\{|\}" => "")
+    ref[key] = replace(ref[key], "--" => "&mdash;")
+end
+
+Mustache.render(tpl, ref)
+r2 = Dict("author" => "Matti Pastell", "title" => "Some paper", "article" => "true")
+Mustache.render(tpl, r2)
+
+WeaveMarkdown.list_references(MIME"text/html"())
+isempty(WeaveMarkdown.CITATIONS[:references])

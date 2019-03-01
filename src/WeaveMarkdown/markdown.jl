@@ -2,9 +2,22 @@
 module WeaveMarkdown
 using Markdown
 import Markdown: @trigger, @breaking, Code, MD, withstream, startswith, LaTeX
+using BibTeX
 
 mutable struct Comment
     text::String
+end
+
+mutable struct Citation
+    key::String
+    no::Int64
+    bib::Dict
+end
+
+Citation(key, no) = Citation(key, no, Dict())
+
+mutable struct Citations
+    content::Array{Citation}
 end
 
 @breaking true ->
@@ -61,8 +74,39 @@ function comment(stream::IO, md::MD)
     end
 end
 
+@trigger '[' ->
+function citation(stream::IO, md::MD)
+    withstream(stream) do
+        Markdown.startswith(stream, "[@") || return
+        text = Markdown.readuntil(stream, ']', match = '[')
+        text ≡ nothing && return
+        citations = strip.(split(text, ";"))
+        cites = Citation[]
+        for c in citations
+            c = replace(c, r"^@" => "")
+            #Check for matcthing bixtex key
+            if haskey(CITATIONS[:bibtex], c)
+                bib = CITATIONS[:bibtex][c]
+                # Check for repeated citations
+                if haskey(CITATIONS[:refnumbers], c)
+                    no = CITATIONS[:refnumbers][c]
+                else
+                    no = CITATIONS[:no]
+                    CITATIONS[:refnumbers][c] = no
+                    CITATIONS[:no] += 1
+                end
+                push!(cites, Citation(c, no, bib))
+                CITATIONS[:references][c] = bib
+            else
+                push!(cites, Citation(c, 0))
+            end
+        end
+        return Citations(cites)
+    end
+end
+
 # Create own flavor and copy all the features from julia flavor
-Markdown.@flavor weavemd [dollarmath, comment, topcomment]
+Markdown.@flavor weavemd [dollarmath, comment, topcomment, citation]
 weavemd.breaking = [weavemd.breaking; Markdown.julia.breaking]
 weavemd.regular = [weavemd.regular; Markdown.julia.regular]
 for key in keys(Markdown.julia.inner)
@@ -73,6 +117,34 @@ for key in keys(Markdown.julia.inner)
     end
 end
 
+const CITATIONS = Dict{Symbol, Any}(
+    :no => 1,
+    :bibtex => Dict(),
+    :references => Dict(),
+    :refnumbers => Dict()
+    )
+
+#Init dictionary for parsing citations
+function init_parser(bibfile)
+    CITATIONS[:no] = 1
+    header, refs = parse_bibtex(read(bibfile, String))
+    CITATIONS[:bibtex] = refs
+    CITATIONS[:references] = Dict()
+    CITATIONS[:refnumbers] = Dict()
+end
+
+function reset_parser()
+    CITATIONS[:no] = 1
+    CITATIONS[:references] = Dict()
+    CITATIONS[:bibtex] = Dict()
+    CITATIONS[:refnumbers] = Dict()
+end
+
+function parse(text)
+    Markdown.parse(text, flavor = weavemd);
+end
+
 include("html.jl")
 include("latex.jl")
+include("bibliography.jl")
 end
