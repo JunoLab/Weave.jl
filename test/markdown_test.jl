@@ -104,6 +104,7 @@ Multiple lines
 ##
 using Revise
 import Weave: WeaveMarkdown
+import Mustache
 
 md = """
 
@@ -115,5 +116,18 @@ cite [@Bezanson2017] again
 
 """
 
-m = WeaveMarkdown.parse_markdown(md, "test/documents/bibtex/testdocs.bib");
+m = WeaveMarkdown.parse_markdown(md, joinpath(@__DIR__, "documents/bibtex/testdocs.bib"));
 m
+# Render references
+tpl = Mustache.template_from_file(joinpath(@__DIR__, "../templates/html_citations.tpl"))
+ref = WeaveMarkdown.CITATIONS[:references]["Bezanson2017"]
+ref[ref["type"]] = "true"
+ref["author"] = replace(ref["author"], r"\sand\s"i => ", ")
+for key in keys(ref)
+    ref[key] = replace(ref[key], r"\{|\}" => "")
+    ref[key] = replace(ref[key], "--" => "&mdash;")
+end
+
+Mustache.render(tpl, ref)
+r2 = Dict("author" => "Matti Pastell", "title" => "Some paper", "article" => "true")
+Mustache.render(tpl, r2)
