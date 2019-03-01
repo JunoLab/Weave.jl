@@ -123,16 +123,18 @@ for key in keys(Markdown.julia.inner)
     end
 end
 
-function parse_markdown(text, bibfile)
+#Init dictionary for parsing citations
+function init_parser(bibfile)
     CITATIONS[:no] = 1
     header, refs = parse_bibtex(read(bibfile, String))
     CITATIONS[:bibtex] = refs
     CITATIONS[:references] = Dict()
     CITATIONS[:refnumbers] = Dict()
-    m = Markdown.parse(text, flavor = weavemd);
-    m.content
 end
 
+function parse(text)
+    Markdown.parse(text, flavor = weavemd);
+end
 
 include("html.jl")
 include("latex.jl")

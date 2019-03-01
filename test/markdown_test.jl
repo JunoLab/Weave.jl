@@ -116,8 +116,9 @@ cite [@Bezanson2017] again
 
 """
 
-m = WeaveMarkdown.parse_markdown(md, joinpath(@__DIR__, "documents/bibtex/testdocs.bib"));
-m
+WeaveMarkdown.init_parser(joinpath(@__DIR__, "documents/bibtex/testdocs.bib"))
+m = WeaveMarkdown.parse(md);
+m.content
 # Render references
 tpl = Mustache.template_from_file(joinpath(@__DIR__, "../templates/html_citations.tpl"))
 ref = WeaveMarkdown.CITATIONS[:references]["Bezanson2017"]

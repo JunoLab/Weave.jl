@@ -103,6 +103,10 @@ function weave(source ; doctype = :auto,
     css != nothing && (doc.css = css)
     template != nothing && (doc.template = template)
 
+    if haskey(doc.header, "bibliography")
+        WeaveMarkdown.init_parser(joinpath(dirname(source), doc.header["bibliography"]))
+    end
+
     try
       doc = run(doc, doctype = doctype,
               mod = mod,
