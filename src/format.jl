@@ -97,6 +97,15 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2tex)
   wversion = ""
   wtime =  string(Date(now()))
 
+  references = ""
+  if !isempty(WeaveMarkdown.CITATIONS[:references])
+      bibfile = splitext(joinpath(dirname(doc.source), doc.header["bibliography"]))[1]
+      references = """
+      \\section*{References}
+      \\bibliographystyle{unsrt}
+      \\bibliography{$bibfile}
+      """
+  end
 
   if isempty(doc.template)
     template = Mustache.template_from_file(joinpath(dirname(@__FILE__), "../templates/julia_tex.tpl"))
@@ -105,7 +114,7 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2tex)
   end
 
   return Mustache.render(template; body = formatted,
-    highlight = highlight,
+    highlight = highlight, references = references,
     [Pair(Symbol(k), v) for (k,v) in doc.header]...)
 end
 

@@ -9,12 +9,20 @@ function latex(io::IO, tex::Markdown.LaTeX)
 end
 
 #Remove comments that can occur inside a line
-function latexinline(io, comment::WeaveMarkdown.Comment)
+function latexinline(io, comment::Comment)
     write(io, "")
 end
 
-function latex(io::IO, comment::WeaveMarkdown.Comment)
+function latex(io::IO, comment::Comment)
     for line in split(comment.text, r"\r\n|\n")
         write(io, "% $line\n")
     end
+end
+
+function latexinline(io, citations::Citations)
+    cites = []
+    for c in citations.content
+        push!(cites, c.key)
+    end
+    write(io, string("\\cite{", join(cites, ", "), "}"))
 end

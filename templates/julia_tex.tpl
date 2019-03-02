@@ -39,4 +39,6 @@
 
 {{{ :body }}}
 
+{{{ :references }}}
+
 \end{document}
