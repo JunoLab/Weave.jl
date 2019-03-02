@@ -1,6 +1,6 @@
 name = "Weave"
 uuid = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
-version="0.7.2"
+version="0.8.0"
 
 [deps]
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
