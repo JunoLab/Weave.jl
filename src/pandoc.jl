@@ -128,9 +128,9 @@ function run_latex(doc::WeaveDoc, outname, latex_cmd = "xelatex")
   catch e
     @info(e)
     @warn("Error converting document to pdf. Try running with md2tex format and using latex manually")
-    cd(old_wd)
     rm(xname)
     rm(textmp, recursive=true)
+    cd(old_wd)
     return false
   end
 end

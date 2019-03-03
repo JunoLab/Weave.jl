@@ -135,7 +135,7 @@ function weave(source ; doctype = :auto,
           rm(mdname)
       elseif doc.doctype == "md2pdf"
           success = run_latex(doc, outname, latex_cmd)
-          success && rm(doc.fig_path, force = true, recursive = true)
+          rm(doc.fig_path, force = true, recursive = true)
           success || return
           outname = get_outname(out_path, doc, ext = "pdf")
       end
