@@ -5,6 +5,7 @@
 \usepackage{amssymb,amsmath}
 \usepackage{bm}
 \usepackage{graphicx}
+\usepackage{natbib}
 \usepackage{microtype}
 \usepackage{hyperref}
 \setlength{\parindent}{0pt}

@@ -24,5 +24,5 @@ function latexinline(io, citations::Citations)
     for c in citations.content
         push!(cites, c.key)
     end
-    write(io, string("\\cite{", join(cites, ", "), "}"))
+    write(io, string("\\citep{", join(cites, ", "), "}"))
 end

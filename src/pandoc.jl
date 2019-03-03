@@ -1,4 +1,4 @@
-
+import .WeaveMarkdown
 
 """
 `pandoc2html(formatted::AbstractString, doc::WeaveDoc)`
@@ -108,9 +108,17 @@ function run_latex(doc::WeaveDoc, outname, latex_cmd = "xelatex")
   old_wd = pwd()
   cd(doc.cwd)
   xname = basename(outname)
+  bibname = splitext(xname)[1]
   @info("Weaved code to $outname. Running $latex_cmd")
   textmp = mktempdir(".")
   try
+    out = read(`$latex_cmd -shell-escape $xname -aux-directory $textmp -include-directory $(doc.cwd)`, String)
+    if !isempty(WeaveMarkdown.CITATIONS[:references])
+       cd(textmp)
+       out = read(`bibtex $bibname`, String)
+       cd("..")
+       out = read(`$latex_cmd -shell-escape $xname -aux-directory $textmp -include-directory $(doc.cwd)`, String)
+    end
     out = read(`$latex_cmd -shell-escape $xname -aux-directory $textmp -include-directory $(doc.cwd)`, String)
     out = read(`$latex_cmd -shell-escape $xname -aux-directory $textmp -include-directory $(doc.cwd)`, String)
     rm(xname)
@@ -118,9 +126,11 @@ function run_latex(doc::WeaveDoc, outname, latex_cmd = "xelatex")
     cd(old_wd)
     return true
   catch e
-    @warn("Error converting document to pdf. Try running latex manually")
+    @info(e)
+    @warn("Error converting document to pdf. Try running with md2tex format and using latex manually")
     cd(old_wd)
-    rm(textmp)
+    rm(xname)
+    rm(textmp, recursive=true)
     return false
   end
 end

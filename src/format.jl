@@ -99,9 +99,9 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2tex)
 
   references = ""
   if !isempty(WeaveMarkdown.CITATIONS[:references])
-      bibfile = splitext(joinpath(dirname(doc.source), doc.header["bibliography"]))[1]
+      bibfile = splitext(abspath(joinpath(dirname(doc.source), doc.header["bibliography"])))[1]
+      bibfile = replace(bibfile, "\\" => "/")
       references = """
-      \\section*{References}
       \\bibliographystyle{unsrt}
       \\bibliography{$bibfile}
       """

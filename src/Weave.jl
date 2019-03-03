@@ -122,8 +122,6 @@ function weave(source ; doctype = :auto,
           write(io, formatted)
       end
 
-      WeaveMarkdown.reset_parser()
-
       #Special for that need external programs
       if doc.doctype == "pandoc2html"
           mdname = outname
@@ -148,6 +146,7 @@ function weave(source ; doctype = :auto,
     #    @warn("Something went wrong during weaving")
     #    println(e)
     finally
+        WeaveMarkdown.reset_parser()
         doctype == :auto && (doctype = detect_doctype(doc.source))
         if occursin("pandoc2pdf", doctype) && cache == :off
             rm(doc.fig_path, force = true, recursive = true)

@@ -7,7 +7,6 @@ function list_references(m::MIME"text/html")
         refs[CITATIONS[:refnumbers][key]] = key
     end
     io = IOBuffer()
-    write(io, "<h3>References</h3>")
     write(io, "<ol>")
     for i in 1:length(refs)
         ref = CITATIONS[:references][refs[i]]
