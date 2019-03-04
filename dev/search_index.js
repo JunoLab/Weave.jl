@@ -13,7 +13,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Weave.jl - Scientific Reports Using Julia",
     "title": "Weave.jl - Scientific Reports Using Julia",
     "category": "section",
-    "text": "This is the documentation of Weave.jl. Weave is a scientific report generator/literate programming tool for Julia. It resembles Pweave, Knitr, rmarkdown and Sweave.Current featuresNoweb, markdown or script syntax for input documents.\nExecute code as terminal or \"script\" chunks.\nCapture Plots (or Gadfly and PyPlot figures on 0.6).\nSupports LaTex, Pandoc, Github markdown, MultiMarkdown, Asciidoc and reStructuredText output\nPublish markdown directly to html and pdf using julia or Pandoc markdown.\nSimple caching of results\nConvert to and from IJulia notebooks(Image: Weave code and output)"
+    "text": "This is the documentation of Weave.jl. Weave is a scientific report generator/literate programming tool for Julia. It resembles Pweave, Knitr, rmarkdown and Sweave.Current featuresMarkdown, script of Noweb syntax for input documents.\nPublish markdown directly to html and pdf using Julia or Pandoc markdown.\nExecute code as terminal or \"script\" chunks.\nCapture Plots.jl or  Gadfly.jl figures\nSupports LaTex, Pandoc, Github markdown, MultiMarkdown, Asciidoc and reStructuredText output\nSimple caching of results\nConvert to and from IJulia notebooks(Image: Weave code and output)"
 },
 
 {
@@ -53,7 +53,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Using Weave",
     "title": "Using Weave",
     "category": "section",
-    "text": "You can write your documentation and code in input document using Noweb, Markdown or script syntax and use weave function to execute to document to capture results and figures."
+    "text": "You can write your documentation and code in input document using Markdown, Noweb or script syntax and use weave function to execute to document to capture results and figures."
 },
 
 {
@@ -97,9 +97,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage/#Supported-formats-1",
+    "location": "usage/#Supported-output-formats-1",
     "page": "Using Weave",
-    "title": "Supported formats",
+    "title": "Supported output formats",
     "category": "section",
     "text": "Weave sets the output format based on the file extension, but you can also set it using doctype option. The rules for detecting the format are:ext == \".jl\" && return \"md2html\"\ncontains(ext, \".md\") && return \"md2html\"\ncontains(ext, \".rst\") && return \"rst\"\ncontains(ext, \".tex\") && return \"texminted\"\ncontains(ext, \".txt\") && return \"asciidoc\"\nreturn \"pandoc\"You can get a list of supported output formats:using Weave # hide\nlist_out_formats()list_out_formats()"
 },
@@ -109,23 +109,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Using Weave",
     "title": "Document syntax",
     "category": "section",
-    "text": "Weave uses noweb, markdown or script syntax for defining the code chunks and documentation chunks. You can also weave Jupyter notebooks. The format is detected based on the file extension, but you can also set it manually using the informat parameter.The rules for autodetection are:ext == \".jl\" && return \"script\"\next == \".jmd\" && return \"markdown\"\next == \".ipynb\" && return \"notebook\"\nreturn \"noweb\""
-},
-
-{
-    "location": "usage/#Noweb-format-1",
-    "page": "Using Weave",
-    "title": "Noweb format",
-    "category": "section",
-    "text": ""
-},
-
-{
-    "location": "usage/#Code-chunks-1",
-    "page": "Using Weave",
-    "title": "Code chunks",
-    "category": "section",
-    "text": "start with a line marked with <<>>= or <<options>>= and end with line marked with @. The code between the start and end markers is executed and the output is captured to the output document. See chunk options."
+    "text": "Weave uses markdown, Noweb or script syntax for defining the code chunks and documentation chunks. You can also weave Jupyter notebooks. The format is detected based on the file extension, but you can also set it manually using the informat parameter.The rules for autodetection are:ext == \".jl\" && return \"script\"\next == \".jmd\" && return \"markdown\"\next == \".ipynb\" && return \"notebook\"\nreturn \"noweb\""
 },
 
 {
@@ -133,7 +117,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Using Weave",
     "title": "Documentation chunks",
     "category": "section",
-    "text": "Are the rest of the document (between @ and <<>>= lines and the first chunk be default) and can be written with several different markup languages.Sample document"
+    "text": "In Markdown and Noweb input formats documentation chunks are the parts that aren\'t inside code delimiters. Documentation chunks can be written with several different markup languages."
+},
+
+{
+    "location": "usage/#Code-chunks-1",
+    "page": "Using Weave",
+    "title": "Code chunks",
+    "category": "section",
+    "text": ""
 },
 
 {
@@ -141,7 +133,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Using Weave",
     "title": "Markdown format",
     "category": "section",
-    "text": "Markdown code chunks are defined using fenced code blocks with options following on the same line. e.g. to hide code from output you can use:`julia; echo=falseSee sample document:"
+    "text": "Markdown code chunks are defined using fenced code blocks with options following on the same line. e.g. to hide code from output you can use:`julia; echo=falseSample document"
+},
+
+{
+    "location": "usage/#Noweb-format-1",
+    "page": "Using Weave",
+    "title": "Noweb format",
+    "category": "section",
+    "text": "Code chunks start with a line marked with <<>>= or <<options>>= and end with line marked with @. The code between the start and end markers is executed and the output is captured to the output document. See chunk options."
 },
 
 {
@@ -205,7 +205,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Publishing to html and pdf",
     "title": "Publishing to html and pdf",
     "category": "section",
-    "text": "You can also publish any supported input format using markdown for doc chunks to html and pdf documents. Producing pdf output requires that you have pdflatex installed and in your path. The markdown variant is Julia markdown.You can use a YAML header in the beginning of the input document delimited with \"–-\" to set the document title, author and date e.g.---\ntitle : Weave example\nauthor : Matti Pastell\ndate: 15th December 2016\n---Here is a a sample document and output:FIRdesignplots.jl, FIRdesignplots.html , FIRdesignplots.pdf.weave(\"FIR_design_plots.jl\")\nweave(\"FIR_design_plots.jl\", docformat = \"md2pdf\")Note: docformats md2pdf and md2html use Julia markdown and pandoc2pdf and pandoc2html use Pandoc."
+    "text": "You can also publish any supported input format using markdown for doc chunks to html and pdf documents. Producing pdf output requires that you have pdflatex installed and in your path.You can use a YAML header in the beginning of the input document delimited with \"–-\" to set the document title, author and date e.g.---\ntitle : Weave example\nauthor : Matti Pastell\ndate: 15th December 2016\n---Here is a a sample document and output:FIRdesignplots.jl, FIRdesignplots.html , FIRdesignplots.pdf.weave(\"FIR_design_plots.jl\")\nweave(\"FIR_design_plots.jl\", docformat = \"md2pdf\")Note: docformats md2pdf and md2html use Julia markdown and pandoc2pdf and pandoc2html use Pandoc."
 },
 
 {
@@ -214,6 +214,14 @@ var documenterSearchIndex = {"docs": [
     "title": "Templates",
     "category": "section",
     "text": "You can use a custom template with md2pdf and md2html formats with template argument (e.g) weave(\"FIR_design_plots.jl\", template = \"custom.tpl\"). You can use the existing templates as starting point.For HTML: julia_html.tpl and LaTex: julia_tex.tplTemplates are rendered using Mustache.jl."
+},
+
+{
+    "location": "publish/#Supported-Markdown-syntax-1",
+    "page": "Publishing to html and pdf",
+    "title": "Supported Markdown syntax",
+    "category": "section",
+    "text": "The markdown variant used by Weave is Julia markdown. In addition Weave supports few additional Markdown features:CommentsYou can add comments using html syntax: <!-- -->Multiline equationsYou can add multiline equations using:$$\nx^2 = x*x\n$$"
 },
 
 {
@@ -229,31 +237,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Chunk options",
     "title": "Chunk options",
     "category": "section",
-    "text": "I\'ve mostly followed Knitr\'s naming for chunk options, but not all options are implemented.Options are separated using \";\" and need to be valid Julia expressions. Example: A code chunk that saves and displays a 12 cm wide image and hides the source code:<<out_width=\"12cm\"; echo=false >>=\nusing Gadfly\nx = linspace(0, 2π, 200)\nplot(x=x, y = sin(x), Geom.line)\n@Weave currently supports the following chunk options with the following defaults:"
-},
-
-{
-    "location": "chunk_options/#Options-for-code-1",
-    "page": "Chunk options",
-    "title": "Options for code",
-    "category": "section",
-    "text": "echo = true. Echo the code in the output document. If false the source code will be hidden.\nresults = \"markup\". The output format of the printed results. \"markup\" for literal block, \"hidden\" for hidden results or anything else for raw output (I tend to use ‘tex’ for Latex and ‘rst’ for rest. Raw output is useful if you wan’t to e.g. create tables from code chunks.\neval = true. Evaluate the code chunk. If false the chunk won’t be executed.\nterm=false. If true the output emulates a REPL session. Otherwise only stdout and figures will be included in output.\nlabel. Chunk label, will be used for figure labels in Latex as fig:label\nwrap = true. Wrap long lines from output.\nline_width = 75. Line width for wrapped lines.\ncache = false. Cache results, depends on cache parameter on weave function.\nhold = false. Hold all results until the end of the chunk.\ntangle = true. Set tangle to false to exclude chunk from tangled code."
-},
-
-{
-    "location": "chunk_options/#Options-for-figures-1",
-    "page": "Chunk options",
-    "title": "Options for figures",
-    "category": "section",
-    "text": "fig_width. Figure width passed to plotting library e.g. 800\nfig_height Figure height passed to plotting library\nout_width. Width of saved figure in output markup e.g. \"50%\", \"12cm\", \\\\0.5linewidth\nout_height. Height of saved figure in output markup\ndpi=96. Resolution of saved figures.\nfig_cap. Figure caption.\nlabel. Chunk label, will be used for figure labels in Latex as fig:label\nfig_ext. File extension (format) of saved figures.\nfig_pos=\"htpb\". Figure position in Latex.  \nfig_env=\"figure\". Figure environment in Latex."
-},
-
-{
-    "location": "chunk_options/#Set-default-chunk-options-1",
-    "page": "Chunk options",
-    "title": "Set default chunk options",
-    "category": "section",
-    "text": "You can set or change the default chunk options for a document either before running weave or inside the weaved document. You can e.g. use a hidden chunk in the beginning of the source document to set the options:<<echo = false>>=\nimport Weave\nWeave.set_chunk_defaults(Dict{Symbol, Any}(\n      :out_width => \"\\\\0.5linewidth\",\n      :results => \"tex\"\n      ))\n@set_chunk_defaults(opts)\nget_chunk_defaults()\nrestore_chunk_defaults()"
+    "text": "I\'ve mostly followed Knitr\'s naming for chunk options, but not all options are implemented.Options are separated using \";\" and need to be valid Julia expressions. Example: markdown code chunk that saves and displays a 12 cm wide image and hides the source code:      using Gadfly\n      x = linspace(0, 2π, 200)\n      plot(x=x, y = sin(x), Geom.line)\n      ```\n\n\nWeave currently supports the following chunk options with the following defaults:\n\n## Options for code\n\n* `echo = true`. Echo the code in the output document. If `false` the source code will be hidden.\n* `results = \"markup\"`. The output format of the printed results. \"markup\" for literal block, \"hidden\" for hidden results or anything else for raw output (I tend to use ‘tex’ for Latex and ‘rst’ for rest. Raw output is useful if you wan’t to e.g. create tables from code chunks.\n* `eval = true`. Evaluate the code chunk. If false the chunk won’t be executed.\n* `term=false`. If true the output emulates a REPL session. Otherwise only stdout and figures will be included in output.\n* `label`. Chunk label, will be used for figure labels in Latex as fig:label\n* `wrap = true`. Wrap long lines from output.\n* `line_width = 75`. Line width for wrapped lines.\n* `cache = false`. Cache results, depends on `cache` parameter on `weave` function.\n* `hold = false`. Hold all results until the end of the chunk.\n* `tangle = true`. Set tangle to false to exclude chunk from tangled code.\n\n## Options for figures\n\n* `fig_width`. Figure width passed to plotting library e.g. `800`\n* `fig_height` Figure height passed to plotting library\n* `out_width`. Width of saved figure in output markup e.g. \"50%\", \"12cm\", `\\\\0.5linewidth`\n* `out_height`. Height of saved figure in output markup\n* `dpi`=96. Resolution of saved figures.\n* `fig_cap`. Figure caption.\n* `label`. Chunk label, will be used for figure labels in Latex as fig:label\n* `fig_ext`. File extension (format) of saved figures.\n* `fig_pos=\"htpb\"`. Figure position in Latex.  \n* `fig_env=\"figure\"`. Figure environment in Latex.\n\n\n## Set default chunk options\n\nYou can set or change the default chunk options for a document either before\nrunning weave or inside the weaved document. You can e.g. use a hidden chunk\nin the beginning of the source document to set the options:\n\n      ```julia; echo = false>>=\n      import Weave\n      Weave.set_chunk_defaults(Dict{Symbol, Any}(\n            :out_width => \"\\\\0.5linewidth\",\n            :results => \"tex\"\n            ))\n      ```\n\n@docs setchunkdefaults(opts) getchunkdefaults() restorechunkdefaults() ```"
 },
 
 {
