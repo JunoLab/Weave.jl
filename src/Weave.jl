@@ -137,9 +137,11 @@ function weave(source ; doctype = :auto,
 
       doc.cwd == pwd() && (outname = basename(outname))
       @info("Report weaved to $outname")
-    #    catch err
-    #    @warn("Something went wrong during weaving")
-    #    println(e)
+      return abspath(outname)
+    catch err
+        @warn("Something went wrong during weaving")
+        @error(sprint(showerror, err))
+        return nothing
     finally
         doctype == :auto && (doctype = detect_doctype(doc.source))
         if occursin("pandoc2pdf", doctype) && cache == :off
