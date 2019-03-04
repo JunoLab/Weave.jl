@@ -6,3 +6,8 @@ makedocs( modules = Weave, sitename="Weave.jl",
     "function_index.md"]
 )
 include("make_examples.jl")
+
+deploydocs(
+    repo = "github.com/mpastell/Weave.jl.git",
+    target = "build"
+)
