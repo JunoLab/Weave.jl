@@ -1,6 +1,6 @@
 # Using Weave
 
-You can write your documentation and code in input document using Noweb, Markdown or script
+You can write your documentation and code in input document using Markdown, Noweb or script
 syntax and use `weave` function to execute to document to capture results and figures.
 
 ## Weave
@@ -27,7 +27,7 @@ Tangling extracts the code from document:
 tangle(source)
 ```
 
-## Supported formats
+## Supported output formats
 
 Weave sets the output format based on the file extension, but you can also set
 it using `doctype` option. The rules for detecting the format are:
@@ -54,7 +54,7 @@ list_out_formats()
 
 ## Document syntax
 
-Weave uses noweb, markdown or script syntax for defining the code chunks and
+Weave uses markdown, Noweb or script syntax for defining the code chunks and
 documentation chunks. You can also weave Jupyter notebooks. The format is detected based on the file extension, but you can also set it manually using the `informat` parameter.
 
 The rules for autodetection are:
@@ -66,26 +66,27 @@ ext == ".ipynb" && return "notebook"
 return "noweb"
 ```
 
-## Noweb format
+## Documentation chunks
 
-### Code chunks
-start with a line marked with `<<>>=` or `<<options>>=` and end with line marked with `@`. The code between the start and end markers is executed and the output is captured to the output document. See [chunk options](../chunk_options/).
+In Markdown and Noweb input formats documentation chunks are the parts that aren't inside code delimiters. Documentation chunks can be written with several different markup languages.
 
-### Documentation chunks
+## Code chunks
 
-Are the rest of the document (between `@` and `<<>>=` lines and the first chunk be default) and can be written with several different markup languages.
-
-[Sample document]( https://github.com/mpastell/Weave.jl/blob/master/examples/julia_sample.mdw)
-
-## Markdown format
+### Markdown format
 
 Markdown code chunks are defined using fenced code blocks with options following on the same line. e.g. to hide code from output you can use:
 
 ` ```julia; echo=false`
 
-[See sample document:](https://github.com/mpastell/Weave.jl/blob/master/examples/gadfly_md_sample.jmd)
+[Sample document]( https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jmd)
 
-## Script format
+
+### Noweb format
+
+Code chunks start with a line marked with `<<>>=` or `<<options>>=` and end with line marked with `@`. The code between the start and end markers is executed and the output is captured to the output document. See [chunk options](../chunk_options/).
+
+
+### Script format
 
 Weave also support script input format with a markup in comments.
 These scripts can be executed normally using Julia or published with

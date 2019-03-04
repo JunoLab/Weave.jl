@@ -8,11 +8,11 @@ and Sweave.
 
 **Current features**
 
-* Noweb, markdown or script syntax for input documents.
+* Markdown, script of Noweb syntax for input documents.
+* Publish markdown directly to html and pdf using Julia or Pandoc markdown.
 * Execute code as terminal or "script" chunks.
-* Capture Plots *(or Gadfly and PyPlot figures on 0.6)*.
+* Capture Plots.jl or  Gadfly.jl figures
 * Supports LaTex, Pandoc, Github markdown, MultiMarkdown, Asciidoc and reStructuredText output
-* Publish markdown directly to html and pdf using julia or Pandoc markdown.
 * Simple caching of results
 * Convert to and from IJulia notebooks
 
