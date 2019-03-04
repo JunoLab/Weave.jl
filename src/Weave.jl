@@ -98,6 +98,15 @@ function weave(source ; doctype = :auto,
         latex_cmd = "xelatex")
 
     doc = read_doc(source, informat)
+
+    # Read args from document header, overrides command line args
+    if haskey(doc.header, "options")
+        (doctype, informat, out_path, args, mod, fig_path, fig_ext,
+        cache_path, cache, throw_errors, template, highlight_theme, css,
+        pandoc_options, latex_cmd) = parse_header_options(doc)
+    end
+
+
     highlight_theme != nothing && (doc.highlight_theme = highlight_theme)
     #theme != nothing && (doc.theme = theme) #Reserved for themes
     css != nothing && (doc.css = css)
@@ -213,8 +222,8 @@ const postexecute_hooks = Function[]
 push_postexecute_hook(f::Function) = push!(postexecute_hooks, f)
 pop_postexecute_hook(f::Function) = splice!(postexecute_hooks, findfirst(postexecute_hooks, f))
 
-include("config.jl")
 include("chunks.jl")
+include("config.jl")
 include("WeaveMarkdown/markdown.jl")
 include("display_methods.jl")
 include("readers.jl")

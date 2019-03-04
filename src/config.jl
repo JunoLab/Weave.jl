@@ -85,3 +85,35 @@ function restore_chunk_defaults()
   merge!(rcParams[:chunk_defaults], docParams)
   return nothing
 end
+
+
+getvalue(d::Dict, key , default) = haskey(d, key) ? d[key] : default
+
+"""
+`parse_header_options(doc::WeaveDoc)`
+
+Parse document options from document header
+"""
+function parse_header_options(doc::WeaveDoc)
+    args = getvalue(doc.header, "options", Dict())
+
+    doctype = getvalue(args, "doctype", :auto)
+    informat = getvalue(args, "informat", :auto)
+    out_path = getvalue(args, "out_path", "doc")
+    out_path == ":pwd" && (out_path = :pwd)
+    mod = Symbol(getvalue(args, "mod", :sandbox))
+    fig_path = getvalue(args, "fig_path", "figures")
+    fig_ext = getvalue(args, "fig_ext", nothing)
+    cache_path = getvalue(args, "cache_path", "cache")
+    cache = Symbol(getvalue(args, "cache", :off))
+    throw_errors = getvalue(args, "throw_errors", false)
+    template = getvalue(args, "template", nothing)
+    highlight_theme = getvalue(args, "highlight_theme", nothing)
+    css = getvalue(args, "css", nothing)
+    pandoc_options = getvalue(args, "pandoc_options", String[])
+    latex_cmd = getvalue(args, "latex_cmd", "xelatex")
+
+    return (doctype, informat, out_path, args, mod, fig_path, fig_ext,
+      cache_path, cache, throw_errors, template, highlight_theme, css,
+      pandoc_options, latex_cmd)
+end

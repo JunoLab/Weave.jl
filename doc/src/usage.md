@@ -120,6 +120,22 @@ added to output e.g. to include a Plots figure in markdown you can use:
 ![A plot](`j plot(1:10)`)
 ```
 
+## Setting document options in header
+
+You can use a YAML header in the beginning of the input document delimited with "---" to set the document title, author and date e.g. and default document options. Each of Weave command line arguments can be set in header using `options` field. Below is an example that sets document `out_path` and `doctype` using the header.
+
+
+```
+---
+title : Weave example
+author : Matti Pastell
+date: 15th December 2016
+options:
+  out_path : reports/example.md
+  doctype :  github
+---
+```
+
 ## Passing arguments to documents
 
 You can pass arguments as dictionary to the weaved document using the `args` argument
