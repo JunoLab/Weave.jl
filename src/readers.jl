@@ -48,8 +48,6 @@ function detect_informat(source::AbstractString)
   return "noweb"
 end
 
-
-
 """Read and parse input document"""
 function read_doc(source::AbstractString, format=:auto)
     format == :auto && (format = detect_informat(source))

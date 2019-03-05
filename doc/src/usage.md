@@ -137,6 +137,19 @@ options:
 ---
 ```
 
+You can also set format specific options. Here is how to set different out_path for `md2html` and `md2pdf` and set `fig_ext` for both:
+
+```
+---
+options:
+    md2html:
+        out_path : html
+    md2pdf:
+        out_path : pdf
+    fig_ext : .png
+---
+```
+
 ## Passing arguments to documents
 
 You can pass arguments as dictionary to the weaved document using the `args` argument

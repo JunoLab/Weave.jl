@@ -86,6 +86,21 @@ function restore_chunk_defaults()
   return nothing
 end
 
+"""Combine format specific and common options from document header"""
+function combine_args(args, doctype)
+    common = Dict()
+    specific = Dict()
+    for key in keys(args)
+        if key ∈ keys(Weave.formats)
+            specific[key] = args[key]
+        else
+            common[key] = args[key]
+        end
+    end
+    @info specific
+    haskey(specific, doctype) && merge!(common, specific[doctype])
+    common
+end
 
 getvalue(d::Dict, key , default) = haskey(d, key) ? d[key] : default
 
@@ -96,10 +111,10 @@ Parse document options from document header
 """
 function parse_header_options(doc::WeaveDoc)
     args = getvalue(doc.header, "options", Dict())
-
-    doctype = getvalue(args, "doctype", :auto)
+    doctype = getvalue(args, "doctype", doc.doctype)
+    args = combine_args(args, doctype)
     informat = getvalue(args, "informat", :auto)
-    out_path = getvalue(args, "out_path", "doc")
+    out_path = getvalue(args, "out_path", :doc)
     out_path == ":pwd" && (out_path = :pwd)
     mod = Symbol(getvalue(args, "mod", :sandbox))
     fig_path = getvalue(args, "fig_path", "figures")

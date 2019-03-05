@@ -98,6 +98,8 @@ function weave(source ; doctype = :auto,
         latex_cmd = "xelatex")
 
     doc = read_doc(source, informat)
+    doctype == :auto && (doctype = detect_doctype(doc.source))
+    doc.doctype = doctype
 
     # Read args from document header, overrides command line args
     if haskey(doc.header, "options")
@@ -105,7 +107,6 @@ function weave(source ; doctype = :auto,
         cache_path, cache, throw_errors, template, highlight_theme, css,
         pandoc_options, latex_cmd) = parse_header_options(doc)
     end
-
 
     highlight_theme != nothing && (doc.highlight_theme = highlight_theme)
     #theme != nothing && (doc.theme = theme) #Reserved for themes
