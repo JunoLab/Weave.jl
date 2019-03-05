@@ -1,5 +1,4 @@
 using Documenter, Weave
-start_dir = pwd()
 
 
 makedocs( modules = Weave, sitename="Weave.jl",
@@ -8,9 +7,7 @@ makedocs( modules = Weave, sitename="Weave.jl",
     "function_index.md"]
 )
 
-cd(@__DIR__)
 include("make_examples.jl")
-cd(start_dir)
 
 deploydocs(
     repo = "github.com/mpastell/Weave.jl.git",
