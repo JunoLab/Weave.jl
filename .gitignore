@@ -22,6 +22,8 @@ test/**/chunk_options.jl
 doc/build
 doc/site
 stable/
+doc/Manifest.toml
+Manifest.toml
 
 tmp/
 .idea

@@ -38,7 +38,7 @@ function tangle(source ; out_path=:doc, informat=:auto)
     open(outname, "w") do io
     for chunk in doc.chunks
       if typeof(chunk) == CodeChunk
-          options = merge(rcParams[:chunk_defaults], chunk.options)
+          options = merge(doc.chunk_defaults, chunk.options)
           if options[:tangle]
             write(io, chunk.content*"\n")
           end
@@ -105,7 +105,7 @@ function weave(source ; doctype = :auto,
     if haskey(doc.header, "options")
         (doctype, informat, out_path, args, mod, fig_path, fig_ext,
         cache_path, cache, throw_errors, template, highlight_theme, css,
-        pandoc_options, latex_cmd) = parse_header_options(doc)
+        pandoc_options, latex_cmd) = header_args(doc)
     end
 
     highlight_theme != nothing && (doc.highlight_theme = highlight_theme)
@@ -148,13 +148,13 @@ function weave(source ; doctype = :auto,
       doc.cwd == pwd() && (outname = basename(outname))
       @info("Report weaved to $outname")
       return abspath(outname)
-    catch err
-        @warn("Something went wrong during weaving")
-        @error(sprint(showerror, err))
-        return nothing
+    #catch err
+    #    @warn("Something went wrong during weaving")
+    #    @error(sprint(showerror, err))
+    #    return nothing
     finally
         doctype == :auto && (doctype = detect_doctype(doc.source))
-        if occursin("pandoc2pdf", doctype) && cache == :off
+        if occursin("2pdf", doctype)
             rm(doc.fig_path, force = true, recursive = true)
         elseif occursin("2html", doctype)
             rm(doc.fig_path, force = true, recursive = true)

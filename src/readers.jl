@@ -56,6 +56,7 @@ function read_doc(source::AbstractString, format=:auto)
     parsed = parse_doc(document, format)
     header = parse_header(parsed[1])
     doc = WeaveDoc(source, parsed, header)
+    haskey(header, "options") && header_chunk_defaults!(doc)
     return doc
 end
 

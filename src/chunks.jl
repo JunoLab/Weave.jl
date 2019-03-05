@@ -17,11 +17,12 @@ mutable struct WeaveDoc
     css::AbstractString
     highlight_theme
     fig_path::AbstractString
+    chunk_defaults::Dict{Symbol,Any}
     function WeaveDoc(source, chunks, header)
         path, fname = splitdir(abspath(source))
         basename = splitext(fname)[1]
         new(source, basename, path, chunks, "", nothing, "", "", header,
-          "", "", Highlights.Themes.DefaultTheme, "")
+          "", "", Highlights.Themes.DefaultTheme, "", deepcopy(rcParams[:chunk_defaults]))
     end
 end
 

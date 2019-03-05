@@ -89,7 +89,6 @@ testcows = """
 🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄🐄"""
 
 wcows = Weave.wrapline(cows)
-println(wcows)
 
 @test wcows == testcows
 @test length(split(wcows, "\n")[1]) == 75

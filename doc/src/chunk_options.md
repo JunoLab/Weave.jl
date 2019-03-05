@@ -4,13 +4,7 @@ I've mostly followed [Knitr](http://yihui.name/knitr/options)'s naming for chunk
 
 Options are separated using ";" and need to be valid Julia expressions. Example: markdown code chunk that saves and displays a 12 cm wide image and hides the source code:
 
-
-      ```julia; out_width="12cm"; echo=false
-      using Gadfly
-      x = linspace(0, 2π, 200)
-      plot(x=x, y = sin(x), Geom.line)
-      ```
-
+`julia; out_width="12cm"; echo=false`
 
 Weave currently supports the following chunk options with the following defaults:
 
@@ -43,18 +37,16 @@ Weave currently supports the following chunk options with the following defaults
 
 ## Set default chunk options
 
-You can set or change the default chunk options for a document either before
-running weave or inside the weaved document. You can e.g. use a hidden chunk
-in the beginning of the source document to set the options:
+You can set the default chunk options (and `weave` arguments) for a document using the YAML header `options` field. e.g to set the default `out_width` of all figures you can use:
 
-      ```julia; echo = false>>=
-      import Weave
-      Weave.set_chunk_defaults(Dict{Symbol, Any}(
-            :out_width => "\\0.5linewidth",
-            :results => "tex"
-            ))
-      ```
+```yaml
+---
+options:
+      out_width : 50%
+---
+```
 
+You can also set or change the default chunk options for a document either before weave using the `set_chunk_defaults function`.
 
 ```@docs
 set_chunk_defaults(opts)

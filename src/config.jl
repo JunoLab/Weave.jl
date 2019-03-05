@@ -40,15 +40,6 @@ const defaultParams =
 #This one can be changed at runtime, initially a copy of defaults
 const rcParams = deepcopy(defaultParams)
 
-#Parameters set per document
-const docParams =Dict{Symbol,Any}(
-                                :fig_path=> nothing,
-                                :fig_ext => nothing,
-                            )
-
-
-
-
 """
 `set_chunk_defaults(opts::Dict{Symbol, Any})`
 
@@ -82,7 +73,6 @@ Restore Weave.jl default chunk options
 """
 function restore_chunk_defaults()
   rcParams[:chunk_defaults] = defaultParams[:chunk_defaults]
-  merge!(rcParams[:chunk_defaults], docParams)
   return nothing
 end
 
@@ -97,7 +87,6 @@ function combine_args(args, doctype)
             common[key] = args[key]
         end
     end
-    @info specific
     haskey(specific, doctype) && merge!(common, specific[doctype])
     common
 end
@@ -105,11 +94,11 @@ end
 getvalue(d::Dict, key , default) = haskey(d, key) ? d[key] : default
 
 """
-`parse_header_options(doc::WeaveDoc)`
+header_args(doc::WeaveDoc)`
 
-Parse document options from document header
+Get weave arguments from document header
 """
-function parse_header_options(doc::WeaveDoc)
+function header_args(doc::WeaveDoc)
     args = getvalue(doc.header, "options", Dict())
     doctype = getvalue(args, "doctype", doc.doctype)
     args = combine_args(args, doctype)
@@ -131,4 +120,17 @@ function parse_header_options(doc::WeaveDoc)
     return (doctype, informat, out_path, args, mod, fig_path, fig_ext,
       cache_path, cache, throw_errors, template, highlight_theme, css,
       pandoc_options, latex_cmd)
+end
+
+"""
+`header_chunk_defaults!(doc::WeaveDoc)`
+
+Get chunk defaults from header and update
+"""
+function header_chunk_defaults!(doc::WeaveDoc)
+    for key in keys(doc.chunk_defaults)
+        if haskey(doc.header["options"], String(key))
+             doc.chunk_defaults[key] = doc.header["options"][String(key)]
+        end
+    end
 end

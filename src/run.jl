@@ -47,7 +47,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto,
     Sys.iswindows() && (fig_path = replace(fig_path, "\\" => "/"))
 
     doc.fig_path = fig_path
-    set_rc_params(doc.format.formatdict, fig_path, fig_ext)
+    set_rc_params(doc, fig_path, fig_ext)
 
     #New sandbox for each document with args exposed
     if mod == :sandbox
@@ -82,7 +82,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto,
         chunk = doc.chunks[i]
 
         if isa(chunk, CodeChunk)
-            options = merge(rcParams[:chunk_defaults], chunk.options)
+            options = merge(doc.chunk_defaults, chunk.options)
             merge!(chunk.options, options)
         end
 
@@ -91,7 +91,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto,
         if cached != nothing && (cache == :all || restore)
             result_chunks = restore_chunk(chunk, cached)
         else
-            result_chunks = run_chunk(chunk, report, mod)
+            result_chunks = run_chunk(chunk, doc, report, mod)
         end
 
         executed = [executed; result_chunks]
@@ -125,7 +125,7 @@ function detect_doctype(source::AbstractString)
 end
 
 
-function run_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
+function run_chunk(chunk::CodeChunk, doc::WeaveDoc, report::Report, SandBox::Module)
     @info("Weaving chunk $(chunk.number) from line $(chunk.start_line)")
     result_chunks = eval_chunk(chunk, report, SandBox)
     occursin("2html", report.formatdict[:doctype]) && (result_chunks = embed_figures(result_chunks, report.cwd))
@@ -163,19 +163,19 @@ function img2base64(fig, cwd)
   end
 end
 
-function run_chunk(chunk::DocChunk, report::Report, SandBox::Module)
-    chunk.content =  [run_inline(c, report, SandBox) for c in chunk.content]
+function run_chunk(chunk::DocChunk, doc::WeaveDoc, report::Report, SandBox::Module)
+    chunk.content =  [run_inline(c, doc, report, SandBox) for c in chunk.content]
     return chunk
 end
 
-function run_inline(inline::InlineText, report::Report, SandBox::Module)
+function run_inline(inline::InlineText, doc::WeaveDoc, report::Report, SandBox::Module)
     return inline
 end
 
-function run_inline(inline::InlineCode, report::Report, SandBox::Module)
+function run_inline(inline::InlineCode, doc::WeaveDoc, report::Report, SandBox::Module)
     #Make a temporary CodeChunk for running code. Collect results and don't wrap
     chunk = CodeChunk(inline.content, 0, 0, "", Dict(:hold => true, :wrap => false))
-    options = merge(rcParams[:chunk_defaults], chunk.options)
+    options = merge(doc.chunk_defaults, chunk.options)
     merge!(chunk.options, options)
 
     chunks = eval_chunk(chunk, report, SandBox)
@@ -268,7 +268,6 @@ end
 
 
 function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
-
     if !chunk.options[:eval]
         chunk.output = ""
         chunk.options[:fig] = false
@@ -375,20 +374,16 @@ function get_outname(out_path::AbstractString, doc::WeaveDoc; ext = nothing)
     end
 end
 
-
-function set_rc_params(formatdict, fig_path, fig_ext)
+function set_rc_params(doc::WeaveDoc, fig_path, fig_ext)
+    formatdict = doc.format.formatdict
     if fig_ext == nothing
-        rcParams[:chunk_defaults][:fig_ext] = formatdict[:fig_ext]
-        docParams[:fig_ext] = formatdict[:fig_ext]
+        doc.chunk_defaults[:fig_ext] = formatdict[:fig_ext]
     else
-        rcParams[:chunk_defaults][:fig_ext] = fig_ext
-        docParams[:fig_ext] = fig_ext
+        doc.chunk_defaults[:fig_ext] = fig_ext
     end
-        rcParams[:chunk_defaults][:fig_path] = fig_path
-        docParams[:fig_path] = fig_path
+        doc.chunk_defaults[:fig_path] = fig_path
     return nothing
 end
-
 
 function collect_results(chunk::CodeChunk, fmt::ScriptResult)
     content = ""

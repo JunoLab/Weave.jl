@@ -21,3 +21,6 @@ args = header["options"]
                                             "out_path" => "md/")
 @test Weave.combine_args(args, "pandoc") == Dict("fig_ext" => ".png",
                                                 "out_path" => "reports")
+doc = Weave.read_doc(joinpath(@__DIR__, "documents", "header_test.jmd"))
+@test doc.chunk_defaults[:echo] == false
+@test doc.chunk_defaults[:out_width] == "30%"

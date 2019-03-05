@@ -1,0 +1,12 @@
+---
+options:
+      md2html :
+            out_path : html
+      echo : false
+      out_width : 30%
+---
+
+
+```julia
+repeat("🐐", 10)
+```
