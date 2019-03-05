@@ -1,0 +1,9 @@
+---
+options:
+      echo : false
+      out_width : 30%
+---
+
+```julia
+repeat("🐐", 10)
+```
