@@ -165,7 +165,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Using Weave",
     "title": "Setting document options in header",
     "category": "section",
-    "text": "You can use a YAML header in the beginning of the input document delimited with \"–-\" to set the document title, author and date e.g. and default document options. Each of Weave command line arguments can be set in header using options field. Below is an example that sets document out_path and doctype using the header.---\ntitle : Weave example\nauthor : Matti Pastell\ndate: 15th December 2016\noptions:\n  out_path : reports/example.md\n  doctype :  github\n---You can also set format specific options. Here is how to set different outpath for md2html and md2pdf and set `figext` for both:---\noptions:\n    md2html:\n        out_path : html\n    md2pdf:\n        out_path : pdf\n    fig_ext : .png\n---"
+    "text": "You can use a YAML header in the beginning of the input document delimited with \"–-\" to set the document title, author and date e.g. and default document options. Each of Weave command line arguments and chunk options can be set in header using options field. Below is an example that sets document out_path and doctype using the header.---\ntitle : Weave example\nauthor : Matti Pastell\ndate: 15th December 2016\noptions:\n  out_path : reports/example.md\n  doctype :  github\n---You can also set format specific options. Here is how to set different outpath for md2html and md2pdf and set `figext` for both:---\noptions:\n    md2html:\n        out_path : html\n    md2pdf:\n        out_path : pdf\n    fig_ext : .png\n---"
 },
 
 {
@@ -237,7 +237,31 @@ var documenterSearchIndex = {"docs": [
     "page": "Chunk options",
     "title": "Chunk options",
     "category": "section",
-    "text": "I\'ve mostly followed Knitr\'s naming for chunk options, but not all options are implemented.Options are separated using \";\" and need to be valid Julia expressions. Example: markdown code chunk that saves and displays a 12 cm wide image and hides the source code:      using Gadfly\n      x = linspace(0, 2π, 200)\n      plot(x=x, y = sin(x), Geom.line)\n      ```\n\n\nWeave currently supports the following chunk options with the following defaults:\n\n## Options for code\n\n* `echo = true`. Echo the code in the output document. If `false` the source code will be hidden.\n* `results = \"markup\"`. The output format of the printed results. \"markup\" for literal block, \"hidden\" for hidden results or anything else for raw output (I tend to use ‘tex’ for Latex and ‘rst’ for rest. Raw output is useful if you wan’t to e.g. create tables from code chunks.\n* `eval = true`. Evaluate the code chunk. If false the chunk won’t be executed.\n* `term=false`. If true the output emulates a REPL session. Otherwise only stdout and figures will be included in output.\n* `label`. Chunk label, will be used for figure labels in Latex as fig:label\n* `wrap = true`. Wrap long lines from output.\n* `line_width = 75`. Line width for wrapped lines.\n* `cache = false`. Cache results, depends on `cache` parameter on `weave` function.\n* `hold = false`. Hold all results until the end of the chunk.\n* `tangle = true`. Set tangle to false to exclude chunk from tangled code.\n\n## Options for figures\n\n* `fig_width`. Figure width passed to plotting library e.g. `800`\n* `fig_height` Figure height passed to plotting library\n* `out_width`. Width of saved figure in output markup e.g. \"50%\", \"12cm\", `\\\\0.5linewidth`\n* `out_height`. Height of saved figure in output markup\n* `dpi`=96. Resolution of saved figures.\n* `fig_cap`. Figure caption.\n* `label`. Chunk label, will be used for figure labels in Latex as fig:label\n* `fig_ext`. File extension (format) of saved figures.\n* `fig_pos=\"htpb\"`. Figure position in Latex.  \n* `fig_env=\"figure\"`. Figure environment in Latex.\n\n\n## Set default chunk options\n\nYou can set or change the default chunk options for a document either before\nrunning weave or inside the weaved document. You can e.g. use a hidden chunk\nin the beginning of the source document to set the options:\n\n      ```julia; echo = false>>=\n      import Weave\n      Weave.set_chunk_defaults(Dict{Symbol, Any}(\n            :out_width => \"\\\\0.5linewidth\",\n            :results => \"tex\"\n            ))\n      ```\n\n@docs setchunkdefaults(opts) getchunkdefaults() restorechunkdefaults() ```"
+    "text": "I\'ve mostly followed Knitr\'s naming for chunk options, but not all options are implemented.Options are separated using \";\" and need to be valid Julia expressions. Example: markdown code chunk that saves and displays a 12 cm wide image and hides the source code:julia; out_width=\"12cm\"; echo=falseWeave currently supports the following chunk options with the following defaults:"
+},
+
+{
+    "location": "chunk_options/#Options-for-code-1",
+    "page": "Chunk options",
+    "title": "Options for code",
+    "category": "section",
+    "text": "echo = true. Echo the code in the output document. If false the source code will be hidden.\nresults = \"markup\". The output format of the printed results. \"markup\" for literal block, \"hidden\" for hidden results or anything else for raw output (I tend to use ‘tex’ for Latex and ‘rst’ for rest. Raw output is useful if you wan’t to e.g. create tables from code chunks.\neval = true. Evaluate the code chunk. If false the chunk won’t be executed.\nterm=false. If true the output emulates a REPL session. Otherwise only stdout and figures will be included in output.\nlabel. Chunk label, will be used for figure labels in Latex as fig:label\nwrap = true. Wrap long lines from output.\nline_width = 75. Line width for wrapped lines.\ncache = false. Cache results, depends on cache parameter on weave function.\nhold = false. Hold all results until the end of the chunk.\ntangle = true. Set tangle to false to exclude chunk from tangled code."
+},
+
+{
+    "location": "chunk_options/#Options-for-figures-1",
+    "page": "Chunk options",
+    "title": "Options for figures",
+    "category": "section",
+    "text": "fig_width. Figure width passed to plotting library e.g. 800\nfig_height Figure height passed to plotting library\nout_width. Width of saved figure in output markup e.g. \"50%\", \"12cm\", \\\\0.5linewidth\nout_height. Height of saved figure in output markup\ndpi=96. Resolution of saved figures.\nfig_cap. Figure caption.\nlabel. Chunk label, will be used for figure labels in Latex as fig:label\nfig_ext. File extension (format) of saved figures.\nfig_pos=\"htpb\". Figure position in Latex.  \nfig_env=\"figure\". Figure environment in Latex."
+},
+
+{
+    "location": "chunk_options/#Set-default-chunk-options-1",
+    "page": "Chunk options",
+    "title": "Set default chunk options",
+    "category": "section",
+    "text": "You can set the default chunk options (and weave arguments) for a document using the YAML header options field. e.g to set the default out_width of all figures you can use:---\noptions:\n      out_width : 50%\n---You can also set or change the default chunk options for a document either before weave using the set_chunk_defaults function.set_chunk_defaults(opts)\nget_chunk_defaults()\nrestore_chunk_defaults()"
 },
 
 {
