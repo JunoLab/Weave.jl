@@ -23,18 +23,18 @@ end
 const input_formats = Dict{AbstractString, Any}(
         "noweb" => MarkupInput(r"^<<(.*?)>>=\s*$",
                     r"^@\s*$",
-                    r"`j\s+(.*?)`"s
+                    r"`j\s+(.*?)`|^!\s(.*)$"m
                     ),
         "markdown" => MarkupInput(
                       r"^[`~]{3,}(?:\{|\{\.|)julia(?:;|)\s*(.*?)(\}|\s*)$",
                       r"^[`~]{3,}\s*$",
-                      r"`j\s+(.*?)`"s),
+                      r"`j\s+(.*?)`|^!\s(.*)$"m),
         "script" => ScriptInput(
           r"(^#'.*)|(^#%%.*)|(^# %%.*)",
           r"(^#')|(^#%%)|(^# %%)",
           r"(^#\+.*$)|(^#%%\+.*$)|(^# %%\+.*$)",
           r"(^#\+)|(^#%%\+)|(^# %%\+)",
-          r"`j\s+(.*?)`"s),
+          r"`j\s+(.*?)`|^!\s(.*)$"m),
         "notebook" => NotebookInput(nothing) #Don't parse inline code from notebooks
         )
 
@@ -303,7 +303,10 @@ function parse_inline(text::AbstractString, inline_ex::Regex)
         textno += 1
         push!(res, doc)
         e = s + lastindex(ic.match)
-        push!(res, InlineCode(ic.captures[1], s, e, codeno))
+        !isnothing(ic.captures[1]) && (ctype = :inline)
+        !isnothing(ic.captures[2]) && (ctype = :line)
+        cap = filter(!isnothing, ic.captures)[1]
+        push!(res, InlineCode(cap, s, e, codeno, ctype))
         codeno += 1
     end
     push!(res, InlineText(text[e:end], e, length(text), textno))

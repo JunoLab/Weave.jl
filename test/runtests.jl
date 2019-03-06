@@ -43,8 +43,14 @@ using Test
         @info("Test: Weaving with Gadfly.jl")
         include("cache_test.jl")
     end
-end
 
-#@info("Test: Weaving with Plots.jl")
-#include("plotsjl_test.jl")
-#include("publish_test.jl")
+    @testset "Header options" begin
+        @info("Testing header options")
+        include("options_test.jl")
+    end
+
+    @testset "Inline code" begin
+        @info("Testing inline code")
+        include("inline_test.jl")
+    end
+end

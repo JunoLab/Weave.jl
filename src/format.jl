@@ -123,19 +123,58 @@ function format_inline(inline::InlineCode)
     isempty(inline.output) || return inline.output
 end
 
-function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
-    text = format_chunk(chunk, formatdict, nothing)
-    #invokelatest seems to be needed here
-    #to fix "invalid age range" on 0.6 #21653
-    #m = Compat.invokelatest(Markdown.parse, text)
-    m = Markdown.parse(text, flavor=WeaveMarkdown.weavemd)
-    return string(WeaveMarkdown.html(m))
+function ioformat!(io::IOBuffer, out::IOBuffer, fun=WeaveMarkdown.latex)
+    text = String(take!(io))
+    if !isempty(text)
+        m = Markdown.parse(text, flavor=WeaveMarkdown.weavemd)
+        write(out, string(fun(m)))
+    end
+end
+
+function addspace(op, inline)
+    inline.ctype == :line && (op = "\n$op\n")
+    return op
 end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
-    text = format_chunk(chunk, formatdict, nothing)
-    m = Markdown.parse(text, flavor=WeaveMarkdown.weavemd)
-    return uc2tex(Markdown.latex(m))
+    out = IOBuffer()
+    io = IOBuffer()
+    for inline in chunk.content
+        if isa(inline, InlineText)
+            write(io, inline.content)
+        elseif !isempty(inline.rich_output)
+            ioformat!(io, out)
+            write(out, addspace(inline.rich_output, inline))
+        elseif !isempty(inline.figures)
+            ioformat!(io, out)
+            write(out, addspace(inline.figures[end], inline))
+        elseif !isempty(inline.output)
+            write(io, addspace(inline.output, inline))
+        end
+    end
+    ioformat!(io, out)
+    return uc2tex(String(take!(out)))
+end
+
+function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
+    out = IOBuffer()
+    io = IOBuffer()
+    fun = WeaveMarkdown.html
+    for inline in chunk.content
+        if isa(inline, InlineText)
+            write(io, inline.content)
+        elseif !isempty(inline.rich_output)
+            ioformat!(io, out, fun)
+            write(out, addspace(inline.rich_output, inline))
+        elseif !isempty(inline.figures)
+            ioformat!(io, out, fun)
+            write(out, addspace(inline.figures[end], inline))
+        elseif !isempty(inline.output)
+            write(io, addspace(inline.output, inline))
+        end
+    end
+    ioformat!(io, out, fun)
+    return String(take!(out))
 end
 
 function format_chunk(chunk::CodeChunk, formatdict, docformat)

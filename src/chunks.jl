@@ -72,11 +72,12 @@ mutable struct InlineCode <: Inline
     si::Int
     ei::Int
     number::Int
+    ctype::Symbol
     output::AbstractString
     rich_output::AbstractString
     figures::Array{AbstractString}
-    function InlineCode(content, si, ei, number)
-        new(content, si, ei, number, "", "", AbstractString[])
+    function InlineCode(content, si, ei, number, ctype)
+        new(content, si, ei, number, ctype, "", "", AbstractString[])
     end
 end
 
