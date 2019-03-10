@@ -80,6 +80,37 @@ Markdown code chunks are defined using fenced code blocks with options following
 
 [Sample document]( https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jmd)
 
+## Inline code
+
+You can also add inline code to your documents using
+
+```
+`j juliacode`
+```
+
+or
+
+```
+! juliacode
+```
+
+syntax. Using the `j code` syntax you can insert code anywhere in a line and with  
+the `! syntax` the whole line after `!` will be executed. The code will be replaced
+with the output of running the code.
+
+If the code produces figures the filename or base64 encoded string will be
+added to output e.g. to include a Plots figure in markdown you can use:
+
+```
+![A plot](`j plot(1:10)`)
+```
+
+or to produce html output:
+
+```
+! display("text/html", "Header from julia");
+```
+
 
 ### Noweb format
 
@@ -104,22 +135,6 @@ Weave will remove the first empty space from each line of documentation.
 
 
 [See sample document:](https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jl)
-
-## Inline code
-
-You can also add inline code to your documents using
-
-```
-`j juliacode`
-```
-
-syntax. The code will be replaced with the output of running the code.
-If the code produces figures the filename or base64 encoded string will be
-added to output e.g. to include a Plots figure in markdown you can use:
-
-```
-![A plot](`j plot(1:10)`)
-```
 
 ## Setting document options in header
 

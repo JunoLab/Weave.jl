@@ -8,9 +8,9 @@ and Sweave.
 
 **Current features**
 
-* Markdown, script of Noweb syntax for input documents.
-* Publish markdown directly to html and pdf using Julia or Pandoc markdown.
-* Execute code as terminal or "script" chunks.
+* Markdown, script of Noweb syntax for input documents
+* Publish markdown directly to html and pdf using Julia or Pandoc markdown
+* Execute code as terminal or "script" chunks
 * Capture Plots.jl or  Gadfly.jl figures
 * Supports LaTex, Pandoc, Github markdown, MultiMarkdown, Asciidoc and reStructuredText output
 * Simple caching of results
