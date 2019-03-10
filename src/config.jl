@@ -1,5 +1,3 @@
-
-
 #Default options
 const defaultParams =
       Dict{Symbol,Any}(:storeresults => false,
@@ -105,6 +103,7 @@ function header_args(doc::WeaveDoc)
     informat = getvalue(args, "informat", :auto)
     out_path = getvalue(args, "out_path", :doc)
     out_path == ":pwd" && (out_path = :pwd)
+    isa(out_path, Symbol) || (out_path = joinpath(dirname(doc.source), out_path))
     mod = Symbol(getvalue(args, "mod", :sandbox))
     fig_path = getvalue(args, "fig_path", "figures")
     fig_ext = getvalue(args, "fig_ext", nothing)
@@ -112,6 +111,9 @@ function header_args(doc::WeaveDoc)
     cache = Symbol(getvalue(args, "cache", :off))
     throw_errors = getvalue(args, "throw_errors", false)
     template = getvalue(args, "template", nothing)
+    if template != nothing && !isempty(template)
+        template = joinpath(dirname(doc.source), template)
+    end
     highlight_theme = getvalue(args, "highlight_theme", nothing)
     css = getvalue(args, "css", nothing)
     pandoc_options = getvalue(args, "pandoc_options", String[])
