@@ -133,7 +133,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Using Weave",
     "title": "Markdown format",
     "category": "section",
-    "text": "Markdown code chunks are defined using fenced code blocks with options following on the same line. e.g. to hide code from output you can use:`julia; echo=falseSample document"
+    "text": "Markdown code chunks are defined using fenced code blocks with options following on the same line. e.g. to hide code from output you can use: ```julia; echo=false`Sample document"
 },
 
 {
@@ -165,7 +165,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Using Weave",
     "title": "Setting document options in header",
     "category": "section",
-    "text": "You can use a YAML header in the beginning of the input document delimited with \"–-\" to set the document title, author and date e.g. and default document options. Each of Weave command line arguments and chunk options can be set in header using options field. Below is an example that sets document out_path and doctype using the header.---\ntitle : Weave example\nauthor : Matti Pastell\ndate: 15th December 2016\noptions:\n  out_path : reports/example.md\n  doctype :  github\n---You can also set format specific options. Here is how to set different outpath for md2html and md2pdf and set `figext` for both:---\noptions:\n    md2html:\n        out_path : html\n    md2pdf:\n        out_path : pdf\n    fig_ext : .png\n---"
+    "text": "You can use a YAML header in the beginning of the input document delimited with \"–-\" to set the document title, author and date e.g. and default document options. Each of Weave command line arguments and chunk options can be set in header using options field. Below is an example that sets document out_path and doctype using the header.---\ntitle : Weave example\nauthor : Matti Pastell\ndate: 15th December 2016\noptions:\n  out_path : reports/example.md\n  doctype :  github\n---You can also set format specific options. Here is how to set different out_path for md2html and md2pdf and set fig_ext for both:---\noptions:\n    md2html:\n        out_path : html\n    md2pdf:\n        out_path : pdf\n    fig_ext : .png\n---"
 },
 
 {
