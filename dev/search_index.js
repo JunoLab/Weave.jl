@@ -141,7 +141,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Using Weave",
     "title": "Inline code",
     "category": "section",
-    "text": "You can also add inline code to your documents using`j juliacode`or! juliacodesyntax. Using the j code syntax you can insert code anywhere in a line and with   the ! syntax the whole line after ! will be executed. The code will be replaced with the output of running the code.If the code produces figures the filename or base64 encoded string will be added to output e.g. to include a Plots figure in markdown you can use:![A plot](`j plot(1:10)`)or to produce html output:! display(\"text/html\", \"Header from julia\");"
+    "text": "You can also add inline code to your documents using`j juliacode`or! juliacodesyntax. Using the j code syntax you can insert code anywhere in a line and with   the ! syntax the whole line after ! will be executed. The code will be replaced with captured output in the weaved document.If the code produces figures the filename or base64 encoded string will be added to output e.g. to include a Plots figure in markdown you can use:![A plot](`j plot(1:10)`)or to produce any html output:! display(\"text/html\", \"Header from julia\");"
 },
 
 {
