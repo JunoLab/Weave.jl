@@ -171,7 +171,7 @@ function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
             ioformat!(io, out, fun)
             write(out, addspace(inline.rich_output, inline))
         elseif !isempty(inline.figures)
-            write(io, inline.figures[end]))
+            write(io, inline.figures[end])
         elseif !isempty(inline.output)
             write(io, addspace(inline.output, inline))
         end

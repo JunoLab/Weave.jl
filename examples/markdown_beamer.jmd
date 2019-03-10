@@ -1,0 +1,29 @@
+---
+title : A minimal beamer example using Weave markdown
+author : Matti Pastell
+options :
+    doctype : md2pdf
+    out_path : pdf
+    template : beamer.tpl
+---
+
+```julia; echo=false
+struct Begin
+    text
+    title
+end
+
+struct End
+    text
+end
+Base.show(io::IO, m::MIME"text/latex", b::Begin) = write(io, "\\begin{$(b.text)}[fragile]\n\\frametitle{$(b.title)}\n")
+Base.show(io::IO, m::MIME"text/latex", e::End) = write(io, "\\end{$(e.text)}")
+```
+
+! Begin("frame", "Random plot")
+
+```julia; out_width="0.5\\textwidth"
+using Plots
+scatter(randn(1000), randn(1000))
+```
+! End("frame")
