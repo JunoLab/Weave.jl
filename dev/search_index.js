@@ -13,7 +13,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Weave.jl - Scientific Reports Using Julia",
     "title": "Weave.jl - Scientific Reports Using Julia",
     "category": "section",
-    "text": "This is the documentation of Weave.jl. Weave is a scientific report generator/literate programming tool for Julia. It resembles Pweave, Knitr, rmarkdown and Sweave.Current featuresMarkdown, script of Noweb syntax for input documents.\nPublish markdown directly to html and pdf using Julia or Pandoc markdown.\nExecute code as terminal or \"script\" chunks.\nCapture Plots.jl or  Gadfly.jl figures\nSupports LaTex, Pandoc, Github markdown, MultiMarkdown, Asciidoc and reStructuredText output\nSimple caching of results\nConvert to and from IJulia notebooks(Image: Weave code and output)"
+    "text": "This is the documentation of Weave.jl. Weave is a scientific report generator/literate programming tool for Julia. It resembles Pweave, Knitr, rmarkdown and Sweave.Current featuresMarkdown, script of Noweb syntax for input documents\nPublish markdown directly to html and pdf using Julia or Pandoc markdown\nExecute code as terminal or \"script\" chunks\nCapture Plots.jl or  Gadfly.jl figures\nSupports LaTex, Pandoc, Github markdown, MultiMarkdown, Asciidoc and reStructuredText output\nSimple caching of results\nConvert to and from IJulia notebooks(Image: Weave code and output)"
 },
 
 {
@@ -137,6 +137,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "usage/#Inline-code-1",
+    "page": "Using Weave",
+    "title": "Inline code",
+    "category": "section",
+    "text": "You can also add inline code to your documents using`j juliacode`or! juliacodesyntax. Using the j code syntax you can insert code anywhere in a line and with   the ! syntax the whole line after ! will be executed. The code will be replaced with the output of running the code.If the code produces figures the filename or base64 encoded string will be added to output e.g. to include a Plots figure in markdown you can use:![A plot](`j plot(1:10)`)or to produce html output:! display(\"text/html\", \"Header from julia\");"
+},
+
+{
     "location": "usage/#Noweb-format-1",
     "page": "Using Weave",
     "title": "Noweb format",
@@ -150,14 +158,6 @@ var documenterSearchIndex = {"docs": [
     "title": "Script format",
     "category": "section",
     "text": "Weave also support script input format with a markup in comments. These scripts can be executed normally using Julia or published with Weave.  Documentation is in lines starting with #\', #%% or # %%, and code is executed and results are included in the weaved document.All lines that are not documentation are treated as code. You can set chunk options using lines starting with #+ just before code e.g. #+ term=true.The format is identical to Pweave and the concept is similar to publishing documents with MATLAB or using Knitr\'s spin. Weave will remove the first empty space from each line of documentation.See sample document:"
-},
-
-{
-    "location": "usage/#Inline-code-1",
-    "page": "Using Weave",
-    "title": "Inline code",
-    "category": "section",
-    "text": "You can also add inline code to your documents using`j juliacode`syntax. The code will be replaced with the output of running the code. If the code produces figures the filename or base64 encoded string will be added to output e.g. to include a Plots figure in markdown you can use:![A plot](`j plot(1:10)`)"
 },
 
 {
