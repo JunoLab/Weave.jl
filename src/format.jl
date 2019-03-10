@@ -71,7 +71,9 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
     theme_css = read(doc.css, String)
   end
 
-  if isempty(doc.template)
+  if isa(doc.template, Mustache.MustacheTokens)
+    template = doc.template
+  elseif isempty(doc.template)
     template = Mustache.template_from_file(joinpath(dirname(@__FILE__), "../templates/julia_html.tpl"))
   else
     template = Mustache.template_from_file(doc.template)
@@ -91,7 +93,10 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2tex)
   wtime =  string(Date(now()))
 
 
-  if isempty(doc.template)
+
+  if isa(doc.template, Mustache.MustacheTokens)
+      template = doc.template
+  elseif isempty(doc.template)
     template = Mustache.template_from_file(joinpath(dirname(@__FILE__), "../templates/julia_tex.tpl"))
   else
     template = Mustache.template_from_file(doc.template)

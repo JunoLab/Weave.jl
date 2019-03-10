@@ -1,4 +1,5 @@
 using Compat
+import Mustache
 
 abstract type WeaveChunk end
 abstract type Inline end
@@ -13,7 +14,7 @@ mutable struct WeaveDoc
     doctype::AbstractString
     header_script::String
     header::Dict
-    template::AbstractString
+    template::Union{AbstractString, Mustache.MustacheTokens}
     css::AbstractString
     highlight_theme
     fig_path::AbstractString

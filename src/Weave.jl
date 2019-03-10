@@ -78,7 +78,7 @@ Weave an input document to output file.
   `:user` = cache based on chunk options, `:refresh`, run all code chunks and save new cache.
 * `throw_errors` if `false` errors are included in output document and the whole document is
     executed. if `true` errors are thrown when they occur.
-* `template` : Template (file path) for md2html or md2tex formats.
+* `template` : Template (file path) or MustacheTokens for md2html or md2tex formats.
 * `highlight_theme` : Theme (Highlights.AbstractTheme) for used syntax highlighting
 * `css` : CSS (file path) used for md2html format
 * `pandoc_options` = String array of options to pass to pandoc for `pandoc2html` and
@@ -100,6 +100,9 @@ function weave(source ; doctype = :auto,
     doc = read_doc(source, informat)
     doctype == :auto && (doctype = detect_doctype(doc.source))
     doc.doctype = doctype
+    template != nothing && (doc.template = template)
+    highlight_theme != nothing && (doc.highlight_theme = highlight_theme)
+    css != nothing && (doc.css = css)
 
     # Read args from document header, overrides command line args
     if haskey(doc.header, "options")
@@ -108,10 +111,10 @@ function weave(source ; doctype = :auto,
         pandoc_options, latex_cmd) = header_args(doc)
     end
 
+    template != nothing && (doc.template = template)
     highlight_theme != nothing && (doc.highlight_theme = highlight_theme)
     #theme != nothing && (doc.theme = theme) #Reserved for themes
     css != nothing && (doc.css = css)
-    template != nothing && (doc.template = template)
 
     try
       doc = run(doc, doctype = doctype,
@@ -148,10 +151,10 @@ function weave(source ; doctype = :auto,
       doc.cwd == pwd() && (outname = basename(outname))
       @info("Report weaved to $outname")
       return abspath(outname)
-    catch err
-        @warn("Something went wrong during weaving")
-        @error(sprint(showerror, err))
-        return nothing
+    #catch err
+    #    @warn("Something went wrong during weaving")
+    #    @error(sprint(showerror, err))
+    #    return nothing
     finally
         doctype == :auto && (doctype = detect_doctype(doc.source))
         if occursin("2pdf", doctype)
