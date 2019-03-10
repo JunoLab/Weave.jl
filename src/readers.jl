@@ -303,9 +303,9 @@ function parse_inline(text::AbstractString, inline_ex::Regex)
         textno += 1
         push!(res, doc)
         e = s + lastindex(ic.match)
-        !isnothing(ic.captures[1]) && (ctype = :inline)
-        !isnothing(ic.captures[2]) && (ctype = :line)
-        cap = filter(!isnothing, ic.captures)[1]
+        ic.captures[1] !== nothing && (ctype = :inline)
+        ic.captures[2] !== nothing && (ctype = :line)
+        cap = filter(x -> x !== nothing, ic.captures)[1]
         push!(res, InlineCode(cap, s, e, codeno, ctype))
         codeno += 1
     end
