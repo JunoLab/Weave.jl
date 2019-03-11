@@ -177,14 +177,6 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "usage/#Weave.include_weave",
-    "page": "Using Weave",
-    "title": "Weave.include_weave",
-    "category": "function",
-    "text": "include_weave(doc, informat=:auto)\n\nInclude code from Weave document calling include_string on all code from doc. Code is run in the path of the include document.\n\n\n\n\n\n"
-},
-
-{
     "location": "usage/#Include-Weave-document-in-Julia-1",
     "page": "Using Weave",
     "title": "Include Weave document in Julia",
