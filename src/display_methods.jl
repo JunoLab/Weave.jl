@@ -43,7 +43,7 @@ function Base.display(report::Report, data)
     #Set preferred mimetypes for report based on format
     fig_ext = report.cur_chunk.options[:fig_ext]
     for m in unique([mimetype_ext[fig_ext] ; report.mimetypes])
-        if showable(m, data)
+        if Base.invokelatest(showable, m, data)
             try
                 if !istextmime(m)
                     Compat.invokelatest(display, report, m, data)

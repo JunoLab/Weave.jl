@@ -10,6 +10,13 @@ end
 
 Gadfly.set_default_plot_format(:svg)
 
+Base.showable(m::MIME"application/pdf", p::Gadfly.Plot) = true
+Base.showable(m::MIME"application/png", p::Gadfly.Plot) = true
+
+function Base.display(report::Weave.Report, m::MIME"application/pdf", p::Gadfly.Plot)
+    display(report, MIME("image/svg+xml"), p)
+end
+
 function Base.display(report::Weave.Report, m::MIME"image/png", p::Gadfly.Plot)
     display(report, MIME("image/svg+xml"), p)
 end
@@ -17,7 +24,6 @@ end
 #Gadfly doesn't call the default display methods, this catches
 #all Gadfly plots
 function Base.display(report::Weave.Report, m::MIME"image/svg+xml", p::Gadfly.Plot)
-
     chunk = report.cur_chunk
 
     w = chunk.options[:fig_width]Gadfly.inch

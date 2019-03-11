@@ -24,7 +24,7 @@ function format(doc::WeaveDoc)
 
     #strip header
     if isa(doc.chunks[1], DocChunk)
-        if occursin("md2", doc.doctype)
+        if !occursin("pandoc", doc.doctype)
             doc.chunks[1] = strip_header(doc.chunks[1])
         end
     end

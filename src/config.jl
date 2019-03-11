@@ -96,28 +96,31 @@ header_args(doc::WeaveDoc)`
 
 Get weave arguments from document header
 """
-function header_args(doc::WeaveDoc)
+function header_args(doc::WeaveDoc, out_path, mod, fig_ext, fig_path,
+                            cache_path, cache, throw_errors,template,
+                            highlight_theme, css,
+                            pandoc_options, latex_cmd)
     args = getvalue(doc.header, "options", Dict())
     doctype = getvalue(args, "doctype", doc.doctype)
     args = combine_args(args, doctype)
     informat = getvalue(args, "informat", :auto)
-    out_path = getvalue(args, "out_path", :doc)
+    out_path = getvalue(args, "out_path", out_path)
     out_path == ":pwd" && (out_path = :pwd)
     isa(out_path, Symbol) || (out_path = joinpath(dirname(doc.source), out_path))
-    mod = Symbol(getvalue(args, "mod", :sandbox))
-    fig_path = getvalue(args, "fig_path", "figures")
-    fig_ext = getvalue(args, "fig_ext", nothing)
-    cache_path = getvalue(args, "cache_path", "cache")
-    cache = Symbol(getvalue(args, "cache", :off))
-    throw_errors = getvalue(args, "throw_errors", false)
-    template = getvalue(args, "template", nothing)
+    mod = Symbol(getvalue(args, "mod", mod))
+    fig_path = getvalue(args, "fig_path", fig_path)
+    fig_ext = getvalue(args, "fig_ext", fig_ext)
+    cache_path = getvalue(args, "cache_path", cache_path)
+    cache = Symbol(getvalue(args, "cache", cache))
+    throw_errors = getvalue(args, "throw_errors", throw_errors)
+    template = getvalue(args, "template", template)
     if template != nothing && !isempty(template)
         template = joinpath(dirname(doc.source), template)
     end
-    highlight_theme = getvalue(args, "highlight_theme", nothing)
-    css = getvalue(args, "css", nothing)
-    pandoc_options = getvalue(args, "pandoc_options", String[])
-    latex_cmd = getvalue(args, "latex_cmd", "xelatex")
+    highlight_theme = getvalue(args, "highlight_theme", highlight_theme)
+    css = getvalue(args, "css", css)
+    pandoc_options = getvalue(args, "pandoc_options", pandoc_options)
+    latex_cmd = getvalue(args, "latex_cmd", latex_cmd)
 
     return (doctype, informat, out_path, args, mod, fig_path, fig_ext,
       cache_path, cache, throw_errors, template, highlight_theme, css,

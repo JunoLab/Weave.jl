@@ -39,9 +39,14 @@ using Test
         include("plotsjl_test.jl")
     end
 
+    @testset "Cache" begin
+        @info("Testing cache")
+        include("cache_test.jl")
+    end
+
     @testset "Gadfly" begin
         @info("Test: Weaving with Gadfly.jl")
-        include("cache_test.jl")
+        include("gadfly_formats.jl")
     end
 
     @testset "Header options" begin

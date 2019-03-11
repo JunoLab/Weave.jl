@@ -1,0 +1,23 @@
+---
+options :
+  out_path : gadfly
+---
+
+~~~~{.julia}
+using Gadfly
+x = range(0, stop =2π, step=0.05)
+plot(x=x, y = sin.(x), Geom.line)
+~~~~~~~~~~~~~
+
+
+![sin(x) function.](figures/gadfly_formats_test_sin_fun_1.png){#fig:sin_fun}
+
+![cos(x) function.](figures/gadfly_formats_test_2_1.png)
+
+~~~~{.julia}
+plot(x=x, y = cos.(2x), Geom.line)
+~~~~~~~~~~~~~
+
+
+![](figures/gadfly_formats_test_cos2_fun_1.png){width=15cm #fig:cos2_fun}\ 
+

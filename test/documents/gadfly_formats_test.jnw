@@ -1,0 +1,19 @@
+---
+options :
+  out_path : gadfly
+---
+
+<<fig_cap="sin(x) function."; label="sin_fun"; fig_pos="ht">>=
+using Gadfly
+x = range(0, stop =2π, step=0.05)
+plot(x=x, y = sin.(x), Geom.line)
+@
+
+
+<<echo=false; fig_cap="cos(x) function."; dpi=200>>=
+plot(x=x, y = cos.(x), Geom.line)
+@
+
+<<label="cos2_fun"; out_width="15cm">>=
+plot(x=x, y = cos.(2x), Geom.line)
+@

@@ -100,15 +100,16 @@ function weave(source ; doctype = :auto,
     doc = read_doc(source, informat)
     doctype == :auto && (doctype = detect_doctype(doc.source))
     doc.doctype = doctype
-    template != nothing && (doc.template = template)
-    highlight_theme != nothing && (doc.highlight_theme = highlight_theme)
-    css != nothing && (doc.css = css)
 
     # Read args from document header, overrides command line args
     if haskey(doc.header, "options")
         (doctype, informat, out_path, args, mod, fig_path, fig_ext,
         cache_path, cache, throw_errors, template, highlight_theme, css,
-        pandoc_options, latex_cmd) = header_args(doc)
+        pandoc_options, latex_cmd) = header_args(doc, out_path, mod,
+                                    fig_ext, fig_path,
+                                    cache_path, cache, throw_errors,
+                                    template, highlight_theme, css,
+                                    pandoc_options, latex_cmd)
     end
 
     template != nothing && (doc.template = template)
