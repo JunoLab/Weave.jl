@@ -197,25 +197,30 @@ function notebook(source::String, out_path=:pwd, timeout=-1, nbconvert_options=[
   out = read(`$(Main.IJulia.JUPYTER) nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile  $nbconvert_options --output $outfile`, String)
 end
 
+
 """
+    include_weave(doc, informat=:auto)
     include_weave(m::Module, doc, informat=:auto)
 
 Include code from Weave document calling `include_string` on
 all code from doc. Code is run in the path of the include document.
 """
 function include_weave(m::Module, source, informat=:auto)
-  old_path = pwd()
-  doc = read_doc(source, informat)
-  cd(doc.path)
-  try
-    code = join([x.content for x in
-      filter(x -> isa(x,Weave.CodeChunk), doc.chunks)], "\n")
-    include_string(m, code)
-  catch e
-    cd(old_path)
-    throw(e)
-  end
+    old_path = pwd()
+    doc = read_doc(source, informat)
+    cd(doc.path)
+    try
+        code = join([x.content for x in
+            filter(x -> isa(x,Weave.CodeChunk), doc.chunks)], "\n")
+        include_string(m, code)
+    catch e
+        throw(e)
+    finally
+        cd(old_path)
+    end
 end
+
+include_weave(source, informat=:auto) = include_weave(Main, source, informat)
 
 #Hooks to run before and after chunks, this is form IJulia,
 #but note that Weave hooks take the chunk as input
