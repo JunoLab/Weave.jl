@@ -1,0 +1,23 @@
+
+
+
+
+<div class="Random plot">
+
+<p>Some inline output</p>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>println</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;Testing output&quot;</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+Testing output
+</pre>
+
+
+
+
+</div>
+

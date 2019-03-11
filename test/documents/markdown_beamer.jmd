@@ -1,0 +1,31 @@
+---
+title : A minimal beamer example using Weave markdown
+author : Matti Pastell
+options :
+    out_path : inline
+---
+
+```julia; echo=false
+struct Begin
+    text
+    title
+end
+
+struct End
+    text
+end
+Base.show(io::IO, m::MIME"text/latex", b::Begin) = write(io, "\\begin{$(b.text)}[fragile]\n\\frametitle{$(b.title)}\n")
+Base.show(io::IO, m::MIME"text/latex", e::End) = write(io, "\\end{$(e.text)}")
+
+Base.show(io::IO, m::MIME"text/html", b::Begin) = write(io, "<div class=\"$(b.title)\">\n")
+Base.show(io::IO, m::MIME"text/html", e::End) = write(io, "</div>")
+```
+
+! Begin("frame", "Random plot")
+
+Some inline `j print("output")`
+
+```julia
+println("Testing output")
+```
+! End("frame")

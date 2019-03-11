@@ -1,4 +1,7 @@
 using Weave, Test
+using Mustache
+
+# Test parsing
 
 doc = """
 
@@ -24,3 +27,17 @@ chunk = Weave.parse_doc(doc, Weave.input_formats["markdown"])[1]
 
 chunknw = Weave.parse_doc(doc, Weave.input_formats["noweb"])[1]
 @test all([chunknw.content[i].content == chunk.content[i].content for i in 1:7])
+
+# Test with document
+
+tpl = mt"""
+{{{ :body }}}
+"""
+
+out = weave(joinpath(@__DIR__, "documents", "markdown_beamer.jmd"), doctype="md2html", template=tpl)
+@test read(out, String) == read(out*".ref", String)
+rm(out)
+
+out = weave(joinpath(@__DIR__, "documents", "markdown_beamer.jmd"), doctype="md2tex", template=tpl)
+@test read(out, String) == read(out*".ref", String)
+rm(out)

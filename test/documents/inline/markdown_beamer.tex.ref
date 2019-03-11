@@ -1,0 +1,23 @@
+
+
+
+
+\begin{frame}[fragile]
+\frametitle{Random plot}
+
+Some inline output
+
+
+\begin{lstlisting}
+(*@\HLJLnf{println}@*)(*@\HLJLp{(}@*)(*@\HLJLs{"Testing output"}@*)(*@\HLJLp{)}@*)
+\end{lstlisting}
+
+\begin{lstlisting}
+Testing output
+\end{lstlisting}
+
+
+
+
+\end{frame}
+

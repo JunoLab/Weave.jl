@@ -1,3 +1,5 @@
+import Mustache
+
 #Default options
 const defaultParams =
       Dict{Symbol,Any}(:storeresults => false,
@@ -114,7 +116,7 @@ function header_args(doc::WeaveDoc, out_path, mod, fig_ext, fig_path,
     cache = Symbol(getvalue(args, "cache", cache))
     throw_errors = getvalue(args, "throw_errors", throw_errors)
     template = getvalue(args, "template", template)
-    if template != nothing && !isempty(template)
+    if template != nothing && !isa(template, Mustache.MustacheTokens) && !isempty(template)
         template = joinpath(dirname(doc.source), template)
     end
     highlight_theme = getvalue(args, "highlight_theme", highlight_theme)
