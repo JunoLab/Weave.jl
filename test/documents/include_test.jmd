@@ -1,0 +1,27 @@
+---
+title : Someheader
+---
+
+```julia
+module Test1
+
+x = 10
+y = 20
+
+function testing(x)
+  return x
+end
+
+end
+```
+
+Some random text in between
+
+```julia
+module Test2
+
+d = Dict("a" => "α")
+doc = read("header_test.jmd", String)
+
+end
+```

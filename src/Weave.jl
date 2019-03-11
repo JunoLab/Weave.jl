@@ -198,19 +198,19 @@ function notebook(source::String, out_path=:pwd, timeout=-1, nbconvert_options=[
 end
 
 """
-    include_weave(doc, informat=:auto)
+    include_weave(m::Module, doc, informat=:auto)
 
 Include code from Weave document calling `include_string` on
 all code from doc. Code is run in the path of the include document.
 """
-function include_weave(source, informat=:auto)
+function include_weave(m::Module, source, informat=:auto)
   old_path = pwd()
   doc = read_doc(source, informat)
   cd(doc.path)
   try
     code = join([x.content for x in
       filter(x -> isa(x,Weave.CodeChunk), doc.chunks)], "\n")
-    include_string(code)
+    include_string(m, code)
   catch e
     cd(old_path)
     throw(e)
