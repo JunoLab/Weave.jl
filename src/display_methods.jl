@@ -37,7 +37,11 @@ const mimetype_ext =
          ".jpg" => "image/jpeg",
          ".jpeg" => "image/jpeg",
          ".svg" => "image/svg+xml",
-         ".pdf" => "application/pdf")
+         ".js.svg" => "image/svg+xml",
+         ".pdf" => "application/pdf",
+         ".ps" => "application/postscript",
+         ".tex" => "text/latex"
+         )
 
 function Base.display(report::Report, data)
     #Set preferred mimetypes for report based on format
