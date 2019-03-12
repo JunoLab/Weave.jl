@@ -188,10 +188,13 @@ function notebook(source::String, out_path=:pwd, timeout=-1, nbconvert_options=[
   converted = convert_doc(doc, NotebookOutput())
   doc.cwd = get_cwd(doc, out_path)
   outfile = get_outname(out_path, doc, ext="ipynb")
+  @warn "Reached line 191. "
+
 
   open(outfile, "w") do f
     write(f, converted)
   end
+  @warn "Reached line 197. "
 
   @info("Running nbconvert")
   out = read(`$jupyter_path nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile  $nbconvert_options --output $outfile`, String)
