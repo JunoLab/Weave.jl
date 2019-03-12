@@ -171,7 +171,7 @@ function weave(doc::AbstractString, doctype::AbstractString)
 end
 
 """
-  notebook(source::String, out_path=:pwd, timeout=-1, nbconvert_options="", jupyter_path = "jupyter")
+  notebook(source::String; out_path=:pwd, timeout=-1, nbconvert_options="", jupyter_path = "jupyter")
 
 Convert Weave document `source` to Jupyter notebook and execute the code
 using nbconvert. **Ignores** all chunk options
@@ -183,7 +183,7 @@ using nbconvert. **Ignores** all chunk options
 * `nbconvert_options`: string of additional options to pass to nbconvert, such as `--allow-errors`
 * `jupyter_path`: Path/command for the Jupyter you want to use. Defaults to "jupyter," which runs whatever is linked/alias to that.
 """
-function notebook(source::String, out_path=:pwd, timeout=-1, nbconvert_options=[], jupyter_path = "jupyter")
+function notebook(source::String; out_path=:pwd, timeout=-1, nbconvert_options=[], jupyter_path = "jupyter")
   doc = read_doc(source)
   converted = convert_doc(doc, NotebookOutput())
   doc.cwd = get_cwd(doc, out_path)
