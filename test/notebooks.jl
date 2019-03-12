@@ -4,4 +4,4 @@ using IJulia, Conda
 Conda.add("nbconvert") # should be the same as IJulia.JUPYTER, i.e. the miniconda Python
 
 Weave.notebook(file, jupyter_path = IJulia.JUPYTER)
-@test "temp_notebook.ipynb" ∈ readdir(@__DIR__) # test if the result was weaved
+@test "jupyter_test.ipynb" ∈ readdir(@__DIR__) # test if the result was weaved
