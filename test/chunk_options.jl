@@ -5,7 +5,9 @@ cleanup = true
 
 VER = "$(VERSION.major).$(VERSION.minor)"
 
+Weave.push_preexecute_hook(identity)
 weave("documents/chunk_options.noweb")
+Weave.pop_preexecute_hook(identity)
 result =  read("documents/chunk_options.md", String)
 ref =  read("documents/chunk_options_ref.md", String)
 @test result == ref
