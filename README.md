@@ -70,6 +70,9 @@ Install [language-weave](https://atom.io/packages/language-weave) to add Weave s
 It allows running code from Weave documents with usual keybindings and allows preview of
 html and pdf output.
 
+The [Julia extension for Visual Studio Code](https://www.julia-vscode.org/)
+adds Weave support to [Visual Studio Code](https://code.visualstudio.com/).
+
 ## Contributing
 
 I will probably add new features to Weave when I need them myself or if they are requested and not too difficult to implement. You can contribute by opening issues on Github or implementing things yourself and making a pull request. I'd also appreciate example documents written using Weave to add to examples.
