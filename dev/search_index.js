@@ -281,19 +281,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "notebooks/#Weave.notebook",
-    "page": "Working with Jupyter notebooks",
-    "title": "Weave.notebook",
-    "category": "function",
-    "text": "notebook(source::String, outpath=:pwd, timeout=-1, nbconvertoptions=\"\")\n\nConvert Weave document source to Jupyter notebook and execute the code using nbconvert. Requires IJulia. Ignores all chunk options\n\nout_path: Path where the output is generated. Can be: :doc: Path of the source document,  :pwd: Julia working directory, \"somepath\": Path as a   String e.g \"/home/mpastell/weaveout\"\ntimeout: nbconvert cell timeout in seconds. Defaults to -1 (no timeout)\nnbconvert_options: string of additional options to pass to nbconvert, such as --allow-errors\n\n\n\n\n\n"
-},
-
-{
     "location": "notebooks/#Output-to-Jupyter-notebooks-1",
     "page": "Working with Jupyter notebooks",
     "title": "Output to Jupyter notebooks",
     "category": "section",
-    "text": "As of Weave 0.5.1. there is new notebook method to convert Weave documents to Jupyter notebooks using nbconvert. The code is not executed by Weave  and the output doesn\'t always work properly,  see #116.notebook(source::String, out_path=:pwd)You might wan\'t to use the convert_doc method below instead and run the code in Jupyter."
+    "text": "As of Weave 0.5.1. there is new notebook method to convert Weave documents to Jupyter notebooks using nbconvert. The code is not executed by Weave and the output doesn\'t always work properly, see #116.notebook(source::String, out_path=:pwd)You might want to use the convert_doc method below instead and run the code in Jupyter.You can select the jupyter used to execute the notebook with the jupyter_path argument (this defaults to the string \"jupyter,\" i.e., whatever you have linked to that location.)"
 },
 
 {
