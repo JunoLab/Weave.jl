@@ -256,7 +256,7 @@ end
 function parse_input(input::AbstractString)
     parsed = Tuple{AbstractString, Any}[]
     input = lstrip(input)
-    n = length(input)
+    n = sizeof(input)
     pos = 1 #The first character is extra line end
     while pos ≤ n
         oldpos = pos
