@@ -58,4 +58,9 @@ using Test
         @info("Testing inline code")
         include("inline_test.jl")
     end
+
+    # @testset "Notebooks" begin
+    #     @info("Testing Jupyter options")
+    #     include("notebooks.jl")
+    # end
 end

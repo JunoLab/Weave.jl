@@ -1,0 +1,17 @@
+Here's some text
+
+And here's some code
+
+```julia
+    x = 1
+    y = 2
+    @show x + y
+```
+
+Here's some more complicated code
+
+```julia
+    @code_native +(1.0, π)
+    using Test
+    @test 1 == 1
+```

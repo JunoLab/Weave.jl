@@ -17,6 +17,7 @@ test/**/*.html
 test/**/*.pdf
 test/**/*.png
 test/**/chunk_options.jl
+test/**/*.ipynb
 !test/**/*ref.*
 
 doc/build
