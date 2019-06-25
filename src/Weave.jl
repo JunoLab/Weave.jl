@@ -226,11 +226,11 @@ include_weave(source, informat=:auto) = include_weave(Main, source, informat)
 #but note that Weave hooks take the chunk as input
 const preexecute_hooks = Function[]
 push_preexecute_hook(f::Function) = push!(preexecute_hooks, f)
-pop_preexecute_hook(f::Function) = splice!(preexecute_hooks, findfirst(preexecute_hooks, f))
+pop_preexecute_hook(f::Function) = splice!(preexecute_hooks, findfirst(x -> x == f, preexecute_hooks))
 
 const postexecute_hooks = Function[]
 push_postexecute_hook(f::Function) = push!(postexecute_hooks, f)
-pop_postexecute_hook(f::Function) = splice!(postexecute_hooks, findfirst(postexecute_hooks, f))
+pop_postexecute_hook(f::Function) = splice!(postexecute_hooks, findfirst(x -> x == f, postexecute_hooks))
 
 include("chunks.jl")
 include("config.jl")
