@@ -39,6 +39,10 @@ x = 3
 
 > Some important quote
 
+head 1 | head 2
+-------|--------
+`code` | no code
+
 """, flavor = WeaveMarkdown.weavemd))
 
 ref_html = """<h1>H1</h1>
@@ -70,6 +74,7 @@ more math
 <blockquote>
 <p>Some important quote</p>
 </blockquote>
+<table><tr><th>head 1</th><th>head 2</th></tr><tr><td><code>code</code></td><td>no code</td></tr></table>
 """
 
 @test html == ref_html

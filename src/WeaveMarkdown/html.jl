@@ -1,6 +1,6 @@
 #module Markdown2HTML
 # Markdown to HTML writer, Modified from Julia Base.Markdown html writer
-using Markdown: MD, Header, Code, Paragraph, BlockQuote, Footnote,
+using Markdown: MD, Header, Code, Paragraph, BlockQuote, Footnote, Table,
       Admonition, List, HorizontalRule, Bold, Italic, Image, Link, LineBreak,
       LaTeX, isordered
 
@@ -165,6 +165,20 @@ end
 
 function html(io::IO, comment::Comment)
     write(io, "\n<!-- $(comment.text) -->\n")
+end
+
+function html(io::IO, md::Table)
+    withtag(io, :table) do
+        for (i, row) in enumerate(md.rows)
+            withtag(io, :tr) do
+                for c in md.rows[i]
+                    withtag(io, i == 1 ? :th : :td) do
+                        htmlinline(io, c)
+                    end
+                end
+            end
+        end
+    end
 end
 
 html(io::IO, x) = tohtml(io, x)
