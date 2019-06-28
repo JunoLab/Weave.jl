@@ -1,8 +1,6 @@
 # Weave
 
-[![Build Status](https://travis-ci.org/mpastell/Weave.jl.svg?branch=master)](https://travis-ci.org/mpastell/Weave.jl)
-[![Build status](https://ci.appveyor.com/api/projects/status/r97pwi9x8ard6xk6/branch/master?svg=true)](https://ci.appveyor.com/project/mpastell/weave-jl/branch/master)
-[![Coverage Status](https://img.shields.io/coveralls/mpastell/Weave.jl.svg)](https://coveralls.io/r/mpastell/Weave.jl?branch=master)
+[![Build Status](https://travis-ci.org/JunoLab/Weave.jl.svg?branch=master)](https://travis-ci.org/JunoLab/Weave.jl)
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](http://weavejl.mpastell.com/stable/)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](http://weavejl.mpastell.com/dev/)
 [![](http://joss.theoj.org/papers/10.21105/joss.00204/status.svg)](http://dx.doi.org/10.21105/joss.00204)
@@ -61,8 +59,8 @@ weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"),
 
 Documenter.jl with MKDocs generated documentation:
 
-[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://mpastell.github.io/Weave.jl/stable)
-[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://mpastell.github.io/Weave.jl/latest)
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](http://weavejl.mpastell.com/stable/)
+[![](https://img.shields.io/badge/docs-dev-blue.svg)](http://weavejl.mpastell.com/dev/)
 
 ## Editor support
 
