@@ -49,10 +49,13 @@ function Base.run(doc::WeaveDoc; doctype = :auto,
     doc.fig_path = fig_path
     set_rc_params(doc, fig_path, fig_ext)
 
-    #New sandbox for each document with args exposed
-    if mod == :sandbox
-        sandbox = "WeaveSandBox$(rcParams[:doc_number])"
-        mod = Core.eval(Main, Meta.parse("module $sandbox\nend"))
+    if mod isa Symbol
+        if mod == :sandbox
+            #New sandbox for each document with args exposed
+            mod = Module(Symbol("WeaveSandBox", rcParams[:doc_number]))
+        else
+            mod = Module(mod)
+        end
     end
     @eval mod WEAVE_ARGS = Dict()
     merge!(mod.WEAVE_ARGS, args)

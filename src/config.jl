@@ -107,14 +107,8 @@ function header_args(doc::WeaveDoc, out_path, mod, fig_ext, fig_path,
     out_path = get(args, "out_path", out_path)
     out_path == ":pwd" && (out_path = :pwd)
     isa(out_path, Symbol) || (out_path = joinpath(dirname(doc.source), out_path))
-    if haskey(args, "mod")
-        m = args["mod"]
-        if m == "sandbox"
-            mod = :sandbox
-        else
-            @warn "The only valid header option for 'mod' is 'sandbox'. Ignoring value '$m'."
-        end
-    end
+    mod = get(args, "mod", mod)
+    mod isa Module || (mod = Symbol(mod))
     fig_path = get(args, "fig_path", fig_path)
     fig_ext = get(args, "fig_ext", fig_ext)
     cache_path = get(args, "cache_path", cache_path)
