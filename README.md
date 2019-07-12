@@ -61,8 +61,8 @@ weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"),
 
 Documenter.jl with MKDocs generated documentation:
 
-[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://mpastell.github.io/Weave.jl/stable)
-[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://mpastell.github.io/Weave.jl/latest)
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](http://weavejl.mpastell.com/stable/)
+[![](https://img.shields.io/badge/docs-dev-blue.svg)](http://weavejl.mpastell.com/dev/)
 
 ## Editor support
 
