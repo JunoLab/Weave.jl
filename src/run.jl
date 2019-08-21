@@ -228,14 +228,12 @@ function capture_output(expr, SandBox::Module, term, disp,
     reader = @async read(rw, String)
     try
         obj = Core.eval(SandBox, expr)
-        if (term || disp) && typeof(expr) == Expr && expr.head != :toplevel
+        if (term || disp) && (typeof(expr) != Expr || expr.head != :toplevel)
             obj != nothing && display(obj)
-        elseif typeof(expr) == Symbol
-            display(obj)
         #This shows images and lone variables, result can
         #Handle last line sepately
         elseif lastline && obj != nothing
-            (expr.head != :toplevel) && display(obj)
+            (typeof(expr) != Expr || expr.head != :toplevel) && display(obj)
         end
     catch E
         throw_errors && throw(E)
