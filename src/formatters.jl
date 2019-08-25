@@ -243,6 +243,16 @@ const adoc = AsciiDoc("AsciiDoc",
         :doctype => "asciidoc"
 ))
 
+function md_length_to_latex(def,reference)
+    if occursin("%",def)
+        _def = tryparse(Float64,replace(def,"%"=>""))
+        _def == nothing && return def
+        perc = round(_def/100,digits=2)
+        return "$perc$reference"
+    end
+    return def
+end
+
 function formatfigures(chunk, docformat::Union{Tex,JMarkdown2tex})
   fignames = chunk.figures
   caption = chunk.options[:fig_cap]
@@ -260,9 +270,9 @@ function formatfigures(chunk, docformat::Union{Tex,JMarkdown2tex})
   (f_pos == nothing) && (f_pos = "!h")
   #Set size
   attribs = ""
-  width == nothing || (attribs = "width=$width")
+  width == nothing || (attribs = "width=$(md_length_to_latex(width,"\\linewidth"))")
   (attribs != "" && height != nothing ) && (attribs *= ",")
-  height == nothing    || (attribs *= "height=$height")
+  height == nothing    || (attribs *= "height=$(md_length_to_latex(height,"\\paperheight"))")
 
     if f_env != nothing
       result *= "\\begin{$f_env}"
