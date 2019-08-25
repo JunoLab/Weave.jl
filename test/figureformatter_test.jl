@@ -7,7 +7,6 @@ options = merge(Weave.rcParams[:chunk_defaults], chunk.options)
 merge!(chunk.options, options)
 chunk.figures = ["figs/figures_plot1.png"]
 
-
 @test Weave.formatfigures(chunk, Weave.md2tex) == "\\includegraphics{figs/figures_plot1.png}\n"
 @test Weave.formatfigures(chunk, Weave.tex) == "\\includegraphics{figs/figures_plot1.png}\n"
 @test Weave.formatfigures(chunk, Weave.texminted) == "\\includegraphics{figs/figures_plot1.png}\n"
@@ -34,3 +33,9 @@ chunk.options[:label] = "somefig"
 @test Weave.formatfigures(chunk, Weave.pandoc) == "![Nice plot](figs/figures_plot1.png){width=100% #fig:somefig}\n"
 @test Weave.formatfigures(chunk, Weave.tex) == "\\begin{figure}[!h]\n\\center\n\\includegraphics[width=100%]{figs/figures_plot1.png}\n\\caption{Nice plot}\n\\label{fig:somefig}\n\\end{figure}\n"
 @test Weave.formatfigures(chunk, Weave.tex) == Weave.formatfigures(chunk, Weave.md2tex)
+
+chunk.options[:label] = nothing
+chunk.options[:fig_cap] = nothing
+chunk.options[:fig_env] = "center"
+chunk.options[:fig_pos] = ""
+@test Weave.formatfigures(chunk, Weave.tex) == "\\begin{center}\n\\includegraphics[width=100%]{figs/figures_plot1.png}\n\\end{center}\n"

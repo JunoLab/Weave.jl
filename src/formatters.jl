@@ -257,23 +257,20 @@ function formatfigures(chunk, docformat::Union{Tex,JMarkdown2tex})
     f_env = "figure"
   end
 
-  f_pos == nothing && (f_pos = "!h")
-
+  (f_pos == nothing) && (f_pos = "!h")
   #Set size
   attribs = ""
   width == nothing || (attribs = "width=$width")
   (attribs != "" && height != nothing ) && (attribs *= ",")
   height == nothing    || (attribs *= "height=$height")
 
-
-  if f_env != nothing
-      result *= """\\begin{$f_env}[$f_pos]\n"""
+    if f_env != nothing
+      result *= "\\begin{$f_env}"
+      (f_pos != "") && (result *= "[$f_pos]")
+      result *= "\n"
   end
 
-
   for fig = fignames
-
-
       if splitext(fig)[2] == ".tex" #Tikz figures
           figstring *= "\\resizebox{$width}{!}{\\input{$fig}}\n"
       else
