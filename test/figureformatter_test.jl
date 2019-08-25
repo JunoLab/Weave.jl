@@ -9,8 +9,8 @@ chunk.figures = ["figs/figures_plot1.png"]
 
 
 @test Weave.formatfigures(chunk, Weave.md2tex) == "\\includegraphics{figs/figures_plot1.png}\n"
-@test Weave.formatfigures(chunk, Weave.tex) == "\\includegraphics[]{figs/figures_plot1.png}\n"
-@test Weave.formatfigures(chunk, Weave.texminted) == "\\includegraphics[]{figs/figures_plot1.png}\n"
+@test Weave.formatfigures(chunk, Weave.tex) == "\\includegraphics{figs/figures_plot1.png}\n"
+@test Weave.formatfigures(chunk, Weave.texminted) == "\\includegraphics{figs/figures_plot1.png}\n"
 @test Weave.formatfigures(chunk, Weave.pandoc) == "![](figs/figures_plot1.png)\\ \n\n"
 @test Weave.formatfigures(chunk, Weave.github) == "![](figs/figures_plot1.png)\n"
 @test Weave.formatfigures(chunk, Weave.hugo) == "{{< figure src=\"../figs/figures_plot1.png\"  >}}"

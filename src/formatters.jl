@@ -243,69 +243,7 @@ const adoc = AsciiDoc("AsciiDoc",
         :doctype => "asciidoc"
 ))
 
-
-function formatfigures(chunk, docformat::Tex)
-    fignames = chunk.figures
-    caption = chunk.options[:fig_cap]
-    width = chunk.options[:out_width]
-    height = chunk.options[:out_height]
-    f_pos = chunk.options[:fig_pos]
-    f_env = chunk.options[:fig_env]
-
-    if f_env == nothing && caption != nothing
-      f_env = "figure"
-    end
-
-    f_pos == nothing && (f_pos = "!h")
-
-    result = ""
-    figstring = ""
-
-    #Set size
-    attribs = ""
-    width == nothing || (attribs = "width=$width")
-    (attribs != "" && height != nothing ) && (attribs *= ",")
-    height == nothing    || (attribs *= "height=$height")
-
-
-    if f_env != nothing
-        result *= """\\begin{$f_env}[$f_pos]\n"""
-    end
-
-
-    for fig = fignames
-
-
-        if splitext(fig)[2] == ".tex" #Tikz figures
-            figstring *= "\\resizebox{$width}{!}{\\input{$fig}}\n"
-        else
-            figstring *= "\\includegraphics[$attribs]{$fig}\n"
-        end
-    end
-
-    # Figure environment
-    if caption != nothing
-        result *= string("\\center\n",
-                         "$figstring",
-                         "\\caption{$caption}\n")
-    else
-        result *= figstring
-    end
-
-    if chunk.options[:label] != nothing && f_env !=nothing
-        label = chunk.options[:label]
-        result *= "\\label{fig:$label}\n"
-    end
-
-
-    if f_env != nothing
-        result *= "\\end{$f_env}\n"
-    end
-
-   return result
-end
-
-function formatfigures(chunk, docformat::JMarkdown2tex)
+function formatfigures(chunk, docformat::Union{Tex,JMarkdown2tex})
   fignames = chunk.figures
   caption = chunk.options[:fig_cap]
   width = chunk.options[:out_width]
