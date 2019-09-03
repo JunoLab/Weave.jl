@@ -34,6 +34,6 @@ weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"),
   doctype = "md2pdf")
   #Markdown
 weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"),
-      doctype="pandoc"
+      doctype="pandoc",
       out_path=:pwd)
 ```
