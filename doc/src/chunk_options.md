@@ -25,13 +25,13 @@ Weave currently supports the following chunk options with the following defaults
 
 * `fig_width`. Figure width passed to plotting library e.g. `800`
 * `fig_height` Figure height passed to plotting library
-* `out_width`. Width of saved figure in output markup e.g. "50%", "12cm", `\\0.5linewidth`
+* `out_width`. Width of saved figure in output markup e.g. "50%", "12cm", `0.5\linewidth`
 * `out_height`. Height of saved figure in output markup
 * `dpi`=96. Resolution of saved figures.
 * `fig_cap`. Figure caption.
 * `label`. Chunk label, will be used for figure labels in Latex as fig:label
 * `fig_ext`. File extension (format) of saved figures.
-* `fig_pos="htpb"`. Figure position in Latex.  
+* `fig_pos="!h"`. Figure position in Latex.
 * `fig_env="figure"`. Figure environment in Latex.
 
 

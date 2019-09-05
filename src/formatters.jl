@@ -243,69 +243,17 @@ const adoc = AsciiDoc("AsciiDoc",
         :doctype => "asciidoc"
 ))
 
-
-function formatfigures(chunk, docformat::Tex)
-    fignames = chunk.figures
-    caption = chunk.options[:fig_cap]
-    width = chunk.options[:out_width]
-    height = chunk.options[:out_height]
-    f_pos = chunk.options[:fig_pos]
-    f_env = chunk.options[:fig_env]
-
-    if f_env == nothing && caption != nothing
-      f_env = "figure"
+function md_length_to_latex(def,reference)
+    if occursin("%",def)
+        _def = tryparse(Float64,replace(def,"%"=>""))
+        _def == nothing && return def
+        perc = round(_def/100,digits=2)
+        return "$perc$reference"
     end
-
-    f_pos == nothing && (f_pos = "!h")
-
-    result = ""
-    figstring = ""
-
-    #Set size
-    attribs = ""
-    width == nothing || (attribs = "width=$width")
-    (attribs != "" && height != nothing ) && (attribs *= ",")
-    height == nothing    || (attribs *= "height=$height")
-
-
-    if f_env != nothing
-        result *= """\\begin{$f_env}[$f_pos]\n"""
-    end
-
-
-    for fig = fignames
-
-
-        if splitext(fig)[2] == ".tex" #Tikz figures
-            figstring *= "\\resizebox{$width}{!}{\\input{$fig}}\n"
-        else
-            figstring *= "\\includegraphics[$attribs]{$fig}\n"
-        end
-    end
-
-    # Figure environment
-    if caption != nothing
-        result *= string("\\center\n",
-                         "$figstring",
-                         "\\caption{$caption}\n")
-    else
-        result *= figstring
-    end
-
-    if chunk.options[:label] != nothing && f_env !=nothing
-        label = chunk.options[:label]
-        result *= "\\label{fig:$label}\n"
-    end
-
-
-    if f_env != nothing
-        result *= "\\end{$f_env}\n"
-    end
-
-   return result
+    return def
 end
 
-function formatfigures(chunk, docformat::JMarkdown2tex)
+function formatfigures(chunk, docformat::Union{Tex,JMarkdown2tex})
   fignames = chunk.figures
   caption = chunk.options[:fig_cap]
   width = chunk.options[:out_width]
@@ -319,23 +267,20 @@ function formatfigures(chunk, docformat::JMarkdown2tex)
     f_env = "figure"
   end
 
-  f_pos == nothing && (f_pos = "!h")
-
+  (f_pos == nothing) && (f_pos = "!h")
   #Set size
   attribs = ""
-  width == nothing || (attribs = "width=$width")
+  width == nothing || (attribs = "width=$(md_length_to_latex(width,"\\linewidth"))")
   (attribs != "" && height != nothing ) && (attribs *= ",")
-  height == nothing    || (attribs *= "height=$height")
+  height == nothing    || (attribs *= "height=$(md_length_to_latex(height,"\\paperheight"))")
 
-
-  if f_env != nothing
-      result *= """\\begin{$f_env}[$f_pos]\n"""
+    if f_env != nothing
+      result *= "\\begin{$f_env}"
+      (f_pos != "") && (result *= "[$f_pos]")
+      result *= "\n"
   end
 
-
   for fig = fignames
-
-
       if splitext(fig)[2] == ".tex" #Tikz figures
           figstring *= "\\resizebox{$width}{!}{\\input{$fig}}\n"
       else
