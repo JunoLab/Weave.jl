@@ -76,14 +76,15 @@ Weave an input document to output file.
 * `cache_path`: where of cached output will be saved.
 * `cache`: controls caching of code: `:off` = no caching, `:all` = cache everything,
   `:user` = cache based on chunk options, `:refresh`, run all code chunks and save new cache.
-* `throw_errors` if `false` errors are included in output document and the whole document is
+* `throw_errors`: if `false` errors are included in output document and the whole document is
     executed. if `true` errors are thrown when they occur.
-* `template` : Template (file path) or MustacheTokens for md2html or md2tex formats.
-* `highlight_theme` : Theme (Highlights.AbstractTheme) for used syntax highlighting
-* `css` : CSS (file path) used for md2html format
-* `pandoc_options` = String array of options to pass to pandoc for `pandoc2html` and
+* `template`: Template (file path) or MustacheTokens for md2html or md2tex formats.
+* `highlight_theme`: Theme (Highlights.AbstractTheme) for used syntax highlighting
+* `css`: CSS (file path) used for md2html format
+* `pandoc_options`: String array of options to pass to pandoc for `pandoc2html` and
    `pandoc2pdf` formats e.g. ["--toc", "-N"]
-* `latex_cmd` the command used to make pdf from .tex
+* `latex_cmd`: the command used to make pdf from .tex
+* `escape_unicode`: if set to true (default), try to convert unicode characters to respective LaTeX command
 
 **Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """
