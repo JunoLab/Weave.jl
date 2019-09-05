@@ -95,11 +95,14 @@ function weave(source ; doctype = :auto,
         throw_errors = false,
         template = nothing, highlight_theme = nothing, css = nothing,
         pandoc_options = String[]::Array{String},
-        latex_cmd = "xelatex")
+        latex_cmd = "xelatex",escape_unicode=true)
 
     doc = read_doc(source, informat)
     doctype == :auto && (doctype = detect_doctype(doc.source))
     doc.doctype = doctype
+
+    # Set unicode escape variable
+    doc.escape_unicode = escape_unicode
 
     # Read args from document header, overrides command line args
     if haskey(doc.header, "options")

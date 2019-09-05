@@ -112,3 +112,20 @@ ldoc = Weave.run(parsed, doctype = "md2tex")
 mdoc = Weave.run(parsed, doctype = "github")
 @test mdoc.chunks[1].rich_output == "\n\n### Small markdown sample\n\n**Hello** from `code` block.\n\n"
 @test mdoc.chunks[2].rich_output == "\n\n* one\n* two\n* three\n\n"
+
+
+# Test disable escaping of unicode
+content = """
+# Test chunk
+α
+"""
+
+dchunk = Weave.DocChunk(content, 1, 1)
+
+pformat = Weave.formats["md2tex"]
+
+f = Weave.format_chunk(dchunk, pformat.formatdict, pformat)
+@test f == "\\section{Test chunk}\n\\ensuremath{\\alpha}\n\n"
+
+f = Weave.format_chunk(dchunk, pformat.formatdict, pformat,escape_unicode=false)
+@test f == "\\section{Test chunk}\nα\n\n"

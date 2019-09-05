@@ -30,7 +30,7 @@ function format(doc::WeaveDoc)
     end
 
     for chunk in copy(doc.chunks)
-        result = format_chunk(chunk, formatdict, docformat)
+        result = format_chunk(chunk, formatdict, docformat; escape_unicode=doc.escape_unicode)
         push!(formatted, result)
     end
 
@@ -114,7 +114,7 @@ function strip_header(chunk::DocChunk)
   return chunk
 end
 
-function format_chunk(chunk::DocChunk, formatdict, docformat)
+function format_chunk(chunk::DocChunk, formatdict, docformat; escape_unicode=true)
     return join([format_inline(c) for c in chunk.content], "")
 end
 
@@ -141,7 +141,7 @@ function addspace(op, inline)
     return op
 end
 
-function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
+function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex; escape_unicode=true)
     out = IOBuffer()
     io = IOBuffer()
     for inline in chunk.content
@@ -157,10 +157,11 @@ function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
         end
     end
     ioformat!(io, out)
-    return uc2tex(String(take!(out)))
+    escape_unicode && return uc2tex(String(take!(out)))
+    return String(take!(out))
 end
 
-function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
+function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML; escape_unicode=true)
     out = IOBuffer()
     io = IOBuffer()
     fun = WeaveMarkdown.html
@@ -180,7 +181,7 @@ function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
     return String(take!(out))
 end
 
-function format_chunk(chunk::CodeChunk, formatdict, docformat)
+function format_chunk(chunk::CodeChunk, formatdict, docformat; escape_unicode=true)
     #Fill undefined options with format specific defaults
     chunk.options[:out_width] == nothing &&
         (chunk.options[:out_width] =  formatdict[:out_width])
@@ -196,7 +197,7 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
         chunk.content = indent(chunk.content, formatdict[:indent])
     end
 
-    chunk.content = format_code(chunk.content, docformat)
+    chunk.content = format_code(chunk.content, docformat; escape_unicode=escape_unicode)
 
     if !chunk.options[:eval]
         if chunk.options[:echo]
@@ -226,10 +227,10 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
         else
             if chunk.options[:wrap]
                 chunk.output = "\n" * wraplines(chunk.output, chunk.options[:line_width])
-                chunk.output = format_output(chunk.output, docformat)
+                chunk.output = format_output(chunk.output, docformat, escape_unicode=escape_unicode)
             else
                 chunk.output = "\n" * rstrip(chunk.output)
-                chunk.output = format_output(chunk.output, docformat)
+                chunk.output = format_output(chunk.output, docformat, escape_unicode=escape_unicode)
             end
 
             if haskey(formatdict, :indent)
@@ -253,26 +254,30 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
     return result
 end
 
-function format_output(result::AbstractString, docformat)
+function format_output(result::AbstractString, docformat;escape_unicode=true)
   return result
 end
 
-function format_output(result::AbstractString, docformat::JMarkdown2HTML)
+function format_output(result::AbstractString, docformat::JMarkdown2HTML;escape_unicode=true)
   return Markdown.htmlesc(result)
 end
 
-function format_output(result::AbstractString, docformat::JMarkdown2tex)
-  return uc2tex(result, true)
+function format_output(result::AbstractString, docformat::JMarkdown2tex;escape_unicode=true)
+  # Highligts has some extra escaping defined, eg of $, ", ...
+  result_escaped = sprint( (io, x) -> Highlights.Format.escape(io, MIME("text/latex"), x, charescape=true), result)
+  escape_unicode && return uc2tex(result_escaped, true)
+  return result_escaped
 end
 
-function format_code(result::AbstractString, docformat)
+function format_code(result::AbstractString, docformat;escape_unicode=true)
   return result
 end
 
-function format_code(result::AbstractString, docformat::JMarkdown2tex)
+function format_code(result::AbstractString, docformat::JMarkdown2tex;escape_unicode=true)
   highlighted = highlight(MIME("text/latex"), strip(result),
         Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
-  return uc2tex(highlighted)
+  escape_unicode && return uc2tex(highlighted)
+  return highlighted
   #return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
 end
 
@@ -305,12 +310,12 @@ function texify(s)
     return ts
 end
 
-function format_code(result::AbstractString, docformat::JMarkdown2HTML)
+function format_code(result::AbstractString, docformat::JMarkdown2HTML;escape_unicode=true)
   return highlight(MIME("text/html"), strip(result),
     Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
 end
 
-function format_code(result::AbstractString, docformat::Pandoc2HTML)
+function format_code(result::AbstractString, docformat::Pandoc2HTML;escape_unicode=true)
     return highlight(MIME("text/html"), strip(result),
       Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
 end
