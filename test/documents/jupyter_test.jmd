@@ -11,7 +11,8 @@ And here's some code
 Here's some more complicated code
 
 ```julia
-    @code_native +(1.0, π)
-    using Test
-    @test 1 == 1
+using InteractiveUtils
+@code_native +(1.0, π)
+using Test
+@test 1 == 1
 ```

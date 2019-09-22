@@ -1,0 +1,17 @@
+Here's some text
+
+And here's some code
+
+```julia; output_as_code=true
+print("    x = 1
+    y = 2
+    @show x + y
+")
+```
+
+Here's some more complicated code
+
+```julia; output_as_code=true
+txt = read(WEAVE_ARGS["filename"], String)
+print(txt)
+```
