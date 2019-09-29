@@ -77,7 +77,7 @@ In Markdown and Noweb input formats documentation chunks are the parts that aren
 Markdown code chunks are defined using fenced code blocks with options following on the same line. e.g. to hide code from output you can use:
 
 ```
- ```julia; echo=false`
+ ```julia; echo=false
 ```
 
 [Sample document]( https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jmd)
