@@ -19,12 +19,11 @@ mutable struct WeaveDoc
     highlight_theme
     fig_path::AbstractString
     chunk_defaults::Dict{Symbol,Any}
-    escape_unicode::Bool
     function WeaveDoc(source, chunks, header)
         path, fname = splitdir(abspath(source))
         basename = splitext(fname)[1]
         new(source, basename, path, chunks, "", nothing, "", "", header,
-          "", "", Highlights.Themes.DefaultTheme, "", deepcopy(rcParams[:chunk_defaults]),true)
+          "", "", Highlights.Themes.DefaultTheme, "", deepcopy(rcParams[:chunk_defaults]))
     end
 end
 

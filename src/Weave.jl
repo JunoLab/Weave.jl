@@ -84,7 +84,9 @@ Weave an input document to output file.
 * `pandoc_options`: String array of options to pass to pandoc for `pandoc2html` and
    `pandoc2pdf` formats e.g. ["--toc", "-N"]
 * `latex_cmd`: the command used to make pdf from .tex
-* `escape_unicode`: if set to true (default), try to convert unicode characters to respective LaTeX command
+* `latex_keep_unicode`: if set to true (default is false), do not convert unicode characters to their
+respective latex representation. This is especially useful if a font and tex-engine with support for unicode
+characters are used.
 
 **Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
 """
@@ -96,14 +98,12 @@ function weave(source ; doctype = :auto,
         throw_errors = false,
         template = nothing, highlight_theme = nothing, css = nothing,
         pandoc_options = String[]::Array{String},
-        latex_cmd = "xelatex",escape_unicode=true)
+        latex_cmd = "xelatex",latex_keep_unicode=false)
 
     doc = read_doc(source, informat)
     doctype == :auto && (doctype = detect_doctype(doc.source))
     doc.doctype = doctype
 
-    # Set unicode escape variable
-    doc.escape_unicode = escape_unicode
 
     # Read args from document header, overrides command line args
     if haskey(doc.header, "options")
@@ -126,7 +126,7 @@ function weave(source ; doctype = :auto,
               mod = mod,
               out_path=out_path, args = args,
               fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache,
-              throw_errors = throw_errors)
+              throw_errors = throw_errors,latex_keep_unicode=latex_keep_unicode)
       formatted = format(doc)
 
       outname = get_outname(out_path, doc)
