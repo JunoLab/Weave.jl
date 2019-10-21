@@ -157,7 +157,8 @@ function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
         end
     end
     ioformat!(io, out)
-    return uc2tex(String(take!(out)))
+    formatdict[:keep_unicode] || return uc2tex(String(take!(out)))
+    return String(take!(out))
 end
 
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
@@ -262,7 +263,10 @@ function format_output(result::AbstractString, docformat::JMarkdown2HTML)
 end
 
 function format_output(result::AbstractString, docformat::JMarkdown2tex)
-  return uc2tex(result, true)
+  # Highligts has some extra escaping defined, eg of $, ", ...
+  result_escaped = sprint( (io, x) -> Highlights.Format.escape(io, MIME("text/latex"), x, charescape=true), result)
+  docformat.formatdict[:keep_unicode] || return uc2tex(result_escaped, true)
+  return result_escaped
 end
 
 function format_code(result::AbstractString, docformat)
@@ -272,7 +276,8 @@ end
 function format_code(result::AbstractString, docformat::JMarkdown2tex)
   highlighted = highlight(MIME("text/latex"), strip(result),
         Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
-  return uc2tex(highlighted)
+  docformat.formatdict[:keep_unicode] || return uc2tex(highlighted)
+  return highlighted
   #return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
 end
 

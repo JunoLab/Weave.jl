@@ -26,13 +26,18 @@ Run code chunks and capture output from parsed document.
 function Base.run(doc::WeaveDoc; doctype = :auto,
         mod::Union{Module, Symbol} = :sandbox, out_path=:doc,
         args=Dict(), fig_path = "figures", fig_ext = nothing,
-        cache_path = "cache", cache = :off, throw_errors=false)
+        cache_path = "cache", cache = :off, throw_errors=false, latex_keep_unicode=false)
     #cache :all, :user, :off, :refresh
 
     doc.cwd = get_cwd(doc, out_path)
     doctype == :auto && (doctype = detect_doctype(doc.source))
     doc.doctype = doctype
     doc.format = formats[doctype]
+
+    if (haskey(doc.format.formatdict, :keep_unicode))
+        doc.format.formatdict[:keep_unicode] = latex_keep_unicode
+    end
+        
     isdir(doc.cwd) || mkpath(doc.cwd)
 
     if occursin("2pdf", doctype) && cache == :off

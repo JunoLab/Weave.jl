@@ -18,7 +18,8 @@ const tex = Tex("Latex with custom code environments",
                                          :fig_env=> "figure",
                                          :fig_pos => "htpb",
                                          :doctype => "tex",
-                                         :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"]
+                                         :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"],
+                                         :keep_unicode => false,
                                          ))
 
 const texminted = Tex("Latex using minted for highlighting",
@@ -35,7 +36,8 @@ const texminted = Tex("Latex using minted for highlighting",
                                          :fig_env=> "figure",
                                          :fig_pos => "htpb",
                                          :doctype => "texminted",
-                                         :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"]
+                                         :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"],
+                                         :keep_unicode => false,
                                          ))
 
 struct Pandoc
@@ -147,7 +149,8 @@ const md2tex = JMarkdown2tex("Julia markdown to latex", Dict{Symbol,Any}(
         :out_width => "\\linewidth",
         :mimetypes => ["application/pdf", "image/png", "image/jpg", "text/latex",
                         "text/markdown", "text/plain"],
-        :doctype=> "md2tex"))
+        :doctype=> "md2tex",
+        :keep_unicode=>false))
 
 
 struct MultiMarkdown

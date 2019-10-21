@@ -112,3 +112,42 @@ ldoc = Weave.run(parsed, doctype = "md2tex")
 mdoc = Weave.run(parsed, doctype = "github")
 @test mdoc.chunks[1].rich_output == "\n\n### Small markdown sample\n\n**Hello** from `code` block.\n\n"
 @test mdoc.chunks[2].rich_output == "\n\n* one\n* two\n* three\n\n"
+
+
+# Test disable escaping of unicode
+content = """
+# Test chunk
+α
+"""
+
+dchunk = Weave.DocChunk(content, 1, 1)
+
+pformat = Weave.formats["md2tex"]
+
+f = Weave.format_chunk(dchunk, pformat.formatdict, pformat)
+@test f == "\\section{Test chunk}\n\\ensuremath{\\alpha}\n\n"
+pformat.formatdict[:keep_unicode] = true
+f = Weave.format_chunk(dchunk, pformat.formatdict, pformat)
+@test f == "\\section{Test chunk}\nα\n\n"
+
+function doc_from_string(str)
+    parsed = Weave.parse_doc(str,"markdown")
+    header = Weave.parse_header(parsed[1])
+    Weave.WeaveDoc("",parsed,header)
+end
+
+doc_content = """
+```julia
+α = 10
+```
+"""
+
+parsed = doc_from_string(doc_content)
+ldoc = Weave.run(parsed, doctype = "md2tex")
+@test occursin(Weave.uc2tex("α"),Weave.format(ldoc))
+@test !occursin("α",Weave.format(ldoc))
+
+parsed = doc_from_string(doc_content)
+ldoc = Weave.run(parsed, doctype = "md2tex",latex_keep_unicode=true)
+@test occursin("α",Weave.format(ldoc))
+@test !occursin(Weave.uc2tex("α"),Weave.format(ldoc))
