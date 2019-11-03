@@ -37,7 +37,7 @@ Templates are rendered using [Mustache.jl](https://github.com/jverzani/Mustache.
 
 ## Supported Markdown syntax
 
-The markdown variant used by Weave is [Julia markdown](http://docs.julialang.org/en/latest/manual/documentation.html#Markdown-syntax-1). In addition Weave supports few additional Markdown features:
+The markdown variant used by Weave is [Julia markdown](https://docs.julialang.org/en/v1/stdlib/Markdown/#). In addition Weave supports few additional Markdown features:
 
 **Comments**
 
