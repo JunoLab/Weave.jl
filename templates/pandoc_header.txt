@@ -1,3 +1,9 @@
 
 
 \usepackage[a4paper,text={16.5cm,25.2cm},centering]{geometry}
+
+\IfFileExists{caption.sty}{
+\usepackage{caption}}{}
+
+\IfFileExists{subcaption.sty}{
+\usepackage{subcaption}}{}
