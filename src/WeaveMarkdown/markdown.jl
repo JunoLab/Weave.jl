@@ -4,7 +4,9 @@ using Markdown
 import Markdown: @trigger, @breaking, Code, MD, withstream, startswith, LaTeX
 
 function __init__()
-    # NOTE: **overwrite** `Markdown.latex` function
+    # NOTE:
+    # overwriting `Markdown.latex` function should be done here in order to allow
+    # incremental precompilations
     Markdown.eval(quote
         function latex(io::IO, tex::Markdown.LaTeX)
             math_envs = ["align", "equation", "eqnarray"]
