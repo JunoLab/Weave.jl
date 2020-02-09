@@ -132,10 +132,10 @@ function weave(
     css != nothing && (doc.css = css)
 
     doc = run(doc, doctype = doctype,
-    mod = mod,
-    out_path=out_path, args = args,
-    fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache,
-    throw_errors = throw_errors,latex_keep_unicode=latex_keep_unicode)
+                mod = mod,
+                out_path=out_path, args = args,
+                fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache,
+                throw_errors = throw_errors,latex_keep_unicode=latex_keep_unicode)
     formatted = format(doc)
 
     outname = get_outname(out_path, doc)
