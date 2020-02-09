@@ -108,7 +108,7 @@ function run_latex(doc::WeaveDoc, outname, latex_cmd = "xelatex")
   old_wd = pwd()
   cd(doc.cwd)
   xname = basename(outname)
-  @info("Weaved code to $outname. Running $latex_cmd")
+  @info("Weaved code to $outname . Running $latex_cmd") # space before '.' added for link to be clickable in Juno terminal
   textmp = mktempdir(".")
   try
     out = read(`$latex_cmd -shell-escape $xname -aux-directory $textmp -include-directory $(doc.cwd)`, String)
