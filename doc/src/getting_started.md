@@ -2,15 +2,17 @@
 # Getting started
 
 The best way to get started using Weave.jl is to look at the example input and
-output documents. Examples for different formats are included in the packages `examples` directory.
+output documents. Examples for different formats are included in the packages
+[`examples`](https://github.com/JunoLab/Weave.jl/tree/master/examples) directory.
 
-First have a look at source document using markdown code chunks and Plots.jl for
-figures: [FIR_design.jmd](../examples/FIR_design.jmd) and then see the
+First have a look at source document using markdown code chunks and
+[Plots.jl](https://github.com/JuliaPlots/Plots.jl) for figures:
+[FIR_design.jmd](../examples/FIR_design.jmd) and then see the
 output in different formats:
 
-  - HTML: [FIR_design.html](../examples/FIR_design.html)
-  - pdf: [FIR_design.pdf](../examples/FIR_design.pdf)
-  - Pandoc markdown: [FIR_design.txt](../examples/FIR_design.txt)
+- HTML: [FIR_design.html](../examples/FIR_design.html)
+- pdf: [FIR_design.pdf](../examples/FIR_design.pdf)
+- Pandoc markdown: [FIR_design.txt](../examples/FIR_design.txt)
 
 *Producing pdf output requires that you have XeLateX installed.*
 
