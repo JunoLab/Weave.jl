@@ -1,7 +1,22 @@
-#This module extends the julia markdown parser to improve compatibility with Jupyter, Pandoc etc.
+# This module extends the julia markdown parser to improve compatibility with Jupyter, Pandoc etc.
 module WeaveMarkdown
 using Markdown
 import Markdown: @trigger, @breaking, Code, MD, withstream, startswith, LaTeX
+
+function __init__()
+    # NOTE:
+    # overwriting `Markdown.latex` function should be done here in order to allow
+    # incremental precompilations
+    Markdown.eval(quote
+        function latex(io::IO, tex::Markdown.LaTeX)
+            math_envs = ["align", "equation", "eqnarray"]
+            use_dollars = !any([occursin("\\begin{$me", tex.formula) for me in math_envs])
+            use_dollars && write(io, "\\[")
+            write(io, string("\n", tex.formula, "\n"))
+            use_dollars && write(io, "\\]\n")
+        end
+    end)
+end
 
 mutable struct Comment
     text::String

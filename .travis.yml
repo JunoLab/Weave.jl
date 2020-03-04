@@ -1,13 +1,18 @@
-
 language: julia
+
 julia:
   - 1.0
-  - 1.1
+  - 1.3
+  - 1.4
+
 matrix:
   allow_failures:
-    - julia: 1.1
+    - julia: 1.4
+    - julia: nightly
+
 notifications:
   email: false
+
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia --check-bounds=yes -e 'using Pkg; Pkg.build()'
@@ -17,7 +22,7 @@ after_success:
 jobs:
   include:
     - stage: "Documentation"
-      julia: 1.0
+      julia: 1.3
       os: linux
       script:
         - julia --project=doc/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd()));
