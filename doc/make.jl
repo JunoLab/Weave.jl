@@ -19,6 +19,5 @@ include("make_examples.jl")
 
 deploydocs(
     repo = "github.com/mpastell/Weave.jl.git",
-    target = "build",
     push_preview = true,
 )
