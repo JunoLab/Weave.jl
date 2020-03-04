@@ -25,5 +25,4 @@ if !haskey(ENV, "TRAVIS")
     weave("../examples/FIR_design_plots.jl", doctype = "md2pdf", out_path = "build/examples")
 end
 
-
 cd(start_dir)
