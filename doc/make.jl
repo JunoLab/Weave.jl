@@ -1,5 +1,7 @@
 using Documenter, Weave
 
+@show haskey(ENV, "DOCUMENTER_KEY")
+
 makedocs(
     modules = [Weave],
     format = Documenter.HTML(
@@ -18,7 +20,7 @@ makedocs(
     ],
 )
 
-include("make_examples.jl")
+# include("make_examples.jl")
 
 deploydocs(
     repo = "github.com/JunoLab/Weave.jl.git",
