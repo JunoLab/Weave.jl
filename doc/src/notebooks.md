@@ -18,7 +18,7 @@ and the output doesn't always work properly,
 see [#116](https://github.com/mpastell/Weave.jl/issues/116).
 
 ```@docs
-notebook(source::String, out_path=:pwd)
+notebook
 ```
 
 You might want to use the `convert_doc` method below instead and run the code in Jupyter.
