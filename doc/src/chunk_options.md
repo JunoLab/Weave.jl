@@ -46,10 +46,10 @@ options:
 ---
 ```
 
-You can also set or change the default chunk options for a document either before weave using the `set_chunk_defaults function`.
+You can also set or change the default chunk options for a document either before weave using the `set_chunk_defaults` function.
 
 ```@docs
-set_chunk_defaults(opts)
-get_chunk_defaults()
-restore_chunk_defaults()
+set_chunk_defaults
+get_chunk_defaults
+restore_chunk_defaults
 ```
