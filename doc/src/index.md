@@ -20,7 +20,7 @@ and [Sweave](https://stat.ethz.ch/R-manual/R-patched/library/utils/doc/Sweave.pd
 * Simple caching of results
 * Convert to and from IJulia notebooks
 
-![Weave code and output](http://mpastell.com/images/weave_demo.png)
+![Weave in Juno demo](./assets/demo.png)
 
 ## Contents
 
