@@ -25,7 +25,8 @@ and figures.
 
 **Citing Weave:** *Pastell, Matti. 2017. Weave.jl: Scientific Reports Using Julia. The Journal of Open Source Software. http://dx.doi.org/10.21105/joss.00204*
 
-![Weave in Juno demo](./doc/src/assets/demo.png)
+![Weave in Juno demo](https://user-images.githubusercontent.com/40514306/76081328-32f41900-5fec-11ea-958a-375f77f642a2.png)
+
 
 ## Installation
 
