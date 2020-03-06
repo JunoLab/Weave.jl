@@ -41,14 +41,13 @@ const defaultParams =
 const rcParams = deepcopy(defaultParams)
 
 """
-`set_chunk_defaults(opts::Dict{Symbol, Any})`
+    set_chunk_defaults(opts::Dict{Symbol, Any})
 
-Set default options for code chunks, use get_chunk_defaults
-to see the current values.
+Set default options for code chunks, use [`get_chunk_defaults`](@ref) to see the current values.
 
-e.g. set default dpi to 200 and fig_width to 8
+E.g.: set default `dpi` to 200 and `fig_width` to 8
 
-```
+```julia
 julia> set_chunk_defaults(Dict{Symbol, Any}(:dpi => 200, fig_width => 8))
 ```
 """

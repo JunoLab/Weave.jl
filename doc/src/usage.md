@@ -199,5 +199,5 @@ You can call `include_weave` on a Weave document to run the contents
 of all code chunks in Julia.
 
 ```@docs
-include_weave(doc, informat=:auto)
+include_weave
 ```

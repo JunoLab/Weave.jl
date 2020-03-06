@@ -175,7 +175,7 @@ function weave(doc::AbstractString, doctype::AbstractString)
 end
 
 """
-  notebook(source::String; out_path=:pwd, timeout=-1, nbconvert_options="", jupyter_path = "jupyter")
+    notebook(source::String; out_path=:pwd, timeout=-1, nbconvert_options="", jupyter_path = "jupyter")
 
 Convert Weave document `source` to Jupyter notebook and execute the code
 using nbconvert. **Ignores** all chunk options
