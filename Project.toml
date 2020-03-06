@@ -17,6 +17,7 @@ Serialization = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 
 [compat]
+Compat = "2, 3"
 Highlights = "0.3.1, 0.4"
 JSON = "0.21"
 Mustache = "0.4.1, 0.5, 1"
