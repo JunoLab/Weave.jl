@@ -294,7 +294,7 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
 
     #Run post_execute chunks
     for hook in postexecute_hooks
-      chunk = Compat.invokelatest(hook, chunk)
+        chunk = Compat.invokelatest(hook, chunk)
     end
 
     if chunk.options[:term]
@@ -305,6 +305,13 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
         chunks = collect_results(chunk, ScriptResult())
     end
 
+    if (chunk.options[:output_as_code])
+        newchunk = deepcopy(chunk)
+        newchunk.options[:output_as_code] = false
+        newchunk.options[:eval] = chunk.options[:output_eval]
+        newchunk.content = prod([r.stdout for r in chunk.result])
+        chunks = eval_chunk(newchunk, report, SandBox)
+    end
       #else
      #   chunk.options[:fig] && (chunk.figures = copy(report.figures))
     #end
