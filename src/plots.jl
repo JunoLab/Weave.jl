@@ -1,4 +1,6 @@
 module WeavePlots
+
+using Base64
 import Plots
 import Weave
 
