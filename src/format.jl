@@ -1,6 +1,5 @@
 import Mustache, Highlights
 import .WeaveMarkdown
-using Compat
 using Dates
 using Markdown
 using REPL.REPLCompletions: latex_symbols

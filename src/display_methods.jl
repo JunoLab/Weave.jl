@@ -1,4 +1,3 @@
-using Compat
 using Markdown
 import .WeaveMarkdown
 
@@ -50,11 +49,11 @@ function Base.display(report::Report, data)
         if Base.invokelatest(showable, m, data)
             try
                 if !istextmime(m)
-                    Compat.invokelatest(display, report, m, data)
+                    Base.invokelatest(display, report, m, data)
                 elseif report.cur_chunk.options[:term]
-                    Compat.invokelatest(display, report, "text/plain", data)
+                    Base.invokelatest(display, report, "text/plain", data)
                 else
-                    Compat.invokelatest(display, report, m, data)
+                    Base.invokelatest(display, report, m, data)
                 end
             catch e
                 throw(e)

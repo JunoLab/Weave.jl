@@ -4,7 +4,6 @@ version = "0.9.3"
 
 [deps]
 Base64 = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
-Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 Highlights = "eafb193a-b7ab-5a9e-9068-77385905fa72"
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
@@ -17,7 +16,6 @@ Serialization = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 
 [compat]
-Compat = "2, 3"
 Highlights = "0.3.1, 0.4"
 JSON = "0.21"
 Mustache = "0.4.1, 0.5, 1"
