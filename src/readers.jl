@@ -269,6 +269,13 @@ function parse_doc(document::String, format::NotebookInput)
     srctext = "\n" * join(cell["source"], "")
 
     if cell["cell_type"] == "code"
+      if haskey(cell["metadata"], "jupyter")
+        if cell["metadata"]["jupyter"]["source_hidden"]
+          opt_string = " echo=false"
+        end
+      else
+        opt_string = ""
+      end
       chunk = CodeChunk(rstrip(srctext), codeno, 0, opt_string, options)
       push!(parsed, chunk)
       codeno += 1
@@ -278,8 +285,7 @@ function parse_doc(document::String, format::NotebookInput)
       docno +=1
     end
   end
-
-return parsed
+  return parsed
 end
 
 #Use this if regex is undefined
