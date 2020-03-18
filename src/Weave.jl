@@ -1,6 +1,5 @@
 module Weave
 import Highlights
-using Compat
 using Requires
 
 function __init__()

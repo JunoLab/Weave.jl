@@ -37,7 +37,7 @@ function Base.run(doc::WeaveDoc; doctype = :auto,
     if (haskey(doc.format.formatdict, :keep_unicode))
         doc.format.formatdict[:keep_unicode] = latex_keep_unicode
     end
-        
+
     isdir(doc.cwd) || mkpath(doc.cwd)
 
     if occursin("2pdf", doctype) && cache == :off
@@ -279,7 +279,7 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
 
     #Run preexecute_hooks
     for hook in preexecute_hooks
-      chunk = Compat.invokelatest(hook, chunk)
+      chunk = Base.invokelatest(hook, chunk)
     end
 
     report.fignum = 1
@@ -294,7 +294,7 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
 
     #Run post_execute chunks
     for hook in postexecute_hooks
-      chunk = Compat.invokelatest(hook, chunk)
+      chunk = Base.invokelatest(hook, chunk)
     end
 
     if chunk.options[:term]
