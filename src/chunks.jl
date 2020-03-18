@@ -81,8 +81,6 @@ mutable struct InlineCode <: Inline
     end
 end
 
-mutable struct TermResult end
-
-mutable struct ScriptResult end
-
-mutable struct CollectResult end
+struct TermResult end
+struct ScriptResult end
+struct CollectResult end
