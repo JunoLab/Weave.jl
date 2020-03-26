@@ -217,7 +217,7 @@ Convert Weave document `source` to Jupyter notebook and execute the code using `
   * `"somepath"`: `String` of output directory e.g. `"~/outdir"`, or of filename e.g. `"~/outdir/outfile.tex"`
 - `timeout = -1`: nbconvert cell timeout in seconds. Defaults to `-1` (no timeout)
 - `nbconvert_options = ""`: `String` of additional options to pass to nbconvert, such as `"--allow-errors"`
-- `jupyter_path = "jupyter"`: Path/command for the Jupyter you want to use. Defaults to "jupyter," which runs whatever is linked/alias to that
+- `jupyter_path = "jupyter"`: Path/command for the Jupyter you want to use. Defaults to `"jupyter"`, which runs whatever is linked/alias to that
 """
 function notebook(
     source::AbstractString;

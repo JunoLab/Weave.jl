@@ -45,7 +45,7 @@ const rcParams = deepcopy(defaultParams)
 
 Set default options for code chunks, use [`get_chunk_defaults`](@ref) to see the current values.
 
-E.g.: set default `dpi` to 200 and `fig_width` to 8
+E.g.: set default `dpi` to `200` and `fig_width` to `8`
 
 ```julia
 julia> set_chunk_defaults(Dict{Symbol, Any}(:dpi => 200, fig_width => 8))
@@ -57,7 +57,7 @@ function set_chunk_defaults(opts::Dict{Symbol, Any})
 end
 
 """
-`get_chunk_defaults()`
+    get_chunk_defaults()
 
 Get default options used for code chunks.
 """
@@ -66,9 +66,9 @@ function get_chunk_defaults()
 end
 
 """
-`restore_chunk_defaults()`
+    restore_chunk_defaults()
 
-Restore Weave.jl default chunk options
+Restore Weave.jl default chunk options.
 """
 function restore_chunk_defaults()
   rcParams[:chunk_defaults] = defaultParams[:chunk_defaults]
@@ -93,9 +93,9 @@ end
 getvalue(d::Dict, key , default) = haskey(d, key) ? d[key] : default
 
 """
-header_args(doc::WeaveDoc)`
+    header_args(doc::WeaveDoc)
 
-Get weave arguments from document header
+Get weave arguments from document header.
 """
 function header_args(doc::WeaveDoc, out_path, mod, fig_ext, fig_path,
                             cache_path, cache, throw_errors,template,
@@ -129,9 +129,9 @@ function header_args(doc::WeaveDoc, out_path, mod, fig_ext, fig_path,
 end
 
 """
-`header_chunk_defaults!(doc::WeaveDoc)`
+    header_chunk_defaults!(doc::WeaveDoc)
 
-Get chunk defaults from header and update
+Get chunk defaults from header and update.
 """
 function header_chunk_defaults!(doc::WeaveDoc)
     for key in keys(doc.chunk_defaults)
