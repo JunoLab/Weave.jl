@@ -31,16 +31,15 @@ function detect_outformat(outfile::String)
 end
 
 """
-`convert_doc(infile::AbstractString, outfile::AbstractString; format = nothing)`
+    convert_doc(infile::AbstractString, outfile::AbstractString; format::Union{Nothing,AbstractString} = nothing)
 
 Convert Weave documents between different formats
 
-* `infile` = Name of the input document
-* `outfile` = Name of the output document
-* `format` = Output format (optional). Detected from outfile extension, but can
-  be set to `"script"`, `"markdown"`, `"notebook"` or `"noweb"`.
+- `infile`: Path of the input document
+- `outfile`: Path of the output document
+- `format = nothing`: Output document format (optional). It will be detected automatically from the `outfile` extension. You can also specify either of `"script"`, `"markdown"`, `"notebook"`, or `"noweb"`
 """
-function convert_doc(infile::AbstractString, outfile::AbstractString; format = nothing)
+function convert_doc(infile::AbstractString, outfile::AbstractString; format::Union{Nothing,AbstractString} = nothing)
   doc = read_doc(infile)
 
   if format == nothing
