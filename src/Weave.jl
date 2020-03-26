@@ -21,7 +21,11 @@ end
 
 
 """
-    tangle(source; out_path=:doc, informat=:auto)
+    tangle(
+        source::AbstractString;
+        out_path::Union{Symbol,AbstractString} = :doc,
+        informat::Union{Symbol,AbstractString} = :auto
+    )
 
 Tangle source code from input document to .jl file.
 
@@ -34,7 +38,7 @@ Tangle source code from input document to .jl file.
   * `"somepath"`: `String` of output directory e.g. `"~/outdir"`, or of filename e.g. `"~/outdir/outfile.tex"`
 """
 function tangle(
-    source;
+    source::AbstractString;
     out_path::Union{Symbol,AbstractString} = :doc,
     informat::Union{Symbol,AbstractString} = :auto
 )

@@ -11,7 +11,7 @@ Weave document with markup and julia code using `Plots.jl` for plots,
 > A prepared example
 
 ```julia
-#First add depencies for the example
+# First add depencies for the example
 using Pkg; Pkg.add.(["Plots", "DSP"])
 using Weave
 weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"), out_path=:pwd)
@@ -26,7 +26,7 @@ weave
 Tangling extracts the code from document:
 
 ```@docs
-tangle(source)
+tangle
 ```
 
 ## Supported output formats
