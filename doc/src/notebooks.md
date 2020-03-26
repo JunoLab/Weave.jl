@@ -21,14 +21,13 @@ see [#116](https://github.com/mpastell/Weave.jl/issues/116).
 notebook
 ```
 
-You might want to use the `convert_doc` method below instead and run the code in Jupyter.
+You might want to use the [`convert_doc`](@ref) method below instead and run the code in Jupyter.
 
 You can select the `jupyter` used to execute the notebook with the `jupyter_path` argument (this defaults to the string "jupyter," i.e., whatever you have linked to that location.)
 
 ## Converting between formats
 
-You can convert between all supported input formats using the `convert_doc`
-function.
+You can convert between all supported input formats using the [`convert_doc`](@ref) function.
 
 To convert from script to notebook:
 
@@ -43,5 +42,5 @@ convert_doc("FIR_design.ipynb", "FIR_design.jmd")
 ```
 
 ```@docs
-convert_doc(infile::String, outfile::String)
+convert_doc(infile::AbstractString, outfile::AbstractString)
 ```

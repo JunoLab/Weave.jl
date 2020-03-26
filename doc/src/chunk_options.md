@@ -11,15 +11,15 @@ Weave currently supports the following chunk options with the following defaults
 ## Options for code
 
 * `echo = true`. Echo the code in the output document. If `false` the source code will be hidden.
-* `results = "markup"`. The output format of the printed results. "markup" for literal block, "hidden" for hidden results or anything else for raw output (I tend to use ‘tex’ for Latex and ‘rst’ for rest. Raw output is useful if you wan’t to e.g. create tables from code chunks.
-* `eval = true`. Evaluate the code chunk. If false the chunk won’t be executed.
-* `term=false`. If true the output emulates a REPL session. Otherwise only stdout and figures will be included in output.
+* `results = "markup"`. The output format of the printed results. `"markup"` for literal block, `"hidden"` for hidden results, or anything else for raw output (I tend to use `"tex"` for Latex and `"rst"` for rest. Raw output is useful if you want to e.g. create tables from code chunks.
+* `eval = true`. Evaluate the code chunk. If `false` the chunk won’t be executed.
+* `term=false`. If `true` the output emulates a REPL session. Otherwise only stdout and figures will be included in output.
 * `label`. Chunk label, will be used for figure labels in Latex as fig:label
 * `wrap = true`. Wrap long lines from output.
 * `line_width = 75`. Line width for wrapped lines.
 * `cache = false`. Cache results, depends on `cache` parameter on `weave` function.
 * `hold = false`. Hold all results until the end of the chunk.
-* `tangle = true`. Set tangle to false to exclude chunk from tangled code.
+* `tangle = true`. Set tangle to `false` to exclude chunk from tangled code.
 
 ## Options for figures
 
@@ -37,7 +37,7 @@ Weave currently supports the following chunk options with the following defaults
 
 ## Set default chunk options
 
-You can set the default chunk options (and `weave` arguments) for a document using the YAML header `options` field. e.g to set the default `out_width` of all figures you can use:
+You can set the default chunk options (and `weave` arguments) for a document using the YAML header `options` field. E.g. to set the default `out_width` of all figures you can use:
 
 ```yaml
 ---
