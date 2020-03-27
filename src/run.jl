@@ -1,32 +1,46 @@
 using Base64
 
 """
-    run(doc::WeaveDoc; doctype = :auto,
-        mod::Union{Module, Symbol} = :sandbox, out_path=:doc,
-        args=Dict(), fig_path = "figures", fig_ext = nothing,
-        cache_path = "cache", cache = :off, throw_errors=false)
+    run(doc::WeaveDoc; kwargs...)
 
-Run code chunks and capture output from parsed document.
+Run code chunks and capture output from the parsed document.
 
-* `doctype`: :auto = set based on file extension or specify one of the supported formats.
-  See `list_out_formats()`
-* `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,
-  `"somepath"`: Path as a AbstractString e.g `"/home/mpastell/weaveout"`
-* `args`: dictionary of arguments to pass to document. Available as WEAVE_ARGS.
-* `mod`: Module where Weave `eval`s code. Defaults to `:sandbox`
-   to create new sandbox module, you can also pass a module e.g. `Main`.
-* `fig_path`: where figures will be generated, relative to out_path
-* `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
-* `cache_path`: where of cached output will be saved.
-* `cache`: controls caching of code: `:off` = no caching, `:all` = cache everything,
-  `:user` = cache based on chunk options, `:refresh`, run all code chunks and save new cache.
+## Keyword options
 
-**Note:** Run command from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
+- `doctype::Union{Symbol,AbstractString} = :auto`: Output document format. `:auto` will set it automatically based on file extension. You can also manually specify it; see [`list_out_formats()`](@ref) for the supported formats
+- `out_path::Union{Symbol,AbstractString} = :doc`: Path where the output is generated can be either of:
+  * `:doc`: Path of the source document (default)
+  * `:pwd`: Julia working directory
+  * `"somepath"`: `String` of output directory e.g. `"~/outdir"`, or of filename e.g. `"~/outdir/outfile.tex"`
+- `args::Dict = Dict()`: Arguments to be passed to the weaved document; will be available as `WEAVE_ARGS` in the document
+- `mod::Union{Module,Symbol} = :sandbox`: Module where Weave `eval`s code. Defaults to `:sandbox` to create new sandbox module. You also can also pass a `Module` e.g. `Main`
+- `fig_path::AbstractString = "figures"`: Where figures will be generated, relative to `out_path`
+- `fig_ext::Union{Nothing,AbstractString} = nothing`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`
+- `cache_path::AbstractString = "cache"`: Where of cached output will be saved
+- `cache::Symbol = :off`: Controls caching of code:
+  * `:off` means no caching (default)
+  * `:all` caches everything
+  * `:user` caches based on chunk options
+  * `:refresh` runs all code chunks and save new cache
+- `throw_errors::Bool = false`: If `false` errors are included in output document and the whole document is executed. If `true` errors are thrown when they occur
+- `latex_keep_unicode::Bool = false`: If `true`, do not convert unicode characters to their respective latex representation. This is especially useful if a font and tex-engine with support for unicode characters are used
+
+!!! note
+    Run Weave from terminal and try to avoid weaving from IJulia or ESS; they tend to mess with capturing output.
 """
-function Base.run(doc::WeaveDoc; doctype = :auto,
-        mod::Union{Module, Symbol} = :sandbox, out_path=:doc,
-        args=Dict(), fig_path = "figures", fig_ext = nothing,
-        cache_path = "cache", cache = :off, throw_errors=false, latex_keep_unicode=false)
+function Base.run(
+    doc::WeaveDoc;
+    doctype::Union{Symbol,AbstractString} = :auto,
+    out_path::Union{Symbol,AbstractString} = :doc,
+    args::Dict = Dict(),
+    mod::Union{Module,Symbol} = :sandbox,
+    fig_path::AbstractString = "figures",
+    fig_ext::Union{Nothing,AbstractString} = nothing,
+    cache_path::AbstractString = "cache",
+    cache::Symbol = :off,
+    throw_errors::Bool = false,
+    latex_keep_unicode::Bool = false
+)
     #cache :all, :user, :off, :refresh
 
     doc.cwd = get_cwd(doc, out_path)
