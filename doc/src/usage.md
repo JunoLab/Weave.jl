@@ -31,18 +31,23 @@ tangle
 
 ## Supported output formats
 
-Weave sets the output format based on the file extension, but you can also set
-it using `doctype` option. The rules for detecting the format are:
+Weave automatically detects the output format based on the file extension.
+The auto output format detection is handled by `detect_doctype(path::AbstractString)`:
 
 ```julia
-ext == ".jl" && return "md2html"
-contains(ext, ".md") && return "md2html"
-contains(ext, ".rst") && return "rst"
-contains(ext, ".tex") && return "texminted"
-contains(ext, ".txt") && return "asciidoc"
-return "pandoc"
+function detect_doctype(path::AbstractString)
+    _, ext = lowercase.(splitext(path))
+
+    match(r"^\.(jl|.?md|ipynb)", ext) !== nothing && return "md2html"
+    ext == ".rst" && return "rst"
+    ext == ".tex" && return "texminted"
+    ext == ".txt"  && return "asciidoc"
+
+    return "pandoc"
+end
 ```
 
+You can also manually specify it using the `doctype` keyword option.
 You can get a list of supported output formats:
 
 ```@docs

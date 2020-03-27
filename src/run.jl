@@ -131,16 +131,20 @@ function Base.run(
     return doc
 end
 
-"""Detect the output format based on file extension"""
-function detect_doctype(source::AbstractString)
-  ext = lowercase(splitext(source)[2])
-  ext == ".jl" && return "md2html"
-  occursin("md", ext) && return "md2html"
-  occursin("rst", ext) && return "rst"
-  occursin("tex", ext) && return "texminted"
-  occursin("txt", ext) && return "asciidoc"
+"""
+    detect_doctype(path::AbstractString)
 
-  return "pandoc"
+Detect the output format based on file extension.
+"""
+function detect_doctype(path::AbstractString)
+    _, ext = lowercase.(splitext(path))
+
+    match(r"^\.(jl|.?md|ipynb)", ext) !== nothing && return "md2html"
+    ext == ".rst" && return "rst"
+    ext == ".tex" && return "texminted"
+    ext == ".txt"  && return "asciidoc"
+
+    return "pandoc"
 end
 
 
