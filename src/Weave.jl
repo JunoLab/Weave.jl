@@ -182,7 +182,8 @@ weave(doc::AbstractString, doctype::Union{Symbol,AbstractString}) =
 """
     notebook(source::AbstractString; kwargs...)
 
-Convert Weave document `source` to Jupyter notebook and execute the code using `nbconvert`.
+Convert Weave document `source` to Jupyter Notebook and execute the code
+using [`nbconvert`](https://nbconvert.readthedocs.io/en/latest/).
 **Ignores** all chunk options.
 
 ## Keyword options
@@ -194,6 +195,14 @@ Convert Weave document `source` to Jupyter notebook and execute the code using `
 - `timeout = -1`: nbconvert cell timeout in seconds. Defaults to `-1` (no timeout)
 - `nbconvert_options::AbstractString = ""`: `String` of additional options to pass to nbconvert, such as `"--allow-errors"`
 - `jupyter_path::AbstractString = "jupyter"`: Path/command for the Jupyter you want to use. Defaults to `"jupyter"`, which runs whatever is linked/alias to that
+
+!!! warning
+    The code is _**not**_ executed by Weave, but by [`nbconvert`](https://nbconvert.readthedocs.io/en/latest/).
+    This means that the output doesn't necessarily always work properly; see [#116](https://github.com/mpastell/Weave.jl/issues/116).
+
+!!! note
+    In order to _just_ convert Weave document to Jupyter Notebook,
+    use [`convert_doc`](@ref) instead.
 """
 function notebook(
     source::AbstractString;
