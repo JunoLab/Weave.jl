@@ -1,22 +1,24 @@
 # Using Weave
 
 You can write your documentation and code in input document using Markdown, Noweb or script
-syntax and use `weave` function to execute to document to capture results and figures.
+syntax and use [`weave`](@ref) function to execute to document to capture results and figures.
 
 ## Weave
 
 Weave document with markup and julia code using `Plots.jl` for plots,
 `out_path = :pwd` makes the results appear in the current working directory.
 
+> A prepared example
+
 ```julia
-#First add depencies for the example
+# First add depencies for the example
 using Pkg; Pkg.add.(["Plots", "DSP"])
 using Weave
 weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"), out_path=:pwd)
 ```
 
 ```@docs
-weave(source)
+weave
 ```
 
 ## Tangle
@@ -24,7 +26,7 @@ weave(source)
 Tangling extracts the code from document:
 
 ```@docs
-tangle(source)
+tangle
 ```
 
 ## Supported output formats
@@ -43,12 +45,12 @@ return "pandoc"
 
 You can get a list of supported output formats:
 
-```@example
-using Weave # hide
-list_out_formats()
+```@docs
+list_out_formats
 ```
 
-```@docs
+```@example
+using Weave # hide
 list_out_formats()
 ```
 
@@ -96,7 +98,7 @@ or
 ! juliacode
 ```
 
-syntax. Using the `j code` syntax you can insert code anywhere in a line and with  
+syntax. Using the `j code` syntax you can insert code anywhere in a line and with
 the `!` syntax the whole line after `!` will be executed. The code will be replaced
 with captured output in the weaved document.
 
@@ -169,8 +171,8 @@ options:
 
 ## Passing arguments to documents
 
-You can pass arguments as dictionary to the weaved document using the `args` argument
-to `weave`. The dictionary will be available as `WEAVE_ARGS` variable in the document.
+You can pass arguments as `Dict` to the weaved document using the `args` argument
+to `weave`. The arguments will be available as `WEAVE_ARGS` variable in the document.
 
 This makes it possible to create the same report easily for e.g. different
 date ranges of input data from a database or from files with similar format giving the

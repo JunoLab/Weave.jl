@@ -15,7 +15,7 @@ mutable struct WeaveDoc
     header::Dict
     template::Union{AbstractString, Mustache.MustacheTokens}
     css::AbstractString
-    highlight_theme
+    highlight_theme::Type{<:Highlights.AbstractTheme}
     fig_path::AbstractString
     chunk_defaults::Dict{Symbol,Any}
     function WeaveDoc(source, chunks, header)
