@@ -10,11 +10,12 @@ First have a look at source document using markdown code chunks and
 [FIR_design.jmd](../examples/FIR_design.jmd) and then see the
 output in different formats:
 
-- HTML: [FIR_design.html](../examples/FIR_design.html)
-- pdf: [FIR_design.pdf](../examples/FIR_design.pdf)
-- Pandoc markdown: [FIR_design.txt](../examples/FIR_design.txt)
+- HTML: [`FIR_design.html`](../examples/FIR_design.html)
+- PDF: [`FIR_design.pdf`](../examples/FIR_design.pdf)
+- Pandoc markdown: [`FIR_design.txt`](../examples/FIR_design.txt)
 
-*Producing pdf output requires that you have XeLateX installed.*
+!!! note
+    Producing PDF output requires that you have XeLateX installed.
 
 Add dependencies for the example if needed:
 
@@ -22,20 +23,29 @@ Add dependencies for the example if needed:
 using Pkg; Pkg.add.(["Plots", "DSP"])
 ```
 
-Weave the files to your working directory using:
+Weave the files to your working directory:
 
 ```julia
 using Weave
-#HTML
-weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"),
-  out_path=:pwd,
-  doctype = "md2html")
-#pdf
-weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"),
-  out_path=:pwd,
-  doctype = "md2pdf")
-  #Markdown
-weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"),
-      doctype="pandoc",
-      out_path=:pwd)
+
+# Julia markdown to HTML
+weave(
+  joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd");
+  doctype = "md2html",
+  out_path = :pwd
+)
+
+# Julia markdown to PDF
+weave(
+  joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd");
+  doctype = "md2pdf",
+  out_path = :pwd
+)
+
+# Julia markdown to Pandoc markdown
+weave(
+  joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd");
+  doctype = "pandoc",
+  out_path = :pwd
+)
 ```
