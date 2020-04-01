@@ -12,13 +12,13 @@ and [Sweave](https://stat.ethz.ch/R-manual/R-patched/library/utils/doc/Sweave.pd
 
 **Current features**
 
-* Markdown, script of Noweb syntax for input documents
-* Publish markdown directly to html and pdf using Julia or Pandoc markdown
-* Execute code as terminal or "script" chunks
-* Capture Plots.jl or  Gadfly.jl figures
-* Supports LaTex, Pandoc, GitHub markdown, MultiMarkdown, Asciidoc and reStructuredText output
-* Simple caching of results
-* Convert to and from IJulia notebooks
+- Publish markdown directly to HTML and PDF using Julia or [Pandoc](https://pandoc.org/MANUAL.html)
+- Execute code as in terminal or in a unit of code chunk
+- Capture [Plots.jl](https://github.com/JuliaPlots/Plots.jl) or [Gadfly.jl](https://github.com/GiovineItalia/Gadfly.jl) figures
+- Supports various input format: Markdown, [Noweb](https://www.cs.tufts.edu/~nr/noweb/), [Jupyter Notebook](https://jupyter.org/), and ordinal Julia script
+- Conversions between those input formats
+- Supports various output document formats: HTML, PDF, GitHub markdown, Jupyter Notebook, MultiMarkdown, Asciidoc and reStructuredText
+- Simple caching of results
 
 ![Weave in Juno demo](https://user-images.githubusercontent.com/40514306/76081328-32f41900-5fec-11ea-958a-375f77f642a2.png)
 
