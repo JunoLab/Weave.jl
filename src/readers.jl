@@ -269,13 +269,9 @@ function parse_doc(document::String, format::NotebookInput)
     srctext = "\n" * join(cell["source"], "")
 
     if cell["cell_type"] == "code"
-      if haskey(cell["metadata"], "jupyter")
-        if cell["metadata"]["jupyter"]["source_hidden"]
-          opt_string = " echo=false"
-        end
-      else
-        opt_string = ""
-      end
+      opt_strings = String[]
+      haskey(cell["metadata"], "jupyter") && get(cell["metadata"]["jupyter"], "source_hidden", false) && (push!(opt_strings, "echo = false"))
+      opt_string = join(opt_strings, ", ")
       chunk = CodeChunk(rstrip(srctext), codeno, 0, opt_string, options)
       push!(parsed, chunk)
       codeno += 1
