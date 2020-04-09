@@ -102,14 +102,16 @@ function parse_doc(document::AbstractString, format::MarkupInput)
       if m.captures[1] == nothing
           optionString = ""
       else
-          optionString=strip(m.captures[1])
+          optionString= m.captures[1]
       end
 
       options = Dict{Symbol,Any}()
-      if length(optionString) > 0
-          expr = Meta.parse(optionString)
-          Base.Meta.isexpr(expr,:(=)) && (options[expr.args[1]] = expr.args[2])
-          Base.Meta.isexpr(expr,:toplevel) && map(pushopt,fill(options,length(expr.args)),expr.args)
+      if !isempty(optionString)
+          map(strip.(split(optionString, ','))) do opt
+            expr = Meta.parse(opt)
+            Base.Meta.isexpr(expr,:(=)) && (options[expr.args[1]] = expr.args[2])
+            Base.Meta.isexpr(expr,:toplevel) && map(pushopt,fill(options,length(expr.args)),expr.args)
+          end
       end
       haskey(options, :label) && (options[:name] = options[:label])
       haskey(options, :name) || (options[:name] = nothing)
@@ -260,17 +262,26 @@ function parse_doc(document::String, format::NotebookInput)
   document = replace(document, "\r\n" => "\n")
   nb = JSON.parse(document)
   parsed = Any[]
-  options = Dict{Symbol,Any}()
   opt_string = ""
   docno = 1
   codeno = 1
 
   for cell in nb["cells"]
     srctext = "\n" * join(cell["source"], "")
+    options = Dict{Symbol,Any}()
 
     if cell["cell_type"] == "code"
       opt_strings = String[]
-      haskey(cell["metadata"], "jupyter") && get(cell["metadata"]["jupyter"], "source_hidden", false) && (push!(opt_strings, "echo = false"))
+      if haskey(cell["metadata"], "jupyter")
+          if get(cell["metadata"]["jupyter"], "source_hidden", false)
+              push!(opt_strings, "echo = false")
+              options[:echo] = false
+          end
+          if get(cell["metadata"]["jupyter"], "outputs_hidden", false)
+              push!(opt_strings, "suppress_output = true")
+              options[:suppress_output] = true
+          end
+      end
       opt_string = join(opt_strings, ", ")
       chunk = CodeChunk(rstrip(srctext), codeno, 0, opt_string, options)
       push!(parsed, chunk)

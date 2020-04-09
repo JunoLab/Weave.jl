@@ -315,7 +315,9 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
       chunk = Base.invokelatest(hook, chunk)
     end
 
-    if chunk.options[:term]
+    if chunk.options[:suppress_output]
+        chunks = CodeChunk[]
+    elseif chunk.options[:term]
         chunks = collect_results(chunk, TermResult())
     elseif chunk.options[:hold]
         chunks = collect_results(chunk, CollectResult())
