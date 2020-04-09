@@ -24,7 +24,7 @@ function format(doc::WeaveDoc)
     #strip header
     if isa(doc.chunks[1], DocChunk)
         if !occursin("pandoc", doc.doctype)
-            doc.chunks[1] = strip_header(doc.chunks[1])
+            doc.chunks[1] = strip_header(doc.chunks[1], doc.header)
         end
     end
 
@@ -106,9 +106,13 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2tex)
     [Pair(Symbol(k), v) for (k,v) in doc.header]...)
 end
 
-function strip_header(chunk::DocChunk)
+function strip_header(chunk::DocChunk, header)
   if occursin(r"^---$(?<header>.+)^---$"ms, chunk.content[1].content)
-    chunk.content[1].content = lstrip(replace(chunk.content[1].content, r"^---$(?<header>.+)^---$"ms => ""))
+    newheader = ""
+    if haskey(header, "output_header")
+        newheader = "---\n" *YAML.write(header["output_header"]) * "---"
+    end
+    chunk.content[1].content = lstrip(replace(chunk.content[1].content, r"^---$(?<header>.+)^---$"ms => newheader))
   end
   return chunk
 end
