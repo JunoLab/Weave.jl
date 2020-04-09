@@ -151,3 +151,33 @@ parsed = doc_from_string(doc_content)
 ldoc = Weave.run(parsed, doctype = "md2tex",latex_keep_unicode=true)
 @test occursin("α",Weave.format(ldoc))
 @test !occursin(Weave.uc2tex("α"),Weave.format(ldoc))
+
+
+################################################################################
+#                           Test YAML in Target File                           #
+################################################################################
+
+let
+    content = """
+    ---
+        title: this does not appear
+        output_header:
+            author: My Name
+            title: this does appear
+    ---
+    # Here a title
+    """
+    output = """
+    ---
+    author: "My Name"
+    title: "this does appear"
+    ---
+    # Here a title
+    """
+    parsed = Weave.parse_doc(content,"markdown")
+    header = Weave.parse_header(parsed[1])
+    wdoc = Weave.WeaveDoc("",parsed,header)
+    doc = Weave.run(wdoc; doctype="github")
+    ldoc = Weave.format(doc)
+    @test ldoc == output
+end
