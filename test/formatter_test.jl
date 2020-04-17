@@ -72,14 +72,14 @@ h = Weave.parse_header(dchunk)
 h_ref = Dict("author" => "Matti Pastell", "title" => "Test block")
 @test h_ref == h
 
-htext = Weave.strip_header(dchunk)
+Weave.strip_header!(dchunk, "md2html")
 h_ref = """
 # Actual header
 
 and some text
 
 """
-@test htext.content[1].content == h_ref
+@test dchunk.content[1].content == h_ref
 
 # Test wrapping
 
