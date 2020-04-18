@@ -105,9 +105,9 @@ strip_header!(doc::WeaveDoc) = strip_header!(doc.chunks[1], doc.doctype)
 function strip_header!(docchunk::DocChunk, doctype)
     doctype == "pandoc" && return
     content = docchunk.content[1].content
-    docchunk.content[1].content = if (m = match(HEADER_REGEX, content)) !== nothing
+    if (m = match(HEADER_REGEX, content)) !== nothing
         # TODO: is there other format where we want to keep headers ?
-        if doctype != "github"
+        docchunk.content[1].content = if doctype != "github"
             lstrip(replace(content, HEADER_REGEX => ""))
         else
             # only strips Weave headers
