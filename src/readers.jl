@@ -64,8 +64,10 @@ function parse_header(chunk::CodeChunk)
   return Dict()
 end
 
+const HEADER_REGEX = r"^---$(?<header>((?!---).)+)^---$"ms
+
 function parse_header(chunk::DocChunk)
-  m = match(r"^---$(?<header>.+)^---$"ms, chunk.content[1].content)
+  m = match(HEADER_REGEX, chunk.content[1].content)
   if m !== nothing
     header = YAML.load(string(m[:header]))
   else

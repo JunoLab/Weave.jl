@@ -83,7 +83,7 @@ function convert_doc(doc::WeaveDoc, format::NotebookOutput)
     """
 
     if isa(doc.chunks[1], DocChunk)
-        doc.chunks[1] = strip_header(doc.chunks[1])
+        strip_header!(doc)
         doc.chunks[1].content[1].content = Mustache.render(head_tpl;
               [Pair(Symbol(k), v) for (k,v) in doc.header]...) * doc.chunks[1].content[1].content
     end

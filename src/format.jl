@@ -21,12 +21,7 @@ function format(doc::WeaveDoc)
     docformat.formatdict[:cwd] = doc.cwd #pass wd to figure formatters
     docformat.formatdict[:theme] = doc.highlight_theme
 
-    #strip header
-    if isa(doc.chunks[1], DocChunk)
-        if !occursin("pandoc", doc.doctype)
-            doc.chunks[1] = strip_header(doc.chunks[1])
-        end
-    end
+    strip_header!(doc)
 
     for chunk in copy(doc.chunks)
         result = format_chunk(chunk, formatdict, docformat)
@@ -106,12 +101,27 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2tex)
     [Pair(Symbol(k), v) for (k,v) in doc.header]...)
 end
 
-function strip_header(chunk::DocChunk)
-  if occursin(r"^---$(?<header>.+)^---$"ms, chunk.content[1].content)
-    chunk.content[1].content = lstrip(replace(chunk.content[1].content, r"^---$(?<header>.+)^---$"ms => ""))
-  end
-  return chunk
+strip_header!(doc::WeaveDoc) = strip_header!(doc.chunks[1], doc.doctype)
+function strip_header!(docchunk::DocChunk, doctype)
+    doctype == "pandoc" && return
+    content = docchunk.content[1].content
+    if (m = match(HEADER_REGEX, content)) !== nothing
+        # TODO: is there other format where we want to keep headers ?
+        docchunk.content[1].content = if doctype != "github"
+            lstrip(replace(content, HEADER_REGEX => ""))
+        else
+            # only strips Weave headers
+            header = YAML.load(m[:header])
+            delete!(header, "options")
+            if isempty(header)
+                lstrip(replace(content, HEADER_REGEX => ""))
+            else
+                lstrip(replace(content, HEADER_REGEX => "---\n$(YAML.write(header))---"))
+            end
+        end
+    end
 end
+strip_header!(codechunk::CodeChunk, doctype) = nothing
 
 function format_chunk(chunk::DocChunk, formatdict, docformat)
     return join([format_inline(c) for c in chunk.content], "")
