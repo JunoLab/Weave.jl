@@ -20,11 +20,21 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
   header_script = doc.header_script
   self_contained = (header_script ≠ "") ? [] : "--self-contained"
 
+  #Filters setup
+  filter_flag="--filter"
+  if haskey(doc.header, "crossref")
+    filt_cr = filter_flag
+    crossref = "pandoc-crossref"
+  else
+    filt_cr = []
+    crossref = []
+  end
+
   if haskey(doc.header, "bibliography")
-    filt = "--filter"
+    filt_cite = filter_flag
     citeproc = "pandoc-citeproc"
   else
-    filt = []
+    filt_cite = []
     citeproc = []
   end
 
@@ -40,7 +50,7 @@ function pandoc2html(formatted::AbstractString, doc::WeaveDoc, outname::Abstract
 
   try
     cmd = `pandoc -f markdown+raw_html -s --mathjax=""
-    $filt $citeproc $pandoc_options
+     $filt_cr $crossref $filt_cite $citeproc $pandoc_options
     --template $html_template -H $css_template $self_contained
      -V wversion=$wversion -V wtime=$wtime -V wsource=$wsource
      -V highlightcss=$css
@@ -78,18 +88,29 @@ function pandoc2pdf(formatted::AbstractString, doc::WeaveDoc, outname::AbstractS
   cd(doc.cwd)
   html =""
 
+  #Filters setup
+  filter_flag="--filter"
+  if haskey(doc.header, "crossref")
+    filt_cr = filter_flag
+    crossref = "pandoc-crossref"
+  else
+    filt_cr = []
+    crossref = []
+  end
+
   if haskey(doc.header, "bibliography")
-    filt = "--filter"
+    filt_cite = filter_flag
     citeproc = "pandoc-citeproc"
   else
-    filt = []
+    filt_cite = []
     citeproc = []
   end
+
 
   @info("Done executing code. Running xelatex")
   try
     cmd = `pandoc -f markdown+raw_tex -s  --pdf-engine=xelatex --highlight-style=tango
-     $filt $citeproc $pandoc_options
+     $filt_cr $crossref $filt_cite $citeproc $pandoc_options
      --include-in-header=$header_template
      -V fontsize=12pt -o $outname`
     proc = open(cmd, "r+")
