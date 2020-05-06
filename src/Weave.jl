@@ -14,9 +14,9 @@ end
 List supported output formats
 """
 function list_out_formats()
-  for format = keys(formats)
-      println(string(format,": ",  formats[format].description))
-  end
+    for format = keys(formats)
+        println(string(format,": ",  formats[format].description))
+    end
 end
 
 
@@ -37,24 +37,22 @@ function tangle(
     source::AbstractString;
     out_path::Union{Symbol,AbstractString} = :doc,
     informat::Union{Symbol,AbstractString} = :auto
-)
+    )
     doc = read_doc(source, informat)
     doc.cwd = get_cwd(doc, out_path)
 
     outname = get_outname(out_path, doc, ext = "jl")
 
     open(outname, "w") do io
-    for chunk in doc.chunks
-      if typeof(chunk) == CodeChunk
-          options = merge(doc.chunk_defaults, chunk.options)
-          if options[:tangle]
-            write(io, chunk.content*"\n")
-          end
-      end
+        for chunk in doc.chunks
+            if typeof(chunk) == CodeChunk
+                options = merge(doc.chunk_defaults, chunk.options)
+                options[:tangle] && write(io, chunk.content*"\n")
+            end
+        end
     end
-  end
-  doc.cwd == pwd()  && (outname = basename(outname))
-  @info("Writing to file $outname")
+    doc.cwd == pwd()  && (outname = basename(outname))
+    @info("Writing to file $outname")
 end
 
 

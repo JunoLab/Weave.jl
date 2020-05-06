@@ -77,12 +77,12 @@ const pdoc2html = Pandoc2HTML("Markdown to HTML (requires Pandoc 2)",
                                   "text/html", "text/markdown",  "text/plain"],
                               :doctype=> "pandoc2html"))
 
-struct GithubMarkdown
+struct GitHubMarkdown
    description::AbstractString
    formatdict::Dict{Symbol,Any}
 end
 
-const github = GithubMarkdown("Github markdown",
+const github = GitHubMarkdown("GitHub markdown",
                         Dict{Symbol,Any}(
                                 :codestart => "````julia",
                                 :codeend=> "````\n\n",
@@ -352,7 +352,7 @@ function formatfigures(chunk, docformat::Pandoc)
     return result
 end
 
-function formatfigures(chunk, docformat::GithubMarkdown)
+function formatfigures(chunk, docformat::GitHubMarkdown)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
     result = ""

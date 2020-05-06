@@ -3,7 +3,7 @@
 
 This a sample [Julia](http://julialang.org/) noweb document that can
 be executed using Weave. Output from code chunks and PyPlot
-plots will be included in the weaved document. You also need to install Pweave from Github in order to use Weave.
+plots will be included in the weaved document. You also need to install Pweave from GitHub in order to use Weave.
 
 This documented can be turned into Pandoc markdown with captured
 result from Julia prompt.
