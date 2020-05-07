@@ -6,6 +6,7 @@ const defaultParams =
                                 :doc_number => 0,
                                 :chunk_defaults =>
                                 Dict{Symbol,Any}(
+                                :suppress_output=> false,
                                 :echo=> true,
                                 :results=> "markup",
                                 :hold => false,
