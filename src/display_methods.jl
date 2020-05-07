@@ -86,7 +86,7 @@ Base.display(report::Report, m::MIME"application/pdf", data) = add_figure(report
 # Text is written to stdout, called from "term" mode chunks
 function Base.display(report::Report, m::MIME"text/plain", data)
     io = PipeBuffer()
-    show(IOContext(io, :limit => true, :color => true), m, data)
+    show(IOContext(io, :limit => true), m, data)
     flush(io)
     s = read(io, String)
     close(io)
@@ -110,7 +110,7 @@ end
 # Catch "rich_output"
 function Base.display(report::Report, m::MIME"text/html", data)
     io = IOBuffer()
-    show(IOContext(io, :limit => true, :color => true), m, data)
+    show(IOContext(io, :limit => true), m, data)
     report.rich_output *= "\n" * String(take!(io))
 end
 
