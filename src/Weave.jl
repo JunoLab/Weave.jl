@@ -14,6 +14,11 @@ function __init__()
     )
 end
 
+@static @isdefined(isnothing) || begin
+    isnothing(::Any) = false
+    isnothing(::Nothing) = true
+end
+
 """
     list_out_formats()
 
@@ -152,10 +157,10 @@ function weave(
         )
     end
 
-    template !== nothing && (doc.template = template)
-    highlight_theme !== nothing && (doc.highlight_theme = highlight_theme)
-    # theme != nothing && (doc.theme = theme) # Reserved for themes
-    css !== nothing && (doc.css = css)
+    isnothing(template) || (doc.template = template)
+    isnothing(highlight_theme) || (doc.highlight_theme = highlight_theme)
+    # isnothing(theme) || (doc.theme = theme) # Reserved for themes
+    isnothing(css) || (doc.css = css)
 
     doc = run_doc(
         doc,

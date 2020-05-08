@@ -91,7 +91,7 @@ function run_doc(
     try
         if cache !== :off && cache !== :refresh
             cached = read_cache(doc, cache_path)
-            cached === nothing && @info "No cached results found, running code"
+            isnothing(cached) && @info "No cached results found, running code"
         else
             cached = nothing
         end
@@ -256,10 +256,10 @@ function capture_output(expr, SandBox::Module, term, disp, lastline, throw_error
     try
         obj = Core.eval(SandBox, expr)
         if (term || disp) && (typeof(expr) != Expr || expr.head != :toplevel)
-            obj != nothing && display(obj)
+            isnothing(obj) || display(obj)
             # This shows images and lone variables, result can
             # Handle last line sepately
-        elseif lastline && obj != nothing
+        elseif lastline && !isnothing(obj)
             (typeof(expr) != Expr || expr.head != :toplevel) && display(obj)
         end
     catch E
@@ -305,7 +305,7 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     report.fignum = 1
     report.cur_chunk = chunk
 
-    if haskey(report.formatdict, :out_width) && chunk.options[:out_width] == nothing
+    if haskey(report.formatdict, :out_width) && isnothing(chunk.options[:out_width])
         chunk.options[:out_width] = report.formatdict[:out_width]
     end
 
@@ -350,10 +350,10 @@ end
 function get_figname(report::Report, chunk; fignum = nothing, ext = nothing)
     figpath = joinpath(report.cwd, chunk.options[:fig_path])
     isdir(figpath) || mkpath(figpath)
-    ext == nothing && (ext = chunk.options[:fig_ext])
-    fignum == nothing && (fignum = report.fignum)
+    isnothing(ext) && (ext = chunk.options[:fig_ext])
+    isnothing(fignum) && (fignum = report.fignum)
 
-    chunkid = (chunk.options[:label] == nothing) ? chunk.number : chunk.options[:label]
+    chunkid = isnothing(chunk.options[:label]) ? chunk.number : chunk.options[:label]
     full_name = joinpath(
         report.cwd,
         chunk.options[:fig_path],
@@ -383,13 +383,13 @@ end
 
 """Get output file name based on out_path"""
 function get_outname(out_path::Symbol, doc::WeaveDoc; ext = nothing)
-    ext == nothing && (ext = doc.format.formatdict[:extension])
+    isnothing(ext) && (ext = doc.format.formatdict[:extension])
     outname = "$(doc.cwd)/$(doc.basename).$ext"
 end
 
 """Get output file name based on out_path"""
 function get_outname(out_path::AbstractString, doc::WeaveDoc; ext = nothing)
-    ext == nothing && (ext = doc.format.formatdict[:extension])
+    isnothing(ext) && (ext = doc.format.formatdict[:extension])
     splitted = splitext(out_path)
     if (splitted[2]) == ""
         outname = "$(doc.cwd)/$(doc.basename).$ext"
@@ -400,7 +400,7 @@ end
 
 function set_rc_params(doc::WeaveDoc, fig_path, fig_ext)
     formatdict = doc.format.formatdict
-    if fig_ext == nothing
+    if isnothing(fig_ext)
         doc.chunk_defaults[:fig_ext] = formatdict[:fig_ext]
     else
         doc.chunk_defaults[:fig_ext] = fig_ext
