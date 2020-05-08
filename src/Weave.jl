@@ -4,8 +4,14 @@ using Mustache
 using Requires
 
 function __init__()
-    @require Plots="91a5bcdd-55d7-5caf-9e0b-520d859cae80" Base.include(Main, joinpath(@__DIR__, "plots.jl"))
-    @require Gadfly="c91e804a-d5a3-530f-b6f0-dfbca275c004" Base.include(Main, joinpath(@__DIR__, "gadfly.jl"))
+    @require Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80" Base.include(
+        Main,
+        joinpath(@__DIR__, "plots.jl"),
+    )
+    @require Gadfly = "c91e804a-d5a3-530f-b6f0-dfbca275c004" Base.include(
+        Main,
+        joinpath(@__DIR__, "gadfly.jl"),
+    )
 end
 
 """
@@ -14,11 +20,10 @@ end
 List supported output formats
 """
 function list_out_formats()
-    for format = keys(formats)
-        println(string(format,": ",  formats[format].description))
+    for format in keys(formats)
+        println(string(format, ": ", formats[format].description))
     end
 end
-
 
 """
     tangle(source::AbstractString; kwargs...)
@@ -36,8 +41,8 @@ Tangle source code from input document to .jl file.
 function tangle(
     source::AbstractString;
     out_path::Union{Symbol,AbstractString} = :doc,
-    informat::Union{Symbol,AbstractString} = :auto
-    )
+    informat::Union{Symbol,AbstractString} = :auto,
+)
     doc = read_doc(source, informat)
     doc.cwd = get_cwd(doc, out_path)
 
@@ -47,14 +52,13 @@ function tangle(
         for chunk in doc.chunks
             if typeof(chunk) == CodeChunk
                 options = merge(doc.chunk_defaults, chunk.options)
-                options[:tangle] && write(io, chunk.content*"\n")
+                options[:tangle] && write(io, chunk.content * "\n")
             end
         end
     end
-    doc.cwd == pwd()  && (outname = basename(outname))
+    doc.cwd == pwd() && (outname = basename(outname))
     @info("Writing to file $outname")
 end
-
 
 """
     weave(source::AbstractString; kwargs...)
@@ -107,7 +111,7 @@ function weave(
     css::Union{Nothing,AbstractString} = nothing,
     pandoc_options::Vector{<:AbstractString} = String[],
     latex_cmd::AbstractString = "xelatex",
-    latex_keep_unicode::Bool = false
+    latex_keep_unicode::Bool = false,
 )
     doc = read_doc(source, informat)
     doctype == :auto && (doctype = detect_doctype(doc.source))
@@ -115,25 +119,57 @@ function weave(
 
     # Read args from document header, overrides command line args
     if haskey(doc.header, "options")
-        (doctype, informat, out_path, args, mod, fig_path, fig_ext,
-        cache_path, cache, throw_errors, template, highlight_theme, css,
-        pandoc_options, latex_cmd) = header_args(doc, out_path, mod,
-                                    fig_ext, fig_path,
-                                    cache_path, cache, throw_errors,
-                                    template, highlight_theme, css,
-                                    pandoc_options, latex_cmd)
+        (
+            doctype,
+            informat,
+            out_path,
+            args,
+            mod,
+            fig_path,
+            fig_ext,
+            cache_path,
+            cache,
+            throw_errors,
+            template,
+            highlight_theme,
+            css,
+            pandoc_options,
+            latex_cmd,
+        ) = header_args(
+            doc,
+            out_path,
+            mod,
+            fig_ext,
+            fig_path,
+            cache_path,
+            cache,
+            throw_errors,
+            template,
+            highlight_theme,
+            css,
+            pandoc_options,
+            latex_cmd,
+        )
     end
 
     template != nothing && (doc.template = template)
     highlight_theme != nothing && (doc.highlight_theme = highlight_theme)
-    #theme != nothing && (doc.theme = theme) #Reserved for themes
+    # theme != nothing && (doc.theme = theme) # Reserved for themes
     css != nothing && (doc.css = css)
 
-    doc = run(doc, doctype = doctype,
-                mod = mod,
-                out_path=out_path, args = args,
-                fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache,
-                throw_errors = throw_errors,latex_keep_unicode=latex_keep_unicode)
+    doc = run(
+        doc,
+        doctype = doctype,
+        mod = mod,
+        out_path = out_path,
+        args = args,
+        fig_path = fig_path,
+        fig_ext = fig_ext,
+        cache_path = cache_path,
+        cache = cache,
+        throw_errors = throw_errors,
+        latex_keep_unicode = latex_keep_unicode,
+    )
     formatted = format(doc)
 
     outname = get_outname(out_path, doc)
@@ -142,7 +178,7 @@ function weave(
         write(io, formatted)
     end
 
-    #Special for that need external programs
+    # Special for that need external programs
     if doc.doctype == "pandoc2html"
         mdname = outname
         outname = get_outname(out_path, doc, ext = "html")
@@ -231,7 +267,10 @@ function include_weave(
     doc = read_doc(source, informat)
     cd(doc.path)
     try
-        code = join([x.content for x in filter(x -> isa(x, Weave.CodeChunk), doc.chunks)], "\n")
+        code = join(
+            [x.content for x in filter(x -> isa(x, Weave.CodeChunk), doc.chunks)],
+            "\n",
+        )
         include_string(m, code)
     catch e
         throw(e)
@@ -240,17 +279,19 @@ function include_weave(
     end
 end
 
-include_weave(source, informat=:auto) = include_weave(Main, source, informat)
+include_weave(source, informat = :auto) = include_weave(Main, source, informat)
 
-#Hooks to run before and after chunks, this is form IJulia,
-#but note that Weave hooks take the chunk as input
+# Hooks to run before and after chunks, this is form IJulia,
+# but note that Weave hooks take the chunk as input
 const preexecute_hooks = Function[]
 push_preexecute_hook(f::Function) = push!(preexecute_hooks, f)
-pop_preexecute_hook(f::Function) = splice!(preexecute_hooks, findfirst(x -> x == f, preexecute_hooks))
+pop_preexecute_hook(f::Function) =
+    splice!(preexecute_hooks, findfirst(x -> x == f, preexecute_hooks))
 
 const postexecute_hooks = Function[]
 push_postexecute_hook(f::Function) = push!(postexecute_hooks, f)
-pop_postexecute_hook(f::Function) = splice!(postexecute_hooks, findfirst(x -> x == f, postexecute_hooks))
+pop_postexecute_hook(f::Function) =
+    splice!(postexecute_hooks, findfirst(x -> x == f, postexecute_hooks))
 
 include("chunks.jl")
 include("config.jl")
@@ -264,8 +305,14 @@ include("format.jl")
 include("pandoc.jl")
 include("writers.jl")
 
+export weave,
+    list_out_formats,
+    tangle,
+    convert_doc,
+    notebook,
+    set_chunk_defaults,
+    get_chunk_defaults,
+    restore_chunk_defaults,
+    include_weave
 
-export weave, list_out_formats, tangle, convert_doc, notebook,
-        set_chunk_defaults, get_chunk_defaults, restore_chunk_defaults,
-        include_weave
 end

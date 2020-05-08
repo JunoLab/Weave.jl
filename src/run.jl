@@ -39,9 +39,9 @@ function Base.run(
     cache_path::AbstractString = "cache",
     cache::Symbol = :off,
     throw_errors::Bool = false,
-    latex_keep_unicode::Bool = false
+    latex_keep_unicode::Bool = false,
 )
-    #cache :all, :user, :off, :refresh
+    # cache :all, :user, :off, :refresh
 
     doc.cwd = get_cwd(doc, out_path)
     doctype == :auto && (doctype = detect_doctype(doc.source))
@@ -62,13 +62,13 @@ function Base.run(
 
     cache == :off || @eval import Serialization
 
-    #This is needed for latex and should work on all output formats
+    # This is needed for latex and should work on all output formats
     Sys.iswindows() && (fig_path = replace(fig_path, "\\" => "/"))
 
     doc.fig_path = fig_path
     set_rc_params(doc, fig_path, fig_ext)
 
-    #New sandbox for each document with args exposed
+    # New sandbox for each document with args exposed
     if mod == :sandbox
         sandbox = "WeaveSandBox$(rcParams[:doc_number])"
         mod = Core.eval(Main, Meta.parse("module $sandbox\nend"))
@@ -79,9 +79,9 @@ function Base.run(
     rcParams[:doc_number] += 1
 
     if haskey(doc.format.formatdict, :mimetypes)
-      mimetypes = doc.format.formatdict[:mimetypes]
+        mimetypes = doc.format.formatdict[:mimetypes]
     else
-      mimetypes = default_mime_types
+        mimetypes = default_mime_types
     end
 
     report = Report(doc.cwd, doc.basename, doc.format.formatdict, mimetypes, throw_errors)
@@ -105,9 +105,9 @@ function Base.run(
             merge!(chunk.options, options)
         end
 
-        restore = (cache ==:user && typeof(chunk) == CodeChunk && chunk.options[:cache])
+        restore = (cache == :user && typeof(chunk) == CodeChunk && chunk.options[:cache])
 
-        if cached != nothing && (cache == :all || restore)
+        if cached != nothing && (cache == :all || restore)
             result_chunks = restore_chunk(chunk, cached)
         else
             result_chunks = run_chunk(chunk, doc, report, mod)
@@ -120,7 +120,7 @@ function Base.run(
 
     popdisplay(report)
 
-    #Clear variables from used sandbox
+    # Clear variables from used sandbox
     mod == :sandbox && clear_sandbox(SandBox)
     doc.chunks = executed
 
@@ -142,16 +142,16 @@ function detect_doctype(path::AbstractString)
     match(r"^\.(jl|.?md|ipynb)", ext) !== nothing && return "md2html"
     ext == ".rst" && return "rst"
     ext == ".tex" && return "texminted"
-    ext == ".txt"  && return "asciidoc"
+    ext == ".txt" && return "asciidoc"
 
     return "pandoc"
 end
 
-
 function run_chunk(chunk::CodeChunk, doc::WeaveDoc, report::Report, SandBox::Module)
     @info("Weaving chunk $(chunk.number) from line $(chunk.start_line)")
     result_chunks = eval_chunk(chunk, report, SandBox)
-    occursin("2html", report.formatdict[:doctype]) && (result_chunks = embed_figures(result_chunks, report.cwd))
+    occursin("2html", report.formatdict[:doctype]) &&
+        (result_chunks = embed_figures(result_chunks, report.cwd))
     return result_chunks
 end
 
@@ -161,7 +161,7 @@ function embed_figures(chunk::CodeChunk, cwd)
 end
 
 function embed_figures(result_chunks, cwd)
-    for i in 1:length(result_chunks)
+    for i = 1:length(result_chunks)
         figs = result_chunks[i].figures
         if !isempty(figs)
             result_chunks[i].figures = [img2base64(fig, cwd) for fig in figs]
@@ -171,23 +171,23 @@ function embed_figures(result_chunks, cwd)
 end
 
 function img2base64(fig, cwd)
-  ext = splitext(fig)[2]
-  f = open(joinpath(cwd, fig), "r")
+    ext = splitext(fig)[2]
+    f = open(joinpath(cwd, fig), "r")
     raw = read(f)
-  close(f)
-  if ext == ".png"
-    return "data:image/png;base64," * stringmime(MIME("image/png"), raw)
-  elseif ext == ".svg"
-    return "data:image/svg+xml;base64," * stringmime(MIME("image/svg"), raw)
-  elseif ext == ".gif"
-    return "data:image/gif;base64," * stringmime(MIME("image/gif"), raw)
-  else
-    return(fig)
-  end
+    close(f)
+    if ext == ".png"
+        return "data:image/png;base64," * stringmime(MIME("image/png"), raw)
+    elseif ext == ".svg"
+        return "data:image/svg+xml;base64," * stringmime(MIME("image/svg"), raw)
+    elseif ext == ".gif"
+        return "data:image/gif;base64," * stringmime(MIME("image/gif"), raw)
+    else
+        return (fig)
+    end
 end
 
 function run_chunk(chunk::DocChunk, doc::WeaveDoc, report::Report, SandBox::Module)
-    chunk.content =  [run_inline(c, doc, report, SandBox) for c in chunk.content]
+    chunk.content = [run_inline(c, doc, report, SandBox) for c in chunk.content]
     return chunk
 end
 
@@ -196,13 +196,14 @@ function run_inline(inline::InlineText, doc::WeaveDoc, report::Report, SandBox::
 end
 
 function run_inline(inline::InlineCode, doc::WeaveDoc, report::Report, SandBox::Module)
-    #Make a temporary CodeChunk for running code. Collect results and don't wrap
+    # Make a temporary CodeChunk for running code. Collect results and don't wrap
     chunk = CodeChunk(inline.content, 0, 0, "", Dict(:hold => true, :wrap => false))
     options = merge(doc.chunk_defaults, chunk.options)
     merge!(chunk.options, options)
 
     chunks = eval_chunk(chunk, report, SandBox)
-    occursin("2html", report.formatdict[:doctype]) && (chunks = embed_figures(chunks, report.cwd))
+    occursin("2html", report.formatdict[:doctype]) &&
+        (chunks = embed_figures(chunks, report.cwd))
 
     output = chunks[1].output
     endswith(output, "\n") && (output = output[1:end-1])
@@ -221,16 +222,22 @@ end
 function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
     expressions = parse_input(chunk.content)
     N = length(expressions)
-    #@show expressions
+    # @show expressions
     result_no = 1
-    results = ChunkOutput[ ]
+    results = ChunkOutput[]
 
-    for (str_expr, expr) = expressions
+    for (str_expr, expr) in expressions
         reset_report(report)
         lastline = (result_no == N)
-        (obj, out) = capture_output(expr, SandBox, chunk.options[:term],
-                      chunk.options[:display], lastline, report.throw_errors)
-        figures = report.figures #Captured figures
+        (obj, out) = capture_output(
+            expr,
+            SandBox,
+            chunk.options[:term],
+            chunk.options[:display],
+            lastline,
+            report.throw_errors,
+        )
+        figures = report.figures # Captured figures
         result = ChunkOutput(str_expr, out, report.cur_result, report.rich_output, figures)
         report.rich_output = ""
         push!(results, result)
@@ -241,9 +248,8 @@ end
 
 getstdout() = stdout
 
-function capture_output(expr, SandBox::Module, term, disp,
-                        lastline, throw_errors=false)
-    #oldSTDOUT = STDOUT
+function capture_output(expr, SandBox::Module, term, disp, lastline, throw_errors = false)
+    # oldSTDOUT = STDOUT
     oldSTDOUT = getstdout()
     out = nothing
     obj = nothing
@@ -253,8 +259,8 @@ function capture_output(expr, SandBox::Module, term, disp,
         obj = Core.eval(SandBox, expr)
         if (term || disp) && (typeof(expr) != Expr || expr.head != :toplevel)
             obj != nothing && display(obj)
-        #This shows images and lone variables, result can
-        #Handle last line sepately
+            # This shows images and lone variables, result can
+            # Handle last line sepately
         elseif lastline && obj != nothing
             (typeof(expr) != Expr || expr.head != :toplevel) && display(obj)
         end
@@ -268,25 +274,23 @@ function capture_output(expr, SandBox::Module, term, disp,
         out = fetch(reader)
         close(rw)
     end
-    out = replace(out, r"\u001b\[.*?m" => "") #Remove ANSI color codes
+    out = replace(out, r"\u001b\[.*?m" => "") # Remove ANSI color codes
     return (obj, out)
 end
 
-
-#Parse chunk input to array of expressions
+# Parse chunk input to array of expressions
 function parse_input(input::AbstractString)
-    parsed = Tuple{AbstractString, Any}[]
+    parsed = Tuple{AbstractString,Any}[]
     input = lstrip(input)
     n = sizeof(input)
-    pos = 1 #The first character is extra line end
+    pos = 1 # The first character is extra line end
     while pos ≤ n
         oldpos = pos
-        code,  pos = Meta.parse(input, pos)
-        push!(parsed, (input[oldpos:pos-1] , code ))
+        code, pos = Meta.parse(input, pos)
+        push!(parsed, (input[oldpos:pos-1], code))
     end
     parsed
 end
-
 
 function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     if !chunk.options[:eval]
@@ -295,9 +299,9 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
         return chunk
     end
 
-    #Run preexecute_hooks
+    # Run preexecute_hooks
     for hook in preexecute_hooks
-      chunk = Base.invokelatest(hook, chunk)
+        chunk = Base.invokelatest(hook, chunk)
     end
 
     report.fignum = 1
@@ -309,10 +313,9 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
 
     chunk.result = run_code(chunk, report, SandBox)
 
-
-    #Run post_execute chunks
+    # Run post_execute chunks
     for hook in postexecute_hooks
-      chunk = Base.invokelatest(hook, chunk)
+        chunk = Base.invokelatest(hook, chunk)
     end
 
     if chunk.options[:term]
@@ -323,27 +326,28 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
         chunks = collect_results(chunk, ScriptResult())
     end
 
-      #else
-     #   chunk.options[:fig] && (chunk.figures = copy(report.figures))
-    #end
+    # else
+    #   chunk.options[:fig] && (chunk.figures = copy(report.figures))
+    # end
 
     chunks
 end
 
-
-#function eval_chunk(chunk::DocChunk, report::Report, SandBox)
+# function eval_chunk(chunk::DocChunk, report::Report, SandBox)
 #    chunk
-#end
+# end
 
-#Set all variables to nothing
+# Set all variables to nothing
 function clear_sandbox(SandBox::Module)
-    for name = names(SandBox, all=true)
+    for name in names(SandBox, all = true)
         if name != :eval && name != names(SandBox)[1]
-            try eval(SandBox, Meta.parse(AbstractString(AbstractString(name), "=nothing"))) catch; end
+            try
+                eval(SandBox, Meta.parse(AbstractString(AbstractString(name), "=nothing")))
+            catch
+            end
         end
     end
 end
-
 
 function get_figname(report::Report, chunk; fignum = nothing, ext = nothing)
     figpath = joinpath(report.cwd, chunk.options[:fig_path])
@@ -352,20 +356,23 @@ function get_figname(report::Report, chunk; fignum = nothing, ext = nothing)
     fignum == nothing && (fignum = report.fignum)
 
     chunkid = (chunk.options[:label] == nothing) ? chunk.number : chunk.options[:label]
-    full_name = joinpath(report.cwd, chunk.options[:fig_path],
-        "$(report.basename)_$(chunkid)_$(fignum)$ext")
-    rel_name = "$(chunk.options[:fig_path])/$(report.basename)_$(chunkid)_$(fignum)$ext" #Relative path is used in output
+    full_name = joinpath(
+        report.cwd,
+        chunk.options[:fig_path],
+        "$(report.basename)_$(chunkid)_$(fignum)$ext",
+    )
+    rel_name = "$(chunk.options[:fig_path])/$(report.basename)_$(chunkid)_$(fignum)$ext" # Relative path is used in output
     return full_name, rel_name
 end
 
 function get_cwd(doc::WeaveDoc, out_path)
-    #Set the output directory
+    # Set the output directory
     if out_path == :doc
         cwd = doc.path
     elseif out_path == :pwd
         cwd = pwd()
     else
-        #If there is no extension, use as path
+        # If there is no extension, use as path
         splitted = splitext(out_path)
         if splitted[2] == ""
             cwd = expanduser(out_path)
@@ -376,13 +383,11 @@ function get_cwd(doc::WeaveDoc, out_path)
     return cwd
 end
 
-
 """Get output file name based on out_path"""
 function get_outname(out_path::Symbol, doc::WeaveDoc; ext = nothing)
     ext == nothing && (ext = doc.format.formatdict[:extension])
     outname = "$(doc.cwd)/$(doc.basename).$ext"
 end
-
 
 """Get output file name based on out_path"""
 function get_outname(out_path::AbstractString, doc::WeaveDoc; ext = nothing)
@@ -402,24 +407,30 @@ function set_rc_params(doc::WeaveDoc, fig_path, fig_ext)
     else
         doc.chunk_defaults[:fig_ext] = fig_ext
     end
-        doc.chunk_defaults[:fig_path] = fig_path
+    doc.chunk_defaults[:fig_path] = fig_path
     return nothing
 end
 
 function collect_results(chunk::CodeChunk, fmt::ScriptResult)
     content = ""
     result_no = 1
-    result_chunks = CodeChunk[ ]
-    for r = chunk.result
-        #Check if there is any output from chunk
-        if strip(r.stdout) == "" && isempty(r.figures)  && strip(r.rich_output) == ""
+    result_chunks = CodeChunk[]
+    for r in chunk.result
+        # Check if there is any output from chunk
+        if strip(r.stdout) == "" && isempty(r.figures) && strip(r.rich_output) == ""
             content *= r.code
         else
             content = "\n" * content * r.code
-            rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.optionstring, copy(chunk.options))
+            rchunk = CodeChunk(
+                content,
+                chunk.number,
+                chunk.start_line,
+                chunk.optionstring,
+                copy(chunk.options),
+            )
             content = ""
             rchunk.result_no = result_no
-            result_no *=1
+            result_no *= 1
             rchunk.figures = r.figures
             rchunk.output = r.stdout * r.displayed
             rchunk.rich_output = r.rich_output
@@ -428,7 +439,13 @@ function collect_results(chunk::CodeChunk, fmt::ScriptResult)
     end
     if content != ""
         startswith(content, "\n") || (content = "\n" * content)
-        rchunk = CodeChunk(content, chunk.number, chunk.start_line, chunk.optionstring, copy(chunk.options))
+        rchunk = CodeChunk(
+            content,
+            chunk.number,
+            chunk.start_line,
+            chunk.optionstring,
+            copy(chunk.options),
+        )
         push!(result_chunks, rchunk)
     end
 
@@ -439,12 +456,18 @@ function collect_results(chunk::CodeChunk, fmt::TermResult)
     output = ""
     prompt = chunk.options[:prompt]
     result_no = 1
-    result_chunks = CodeChunk[ ]
-    for r = chunk.result
+    result_chunks = CodeChunk[]
+    for r in chunk.result
         output *= prompt * r.code
         output *= r.displayed * r.stdout
         if !isempty(r.figures)
-            rchunk = CodeChunk("", chunk.number, chunk.start_line, chunk.optionstring, copy(chunk.options))
+            rchunk = CodeChunk(
+                "",
+                chunk.number,
+                chunk.start_line,
+                chunk.optionstring,
+                copy(chunk.options),
+            )
             rchunk.output = output
             output = ""
             rchunk.figures = r.figures
@@ -452,8 +475,14 @@ function collect_results(chunk::CodeChunk, fmt::TermResult)
         end
     end
     if output != ""
-         rchunk = CodeChunk("", chunk.number, chunk.start_line, chunk.optionstring, copy(chunk.options))
-         rchunk.output = output
+        rchunk = CodeChunk(
+            "",
+            chunk.number,
+            chunk.start_line,
+            chunk.optionstring,
+            copy(chunk.options),
+        )
+        rchunk.output = output
         push!(result_chunks, rchunk)
     end
 
@@ -462,8 +491,8 @@ end
 
 function collect_results(chunk::CodeChunk, fmt::CollectResult)
     result_no = 1
-    for r =chunk.result
-        chunk.output *=  r.stdout
+    for r in chunk.result
+        chunk.output *= r.stdout
         chunk.rich_output *= r.rich_output
         chunk.figures = [chunk.figures; r.figures]
     end

@@ -4,12 +4,11 @@ using Dates
 using Markdown
 using REPL.REPLCompletions: latex_symbols
 
-
 function format(doc::WeaveDoc)
     formatted = AbstractString[]
     docformat = doc.format
 
-    #Complete format dictionaries with defaults
+    # Complete format dictionaries with defaults
     formatdict = docformat.formatdict
     get!(formatdict, :termstart, formatdict[:codestart])
     get!(formatdict, :termend, formatdict[:codeend])
@@ -18,7 +17,7 @@ function format(doc::WeaveDoc)
     get!(formatdict, :fig_pos, nothing)
     get!(formatdict, :fig_env, nothing)
 
-    docformat.formatdict[:cwd] = doc.cwd #pass wd to figure formatters
+    docformat.formatdict[:cwd] = doc.cwd # pass wd to figure formatters
     docformat.formatdict[:theme] = doc.highlight_theme
 
     strip_header!(doc)
@@ -41,64 +40,84 @@ end
 Render formatted document to a template
 """
 function render_doc(formatted, doc::WeaveDoc, format)
-  return formatted
+    return formatted
 end
 
-function highlight(mime::MIME, source::AbstractString, lexer, theme=Highlights.Themes.DefaultTheme)
-    return sprint( (io, x) -> Highlights.highlight(io, mime, x, lexer, theme), source)
+function highlight(
+    mime::MIME,
+    source::AbstractString,
+    lexer,
+    theme = Highlights.Themes.DefaultTheme,
+)
+    return sprint((io, x) -> Highlights.highlight(io, mime, x, lexer, theme), source)
 end
 
 function stylesheet(m::MIME, theme)
-  return sprint( (io, x) ->  Highlights.stylesheet(io, m, x), theme)
+    return sprint((io, x) -> Highlights.stylesheet(io, m, x), theme)
 end
 
 function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
-  css = stylesheet(MIME("text/html"), doc.highlight_theme)
-  path, wsource = splitdir(abspath(doc.source))
-  #wversion = string(Pkg.installed("Weave"))
-  wversion = ""
-  wtime =  string(Date(now()))
+    css = stylesheet(MIME("text/html"), doc.highlight_theme)
+    path, wsource = splitdir(abspath(doc.source))
+    # wversion = string(Pkg.installed("Weave"))
+    wversion = ""
+    wtime = string(Date(now()))
 
-  if isempty(doc.css)
-    theme_css = read(joinpath(dirname(@__FILE__), "../templates/skeleton_css.css"), String)
-  else
-    theme_css = read(doc.css, String)
-  end
+    if isempty(doc.css)
+        theme_css =
+            read(joinpath(dirname(@__FILE__), "../templates/skeleton_css.css"), String)
+    else
+        theme_css = read(doc.css, String)
+    end
 
-  if isa(doc.template, Mustache.MustacheTokens)
-    template = doc.template
-  elseif isempty(doc.template)
-    template = Mustache.template_from_file(joinpath(dirname(@__FILE__), "../templates/julia_html.tpl"))
-  else
-    template = Mustache.template_from_file(doc.template)
-  end
+    if isa(doc.template, Mustache.MustacheTokens)
+        template = doc.template
+    elseif isempty(doc.template)
+        template = Mustache.template_from_file(joinpath(
+            dirname(@__FILE__),
+            "../templates/julia_html.tpl",
+        ))
+    else
+        template = Mustache.template_from_file(doc.template)
+    end
 
-  return Mustache.render(template; themecss = theme_css,
-                          highlightcss = css, body = formatted, header_script = doc.header_script,
-                          source = wsource, wtime = wtime, wversion = wversion,
-                          [Pair(Symbol(k), v) for (k,v) in doc.header]...)
+    return Mustache.render(
+        template;
+        themecss = theme_css,
+        highlightcss = css,
+        body = formatted,
+        header_script = doc.header_script,
+        source = wsource,
+        wtime = wtime,
+        wversion = wversion,
+        [Pair(Symbol(k), v) for (k, v) in doc.header]...,
+    )
 end
 
 function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2tex)
-  highlight = stylesheet(MIME("text/latex"), doc.highlight_theme)
-  path, wsource = splitdir(abspath(doc.source))
-  #wversion = string(Pkg.installed("Weave"))
-  wversion = ""
-  wtime =  string(Date(now()))
+    highlight = stylesheet(MIME("text/latex"), doc.highlight_theme)
+    path, wsource = splitdir(abspath(doc.source))
+    # wversion = string(Pkg.installed("Weave"))
+    wversion = ""
+    wtime = string(Date(now()))
 
+    if isa(doc.template, Mustache.MustacheTokens)
+        template = doc.template
+    elseif isempty(doc.template)
+        template = Mustache.template_from_file(joinpath(
+            dirname(@__FILE__),
+            "../templates/julia_tex.tpl",
+        ))
+    else
+        template = Mustache.template_from_file(doc.template)
+    end
 
-
-  if isa(doc.template, Mustache.MustacheTokens)
-      template = doc.template
-  elseif isempty(doc.template)
-    template = Mustache.template_from_file(joinpath(dirname(@__FILE__), "../templates/julia_tex.tpl"))
-  else
-    template = Mustache.template_from_file(doc.template)
-  end
-
-  return Mustache.render(template; body = formatted,
-    highlight = highlight,
-    [Pair(Symbol(k), v) for (k,v) in doc.header]...)
+    return Mustache.render(
+        template;
+        body = formatted,
+        highlight = highlight,
+        [Pair(Symbol(k), v) for (k, v) in doc.header]...,
+    )
 end
 
 strip_header!(doc::WeaveDoc) = strip_header!(doc.chunks[1], doc.doctype)
@@ -137,10 +156,10 @@ function format_inline(inline::InlineCode)
     isempty(inline.output) || return inline.output
 end
 
-function ioformat!(io::IOBuffer, out::IOBuffer, fun=WeaveMarkdown.latex)
+function ioformat!(io::IOBuffer, out::IOBuffer, fun = WeaveMarkdown.latex)
     text = String(take!(io))
     if !isempty(text)
-        m = Markdown.parse(text, flavor=WeaveMarkdown.weavemd)
+        m = Markdown.parse(text, flavor = WeaveMarkdown.weavemd)
         write(out, string(fun(m)))
     end
 end
@@ -191,15 +210,14 @@ function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
 end
 
 function format_chunk(chunk::CodeChunk, formatdict, docformat)
-    #Fill undefined options with format specific defaults
+    # Fill undefined options with format specific defaults
     chunk.options[:out_width] == nothing &&
-        (chunk.options[:out_width] =  formatdict[:out_width])
-    chunk.options[:fig_pos] == nothing &&
-        (chunk.options[:fig_pos] =  formatdict[:fig_pos])
+        (chunk.options[:out_width] = formatdict[:out_width])
+    chunk.options[:fig_pos] == nothing && (chunk.options[:fig_pos] = formatdict[:fig_pos])
 
-    #Only use floats if chunk has caption or sets fig_env
+    # Only use floats if chunk has caption or sets fig_env
     if chunk.options[:fig_cap] != nothing && chunk.options[:fig_env] == nothing
-        (chunk.options[:fig_env] =  formatdict[:fig_env])
+        (chunk.options[:fig_env] = formatdict[:fig_env])
     end
 
     if haskey(formatdict, :indent)
@@ -222,38 +240,41 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
         result = format_termchunk(chunk, formatdict, docformat)
     else
 
-    if chunk.options[:echo]
-      #Convert to output format and highlight (html, tex...) if needed
-        result = "$(formatdict[:codestart])$(chunk.content)$(formatdict[:codeend])\n"
-    else
-        result = ""
-    end
-
-    if (strip(chunk.output)!= "" || strip(chunk.rich_output) != "") && (chunk.options[:results] != "hidden")
-        if chunk.options[:results] != "markup" && chunk.options[:results] != "hold"
-            strip(chunk.output) ≠ "" && (result *= "$(chunk.output)\n")
-            strip(chunk.rich_output) ≠ "" && (result *= "$(chunk.rich_output)\n")
+        if chunk.options[:echo]
+            # Convert to output format and highlight (html, tex...) if needed
+            result = "$(formatdict[:codestart])$(chunk.content)$(formatdict[:codeend])\n"
         else
-            if chunk.options[:wrap]
-                chunk.output = "\n" * wraplines(chunk.output, chunk.options[:line_width])
-                chunk.output = format_output(chunk.output, docformat)
-            else
-                chunk.output = "\n" * rstrip(chunk.output)
-                chunk.output = format_output(chunk.output, docformat)
-            end
-
-            if haskey(formatdict, :indent)
-                chunk.output = indent(chunk.output, formatdict[:indent])
-            end
-            strip(chunk.output) ≠ "" &&
-                (result *= "$(formatdict[:outputstart])$(chunk.output)\n$(formatdict[:outputend])\n")
-            strip(chunk.rich_output) ≠ "" && (result *= chunk.rich_output * "\n")
+            result = ""
         end
-    end
+
+        if (strip(chunk.output) != "" || strip(chunk.rich_output) != "") &&
+           (chunk.options[:results] != "hidden")
+            if chunk.options[:results] != "markup" && chunk.options[:results] != "hold"
+                strip(chunk.output) ≠ "" && (result *= "$(chunk.output)\n")
+                strip(chunk.rich_output) ≠ "" && (result *= "$(chunk.rich_output)\n")
+            else
+                if chunk.options[:wrap]
+                    chunk.output =
+                        "\n" * wraplines(chunk.output, chunk.options[:line_width])
+                    chunk.output = format_output(chunk.output, docformat)
+                else
+                    chunk.output = "\n" * rstrip(chunk.output)
+                    chunk.output = format_output(chunk.output, docformat)
+                end
+
+                if haskey(formatdict, :indent)
+                    chunk.output = indent(chunk.output, formatdict[:indent])
+                end
+                strip(chunk.output) ≠ "" && (
+                    result *= "$(formatdict[:outputstart])$(chunk.output)\n$(formatdict[:outputend])\n"
+                )
+                strip(chunk.rich_output) ≠ "" && (result *= chunk.rich_output * "\n")
+            end
+        end
 
     end
 
-    #Handle figures
+    # Handle figures
     if chunk.options[:fig] && length(chunk.figures) > 0
         if chunk.options[:include]
             result *= formatfigures(chunk, docformat)
@@ -264,34 +285,42 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
 end
 
 function format_output(result::AbstractString, docformat)
-  return result
+    return result
 end
 
 function format_output(result::AbstractString, docformat::JMarkdown2HTML)
-  return Markdown.htmlesc(result)
+    return Markdown.htmlesc(result)
 end
 
 function format_output(result::AbstractString, docformat::JMarkdown2tex)
-  # Highligts has some extra escaping defined, eg of $, ", ...
-  result_escaped = sprint( (io, x) -> Highlights.Format.escape(io, MIME("text/latex"), x, charescape=true), result)
-  docformat.formatdict[:keep_unicode] || return uc2tex(result_escaped, true)
-  return result_escaped
+    # Highligts has some extra escaping defined, eg of $, ", ...
+    result_escaped = sprint(
+        (io, x) ->
+            Highlights.Format.escape(io, MIME("text/latex"), x, charescape = true),
+        result,
+    )
+    docformat.formatdict[:keep_unicode] || return uc2tex(result_escaped, true)
+    return result_escaped
 end
 
 function format_code(result::AbstractString, docformat)
-  return result
+    return result
 end
 
 function format_code(result::AbstractString, docformat::JMarkdown2tex)
-  highlighted = highlight(MIME("text/latex"), strip(result),
-        Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
-  docformat.formatdict[:keep_unicode] || return uc2tex(highlighted)
-  return highlighted
-  #return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
+    highlighted = highlight(
+        MIME("text/latex"),
+        strip(result),
+        Highlights.Lexers.JuliaLexer,
+        docformat.formatdict[:theme],
+    )
+    docformat.formatdict[:keep_unicode] || return uc2tex(highlighted)
+    return highlighted
+    # return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
 end
 
-#Convert unicode to tex, escape listings if needed
-function uc2tex(s, escape=false)
+# Convert unicode to tex, escape listings if needed
+function uc2tex(s, escape = false)
     for key in keys(latex_symbols)
         if escape
             s = replace(s, latex_symbols[key] => "(*@\\ensuremath{$(texify(key))}@*)")
@@ -320,13 +349,21 @@ function texify(s)
 end
 
 function format_code(result::AbstractString, docformat::JMarkdown2HTML)
-  return highlight(MIME("text/html"), strip(result),
-    Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
+    return highlight(
+        MIME("text/html"),
+        strip(result),
+        Highlights.Lexers.JuliaLexer,
+        docformat.formatdict[:theme],
+    )
 end
 
 function format_code(result::AbstractString, docformat::Pandoc2HTML)
-    return highlight(MIME("text/html"), strip(result),
-      Highlights.Lexers.JuliaLexer, docformat.formatdict[:theme])
+    return highlight(
+        MIME("text/html"),
+        strip(result),
+        Highlights.Lexers.JuliaLexer,
+        docformat.formatdict[:theme],
+    )
 end
 
 function format_termchunk(chunk, formatdict, docformat)
@@ -340,8 +377,12 @@ end
 
 function format_termchunk(chunk, formatdict, docformat::JMarkdown2HTML)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"
-        result = highlight(MIME("text/html"), strip(chunk.output),
-          Highlights.Lexers.JuliaConsoleLexer, docformat.formatdict[:theme])
+        result = highlight(
+            MIME("text/html"),
+            strip(chunk.output),
+            Highlights.Lexers.JuliaConsoleLexer,
+            docformat.formatdict[:theme],
+        )
     else
         result = ""
     end
@@ -350,8 +391,12 @@ end
 
 function format_termchunk(chunk, formatdict, docformat::Pandoc2HTML)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"
-        result = highlight(MIME("text/html"), strip(chunk.output),
-          Highlights.Lexers.JuliaConsoleLexer, docformat.formatdict[:theme])
+        result = highlight(
+            MIME("text/html"),
+            strip(chunk.output),
+            Highlights.Lexers.JuliaConsoleLexer,
+            docformat.formatdict[:theme],
+        )
     else
         result = ""
     end
@@ -360,10 +405,13 @@ end
 
 function format_termchunk(chunk, formatdict, docformat::JMarkdown2tex)
     if chunk.options[:echo] && chunk.options[:results] != "hidden"
-        result = highlight(MIME("text/latex"), strip(chunk.output),
-                  Highlights.Lexers.JuliaConsoleLexer,
-                  docformat.formatdict[:theme])
-        #return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
+        result = highlight(
+            MIME("text/latex"),
+            strip(chunk.output),
+            Highlights.Lexers.JuliaConsoleLexer,
+            docformat.formatdict[:theme],
+        )
+        # return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
     else
         result = ""
     end
@@ -371,11 +419,10 @@ function format_termchunk(chunk, formatdict, docformat::JMarkdown2tex)
 end
 
 function indent(text, nindent)
-    return join(map(x->
-                    string(repeat(" ", nindent), x), split(text, "\n")), "\n")
+    return join(map(x -> string(repeat(" ", nindent), x), split(text, "\n")), "\n")
 end
 
-function wraplines(text, line_width=75)
+function wraplines(text, line_width = 75)
     result = AbstractString[]
     lines = split(text, "\n")
     for line in lines
@@ -389,11 +436,11 @@ function wraplines(text, line_width=75)
     return strip(join(result, "\n"))
 end
 
-function wrapline(text, line_width=75)
+function wrapline(text, line_width = 75)
     result = ""
     while length(text) > line_width
-        result*= first(text, line_width) * "\n"
-        text = chop(text, head=line_width, tail=0)
+        result *= first(text, line_width) * "\n"
+        text = chop(text, head = line_width, tail = 0)
     end
     result *= text
 end
