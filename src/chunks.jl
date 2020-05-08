@@ -9,11 +9,11 @@ mutable struct WeaveDoc
     path::AbstractString
     chunks::Array{WeaveChunk}
     cwd::AbstractString
-    format
+    format::Any
     doctype::AbstractString
     header_script::String
     header::Dict
-    template::Union{AbstractString, Mustache.MustacheTokens}
+    template::Union{AbstractString,Mustache.MustacheTokens}
     css::AbstractString
     highlight_theme::Type{<:Highlights.AbstractTheme}
     fig_path::AbstractString
@@ -21,8 +21,22 @@ mutable struct WeaveDoc
     function WeaveDoc(source, chunks, header)
         path, fname = splitdir(abspath(source))
         basename = splitext(fname)[1]
-        new(source, basename, path, chunks, "", nothing, "", "", header,
-          "", "", Highlights.Themes.DefaultTheme, "", deepcopy(rcParams[:chunk_defaults]))
+        new(
+            source,
+            basename,
+            path,
+            chunks,
+            "",
+            nothing,
+            "",
+            "",
+            header,
+            "",
+            "",
+            Highlights.Themes.DefaultTheme,
+            "",
+            deepcopy(rcParams[:chunk_defaults]),
+        )
     end
 end
 
@@ -40,13 +54,24 @@ mutable struct CodeChunk <: WeaveChunk
     result_no::Int
     start_line::Int
     optionstring::AbstractString
-    options::Dict{Symbol, Any}
+    options::Dict{Symbol,Any}
     output::AbstractString
     rich_output::AbstractString
     figures::Array{AbstractString}
     result::Array{ChunkOutput}
     function CodeChunk(content, number, start_line, optionstring, options)
-        new(rstrip(content) * "\n", number, 0, start_line, optionstring, options, "","", AbstractString[], ChunkOutput[])
+        new(
+            rstrip(content) * "\n",
+            number,
+            0,
+            start_line,
+            optionstring,
+            options,
+            "",
+            "",
+            AbstractString[],
+            ChunkOutput[],
+        )
     end
 end
 
@@ -54,7 +79,12 @@ mutable struct DocChunk <: WeaveChunk
     content::Array{Inline}
     number::Int
     start_line::Int
-    function DocChunk(text::AbstractString, number::Int, start_line::Int, inline_regex = nothing)
+    function DocChunk(
+        text::AbstractString,
+        number::Int,
+        start_line::Int,
+        inline_regex = nothing,
+    )
         chunks = parse_inline(text, inline_regex)
         new(chunks, number, start_line)
     end

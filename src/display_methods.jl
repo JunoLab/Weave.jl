@@ -1,51 +1,64 @@
 using Markdown
 import .WeaveMarkdown
 
-#Contains report global properties
+# Contains report global properties
 mutable struct Report <: AbstractDisplay
-  cwd::AbstractString
-  basename::AbstractString
-  formatdict::Dict{Symbol,Any}
-  pending_code::AbstractString
-  cur_result::AbstractString
-  rich_output::AbstractString
-  fignum::Int
-  figures::Array{AbstractString}
-  term_state::Symbol
-  cur_chunk
-  mimetypes::Array{AbstractString}
-  first_plot::Bool
-  header_script::String
-  throw_errors::Bool
+    cwd::AbstractString
+    basename::AbstractString
+    formatdict::Dict{Symbol,Any}
+    pending_code::AbstractString
+    cur_result::AbstractString
+    rich_output::AbstractString
+    fignum::Int
+    figures::Array{AbstractString}
+    term_state::Symbol
+    cur_chunk::Any
+    mimetypes::Array{AbstractString}
+    first_plot::Bool
+    header_script::String
+    throw_errors::Bool
 end
 
 function Report(cwd, basename, formatdict, mimetypes, throw_errors)
-    Report(cwd, basename, formatdict, "", "", "", 1, AbstractString[], :text, nothing,
-        mimetypes, true, "", throw_errors)
+    Report(
+        cwd,
+        basename,
+        formatdict,
+        "",
+        "",
+        "",
+        1,
+        AbstractString[],
+        :text,
+        nothing,
+        mimetypes,
+        true,
+        "",
+        throw_errors,
+    )
 end
 
-
-#Default mimetypes in order, can be overridden for some inside `run method` formats
+# Default mimetypes in order, can be overridden for some inside `run method` formats
 const default_mime_types = ["image/svg+xml", "image/png", "text/html", "text/plain"]
-#const default_mime_types = ["image/png", "image/svg+xml", "text/html", "text/plain"]
-#From IJulia as a reminder
-#const supported_mime_types = [ "text/html", "text/latex", "image/svg+xml", "image/png", "image/jpeg", "text/plain", "text/markdown" ]
+# const default_mime_types = ["image/png", "image/svg+xml", "text/html", "text/plain"]
+# From IJulia as a reminder
+# const supported_mime_types = [ "text/html", "text/latex", "image/svg+xml", "image/png", "image/jpeg", "text/plain", "text/markdown" ]
 
-const mimetype_ext =
-    Dict(".png" => "image/png",
-         ".jpg" => "image/jpeg",
-         ".jpeg" => "image/jpeg",
-         ".svg" => "image/svg+xml",
-         ".js.svg" => "image/svg+xml",
-         ".pdf" => "application/pdf",
-         ".ps" => "application/postscript",
-         ".tex" => "text/latex"
-         )
+const mimetype_ext = Dict(
+    ".png" => "image/png",
+    ".jpg" => "image/jpeg",
+    ".jpeg" => "image/jpeg",
+    ".svg" => "image/svg+xml",
+    ".js.svg" => "image/svg+xml",
+    ".pdf" => "application/pdf",
+    ".ps" => "application/postscript",
+    ".tex" => "text/latex",
+)
 
 function Base.display(report::Report, data)
-    #Set preferred mimetypes for report based on format
+    # Set preferred mimetypes for report based on format
     fig_ext = report.cur_chunk.options[:fig_ext]
-    for m in unique([mimetype_ext[fig_ext] ; report.mimetypes])
+    for m in unique([mimetype_ext[fig_ext]; report.mimetypes])
         if Base.invokelatest(showable, m, data)
             try
                 if !istextmime(m)
@@ -96,9 +109,9 @@ function Base.display(report::Report, m::MIME"text/html", data::Exception)
 end
 
 function Base.show(io, m::MIME"text/html", data::Exception)
-    println(io ,"<pre class=\"julia-error\">")
+    println(io, "<pre class=\"julia-error\">")
     println(io, Markdown.htmlesc("ERROR: " * sprint(showerror, data)))
-    println(io ,"</pre>")
+    println(io, "</pre>")
 end
 
 #Catch "rich_output"
@@ -113,7 +126,7 @@ function Base.display(report::Report, m::MIME"text/markdown", data)
     # Convert to "richer" type of possible
     for m in report.mimetypes
         if m == "text/html" || m == "text/latex"
-            display(Markdown.parse(s, flavor=WeaveMarkdown.weavemd))
+            display(Markdown.parse(s, flavor = WeaveMarkdown.weavemd))
             break
         elseif m == "text/markdown"
             report.rich_output *= "\n" * s
@@ -129,18 +142,18 @@ end
 
 """Add saved figure name to results and return the name"""
 function add_figure(report::Report, data, m, ext)
-  chunk = report.cur_chunk
-  full_name, rel_name = get_figname(report, chunk, ext = ext)
+    chunk = report.cur_chunk
+    full_name, rel_name = get_figname(report, chunk, ext = ext)
 
-  open(full_name, "w") do io
-      if ext == ".pdf"
-          write(io, repr(m, data))
-      else
-          show(io, m, data)
-      end
-  end
+    open(full_name, "w") do io
+        if ext == ".pdf"
+            write(io, repr(m, data))
+        else
+            show(io, m, data)
+        end
+    end
 
-  push!(report.figures, rel_name)
-  report.fignum += 1
-  return full_name
+    push!(report.figures, rel_name)
+    report.fignum += 1
+    return full_name
 end

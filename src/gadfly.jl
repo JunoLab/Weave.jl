@@ -21,13 +21,13 @@ function Base.display(report::Weave.Report, m::MIME"image/png", p::Gadfly.Plot)
     display(report, MIME("image/svg+xml"), p)
 end
 
-#Gadfly doesn't call the default display methods, this catches
-#all Gadfly plots
+# Gadfly doesn't call the default display methods, this catches
+# all Gadfly plots
 function Base.display(report::Weave.Report, m::MIME"image/svg+xml", p::Gadfly.Plot)
     chunk = report.cur_chunk
 
-    w = chunk.options[:fig_width]Gadfly.inch
-    h = chunk.options[:fig_height]Gadfly.inch
+    w = chunk.options[:fig_width] * Gadfly.inch
+    h = chunk.options[:fig_height] * Gadfly.inch
     format = chunk.options[:fig_ext]
     dpi = chunk.options[:dpi]
 
@@ -41,13 +41,13 @@ function Base.display(report::Weave.Report, m::MIME"image/svg+xml", p::Gadfly.Pl
     elseif format == ".js.svg"
         Gadfly.draw(Gadfly.SVGJS(full_name, w, h), p)
     elseif format == ".png"
-        Gadfly.draw(Gadfly.PNG(full_name, w, h, dpi=dpi), p)
+        Gadfly.draw(Gadfly.PNG(full_name, w, h, dpi = dpi), p)
     elseif format == ".pdf"
         Gadfly.draw(Gadfly.PDF(full_name, w, h), p)
     elseif format == ".ps"
         Gadfly.draw(Gadfly.PS(full_name, w, h), p)
     elseif format == ".tex"
-        Gadfly.draw(Gadfly.PGF(full_name, w, h, true ), p)
+        Gadfly.draw(Gadfly.PGF(full_name, w, h, true), p)
     else
         @warn("Can't save figure. Unsupported format, $format")
     end

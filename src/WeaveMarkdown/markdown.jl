@@ -7,23 +7,25 @@ function __init__()
     # NOTE:
     # overwriting `Markdown.latex` function should be done here in order to allow
     # incremental precompilations
-    Markdown.eval(quote
-        function latex(io::IO, tex::Markdown.LaTeX)
-            math_envs = ["align", "equation", "eqnarray"]
-            use_dollars = !any([occursin("\\begin{$me", tex.formula) for me in math_envs])
-            use_dollars && write(io, "\\[")
-            write(io, string("\n", tex.formula, "\n"))
-            use_dollars && write(io, "\\]\n")
-        end
-    end)
+    Markdown.eval(
+        quote
+            function latex(io::IO, tex::Markdown.LaTeX)
+                math_envs = ["align", "equation", "eqnarray"]
+                use_dollars =
+                    !any([occursin("\\begin{$me", tex.formula) for me in math_envs])
+                use_dollars && write(io, "\\[")
+                write(io, string("\n", tex.formula, "\n"))
+                use_dollars && write(io, "\\]\n")
+            end
+        end,
+    )
 end
 
 mutable struct Comment
     text::String
 end
 
-@breaking true ->
-function dollarmath(stream::IO, block::MD)
+@breaking true -> function dollarmath(stream::IO, block::MD)
     withstream(stream) do
         str = Markdown.startswith(stream, r"^\$\$$"m)
         isempty(str) && return false
@@ -41,20 +43,19 @@ function dollarmath(stream::IO, block::MD)
             else
                 seek(stream, line_start)
             end
-            write(buffer, readline(stream, keep=true))
+            write(buffer, readline(stream, keep = true))
         end
         return false
     end
 end
 
-@breaking true ->
-function topcomment(stream::IO, block::MD)
+@breaking true -> function topcomment(stream::IO, block::MD)
     buffer = IOBuffer()
     withstream(stream) do
         str = Markdown.startswith(stream, r"^<!--")
         isempty(str) && return false
         while !eof(stream)
-            line = readline(stream, keep=true)
+            line = readline(stream, keep = true)
             write(buffer, line)
             if occursin(r"-->$", line)
                 s = replace(String(take!(buffer)) |> chomp, r"-->$" => "")
@@ -66,8 +67,7 @@ function topcomment(stream::IO, block::MD)
     end
 end
 
-@trigger '<' ->
-function comment(stream::IO, md::MD)
+@trigger '<' -> function comment(stream::IO, md::MD)
     withstream(stream) do
         Markdown.startswith(stream, "<!--") || return
         text = Markdown.readuntil(stream, "-->")

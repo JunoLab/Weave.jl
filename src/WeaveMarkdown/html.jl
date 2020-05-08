@@ -1,8 +1,23 @@
-#module Markdown2HTML
+# module Markdown2HTML
 # Markdown to HTML writer, Modified from Julia Base.Markdown html writer
-using Markdown: MD, Header, Code, Paragraph, BlockQuote, Footnote, Table,
-      Admonition, List, HorizontalRule, Bold, Italic, Image, Link, LineBreak,
-      LaTeX, isordered
+using Markdown:
+    MD,
+    Header,
+    Code,
+    Paragraph,
+    BlockQuote,
+    Footnote,
+    Table,
+    Admonition,
+    List,
+    HorizontalRule,
+    Bold,
+    Italic,
+    Image,
+    Link,
+    LineBreak,
+    LaTeX,
+    isordered
 
 function tohtml(io::IO, m::MIME"text/html", x)
     show(io, m, x)
@@ -22,8 +37,6 @@ function tohtml(m::MIME"image/svg+xml", img)
     show(io, m, img)
 end
 
-
-
 # AbstractDisplay infrastructure
 
 function bestmime(val)
@@ -34,7 +47,6 @@ function bestmime(val)
 end
 
 tohtml(io::IO, x) = tohtml(io, bestmime(x), x)
-
 
 # Utils
 
@@ -56,10 +68,13 @@ end
 
 tag(io::IO, tag, attrs...) = withtag(nothing, io, tag, attrs...)
 
-const _htmlescape_chars = Dict('<'=>"&lt;",   '>'=>"&gt;",
-                               '"'=>"&quot;", '&'=>"&amp;",
-                               # ' '=>"&nbsp;",
-                               )
+const _htmlescape_chars = Dict(
+    '<' => "&lt;",
+    '>' => "&gt;",
+    '"' => "&quot;",
+    '&' => "&amp;",
+    # ' '=>"&nbsp;",
+)
 for ch in "'`!\$%()=+{}[]"
     _htmlescape_chars[ch] = "&#$(Int(ch));"
 end
@@ -93,7 +108,7 @@ end
 
 html(io::IO, md::MD) = html(io, md.content)
 
-function html(io::IO, header::Header{l}) where l
+function html(io::IO, header::Header{l}) where {l}
     withtag(io, "h$l") do
         htmlinline(io, header.text)
     end
@@ -141,7 +156,7 @@ function html(io::IO, md::Admonition)
 end
 
 function html(io::IO, md::List)
-    maybe_attr = md.ordered > 1 ? Any[:start => string(md.ordered)] : []
+    maybe_attr = md.ordered > 1 ? Any[:start=>string(md.ordered)] : []
     withtag(io, isordered(md) ? :ol : :ul, maybe_attr...) do
         for item in md.items
             println(io)
@@ -220,9 +235,8 @@ function htmlinline(io::IO, md::Italic)
 end
 
 function htmlinline(io::IO, md::Image)
-    tag(io, :img, :src=>md.url, :alt=>md.alt)
+    tag(io, :img, :src => md.url, :alt => md.alt)
 end
-
 
 function htmlinline(io::IO, f::Footnote)
     withtag(io, :a, :href => "#footnote-$(f.id)", :class => "footnote") do
@@ -231,7 +245,7 @@ function htmlinline(io::IO, f::Footnote)
 end
 
 function htmlinline(io::IO, link::Link)
-    withtag(io, :a, :href=>link.url) do
+    withtag(io, :a, :href => link.url) do
         htmlinline(io, link.text)
     end
 end
@@ -250,4 +264,4 @@ htmlinline(io::IO, x) = tohtml(io, x)
 
 html(md) = sprint(html, md)
 
-#end
+# end
