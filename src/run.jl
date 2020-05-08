@@ -87,45 +87,42 @@ function Base.run(
     report = Report(doc.cwd, doc.basename, doc.format.formatdict, mimetypes, throw_errors)
     pushdisplay(report)
 
-    if cache != :off && cache != :refresh
-        cached = read_cache(doc, cache_path)
-        cached == nothing && @info("No cached results found, running code")
-    else
-        cached = nothing
-    end
-
-    executed = Any[]
-    n = length(doc.chunks)
-
-    for i = 1:n
-        chunk = doc.chunks[i]
-
-        if isa(chunk, CodeChunk)
-            options = merge(doc.chunk_defaults, chunk.options)
-            merge!(chunk.options, options)
-        end
-
-        restore = (cache == :user && typeof(chunk) == CodeChunk && chunk.options[:cache])
-
-        if cached != nothing && (cache == :all || restore)
-            result_chunks = restore_chunk(chunk, cached)
+    try
+        if cache !== :off && cache !== :refresh
+            cached = read_cache(doc, cache_path)
+            cached === nothing && @info "No cached results found, running code"
         else
-            result_chunks = run_chunk(chunk, doc, report, mod)
+            cached = nothing
         end
 
-        executed = [executed; result_chunks]
-    end
+        executed = []
+        for chunk in doc.chunks
+            if isa(chunk, CodeChunk)
+                options = merge(doc.chunk_defaults, chunk.options)
+                merge!(chunk.options, options)
+            end
 
-    doc.header_script = report.header_script
+            restore = (cache === :user && typeof(chunk) == CodeChunk && chunk.options[:cache])
 
-    popdisplay(report)
+            result_chunks = if cached != nothing && (cache === :all || restore)
+                restore_chunk(chunk, cached)
+            else
+                run_chunk(chunk, doc, report, mod)
+            end
 
-    # Clear variables from used sandbox
-    mod == :sandbox && clear_sandbox(SandBox)
-    doc.chunks = executed
+            executed = [executed; result_chunks]
+        end
 
-    if cache != :off
-        write_cache(doc, cache_path)
+        doc.header_script = report.header_script
+        # Clear variables from used sandbox
+        mod === :sandbox && clear_sandbox(SandBox)
+        doc.chunks = executed
+
+        cache !== :off && write_cache(doc, cache_path)
+    catch err
+        rethrow(err)
+    finally
+        popdisplay(report) # ensure display pops out even if internal error occurs
     end
 
     return doc
