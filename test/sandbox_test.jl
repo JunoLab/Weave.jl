@@ -1,10 +1,11 @@
 using Weave
+using Weave: run_doc
 using Test
 
 function weavestring(source; doctype = "pandoc", informat="markdown", mod=Main)
     p1 = Weave.parse_doc(source, informat)
     doc = Weave.WeaveDoc("dummy1.jmd", p1, Dict())
-    return Weave.run(doc, doctype=doctype, mod=mod)
+    return run_doc(doc, doctype=doctype, mod=mod)
 end
 
 smod = """

@@ -1,4 +1,5 @@
 using Weave
+using Weave: run_doc
 using Test
 
 s1= """
@@ -22,7 +23,7 @@ print(y
 
 p1 = Weave.parse_doc(s1, "markdown")
 doc = Weave.WeaveDoc("dummy1.jmd", p1, Dict())
-doc1 = Weave.run(doc, doctype = "pandoc")
+doc1 = run_doc(doc, doctype = "pandoc")
 
 doc1.chunks[1].output
 
@@ -30,10 +31,10 @@ doc1.chunks[1].output
 @test doc1.chunks[2].output == "Error: syntax: incomplete: premature end of input\n"
 @test doc1.chunks[3].output == "\njulia> plot(x)\nError: UndefVarError: plot not defined\n\njulia> y = 10\n10\n\njulia> print(y\nError: syntax: incomplete: premature end of input\n"
 
-@test_throws ArgumentError Weave.run(doc, doctype = "pandoc", throw_errors = true)
+@test_throws ArgumentError run_doc(doc, doctype = "pandoc", throw_errors = true)
 
 doc = Weave.WeaveDoc("dummy1.jmd", p1, Dict())
-doc3 = Weave.run(doc, doctype = "md2html")
+doc3 = run_doc(doc, doctype = "md2html")
 @test doc3.chunks[1].rich_output == "<pre class=\"julia-error\">\nERROR: ArgumentError: Package NonExisting not found in current path:\n- Run &#96;import Pkg; Pkg.add&#40;&quot;NonExisting&quot;&#41;&#96; to install the NonExisting package.\n\n</pre>\n"
 @test doc3.chunks[2].rich_output == "<pre class=\"julia-error\">\nERROR: syntax: incomplete: premature end of input\n</pre>\n"
 @test doc3.chunks[3].output == "\njulia> plot(x)\nError: UndefVarError: plot not defined\n\njulia> y = 10\n10\n\njulia> print(y\nError: syntax: incomplete: premature end of input\n"

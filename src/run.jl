@@ -1,7 +1,7 @@
 using Base64
 
 """
-    run(doc::WeaveDoc; kwargs...)
+    run_doc(doc::WeaveDoc; kwargs...)
 
 Run code chunks and capture output from the parsed document.
 
@@ -28,7 +28,7 @@ Run code chunks and capture output from the parsed document.
 !!! note
     Run Weave from terminal and try to avoid weaving from IJulia or ESS; they tend to mess with capturing output.
 """
-function Base.run(
+function run_doc(
     doc::WeaveDoc;
     doctype::Union{Symbol,AbstractString} = :auto,
     out_path::Union{Symbol,AbstractString} = :doc,
@@ -44,6 +44,7 @@ function Base.run(
     # cache :all, :user, :off, :refresh
 
     doc.cwd = get_cwd(doc, out_path)
+    # doctype detection is unnecessary here, but existing unit test requires this.
     doctype == :auto && (doctype = detect_doctype(doc.source))
     doc.doctype = doctype
     doc.format = formats[doctype]
