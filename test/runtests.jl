@@ -15,16 +15,16 @@ mock_doc(str, chunk_parser = Weave.parse_markdown) = Weave.WeaveDoc("dummy", chu
         include("chunk_options.jl")
     end
 
-    @testset "Error handling " begin
-        include("errors_test.jl")
-    end
-
     @testset "module evaluation" begin
         include("test_module_evaluation.jl")
     end
 
     @testset "header" begin
         include("test_header.jl")
+    end
+
+    @testset "error rendering" begin
+        include("test_error_rendering.jl")
     end
 
     @testset "Conversions" begin
