@@ -3,7 +3,6 @@ import Mustache
 # Default options
 const defaultParams = Dict{Symbol,Any}(
     :storeresults => false,
-    :doc_number => 0,
     :chunk_defaults => Dict{Symbol,Any}(
         :echo => true,
         :results => "markup",
@@ -97,7 +96,6 @@ Get weave arguments from document header.
 function header_args(
     doc::WeaveDoc,
     out_path,
-    mod,
     fig_ext,
     fig_path,
     cache_path,
@@ -116,7 +114,6 @@ function header_args(
     out_path = get(args, "out_path", out_path)
     out_path == ":pwd" && (out_path = :pwd)
     isa(out_path, Symbol) || (out_path = joinpath(dirname(doc.source), out_path))
-    mod = Symbol(get(args, "mod", mod))
     fig_path = get(args, "fig_path", fig_path)
     fig_ext = get(args, "fig_ext", fig_ext)
     cache_path = get(args, "cache_path", cache_path)
@@ -136,7 +133,6 @@ function header_args(
         informat,
         out_path,
         args,
-        mod,
         fig_path,
         fig_ext,
         cache_path,

@@ -1,11 +1,13 @@
-using Weave
-using Test
-
+# XXX: this test is too frigile
 function mmtest(source, resfile, doctype)
-  weave("documents/$source", out_path = "documents/multimedia/$resfile", mod=:sandbox,
-    doctype=doctype, template = "templates/mini.tpl")
-  result =  read("documents/multimedia/$resfile", String)
-  ref =  read("documents/multimedia/$resfile.ref", String)
+  weave(
+    "documents/$source",
+    out_path = "documents/multimedia/$resfile",
+    doctype = doctype,
+    template = "templates/mini.tpl",
+  )
+  result = read("documents/multimedia/$resfile", String)
+  ref = read("documents/multimedia/$resfile.ref", String)
   @test result == ref
   rm("documents/multimedia/$resfile")
 end
