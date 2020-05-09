@@ -1,7 +1,3 @@
-using Weave
-using Weave: run_doc
-using Test
-
 # Test rendering of doc chunks
 content = """
 # Test chunk
@@ -132,7 +128,7 @@ f = Weave.format_chunk(dchunk, pformat.formatdict, pformat)
 @test f == "\\section{Test chunk}\nα\n\n"
 
 function doc_from_string(str)
-    parsed = Weave.parse_doc(str,"markdown")
+    parsed = Weave.parse_markdown(str)
     header = Weave.parse_header(parsed[1])
     Weave.WeaveDoc("",parsed,header)
 end

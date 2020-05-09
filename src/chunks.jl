@@ -1,7 +1,6 @@
 import Mustache
 
 abstract type WeaveChunk end
-abstract type Inline end
 
 mutable struct WeaveDoc
     source::AbstractString
@@ -75,19 +74,12 @@ mutable struct CodeChunk <: WeaveChunk
     end
 end
 
+abstract type Inline end
+
 mutable struct DocChunk <: WeaveChunk
-    content::Array{Inline}
+    content::Vector{Inline}
     number::Int
     start_line::Int
-    function DocChunk(
-        text::AbstractString,
-        number::Int,
-        start_line::Int,
-        inline_regex = nothing,
-    )
-        chunks = parse_inline(text, inline_regex)
-        new(chunks, number, start_line)
-    end
 end
 
 mutable struct InlineText <: Inline
