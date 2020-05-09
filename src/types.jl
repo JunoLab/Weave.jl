@@ -1,3 +1,4 @@
+# TODO: concreate typing
 
 abstract type WeaveChunk end
 
@@ -5,7 +6,7 @@ mutable struct WeaveDoc
     source::AbstractString
     basename::AbstractString
     path::AbstractString
-    chunks::Array{WeaveChunk}
+    chunks::Vector{WeaveChunk}
     cwd::AbstractString
     format::Any
     doctype::AbstractString
@@ -23,7 +24,7 @@ struct ChunkOutput
     stdout::AbstractString
     displayed::AbstractString
     rich_output::AbstractString
-    figures::Array{AbstractString}
+    figures::Vector{AbstractString}
 end
 
 mutable struct CodeChunk <: WeaveChunk
@@ -35,8 +36,8 @@ mutable struct CodeChunk <: WeaveChunk
     options::Dict{Symbol,Any}
     output::AbstractString
     rich_output::AbstractString
-    figures::Array{AbstractString}
-    result::Array{ChunkOutput}
+    figures::Vector{AbstractString}
+    result::Vector{ChunkOutput}
     function CodeChunk(content, number, start_line, optionstring, options)
         new(
             rstrip(content) * "\n",
@@ -76,7 +77,7 @@ mutable struct InlineCode <: Inline
     ctype::Symbol
     output::AbstractString
     rich_output::AbstractString
-    figures::Array{AbstractString}
+    figures::Vector{AbstractString}
     function InlineCode(content, si, ei, number, ctype)
         new(content, si, ei, number, ctype, "", "", AbstractString[])
     end
