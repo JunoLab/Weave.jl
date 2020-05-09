@@ -296,7 +296,7 @@ push_postexecute_hook(f::Function) = push!(postexecute_hooks, f)
 pop_postexecute_hook(f::Function) =
     splice!(postexecute_hooks, findfirst(x -> x == f, postexecute_hooks))
 
-include("chunks.jl")
+include("types.jl")
 include("config.jl")
 include("WeaveMarkdown/markdown.jl")
 include("display_methods.jl")
