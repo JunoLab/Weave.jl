@@ -50,7 +50,7 @@ end
 
 """Read and parse input document"""
 function read_doc(source::AbstractString, format = :auto)
-    format == :auto && (format = detect_informat(source))
+    format === :auto && (format = detect_informat(source))
     document = read(source, String)
     document = replace(document, "\r\n" => "\n")
     parsed = parse_doc(document, format)
@@ -76,9 +76,8 @@ function parse_header(chunk::DocChunk)
     return header
 end
 
-function parse_doc(document::AbstractString, format = "noweb"::AbstractString)
-    return parse_doc(document, input_formats[format])
-end
+parse_doc(document::AbstractString, format::AbstractString = "noweb") =
+    parse_doc(document, input_formats[format])
 
 """Parse documents with Weave.jl markup"""
 function parse_doc(document::AbstractString, format::MarkupInput)
