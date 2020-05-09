@@ -1,7 +1,6 @@
 module Weave
-import Highlights
-using Mustache
-using Requires
+
+using Highlights, Mustache, Requires
 
 
 const WEAVE_OPTION_NAME = "options" # TODO: rename to "weave_options"

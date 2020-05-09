@@ -1,5 +1,3 @@
-import Mustache
-
 # Default options
 const defaultParams = Dict{Symbol,Any}(
     :storeresults => false,

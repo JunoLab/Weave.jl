@@ -1,4 +1,3 @@
-import Mustache
 
 abstract type WeaveChunk end
 
