@@ -3,6 +3,9 @@ import Highlights
 using Mustache
 using Requires
 
+
+const WEAVE_OPTION_NAME = "options" # TODO: rename to "weave_options"
+
 function __init__()
     @require Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80" Base.include(
         Main,
@@ -123,7 +126,7 @@ function weave(
     doc.doctype = doctype
 
     # Read args from document header, overrides command line args
-    if haskey(doc.header, "options")
+    if haskey(doc.header, WEAVE_OPTION_NAME)
         (
             doctype,
             informat,
@@ -248,7 +251,7 @@ function notebook(
     end
 
     @info "Running nbconvert"
-    out = read(
+    return out = read(
         `$jupyter_path nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile  $nbconvert_options --output $outfile`,
         String,
     )

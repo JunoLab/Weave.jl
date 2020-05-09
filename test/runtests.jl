@@ -6,14 +6,13 @@ using Test
 # TODO: add test for header processsing
 # TODO: add test for `include_weave`
 
+# constructs `WeaveDoc` from `String`
+mock_doc(str, chunk_parser = Weave.parse_markdown) = Weave.WeaveDoc("dummy", chunk_parser(str))
+
 
 @testset "Weave" begin
     @testset "Chunk options" begin
         include("chunk_options.jl")
-    end
-
-    @testset "Error handling " begin
-        include("errors_test.jl")
     end
 
     @testset "module evaluation" begin
@@ -22,6 +21,10 @@ using Test
 
     @testset "header" begin
         include("test_header.jl")
+    end
+
+    @testset "error rendering" begin
+        include("test_error_rendering.jl")
     end
 
     @testset "Conversions" begin
