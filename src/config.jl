@@ -78,7 +78,7 @@ function combine_args(args, doctype)
     common = Dict()
     specific = Dict()
     for key in keys(args)
-        if key ∈ keys(Weave.formats)
+        if key in keys(Weave.formats)
             specific[key] = args[key]
         else
             common[key] = args[key]

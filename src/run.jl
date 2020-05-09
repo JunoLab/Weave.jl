@@ -64,7 +64,7 @@ function run_doc(
     cache === :off || @eval import Serialization # XXX: evaluate in a more sensible module
 
     # This is needed for latex and should work on all output formats
-    Sys.iswindows() && (fig_path = replace(fig_path, "\\" => "/"))
+    @static Sys.iswindows() && (fig_path = replace(fig_path, "\\" => "/"))
 
     doc.fig_path = fig_path
     set_rc_params(doc, fig_path, fig_ext)
@@ -81,7 +81,6 @@ function run_doc(
 
     report = Report(doc.cwd, doc.basename, doc.format.formatdict, mimetypes, throw_errors)
     pushdisplay(report)
-
     try
         if cache !== :off && cache !== :refresh
             cached = read_cache(doc, cache_path)
