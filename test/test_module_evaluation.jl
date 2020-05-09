@@ -1,6 +1,6 @@
 @testset "evaluation module" begin
     function mock_output(document, mod = nothing)
-        parsed = Weave.parse_doc(document, "markdown")
+        parsed = Weave.parse_markdown(document)
         doc = Weave.WeaveDoc("dummy.jmd", parsed, Dict())
         result_doc = run_doc(doc, mod = mod)
         @test isdefined(result_doc.chunks[1], :output)

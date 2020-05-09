@@ -1,7 +1,3 @@
-using Weave
-using Weave: run_doc
-using Test
-
 s1= """
 
 ```julia
@@ -21,11 +17,9 @@ print(y
 
 """
 
-p1 = Weave.parse_doc(s1, "markdown")
+p1 = Weave.parse_markdown(s1)
 doc = Weave.WeaveDoc("dummy1.jmd", p1, Dict())
 doc1 = run_doc(doc, doctype = "pandoc")
-
-doc1.chunks[1].output
 
 @test doc1.chunks[1].output == "Error: ArgumentError: Package NonExisting not found in current path:\n- Run `import Pkg; Pkg.add(\"NonExisting\")` to install the NonExisting package.\n\n"
 @test doc1.chunks[2].output == "Error: syntax: incomplete: premature end of input\n"
