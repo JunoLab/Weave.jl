@@ -1,6 +1,3 @@
-using Weave
-using Test
-
 # Test rendering of doc chunks
 content = """
 # Test chunk
@@ -22,7 +19,7 @@ f = Weave.format_chunk(dchunk, docformat.formatdict, docformat)
 # Test with actual doc
 
 parsed = Weave.read_doc("documents/chunk_options.noweb")
-doc = Weave.run(parsed, doctype = "md2html")
+doc = run_doc(parsed, doctype = "md2html")
 
 c_check = "<pre class='hljl'>\n<span class='hljl-n'>x</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-ni'>12</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-ni'>10</span><span class='hljl-p'>]</span><span class='hljl-t'>\n</span><span class='hljl-nf'>println</span><span class='hljl-p'>(</span><span class='hljl-n'>y</span><span class='hljl-p'>)</span>\n</pre>\n"
 doc.format.formatdict[:theme] = doc.highlight_theme
@@ -39,7 +36,7 @@ rendered = Weave.render_doc("Hello", doc, doc.format)
 
 # Tex format
 parsed = Weave.read_doc("documents/chunk_options.noweb")
-doc = Weave.run(parsed, doctype = "md2tex")
+doc = run_doc(parsed, doctype = "md2tex")
 
 c_check = "\\begin{lstlisting}\n(*@\\HLJLnf{println}@*)(*@\\HLJLp{(}@*)(*@\\HLJLn{x}@*)(*@\\HLJLp{)}@*)\n\\end{lstlisting}\n"
 doc.format.formatdict[:theme] = doc.highlight_theme
@@ -101,15 +98,15 @@ tfied = "\\ensuremath{\\bm{\\mathrm{L}}} \\ensuremath{\\bm{\\mathfrak{F}}} \\ens
 
 # Test markdown output from chunks
 parsed = Weave.read_doc("documents/markdown_output.jmd")
-doc = Weave.run(parsed, doctype = "md2html")
+doc = run_doc(parsed, doctype = "md2html")
 @test doc.chunks[1].rich_output == "\n<div class=\"markdown\"><h3>Small markdown sample</h3>\n<p><strong>Hello</strong> from <code>code</code> block.</p>\n</div>"
 @test doc.chunks[2].rich_output == "\n<div class=\"markdown\"><ul>\n<li><p>one</p>\n</li>\n<li><p>two</p>\n</li>\n<li><p>three</p>\n</li>\n</ul>\n</div>"
 
-ldoc = Weave.run(parsed, doctype = "md2tex")
+ldoc = run_doc(parsed, doctype = "md2tex")
 @test ldoc.chunks[1].rich_output == "\n\\subsubsection{Small markdown sample}\n\\textbf{Hello} from \\texttt{code} block.\n\n"
 @test ldoc.chunks[2].rich_output == "\n\\begin{itemize}\n\\item one\n\n\n\\item two\n\n\n\\item three\n\n\\end{itemize}\n"
 
-mdoc = Weave.run(parsed, doctype = "github")
+mdoc = run_doc(parsed, doctype = "github")
 @test mdoc.chunks[1].rich_output == "\n\n### Small markdown sample\n\n**Hello** from `code` block.\n\n"
 @test mdoc.chunks[2].rich_output == "\n\n* one\n* two\n* three\n\n"
 
@@ -130,24 +127,21 @@ pformat.formatdict[:keep_unicode] = true
 f = Weave.format_chunk(dchunk, pformat.formatdict, pformat)
 @test f == "\\section{Test chunk}\nα\n\n"
 
-function doc_from_string(str)
-    parsed = Weave.parse_doc(str,"markdown")
-    header = Weave.parse_header(parsed[1])
-    Weave.WeaveDoc("",parsed,header)
-end
 
-doc_content = """
+str = """
 ```julia
 α = 10
 ```
 """
 
-parsed = doc_from_string(doc_content)
-ldoc = Weave.run(parsed, doctype = "md2tex")
-@test occursin(Weave.uc2tex("α"),Weave.format(ldoc))
-@test !occursin("α",Weave.format(ldoc))
+let
+    doc = run_doc(mock_doc(str), doctype = "md2tex")
+    @test occursin(Weave.uc2tex("α"), Weave.format(doc))
+    @test !occursin("α", Weave.format(doc))
+end
 
-parsed = doc_from_string(doc_content)
-ldoc = Weave.run(parsed, doctype = "md2tex",latex_keep_unicode=true)
-@test occursin("α",Weave.format(ldoc))
-@test !occursin(Weave.uc2tex("α"),Weave.format(ldoc))
+let
+    doc = run_doc(mock_doc(str), doctype = "md2tex",latex_keep_unicode = true)
+    @test occursin("α", Weave.format(doc))
+    @test !occursin(Weave.uc2tex("α"), Weave.format(doc))
+end

@@ -3,6 +3,9 @@ import Highlights
 using Mustache
 using Requires
 
+
+const WEAVE_OPTION_NAME = "options" # TODO: rename to "weave_options"
+
 function __init__()
     @require Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80" Base.include(
         Main,
@@ -12,6 +15,11 @@ function __init__()
         Main,
         joinpath(@__DIR__, "gadfly.jl"),
     )
+end
+
+@static @isdefined(isnothing) || begin
+    isnothing(::Any) = false
+    isnothing(::Nothing) = true
 end
 
 """
@@ -74,7 +82,7 @@ Weave an input document to output file.
   * `:pwd`: Julia working directory
   * `"somepath"`: `String` of output directory e.g. `"~/outdir"`, or of filename e.g. `"~/outdir/outfile.tex"`
 - `args::Dict = Dict()`: Arguments to be passed to the weaved document; will be available as `WEAVE_ARGS` in the document
-- `mod::Union{Module,Symbol} = :sandbox`: Module where Weave `eval`s code. Defaults to `:sandbox` to create new sandbox module. You also can also pass a `Module` e.g. `Main`
+- `mod::Union{Module,Nothing} = nothing`: Module where Weave `eval`s code. You can pass a `Module` object, otherwise create an new sandbox module.
 - `fig_path::AbstractString = "figures"`: Where figures will be generated, relative to `out_path`
 - `fig_ext::Union{Nothing,AbstractString} = nothing`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`
 - `cache_path::AbstractString = "cache"`: Where of cached output will be saved
@@ -100,7 +108,7 @@ function weave(
     informat::Union{Symbol,AbstractString} = :auto,
     out_path::Union{Symbol,AbstractString} = :doc,
     args::Dict = Dict(),
-    mod::Union{Module,Symbol} = :sandbox,
+    mod::Union{Module,Nothing} = nothing,
     fig_path::AbstractString = "figures",
     fig_ext::Union{Nothing,AbstractString} = nothing,
     cache_path::AbstractString = "cache",
@@ -118,13 +126,12 @@ function weave(
     doc.doctype = doctype
 
     # Read args from document header, overrides command line args
-    if haskey(doc.header, "options")
+    if haskey(doc.header, WEAVE_OPTION_NAME)
         (
             doctype,
             informat,
             out_path,
             args,
-            mod,
             fig_path,
             fig_ext,
             cache_path,
@@ -138,7 +145,6 @@ function weave(
         ) = header_args(
             doc,
             out_path,
-            mod,
             fig_ext,
             fig_path,
             cache_path,
@@ -152,12 +158,12 @@ function weave(
         )
     end
 
-    template != nothing && (doc.template = template)
-    highlight_theme != nothing && (doc.highlight_theme = highlight_theme)
-    # theme != nothing && (doc.theme = theme) # Reserved for themes
-    css != nothing && (doc.css = css)
+    isnothing(template) || (doc.template = template)
+    isnothing(highlight_theme) || (doc.highlight_theme = highlight_theme)
+    # isnothing(theme) || (doc.theme = theme) # Reserved for themes
+    isnothing(css) || (doc.css = css)
 
-    doc = run(
+    doc = run_doc(
         doc,
         doctype = doctype,
         mod = mod,
@@ -245,7 +251,7 @@ function notebook(
     end
 
     @info "Running nbconvert"
-    out = read(
+    return out = read(
         `$jupyter_path nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile  $nbconvert_options --output $outfile`,
         String,
     )
@@ -293,11 +299,11 @@ push_postexecute_hook(f::Function) = push!(postexecute_hooks, f)
 pop_postexecute_hook(f::Function) =
     splice!(postexecute_hooks, findfirst(x -> x == f, postexecute_hooks))
 
-include("chunks.jl")
+include("types.jl")
 include("config.jl")
 include("WeaveMarkdown/markdown.jl")
 include("display_methods.jl")
-include("readers.jl")
+include("reader/reader.jl")
 include("run.jl")
 include("cache.jl")
 include("formatters.jl")

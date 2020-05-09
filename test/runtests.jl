@@ -1,61 +1,59 @@
 using Weave
+using Weave: run_doc
 using Test
+
+
+# TODO: add test for header processsing
+# TODO: add test for `include_weave`
+
+# constructs `WeaveDoc` from `String`
+mock_doc(str, chunk_parser = Weave.parse_markdown) = Weave.WeaveDoc("dummy", chunk_parser(str))
+
 
 @testset "Weave" begin
     @testset "Chunk options" begin
-        @info("Test: Chunk options")
         include("chunk_options.jl")
     end
 
-    @testset "Error handling " begin
-        @info("Testing error handling")
-        include("errors_test.jl")
+    @testset "module evaluation" begin
+        include("test_module_evaluation.jl")
     end
 
-    @testset "Eval in module" begin
-        include("sandbox_test.jl")
+    @testset "header" begin
+        include("test_header.jl")
+    end
+
+    @testset "error rendering" begin
+        include("test_error_rendering.jl")
     end
 
     @testset "Conversions" begin
-        @info("Test: Converting")
         include("convert_test.jl")
     end
 
     @testset "Formatters" begin
-        @info("Testing formatters")
         include("formatter_test.jl")
         include("markdown_test.jl")
-        @info("Testing figure formatters")
         include("figureformatter_test.jl")
     end
 
     @testset "Rich output" begin
-        @info("Testing rich output")
         include("rich_output.jl")
     end
 
     @testset "Plots" begin
-        @info("Test: Weaving with Plots.jl")
         include("plotsjl_test.jl")
     end
 
     @testset "Cache" begin
-        @info("Testing cache")
         include("cache_test.jl")
     end
 
     @testset "Gadfly" begin
-        @info("Test: Weaving with Gadfly.jl")
         include("gadfly_formats.jl")
     end
 
-    @testset "Header options" begin
-        @info("Testing header options")
-        include("options_test.jl")
-    end
-
     @testset "Inline code" begin
-        @info("Testing inline code")
         include("inline_test.jl")
     end
 

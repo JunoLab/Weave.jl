@@ -3,7 +3,6 @@ import Mustache
 # Default options
 const defaultParams = Dict{Symbol,Any}(
     :storeresults => false,
-    :doc_number => 0,
     :chunk_defaults => Dict{Symbol,Any}(
         :echo => true,
         :results => "markup",
@@ -89,8 +88,6 @@ function combine_args(args, doctype)
     common
 end
 
-getvalue(d::Dict, key, default) = haskey(d, key) ? d[key] : default
-
 """
     header_args(doc::WeaveDoc)
 
@@ -99,7 +96,6 @@ Get weave arguments from document header.
 function header_args(
     doc::WeaveDoc,
     out_path,
-    mod,
     fig_ext,
     fig_path,
     cache_path,
@@ -111,34 +107,32 @@ function header_args(
     pandoc_options,
     latex_cmd,
 )
-    args = getvalue(doc.header, "options", Dict())
-    doctype = getvalue(args, "doctype", doc.doctype)
+    args = get(doc.header, WEAVE_OPTION_NAME, Dict())
+    doctype = get(args, "doctype", doc.doctype)
     args = combine_args(args, doctype)
-    informat = getvalue(args, "informat", :auto)
-    out_path = getvalue(args, "out_path", out_path)
+    informat = get(args, "informat", :auto)
+    out_path = get(args, "out_path", out_path)
     out_path == ":pwd" && (out_path = :pwd)
     isa(out_path, Symbol) || (out_path = joinpath(dirname(doc.source), out_path))
-    mod = Symbol(getvalue(args, "mod", mod))
-    fig_path = getvalue(args, "fig_path", fig_path)
-    fig_ext = getvalue(args, "fig_ext", fig_ext)
-    cache_path = getvalue(args, "cache_path", cache_path)
-    cache = Symbol(getvalue(args, "cache", cache))
-    throw_errors = getvalue(args, "throw_errors", throw_errors)
-    template = getvalue(args, "template", template)
+    fig_path = get(args, "fig_path", fig_path)
+    fig_ext = get(args, "fig_ext", fig_ext)
+    cache_path = get(args, "cache_path", cache_path)
+    cache = Symbol(get(args, "cache", cache))
+    throw_errors = get(args, "throw_errors", throw_errors)
+    template = get(args, "template", template)
     if template != nothing && !isa(template, Mustache.MustacheTokens) && !isempty(template)
         template = joinpath(dirname(doc.source), template)
     end
-    highlight_theme = getvalue(args, "highlight_theme", highlight_theme)
-    css = getvalue(args, "css", css)
-    pandoc_options = getvalue(args, "pandoc_options", pandoc_options)
-    latex_cmd = getvalue(args, "latex_cmd", latex_cmd)
+    highlight_theme = get(args, "highlight_theme", highlight_theme)
+    css = get(args, "css", css)
+    pandoc_options = get(args, "pandoc_options", pandoc_options)
+    latex_cmd = get(args, "latex_cmd", latex_cmd)
 
     return (
         doctype,
         informat,
         out_path,
         args,
-        mod,
         fig_path,
         fig_ext,
         cache_path,
@@ -150,17 +144,4 @@ function header_args(
         pandoc_options,
         latex_cmd,
     )
-end
-
-"""
-    header_chunk_defaults!(doc::WeaveDoc)
-
-Get chunk defaults from header and update.
-"""
-function header_chunk_defaults!(doc::WeaveDoc)
-    for key in keys(doc.chunk_defaults)
-        if haskey(doc.header["options"], String(key))
-            doc.chunk_defaults[key] = doc.header["options"][String(key)]
-        end
-    end
 end
