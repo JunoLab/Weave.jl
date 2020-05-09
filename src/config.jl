@@ -145,16 +145,3 @@ function header_args(
         latex_cmd,
     )
 end
-
-"""
-    header_chunk_defaults!(doc::WeaveDoc)
-
-Get chunk defaults from header and update.
-"""
-function header_chunk_defaults!(doc::WeaveDoc)
-    for key in keys(doc.chunk_defaults)
-        if (val = get(doc.header["options"], string(key), nothing)) !== nothing
-            doc.chunk_defaults[key] = val
-        end
-    end
-end

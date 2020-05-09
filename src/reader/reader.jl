@@ -2,20 +2,48 @@ using JSON, YAML
 
 
 """
-    read_doc(source::AbstractString, format = :auto) -> WeaveDoc
+    read_doc(source, format = :auto)
 
 Read the input document from `source` and parse it into [`WeaveDoc`](@ref).
 """
-function read_doc(source::AbstractString, format = :auto)
+function read_doc(source, format = :auto)
     document = replace(read(source, String), "\r\n" => "\n") # fix line ending
-
     format === :auto && (format = detect_informat(source))
     chunks = parse_doc(document, format)
-    header = parse_header(first(chunks))
-    doc = WeaveDoc(source, chunks, header)
-    haskey(header, "options") && header_chunk_defaults!(doc) # TODO: rename `options` => `weave_options`
+    return WeaveDoc(source, chunks)
+end
 
-    return doc
+function WeaveDoc(source, chunks)
+    path, fname = splitdir(abspath(source))
+    basename = splitext(fname)[1]
+
+    header = parse_header(first(chunks))
+    # get chunk defaults from header and update
+    chunk_defaults = deepcopy(rcParams[:chunk_defaults])
+    if haskey(header, WEAVE_OPTION)
+        for key in keys(chunk_defaults)
+            if (val = get(header[WEAVE_OPTION], string(key), nothing)) !== nothing
+                chunk_defaults[key] = val
+            end
+        end
+    end
+
+    return WeaveDoc(
+        source,
+        basename,
+        path,
+        chunks,
+        "",
+        nothing,
+        "",
+        "",
+        header,
+        "",
+        "",
+        Highlights.Themes.DefaultTheme,
+        "",
+        chunk_defaults,
+    )
 end
 
 """
@@ -32,7 +60,7 @@ function detect_informat(source::AbstractString)
     return "noweb"
 end
 
-function parse_doc(document, format)
+function parse_doc(document, format)::Vector{WeaveChunk}
     return if format == "markdown"
         parse_markdown(document)
     elseif format == "noweb"

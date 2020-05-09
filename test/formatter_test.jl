@@ -127,24 +127,21 @@ pformat.formatdict[:keep_unicode] = true
 f = Weave.format_chunk(dchunk, pformat.formatdict, pformat)
 @test f == "\\section{Test chunk}\nα\n\n"
 
-function doc_from_string(str)
-    parsed = Weave.parse_markdown(str)
-    header = Weave.parse_header(parsed[1])
-    Weave.WeaveDoc("",parsed,header)
-end
 
-doc_content = """
+str = """
 ```julia
 α = 10
 ```
 """
 
-parsed = doc_from_string(doc_content)
-ldoc = run_doc(parsed, doctype = "md2tex")
-@test occursin(Weave.uc2tex("α"),Weave.format(ldoc))
-@test !occursin("α",Weave.format(ldoc))
+let
+    doc = run_doc(mock_doc(str), doctype = "md2tex")
+    @test occursin(Weave.uc2tex("α"), Weave.format(doc))
+    @test !occursin("α", Weave.format(doc))
+end
 
-parsed = doc_from_string(doc_content)
-ldoc = run_doc(parsed, doctype = "md2tex",latex_keep_unicode=true)
-@test occursin("α",Weave.format(ldoc))
-@test !occursin(Weave.uc2tex("α"),Weave.format(ldoc))
+let
+    doc = run_doc(mock_doc(str), doctype = "md2tex",latex_keep_unicode = true)
+    @test occursin("α", Weave.format(doc))
+    @test !occursin(Weave.uc2tex("α"), Weave.format(doc))
+end

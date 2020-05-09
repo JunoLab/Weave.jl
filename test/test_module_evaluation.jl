@@ -1,23 +1,20 @@
 @testset "evaluation module" begin
-    function mock_output(document, mod = nothing)
-        parsed = Weave.parse_markdown(document)
-        doc = Weave.WeaveDoc("dummy.jmd", parsed, Dict())
-        result_doc = run_doc(doc, mod = mod)
-        @test isdefined(result_doc.chunks[1], :output)
+    function mock_output(str, mod = nothing)
+        result_doc = run_doc(mock_doc(str), mod = mod)
         return result_doc.chunks[1].output
     end
 
-    document = """
+    str = """
     ```julia
     @__MODULE__
     ```
     """
 
     # in sandbox
-    @test occursin(r"\#+WeaveSandBox[\#\d]+", mock_output(document))
+    @test occursin(r"\#+WeaveSandBox[\#\d]+", mock_output(str))
 
     # in Main
-    @test strip(mock_output(document, Main)) == "Main"
+    @test strip(mock_output(str, Main)) == "Main"
 end
 
 @testset "clear_module!" begin
