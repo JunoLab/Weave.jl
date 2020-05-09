@@ -1,4 +1,4 @@
-using YAML
+using Weave.YAML
 
 # TODO:
 # - header stripping
@@ -19,7 +19,7 @@ options:
 ---
 """)
 
-let args = header["options"]
+let args = header[Weave.WEAVE_OPTION_NAME]
     @test Weave.combine_args(args, "md2html") == Dict("fig_ext" => ".png", "out_path" => "html/")
     @test Weave.combine_args(args, "github") == Dict("fig_ext" => ".png", "out_path" => "md/")
     @test Weave.combine_args(args, "pandoc") == Dict("fig_ext" => ".png", "out_path" => "reports")

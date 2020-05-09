@@ -20,9 +20,9 @@ function WeaveDoc(source, chunks)
     header = parse_header(first(chunks))
     # get chunk defaults from header and update
     chunk_defaults = deepcopy(rcParams[:chunk_defaults])
-    if haskey(header, WEAVE_OPTION)
+    if haskey(header, WEAVE_OPTION_NAME)
         for key in keys(chunk_defaults)
-            if (val = get(header[WEAVE_OPTION], string(key), nothing)) !== nothing
+            if (val = get(header[WEAVE_OPTION_NAME], string(key), nothing)) !== nothing
                 chunk_defaults[key] = val
             end
         end

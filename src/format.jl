@@ -131,7 +131,7 @@ function strip_header!(docchunk::DocChunk, doctype)
         else
             # only strips Weave headers
             header = YAML.load(m[:header])
-            delete!(header, "options")
+            delete!(header, WEAVE_OPTION_NAME)
             if isempty(header)
                 lstrip(replace(content, HEADER_REGEX => ""))
             else

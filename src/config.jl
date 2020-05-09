@@ -107,7 +107,7 @@ function header_args(
     pandoc_options,
     latex_cmd,
 )
-    args = get(doc.header, "options", Dict())
+    args = get(doc.header, WEAVE_OPTION_NAME, Dict())
     doctype = get(args, "doctype", doc.doctype)
     args = combine_args(args, doctype)
     informat = get(args, "informat", :auto)
