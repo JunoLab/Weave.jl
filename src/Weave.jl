@@ -79,7 +79,7 @@ Weave an input document to output file.
   * `:pwd`: Julia working directory
   * `"somepath"`: `String` of output directory e.g. `"~/outdir"`, or of filename e.g. `"~/outdir/outfile.tex"`
 - `args::Dict = Dict()`: Arguments to be passed to the weaved document; will be available as `WEAVE_ARGS` in the document
-- `mod::Union{Module,Symbol} = :sandbox`: Module where Weave `eval`s code. Defaults to `:sandbox` to create new sandbox module. You also can also pass a `Module` e.g. `Main`
+- `mod::Union{Module,Nothing} = nothing`: Module where Weave `eval`s code. You can pass a `Module` object, otherwise create an new sandbox module.
 - `fig_path::AbstractString = "figures"`: Where figures will be generated, relative to `out_path`
 - `fig_ext::Union{Nothing,AbstractString} = nothing`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`
 - `cache_path::AbstractString = "cache"`: Where of cached output will be saved
@@ -105,7 +105,7 @@ function weave(
     informat::Union{Symbol,AbstractString} = :auto,
     out_path::Union{Symbol,AbstractString} = :doc,
     args::Dict = Dict(),
-    mod::Union{Module,Symbol} = :sandbox,
+    mod::Union{Module,Nothing} = nothing,
     fig_path::AbstractString = "figures",
     fig_ext::Union{Nothing,AbstractString} = nothing,
     cache_path::AbstractString = "cache",
@@ -129,7 +129,6 @@ function weave(
             informat,
             out_path,
             args,
-            mod,
             fig_path,
             fig_ext,
             cache_path,
@@ -143,7 +142,6 @@ function weave(
         ) = header_args(
             doc,
             out_path,
-            mod,
             fig_ext,
             fig_path,
             cache_path,

@@ -13,7 +13,7 @@ Run code chunks and capture output from the parsed document.
   * `:pwd`: Julia working directory
   * `"somepath"`: `String` of output directory e.g. `"~/outdir"`, or of filename e.g. `"~/outdir/outfile.tex"`
 - `args::Dict = Dict()`: Arguments to be passed to the weaved document; will be available as `WEAVE_ARGS` in the document
-- `mod::Union{Module,Symbol} = :sandbox`: Module where Weave `eval`s code. Defaults to `:sandbox` to create new sandbox module. You also can also pass a `Module` e.g. `Main`
+- `mod::Union{Module,Nothing} = nothing`: Module where Weave `eval`s code. You can pass a `Module` object, otherwise create an new sandbox module.
 - `fig_path::AbstractString = "figures"`: Where figures will be generated, relative to `out_path`
 - `fig_ext::Union{Nothing,AbstractString} = nothing`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`
 - `cache_path::AbstractString = "cache"`: Where of cached output will be saved
@@ -33,7 +33,7 @@ function run_doc(
     doctype::Union{Symbol,AbstractString} = :auto,
     out_path::Union{Symbol,AbstractString} = :doc,
     args::Dict = Dict(),
-    mod::Union{Module,Symbol} = :sandbox,
+    mod::Union{Module,Nothing} = nothing,
     fig_path::AbstractString = "figures",
     fig_ext::Union{Nothing,AbstractString} = nothing,
     cache_path::AbstractString = "cache",
@@ -45,7 +45,7 @@ function run_doc(
 
     doc.cwd = get_cwd(doc, out_path)
     # doctype detection is unnecessary here, but existing unit test requires this.
-    doctype == :auto && (doctype = detect_doctype(doc.source))
+    doctype === :auto && (doctype = detect_doctype(doc.source))
     doc.doctype = doctype
     doc.format = formats[doctype]
 
@@ -61,7 +61,7 @@ function run_doc(
         fig_path = mktempdir(abspath(doc.cwd))
     end
 
-    cache == :off || @eval import Serialization
+    cache === :off || @eval import Serialization # XXX: evaluate in a more sensible module
 
     # This is needed for latex and should work on all output formats
     Sys.iswindows() && (fig_path = replace(fig_path, "\\" => "/"))
@@ -70,14 +70,8 @@ function run_doc(
     set_rc_params(doc, fig_path, fig_ext)
 
     # New sandbox for each document with args exposed
-    if mod == :sandbox
-        sandbox = "WeaveSandBox$(rcParams[:doc_number])"
-        mod = Core.eval(Main, Meta.parse("module $sandbox\nend"))
-    end
-    @eval mod WEAVE_ARGS = Dict()
-    merge!(mod.WEAVE_ARGS, args)
-
-    rcParams[:doc_number] += 1
+    isnothing(mod) && (mod::Module = sandbox::Module = Core.eval(Main, :(module $(gensym(:WeaveSandBox)) end)))
+    @eval mod WEAVE_ARGS = $args
 
     if haskey(doc.format.formatdict, :mimetypes)
         mimetypes = doc.format.formatdict[:mimetypes]
@@ -115,11 +109,11 @@ function run_doc(
         end
 
         doc.header_script = report.header_script
-        # Clear variables from used sandbox
-        mod === :sandbox && clear_sandbox(SandBox)
         doc.chunks = executed
 
         cache !== :off && write_cache(doc, cache_path)
+
+        @isdefined(sandbox) && clear_module!(sandbox::Module)
     catch err
         rethrow(err)
     finally
@@ -335,14 +329,27 @@ end
 #    chunk
 # end
 
-# Set all variables to nothing
-function clear_sandbox(SandBox::Module)
-    for name in names(SandBox, all = true)
-        if name != :eval && name != names(SandBox)[1]
-            try
-                eval(SandBox, Meta.parse(AbstractString(AbstractString(name), "=nothing")))
-            catch
+"""
+    clear_module!(mod::Module)
+
+Recursively sets variables in `mod` to `nothing` so that they're GCed.
+
+!!! warning
+    `const` variables can't be reassigned, as such they can't be cleared.
+"""
+function clear_module!(mod::Module)
+    for name in names(mod; all = true)
+        name === :eval && continue
+        try
+            v = getfield(mod, name)
+            if v isa Module && v != mod
+                clear_module!(v)
+                continue
             end
+            isconst(mod, name) && continue # can't clear constant
+            Core.eval(mod, :($name = nothing))
+        catch err
+            @debug err
         end
     end
 end
