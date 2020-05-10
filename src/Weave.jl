@@ -315,9 +315,9 @@ export weave,
     tangle,
     convert_doc,
     notebook,
-    set_chunk_defaults,
+    set_chunk_defaults!,
     get_chunk_defaults,
-    restore_chunk_defaults,
+    restore_chunk_defaults!,
     include_weave
 
 end
