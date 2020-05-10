@@ -39,7 +39,7 @@ Tangle source code from input document to .jl file.
 
 ## Keyword options
 
-- `informat::Union{Symbol,AbstractString} = :auto`: Input document format. `:auto` will set it automatically based on file extension. You can also specify either of `"script"`, `"markdown"`, `"notebook"`, or `"noweb"`
+- `informat::Union{Nothing,AbstractString} = nothing`: Input document format. By default (i.e. given `nothing`), Weave will set it automatically based on file extension. You can also specify either of `"script"`, `"markdown"`, `"notebook"`, or `"noweb"`
 - `out_path::Union{Symbol,AbstractString} = :doc`: Path where the output is generated can be either of:
   * `:doc`: Path of the source document (default)
   * `:pwd`: Julia working directory
@@ -48,9 +48,9 @@ Tangle source code from input document to .jl file.
 function tangle(
     source::AbstractString;
     out_path::Union{Symbol,AbstractString} = :doc,
-    informat::Union{Symbol,AbstractString} = :auto,
+    informat::Union{Nothing,AbstractString} = nothing,
 )
-    doc = read_doc(source, informat)
+    doc = WeaveDoc(source, informat)
     doc.cwd = get_cwd(doc, out_path)
 
     outname = get_outname(out_path, doc, ext = "jl")
@@ -74,8 +74,8 @@ Weave an input document to output file.
 
 ## Keyword options
 
-- `doctype::Union{Symbol,AbstractString} = :auto`: Output document format. `:auto` will set it automatically based on file extension. You can also manually specify it; see [`list_out_formats()`](@ref) for the supported formats
-- `informat::Union{Symbol,AbstractString} = :auto`: Input document format. `:auto` will set it automatically based on file extension. You can also specify either of `"script"`, `"markdown"`, `"notebook"`, or `"noweb"`
+- `doctype::Union{Nothing,AbstractString} = nothing`: Output document format. By default (i.e. given `nothing`), Weave will set it automatically based on file extension. You can also manually specify it; see [`list_out_formats()`](@ref) for the supported formats
+- `informat::Union{Nothing,AbstractString} = nothing`: Input document format. By default (i.e. given `nothing`), Weave will set it automatically based on file extension. You can also specify either of `"script"`, `"markdown"`, `"notebook"`, or `"noweb"`
 - `out_path::Union{Symbol,AbstractString} = :doc`: Path where the output is generated can be either of:
   * `:doc`: Path of the source document (default)
   * `:pwd`: Julia working directory
@@ -103,8 +103,8 @@ Weave an input document to output file.
 """
 function weave(
     source::AbstractString;
-    doctype::Union{Symbol,AbstractString} = :auto,
-    informat::Union{Symbol,AbstractString} = :auto,
+    doctype::Union{Nothing,AbstractString} = nothing,
+    informat::Union{Nothing,AbstractString} = nothing,
     out_path::Union{Symbol,AbstractString} = :doc,
     args::Dict = Dict(),
     mod::Union{Module,Nothing} = nothing,
@@ -120,8 +120,8 @@ function weave(
     latex_cmd::AbstractString = "xelatex",
     latex_keep_unicode::Bool = false,
 )
-    doc = read_doc(source, informat)
-    doctype == :auto && (doctype = detect_doctype(doc.source))
+    doc = WeaveDoc(source, informat)
+    isnothing(doctype) && (doctype = detect_doctype(doc.source))
     doc.doctype = doctype
 
     # Read args from document header, overrides command line args
@@ -240,7 +240,7 @@ function notebook(
     nbconvert_options::AbstractString = "",
     jupyter_path::AbstractString = "jupyter",
 )
-    doc = read_doc(source)
+    doc = WeaveDoc(source)
     converted = convert_doc(doc, NotebookOutput())
     doc.cwd = get_cwd(doc, out_path)
     outfile = get_outname(out_path, doc, ext = "ipynb")
@@ -257,8 +257,8 @@ function notebook(
 end
 
 """
-    include_weave(source::AbstractString, informat::Union{Symbol,AbstractString} = :auto)
-    include_weave(m::Module, source::AbstractString, informat::Union{Symbol,AbstractString} = :auto)
+    include_weave(source::AbstractString, informat::Union{Nothing,AbstractString} = nothing)
+    include_weave(m::Module, source::AbstractString, informat::Union{Nothing,AbstractString} = nothing)
 
 Include code from Weave document calling `include_string` on all code from doc.
 Code is run in the path of the include document.
@@ -266,10 +266,10 @@ Code is run in the path of the include document.
 function include_weave(
     m::Module,
     source::AbstractString,
-    informat::Union{Symbol,AbstractString} = :auto,
+    informat::Union{Nothing,AbstractString} = nothing,
 )
     old_path = pwd()
-    doc = read_doc(source, informat)
+    doc = WeaveDoc(source, informat)
     cd(doc.path)
     try
         code = join(
@@ -284,7 +284,7 @@ function include_weave(
     end
 end
 
-include_weave(source, informat = :auto) = include_weave(Main, source, informat)
+include_weave(source, informat = nothing) = include_weave(Main, source, informat)
 
 # Hooks to run before and after chunks, this is form IJulia,
 # but note that Weave hooks take the chunk as input

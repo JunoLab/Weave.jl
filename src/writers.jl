@@ -40,19 +40,15 @@ function convert_doc(
     outfile::AbstractString;
     format::Union{Nothing,AbstractString} = nothing,
 )
-    doc = read_doc(infile)
+    doc = WeaveDoc(infile)
 
-    if format == nothing
-        format = detect_outformat(outfile)
-    end
+    isnothing(format) && (format = detect_outformat(outfile))
 
     converted = convert_doc(doc, output_formats[format])
 
     open(outfile, "w") do f
         write(f, converted)
     end
-
-    return nothing
 end
 
 """Convert Weave document to Jupyter notebook format"""

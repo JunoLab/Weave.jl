@@ -7,7 +7,7 @@ Run code chunks and capture output from the parsed document.
 
 ## Keyword options
 
-- `doctype::Union{Symbol,AbstractString} = :auto`: Output document format. `:auto` will set it automatically based on file extension. You can also manually specify it; see [`list_out_formats()`](@ref) for the supported formats
+- `doctype::Union{Nothing,AbstractString} = nothing`: Output document format. By default (i.e. given `nothing`), Weave will set it automatically based on file extension. You can also manually specify it; see [`list_out_formats()`](@ref) for the supported formats
 - `out_path::Union{Symbol,AbstractString} = :doc`: Path where the output is generated can be either of:
   * `:doc`: Path of the source document (default)
   * `:pwd`: Julia working directory
@@ -30,7 +30,7 @@ Run code chunks and capture output from the parsed document.
 """
 function run_doc(
     doc::WeaveDoc;
-    doctype::Union{Symbol,AbstractString} = :auto,
+    doctype::Union{Nothing,AbstractString} = nothing,
     out_path::Union{Symbol,AbstractString} = :doc,
     args::Dict = Dict(),
     mod::Union{Module,Nothing} = nothing,
@@ -45,7 +45,7 @@ function run_doc(
 
     doc.cwd = get_cwd(doc, out_path)
     # doctype detection is unnecessary here, but existing unit test requires this.
-    doctype === :auto && (doctype = detect_doctype(doc.source))
+    isnothing(doctype) && (doctype = detect_doctype(doc.source))
     doc.doctype = doctype
     doc.format = formats[doctype]
 
@@ -123,12 +123,12 @@ function run_doc(
 end
 
 """
-    detect_doctype(path::AbstractString)
+    detect_doctype(pathname::AbstractString)
 
 Detect the output format based on file extension.
 """
-function detect_doctype(path::AbstractString)
-    _, ext = lowercase.(splitext(path))
+function detect_doctype(pathname::AbstractString)
+    _, ext = lowercase.(splitext(pathname))
 
     match(r"^\.(jl|.?md|ipynb)", ext) !== nothing && return "md2html"
     ext == ".rst" && return "rst"

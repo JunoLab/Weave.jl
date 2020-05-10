@@ -108,7 +108,7 @@ function header_args(
     args = get(doc.header, WEAVE_OPTION_NAME, Dict())
     doctype = get(args, "doctype", doc.doctype)
     args = combine_args(args, doctype)
-    informat = get(args, "informat", :auto)
+    informat = get(args, "informat", nothing)
     out_path = get(args, "out_path", out_path)
     out_path == ":pwd" && (out_path = :pwd)
     isa(out_path, Symbol) || (out_path = joinpath(dirname(doc.source), out_path))

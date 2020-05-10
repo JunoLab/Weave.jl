@@ -140,7 +140,7 @@ function strip_header!(docchunk::DocChunk, doctype)
         end
     end
 end
-strip_header!(codechunk::CodeChunk, doctype) = nothing
+strip_header!(codechunk::CodeChunk, doctype) = return
 
 function format_chunk(chunk::DocChunk, formatdict, docformat)
     return join([format_inline(c) for c in chunk.content], "")

@@ -18,7 +18,7 @@ f = Weave.format_chunk(dchunk, docformat.formatdict, docformat)
 
 # Test with actual doc
 
-parsed = Weave.read_doc("documents/chunk_options.noweb")
+parsed = Weave.WeaveDoc("documents/chunk_options.noweb")
 doc = run_doc(parsed, doctype = "md2html")
 
 c_check = "<pre class='hljl'>\n<span class='hljl-n'>x</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-ni'>12</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-ni'>10</span><span class='hljl-p'>]</span><span class='hljl-t'>\n</span><span class='hljl-nf'>println</span><span class='hljl-p'>(</span><span class='hljl-n'>y</span><span class='hljl-p'>)</span>\n</pre>\n"
@@ -35,7 +35,7 @@ rendered = Weave.render_doc("Hello", doc, doc.format)
 @test rendered == "\nHello\n"
 
 # Tex format
-parsed = Weave.read_doc("documents/chunk_options.noweb")
+parsed = Weave.WeaveDoc("documents/chunk_options.noweb")
 doc = run_doc(parsed, doctype = "md2tex")
 
 c_check = "\\begin{lstlisting}\n(*@\\HLJLnf{println}@*)(*@\\HLJLp{(}@*)(*@\\HLJLn{x}@*)(*@\\HLJLp{)}@*)\n\\end{lstlisting}\n"
@@ -97,7 +97,7 @@ tfied = "\\ensuremath{\\bm{\\mathrm{L}}} \\ensuremath{\\bm{\\mathfrak{F}}} \\ens
 @test Weave.uc2tex("𝐋 𝕱 𝛊 𝔄 𝚹") == tfied
 
 # Test markdown output from chunks
-parsed = Weave.read_doc("documents/markdown_output.jmd")
+parsed = Weave.WeaveDoc("documents/markdown_output.jmd")
 doc = run_doc(parsed, doctype = "md2html")
 @test doc.chunks[1].rich_output == "\n<div class=\"markdown\"><h3>Small markdown sample</h3>\n<p><strong>Hello</strong> from <code>code</code> block.</p>\n</div>"
 @test doc.chunks[2].rich_output == "\n<div class=\"markdown\"><ul>\n<li><p>one</p>\n</li>\n<li><p>two</p>\n</li>\n<li><p>three</p>\n</li>\n</ul>\n</div>"
