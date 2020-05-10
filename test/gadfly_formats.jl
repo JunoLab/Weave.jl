@@ -1,6 +1,6 @@
 # Test for Gadfly with different chunk options and figure formatsusing Weave
 
-using Gadfly
+using Gadfly, Cairo
 
 
 function test_gadfly(doctype, fig_ext)
