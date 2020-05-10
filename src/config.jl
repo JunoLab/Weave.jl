@@ -37,39 +37,31 @@ const defaultParams = Dict{Symbol,Any}(
 const rcParams = deepcopy(defaultParams)
 
 """
-    set_chunk_defaults(opts::Dict{Symbol, Any})
+    set_chunk_defaults!(opts::Dict{Symbol, Any})
 
 Set default options for code chunks, use [`get_chunk_defaults`](@ref) to see the current values.
 
 E.g.: set default `dpi` to `200` and `fig_width` to `8`
 
 ```julia
-julia> set_chunk_defaults(Dict{Symbol, Any}(:dpi => 200, fig_width => 8))
+julia> set_chunk_defaults!(Dict(:dpi => 200, :fig_width => 8))
 ```
 """
-function set_chunk_defaults(opts::Dict{Symbol,Any})
-    merge!(rcParams[:chunk_defaults], opts)
-    return nothing
-end
+set_chunk_defaults!(opts::Dict{Symbol,Any}) = merge!(rcParams[:chunk_defaults], opts)
 
 """
     get_chunk_defaults()
 
 Get default options used for code chunks.
 """
-function get_chunk_defaults()
-    return (rcParams[:chunk_defaults])
-end
+get_chunk_defaults() = rcParams[:chunk_defaults]
 
 """
-    restore_chunk_defaults()
+    restore_chunk_defaults!()
 
 Restore Weave.jl default chunk options.
 """
-function restore_chunk_defaults()
-    rcParams[:chunk_defaults] = defaultParams[:chunk_defaults]
-    return nothing
-end
+restore_chunk_defaults!() = rcParams[:chunk_defaults] = defaultParams[:chunk_defaults]
 
 """Combine format specific and common options from document header"""
 function combine_args(args, doctype)

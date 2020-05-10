@@ -3,7 +3,7 @@ using Test
 
 # Make a dummy codehunk with figure
 chunk = Weave.CodeChunk("plot(x)", 1, 1, "", Dict())
-options = merge(Weave.rcParams[:chunk_defaults], chunk.options)
+options = merge(Weave.get_chunk_defaults(), chunk.options)
 merge!(chunk.options, options)
 chunk.figures = ["figs/figures_plot1.png"]
 
@@ -47,4 +47,3 @@ chunk.options[:out_height] = "75 %"
 chunk.options[:out_width] = "A%"
 chunk.options[:out_height] = "0.5\\textwidth"
 @test Weave.formatfigures(chunk, Weave.tex) == "\\begin{center}\n\\includegraphics[width=A%,height=0.5\\textwidth]{figs/figures_plot1.png}\n\\end{center}\n"
-
