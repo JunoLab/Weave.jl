@@ -1,19 +1,14 @@
 using JSON, YAML
 
 
-"""
-    read_doc(source, format = :auto)
-
-Read the input document from `source` and parse it into [`WeaveDoc`](@ref).
-"""
-function read_doc(source, format = :auto)
-    document = replace(read(source, String), "\r\n" => "\n") # fix line ending
-    format === :auto && (format = detect_informat(source))
+function WeaveDoc(source, format::Union{Nothing,AbstractString} = nothing)
+    document = replace(read(source, String), "\r\n" => "\n") # normalize line ending
+    isnothing(format) && (format = detect_informat(source))
     chunks = parse_doc(document, format)
     return WeaveDoc(source, chunks)
 end
 
-function WeaveDoc(source, chunks)
+function WeaveDoc(source, chunks::Vector{WeaveChunk})
     path, fname = splitdir(abspath(source))
     basename = splitext(fname)[1]
 
