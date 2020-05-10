@@ -3,12 +3,6 @@ module GadflyPlots
 using ..Weave, ..Gadfly
 
 
-try
-    using Cairo
-catch
-    @warn "Cairo.jl is required to be installed to generate raster images"
-end
-
 Gadfly.set_default_plot_format(:svg)
 
 Base.showable(m::MIME"application/pdf", p::Gadfly.Plot) = true
