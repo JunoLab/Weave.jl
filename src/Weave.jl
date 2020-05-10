@@ -116,39 +116,41 @@ function weave(
 )
     doc = WeaveDoc(source, informat)
     isnothing(doctype) && (doctype = detect_doctype(doc.source))
-    doc.doctype = doctype
 
-    # Read args from document header, overrides command line args
-    if haskey(doc.header, WEAVE_OPTION_NAME)
-        (
-            doctype,
-            informat,
-            out_path,
-            args,
-            fig_path,
-            fig_ext,
-            cache_path,
-            cache,
-            throw_errors,
-            template,
-            highlight_theme,
-            css,
-            pandoc_options,
-            latex_cmd,
-        ) = header_args(
-            doc,
-            out_path,
-            fig_ext,
-            fig_path,
-            cache_path,
-            cache,
-            throw_errors,
-            template,
-            highlight_theme,
-            css,
-            pandoc_options,
-            latex_cmd,
-        )
+    # overwrites given options with header options, which have more precedence
+    # NOTE:
+    # - support format specific option specification
+    # - fix paths relative to `source`
+    weave_options = get(doc.header, WEAVE_OPTION_NAME, Dict())
+    if !isempty(weave_options)
+        doctype = get(weave_options, "doctype", doctype)
+        weave_options = combine_args(weave_options, doctype)
+        if haskey(weave_options, "out_path")
+            out_path = let
+                out_path = weave_options["out_path"]
+                if out_path == ":doc" || out_path == ":pwd"
+                    Symbol(out_path)
+                else
+                    joinpath(dirname(source), out_path)
+                end
+            end
+        end
+        mod = get(weave_options, "mod", mod)
+        mod isa AbstractString && (mod = Main.eval(Meta.parse(mod)))
+        fig_path = get(weave_options, "fig_path", fig_path)
+        fig_ext = get(weave_options, "fig_ext", fig_ext)
+        cache_path = get(weave_options, "cache_path", cache_path)
+        cache = Symbol(get(weave_options, "cache", cache))
+        throw_errors = get(weave_options, "throw_errors", throw_errors)
+        if haskey(weave_options, "template")
+            template = weave_options["template"]
+            template isa AbstractString && (template = joinpath(dirname(source), template))
+        end
+        highlight_theme = get(weave_options, "highlight_theme", highlight_theme)
+        css = get(weave_options, "css", css)
+        pandoc_options = get(weave_options, "pandoc_options", pandoc_options)
+        latex_cmd = get(weave_options, "latex_cmd", latex_cmd)
+        latex_keep_unicode = get(weave_options, "latex_cmd", latex_keep_unicode)
     end
 
     isnothing(template) || (doc.template = template)
@@ -169,13 +171,12 @@ function weave(
         throw_errors = throw_errors,
         latex_keep_unicode = latex_keep_unicode,
     )
+
     formatted = format(doc)
 
     outname = get_outname(out_path, doc)
 
-    open(outname, "w") do io
-        write(io, formatted)
-    end
+    open(io->write(io,formatted), outname, "w")
 
     # Special for that need external programs
     if doc.doctype == "pandoc2html"
