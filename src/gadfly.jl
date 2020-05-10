@@ -1,11 +1,12 @@
 module GadflyPlots
 
-import Gadfly
-import Weave
+using ..Weave, ..Gadfly
+
+
 try
-    import Cairo
+    using Cairo
 catch
-    @warn("Cairo.jl is required to be installed to generate raster images")
+    @warn "Cairo.jl is required to be installed to generate raster images"
 end
 
 Gadfly.set_default_plot_format(:svg)
@@ -52,4 +53,5 @@ function Base.display(report::Weave.Report, m::MIME"image/svg+xml", p::Gadfly.Pl
         @warn("Can't save figure. Unsupported format, $format")
     end
 end
+
 end

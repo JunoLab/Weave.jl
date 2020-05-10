@@ -1,10 +1,9 @@
 module WeavePlots
 
-using Base64
-import Plots
-import Weave
+using Base64, ..Plots, ..Weave
 
-"""Pre-execute hooks to set the plot size for the chunk """
+
+# Pre-execute hooks to set the plot size for the chunk
 function plots_set_size(chunk)
     w = chunk.options[:fig_width] * chunk.options[:dpi]
     h = chunk.options[:fig_height] * chunk.options[:dpi]
