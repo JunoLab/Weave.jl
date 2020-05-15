@@ -43,21 +43,18 @@ function run_doc(
 )
     # cache :all, :user, :off, :refresh
 
-    doc.cwd = get_cwd(doc, out_path)
     # doctype detection is unnecessary here, but existing unit test requires this.
     isnothing(doctype) && (doctype = detect_doctype(doc.source))
     doc.doctype = doctype
     doc.format = formats[doctype]
 
-    if (haskey(doc.format.formatdict, :keep_unicode))
+    if haskey(doc.format.formatdict, :keep_unicode)
         doc.format.formatdict[:keep_unicode] = latex_keep_unicode
     end
 
+    doc.cwd = get_cwd(doc, out_path)
     isdir(doc.cwd) || mkpath(doc.cwd)
-
-    if occursin("2pdf", doctype) && cache == :off
-        fig_path = mktempdir(abspath(doc.cwd))
-    elseif occursin("2html", doctype)
+    if (occursin("2pdf", doctype) && cache == :off) || occursin("2html", doctype)
         fig_path = mktempdir(abspath(doc.cwd))
     end
 
@@ -70,14 +67,10 @@ function run_doc(
     set_rc_params(doc, fig_path, fig_ext)
 
     # New sandbox for each document with args exposed
-    isnothing(mod) && (mod::Module = sandbox::Module = Core.eval(Main, :(module $(gensym(:WeaveSandBox)) end)))
+    isnothing(mod) && (mod = sandbox = Core.eval(Main, :(module $(gensym(:WeaveSandBox)) end))::Module)
     @eval mod WEAVE_ARGS = $args
 
-    if haskey(doc.format.formatdict, :mimetypes)
-        mimetypes = doc.format.formatdict[:mimetypes]
-    else
-        mimetypes = default_mime_types
-    end
+    mimetypes = get(doc.format.formatdict, :mimetypes, default_mime_types)
 
     report = Report(doc.cwd, doc.basename, doc.format.formatdict, mimetypes, throw_errors)
     pushdisplay(report)
@@ -112,7 +105,7 @@ function run_doc(
 
         cache !== :off && write_cache(doc, cache_path)
 
-        @isdefined(sandbox) && clear_module!(sandbox::Module)
+        @isdefined(sandbox) && clear_module!(sandbox)
     catch err
         rethrow(err)
     finally
@@ -139,26 +132,23 @@ function detect_doctype(pathname::AbstractString)
 end
 
 function run_chunk(chunk::CodeChunk, doc::WeaveDoc, report::Report, SandBox::Module)
-    @info("Weaving chunk $(chunk.number) from line $(chunk.start_line)")
-    result_chunks = eval_chunk(chunk, report, SandBox)
-    occursin("2html", report.formatdict[:doctype]) &&
-        (result_chunks = embed_figures(result_chunks, report.cwd))
-    return result_chunks
+    # TODO: integrate with Juno's progress metre
+    @info "Weaving chunk $(chunk.number) from line $(chunk.start_line)"
+    result = eval_chunk(chunk, report, SandBox)
+    occursin("2html", report.formatdict[:doctype]) && (embed_figures!(result, report.cwd))
+    return result
 end
 
-function embed_figures(chunk::CodeChunk, cwd)
-    chunk.figures = [img2base64(fig, cwd) for fig in chunk.figures]
-    return chunk
-end
-
-function embed_figures(result_chunks, cwd)
-    for i = 1:length(result_chunks)
-        figs = result_chunks[i].figures
-        if !isempty(figs)
-            result_chunks[i].figures = [img2base64(fig, cwd) for fig in figs]
-        end
+function embed_figures!(chunk::CodeChunk, cwd)
+    for (i, fig) in enumerate(chunk.figures)
+        chunk.figures[i] = img2base64(fig, cwd)
     end
-    return result_chunks
+end
+
+function embed_figures!(chunks::Vector{CodeChunk}, cwd)
+    for chunk in chunks
+        embed_figures!(chunk, cwd)
+    end
 end
 
 function img2base64(fig, cwd)
@@ -193,8 +183,7 @@ function run_inline(inline::InlineCode, doc::WeaveDoc, report::Report, SandBox::
     merge!(chunk.options, options)
 
     chunks = eval_chunk(chunk, report, SandBox)
-    occursin("2html", report.formatdict[:doctype]) &&
-        (chunks = embed_figures(chunks, report.cwd))
+    occursin("2html", report.formatdict[:doctype]) && (embed_figures!(chunks, report.cwd))
 
     output = chunks[1].output
     endswith(output, "\n") && (output = output[1:end-1])
@@ -270,17 +259,16 @@ function capture_output(expr, SandBox::Module, term, disp, lastline, throw_error
 end
 
 # Parse chunk input to array of expressions
-function parse_input(input::AbstractString)
-    parsed = Tuple{AbstractString,Any}[]
-    input = lstrip(input)
-    n = sizeof(input)
+function parse_input(s)
+    res = []
+    s = lstrip(s)
+    n = sizeof(s)
     pos = 1 # The first character is extra line end
-    while pos ≤ n
-        oldpos = pos
-        code, pos = Meta.parse(input, pos)
-        push!(parsed, (input[oldpos:pos-1], code))
+    while (oldpos = pos) ≤ n
+        ex, pos = Meta.parse(s, pos)
+        push!(res, (s[oldpos:pos-1], ex))
     end
-    parsed
+    return res
 end
 
 function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
@@ -321,12 +309,8 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     #   chunk.options[:fig] && (chunk.figures = copy(report.figures))
     # end
 
-    chunks
+    return chunks
 end
-
-# function eval_chunk(chunk::DocChunk, report::Report, SandBox)
-#    chunk
-# end
 
 """
     clear_module!(mod::Module)

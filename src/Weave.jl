@@ -179,24 +179,25 @@ function weave(
     open(io->write(io,formatted), outname, "w")
 
     # Special for that need external programs
-    if doc.doctype == "pandoc2html"
+    doctype = doc.doctype
+    if doctype == "pandoc2html"
         mdname = outname
         outname = get_outname(out_path, doc, ext = "html")
         pandoc2html(formatted, doc, outname, pandoc_options)
         rm(mdname)
-    elseif doc.doctype == "pandoc2pdf"
+    elseif doctype == "pandoc2pdf"
         mdname = outname
         outname = get_outname(out_path, doc, ext = "pdf")
         pandoc2pdf(formatted, doc, outname, pandoc_options)
         rm(mdname)
-    elseif doc.doctype == "md2pdf"
+    elseif doctype == "md2pdf"
         success = run_latex(doc, outname, latex_cmd)
         success || return
         outname = get_outname(out_path, doc, ext = "pdf")
     end
 
     doc.cwd == pwd() && (outname = basename(outname))
-    @info("Report weaved to $outname")
+    @info "Report weaved to $outname"
     return abspath(outname)
 end
 
@@ -245,7 +246,7 @@ function notebook(
     end
 
     @info "Running nbconvert"
-    return out = read(
+    return read(
         `$jupyter_path nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile  $nbconvert_options --output $outfile`,
         String,
     )
@@ -272,11 +273,12 @@ function include_weave(
             "\n",
         )
         include_string(m, code)
-    catch e
-        throw(e)
+    catch err
+        throw(err)
     finally
         cd(old_path)
     end
+    return nothing
 end
 
 include_weave(source, informat = nothing) = include_weave(Main, source, informat)
