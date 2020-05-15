@@ -1,5 +1,4 @@
-using Weave
-using Test
+# TODO: refactor
 
 function convert_test(outfile, infile="documents/chunk_options.noweb")
   outfile = joinpath("documents/convert", outfile)
@@ -16,17 +15,9 @@ convert_test("chunk_options.mdw")
 convert_test("chunk_options_nb.mdw", "documents/chunk_options.ipynb")
 
 # Separate test for notebook (output depends on julia version)
-function contents(chunk::Weave.DocChunk)
-  return join([strip(c.content) for c in chunk.content], "")
-end
-
-function contents(chunk::Weave.CodeChunk)
-  return chunk.content
-end
-
-function contents(doc::Weave.WeaveDoc)
-  return join([contents(chunk) for chunk in doc.chunks], "")
-end
+contents(chunk::Weave.DocChunk) = join([strip(c.content) for c in chunk.content], "")
+contents(chunk::Weave.CodeChunk) = chunk.content
+contents(doc::Weave.WeaveDoc) = join([contents(chunk) for chunk in doc.chunks], "")
 
 outfile = "documents/convert/chunk_options.ipynb"
 infile = "documents/chunk_options.noweb"

@@ -1,6 +1,5 @@
-using Weave
+using Weave, Test
 using Weave: run_doc
-using Test
 
 
 # TODO: add test for header processsing
@@ -27,8 +26,8 @@ mock_doc(str, chunk_parser = Weave.parse_markdown) = Weave.WeaveDoc("dummy", chu
         include("test_error_rendering.jl")
     end
 
-    @testset "Conversions" begin
-        include("convert_test.jl")
+    @testset "convertions" begin
+        include("test_converter.jl")
     end
 
     @testset "Formatters" begin

@@ -305,7 +305,7 @@ include("cache.jl")
 include("formatters.jl")
 include("format.jl")
 include("pandoc.jl")
-include("writers.jl")
+include("converter.jl")
 
 export weave,
     list_out_formats,
