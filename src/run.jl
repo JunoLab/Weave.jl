@@ -174,9 +174,7 @@ function run_chunk(chunk::DocChunk, doc::WeaveDoc, report::Report, SandBox::Modu
     return chunk
 end
 
-function run_inline(inline::InlineText, doc::WeaveDoc, report::Report, SandBox::Module)
-    return inline
-end
+run_inline(inline::InlineText, doc::WeaveDoc, report::Report, SandBox::Module) = inline
 
 function run_inline(inline::InlineCode, doc::WeaveDoc, report::Report, SandBox::Module)
     # Make a temporary CodeChunk for running code. Collect results and don't wrap

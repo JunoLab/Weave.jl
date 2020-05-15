@@ -9,7 +9,7 @@ mutable struct WeaveDoc
     chunks::Vector{WeaveChunk}
     cwd::AbstractString
     format::Any
-    doctype::AbstractString
+    doctype::String
     header_script::String
     header::Dict
     template::Union{AbstractString,Mustache.MustacheTokens}

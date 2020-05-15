@@ -112,10 +112,8 @@ function render_doc(formatted, doc, format::JMarkdown2tex)
 end
 
 function restore_header!(doc)
-    doctype = doc.doctype
-
     # TODO: is there any other format where we want to restore headers ?
-    doctype ≠ "github" && return
+    doc.doctype ≠ "github" && return
 
     # only strips Weave headers
     delete!(doc.header, WEAVE_OPTION_NAME)

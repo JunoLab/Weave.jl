@@ -1,12 +1,14 @@
 using JSON, YAML
 
 
-function WeaveDoc(source, format::Union{Nothing,AbstractString} = nothing)
+function WeaveDoc(source, informat = nothing, doctype = nothing)
     path, fname = splitdir(abspath(source))
     basename = splitext(fname)[1]
 
-    isnothing(format) && (format = detect_informat(source))
-    header, chunks = parse_doc(read(source, String), format)
+    isnothing(informat) && (informat = detect_informat(source))
+    header, chunks = parse_doc(read(source, String), informat)
+
+    isnothing(doctype) && (doctype = detect_doctype(source))
 
     # update default chunk options from header
     chunk_defaults = deepcopy(get_chunk_defaults())
@@ -25,7 +27,7 @@ function WeaveDoc(source, format::Union{Nothing,AbstractString} = nothing)
         chunks,
         "",
         nothing,
-        "",
+        doctype,
         "",
         header,
         "",
@@ -37,12 +39,12 @@ function WeaveDoc(source, format::Union{Nothing,AbstractString} = nothing)
 end
 
 """
-    detect_informat(source::AbstractString)
+    detect_informat(path)
 
-Detect Weave input format based on file extension of `source`.
+Detect Weave input format based on file extension of `path`.
 """
-function detect_informat(source::AbstractString)
-    ext = lowercase(last(splitext(source)))
+function detect_informat(path)
+    ext = lowercase(last(splitext(path)))
 
     ext == ".jl" && return "script"
     ext == ".jmd" && return "markdown"
@@ -50,23 +52,39 @@ function detect_informat(source::AbstractString)
     return "noweb"
 end
 
-function parse_doc(document, format)
+function parse_doc(document, informat)
     document = replace(document, "\r\n" => "\n") # normalize line ending
 
-    header_text, document = separete_header_text(document)
+    header_text, document = separate_header_text(document)
 
     return parse_header(header_text),
-        format == "markdown" ? parse_markdown(document) :
-        format == "noweb" ? parse_markdown(document, true) :
-        format == "script" ? parse_script(document) :
-        format == "notebook" ? parse_notebook(document) :
-        error("unsupported format given: $(format)")
+        informat == "markdown" ? parse_markdown(document) :
+        informat == "noweb" ? parse_markdown(document, true) :
+        informat == "script" ? parse_script(document) :
+        informat == "notebook" ? parse_notebook(document) :
+        error("unsupported input format given: $informat")
 end
 
 function pushopt(options::Dict, expr::Expr)
     if Base.Meta.isexpr(expr, :(=))
         options[expr.args[1]] = expr.args[2]
     end
+end
+
+"""
+    detect_doctype(path)
+
+Detect the output format based on file extension.
+"""
+function detect_doctype(path)
+    _, ext = lowercase.(splitext(path))
+
+    match(r"^\.(jl|.?md|ipynb)", ext) !== nothing && return "md2html"
+    ext == ".rst" && return "rst"
+    ext == ".tex" && return "texminted"
+    ext == ".txt" && return "asciidoc"
+
+    return "pandoc"
 end
 
 # inline
@@ -117,10 +135,10 @@ const HEADER_REGEX = r"^---$(?<header>((?!---).)+)^---$"ms
 
 # TODO: non-Weave headers should keep live in a doc
 # separates header section from `text`
-function separete_header_text(text)
+function separate_header_text(text)
     m = match(HEADER_REGEX, text)
     isnothing(m) && return "", text
-    return m[:header], replace(text, HEADER_REGEX => "")
+    return m[:header], replace(text, HEADER_REGEX => ""; count = 1)
 end
 
 # HACK:

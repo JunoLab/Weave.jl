@@ -114,8 +114,7 @@ function weave(
     latex_cmd::AbstractString = "xelatex",
     latex_keep_unicode::Bool = false,
 )
-    doc = WeaveDoc(source, informat)
-    isnothing(doctype) && (doctype = detect_doctype(doc.source))
+    doc = WeaveDoc(source, informat, doctype)
 
     # overwrites given options with header options, which have more precedence
     # NOTE:
@@ -124,7 +123,7 @@ function weave(
     weave_options = get(doc.header, WEAVE_OPTION_NAME, Dict())
     if !isempty(weave_options)
         doctype = get(weave_options, "doctype", doctype)
-        weave_options = combine_args(weave_options, doctype)
+        specific_options!(weave_options, doctype)
         if haskey(weave_options, "out_path")
             out_path = let
                 out_path = weave_options["out_path"]
@@ -199,6 +198,16 @@ function weave(
     doc.cwd == pwd() && (outname = basename(outname))
     @info "Report weaved to $outname"
     return abspath(outname)
+end
+
+function specific_options!(weave_options, doctype)
+    fmts = keys(formats)
+    for (k,v) in weave_options
+        if k in fmts
+            k == doctype && merge!(weave_options, v)
+            delete!(weave_options, k)
+        end
+    end
 end
 
 weave(doc::AbstractString, doctype::Union{Symbol,AbstractString}) =
