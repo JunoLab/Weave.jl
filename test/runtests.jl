@@ -1,5 +1,5 @@
 using Weave, Test
-using Weave: run_doc
+using Weave: WeaveDoc, run_doc
 
 
 # TODO: add test for header processsing
@@ -9,7 +9,7 @@ using Weave: run_doc
 function mock_doc(str, format = "markdown")
     f = tempname()
     write(f, str)
-    return Weave.WeaveDoc(f, format)
+    return WeaveDoc(f, format)
 end
 
 
