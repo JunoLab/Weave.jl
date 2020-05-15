@@ -2,18 +2,13 @@ using JSON, YAML
 
 
 function WeaveDoc(source, format::Union{Nothing,AbstractString} = nothing)
-    document = replace(read(source, String), "\r\n" => "\n") # normalize line ending
-    isnothing(format) && (format = detect_informat(source))
-    chunks = parse_doc(document, format)
-    return WeaveDoc(source, chunks)
-end
-
-function WeaveDoc(source, chunks::Vector{WeaveChunk})
     path, fname = splitdir(abspath(source))
     basename = splitext(fname)[1]
 
-    header = parse_header(first(chunks))
-    # get chunk defaults from header and update
+    isnothing(format) && (format = detect_informat(source))
+    header, chunks = parse_doc(read(source, String), format)
+
+    # update default chunk options from header
     chunk_defaults = deepcopy(get_chunk_defaults())
     if haskey(header, WEAVE_OPTION_NAME)
         for key in keys(chunk_defaults)
@@ -55,18 +50,17 @@ function detect_informat(source::AbstractString)
     return "noweb"
 end
 
-function parse_doc(document, format)::Vector{WeaveChunk}
-    return if format == "markdown"
-        parse_markdown(document)
-    elseif format == "noweb"
-        parse_markdown(document, true)
-    elseif format == "script"
-        parse_script(document)
-    elseif format == "notebook"
-        parse_notebook(document)
-    else
+function parse_doc(document, format)
+    document = replace(document, "\r\n" => "\n") # normalize line ending
+
+    header_text, document = separete_header_text(document)
+
+    return parse_header(header_text),
+        format == "markdown" ? parse_markdown(document) :
+        format == "noweb" ? parse_markdown(document, true) :
+        format == "script" ? parse_script(document) :
+        format == "notebook" ? parse_notebook(document) :
         error("unsupported format given: $(format)")
-    end
 end
 
 function pushopt(options::Dict, expr::Expr)
@@ -84,12 +78,13 @@ function DocChunk(text::AbstractString, number, start_line; notebook = false)
     return DocChunk(content, number, start_line)
 end
 
-const INLINE_REGEX = r"`j\s+(.*?)`|^!\s(.*)$"m
+const   INLINE_REGEX = r"`j\s+(.*?)`"
+const INLINE_REGEXES = r"`j\s+(.*?)`|^!\s(.*)$"m
 
 function parse_inlines(text)::Vector{Inline}
-    occursin(INLINE_REGEX, text) || return parse_inline(text)
+    occursin(INLINE_REGEXES, text) || return parse_inline(text)
 
-    inline_chunks = eachmatch(INLINE_REGEX, text)
+    inline_chunks = eachmatch(INLINE_REGEXES, text)
     s = 1
     e = 1
     res = Inline[]
@@ -118,20 +113,28 @@ parse_inline(text) = Inline[InlineText(text, 1, length(text), 1)]
 # headers
 # -------
 
-parse_header(chunk::CodeChunk) = Dict()
-
 const HEADER_REGEX = r"^---$(?<header>((?!---).)+)^---$"ms
 
-function parse_header(chunk::DocChunk)
-    m = match(HEADER_REGEX, chunk.content[1].content)
-    if m !== nothing
-        header = YAML.load(string(m[:header]))
-    else
-        header = Dict()
-    end
-    return header
+# TODO: non-Weave headers should keep live in a doc
+# separates header section from `text`
+function separete_header_text(text)
+    m = match(HEADER_REGEX, text)
+    isnothing(m) && return "", text
+    return m[:header], replace(text, HEADER_REGEX => "")
 end
 
+# HACK:
+# YAML.jl can't parse text including ``` characters, so first replace all the inline code
+# with these temporary code start/end string
+const HEADER_INLINE_START = "<weave_header_inline_start>"
+const   HEADER_INLINE_END = "<weave_header_inline_end>"
+
+function parse_header(header_text)
+    isempty(header_text) && return Dict()
+    pat = INLINE_REGEX => SubstitutionString("$(HEADER_INLINE_START)\\1$(HEADER_INLINE_END)")
+    header_text = replace(header_text, pat)
+    return YAML.load(header_text)
+end
 
 include("markdown.jl")
 include("script.jl")

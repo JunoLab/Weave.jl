@@ -18,7 +18,7 @@ function format(doc::WeaveDoc)
     docformat.formatdict[:cwd] = doc.cwd # pass wd to figure formatters
     docformat.formatdict[:theme] = doc.highlight_theme
 
-    strip_header!(doc)
+    restore_header!(doc)
 
     for chunk in copy(doc.chunks)
         result = format_chunk(chunk, formatdict, docformat)
@@ -111,27 +111,20 @@ function render_doc(formatted, doc, format::JMarkdown2tex)
     )
 end
 
-strip_header!(doc::WeaveDoc) = strip_header!(doc.chunks[1], doc.doctype)
-function strip_header!(docchunk::DocChunk, doctype)
-    doctype == "pandoc" && return
-    content = docchunk.content[1].content
-    if (m = match(HEADER_REGEX, content)) !== nothing
-        # TODO: is there other format where we want to keep headers ?
-        docchunk.content[1].content = if doctype != "github"
-            lstrip(replace(content, HEADER_REGEX => ""))
-        else
-            # only strips Weave headers
-            header = YAML.load(m[:header])
-            delete!(header, WEAVE_OPTION_NAME)
-            if isempty(header)
-                lstrip(replace(content, HEADER_REGEX => ""))
-            else
-                lstrip(replace(content, HEADER_REGEX => "---\n$(YAML.write(header))---"))
-            end
-        end
-    end
+function restore_header!(doc)
+    doctype = doc.doctype
+
+    # TODO: is there any other format where we want to restore headers ?
+    doctype ≠ "github" && return
+
+    # only strips Weave headers
+    delete!(doc.header, WEAVE_OPTION_NAME)
+    isempty(doc.header) && return
+
+    # restore remained headers as `DocChunk`
+    header_text = "---\n$(YAML.write(doc.header))---"
+    pushfirst!(doc.chunks, DocChunk(header_text, 0, 0))
 end
-strip_header!(codechunk::CodeChunk, doctype) = return
 
 function format_chunk(chunk::DocChunk, formatdict, docformat)
     return join([format_inline(c) for c in chunk.content], "")

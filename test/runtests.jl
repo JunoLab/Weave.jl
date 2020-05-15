@@ -6,7 +6,11 @@ using Weave: run_doc
 # TODO: add test for `include_weave`
 
 # constructs `WeaveDoc` from `String`
-mock_doc(str, chunk_parser = Weave.parse_markdown) = Weave.WeaveDoc("dummy", chunk_parser(str))
+function mock_doc(str, format = "markdown")
+    f = tempname()
+    write(f, str)
+    return Weave.WeaveDoc(f, format)
+end
 
 
 @testset "Weave" begin
