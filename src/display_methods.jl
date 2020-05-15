@@ -1,5 +1,4 @@
-using Markdown
-import .WeaveMarkdown
+using Markdown, .WeaveMarkdown
 
 # Contains report global properties
 mutable struct Report <: AbstractDisplay
@@ -78,17 +77,11 @@ function Base.display(report::Report, data)
     end
 end
 
-function Base.display(report::Report, m::MIME"image/png", data)
-    figname = add_figure(report, data, m, ".png")
-end
+Base.display(report::Report, m::MIME"image/png", data) = add_figure(report, data, m, ".png")
 
-function Base.display(report::Report, m::MIME"image/svg+xml", data)
-    figname = add_figure(report, data, m, ".svg")
-end
+Base.display(report::Report, m::MIME"image/svg+xml", data) = add_figure(report, data, m, ".svg")
 
-function Base.display(report::Report, m::MIME"application/pdf", data)
-    figname = add_figure(report, data, m, ".pdf")
-end
+Base.display(report::Report, m::MIME"application/pdf", data) = add_figure(report, data, m, ".pdf")
 
 #Text is written to stdout, called from "term" mode chunks
 function Base.display(report::Report, m::MIME"text/plain", data)

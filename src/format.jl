@@ -1,11 +1,9 @@
-import Mustache, Highlights
-import .WeaveMarkdown
-using Dates
-using Markdown
+using Mustache, Highlights
+using .WeaveMarkdown, Markdown, Dates
 using REPL.REPLCompletions: latex_symbols
 
 function format(doc::WeaveDoc)
-    formatted = AbstractString[]
+    formatted = String[]
     docformat = doc.format
 
     # Complete format dictionaries with defaults
@@ -29,19 +27,12 @@ function format(doc::WeaveDoc)
 
     formatted = join(formatted, "\n")
     # Render using a template if needed
-    rendered = render_doc(formatted, doc, doc.format)
-
-    return rendered
+    return render_doc(formatted, doc)
 end
 
-"""
-  render_doc(formatted::AbstractString, format)
+render_doc(formatted, doc) = render_doc(formatted, doc, doc.format)
 
-Render formatted document to a template
-"""
-function render_doc(formatted, doc::WeaveDoc, format)
-    return formatted
-end
+render_doc(formatted, doc, format) = formatted
 
 function highlight(
     mime::MIME,
@@ -56,7 +47,7 @@ function stylesheet(m::MIME, theme)
     return sprint((io, x) -> Highlights.stylesheet(io, m, x), theme)
 end
 
-function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
+function render_doc(formatted, doc, format::JMarkdown2HTML)
     css = stylesheet(MIME("text/html"), doc.highlight_theme)
     path, wsource = splitdir(abspath(doc.source))
     # wversion = string(Pkg.installed("Weave"))
@@ -94,7 +85,7 @@ function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2HTML)
     )
 end
 
-function render_doc(formatted, doc::WeaveDoc, format::JMarkdown2tex)
+function render_doc(formatted, doc, format::JMarkdown2tex)
     highlight = stylesheet(MIME("text/latex"), doc.highlight_theme)
     path, wsource = splitdir(abspath(doc.source))
     # wversion = string(Pkg.installed("Weave"))

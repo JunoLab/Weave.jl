@@ -31,7 +31,7 @@ o = Weave.format_output(doc.chunks[4].content, doc.format)
 @test o_check == o
 
 doc.template = "templates/mini.tpl"
-rendered = Weave.render_doc("Hello", doc, doc.format)
+rendered = Weave.render_doc("Hello", doc)
 @test rendered == "\nHello\n"
 
 # Tex format
@@ -48,7 +48,7 @@ o = Weave.format_output(doc.chunks[3].content, doc.format)
 @test o_check == o
 
 doc.template = "templates/mini.tpl"
-rendered = Weave.render_doc("Hello", doc, doc.format)
+rendered = Weave.render_doc("Hello", doc)
 @test rendered == "\nHello\n"
 
 # Test header parsing and stripping
