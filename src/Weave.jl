@@ -237,7 +237,7 @@ function notebook(
     jupyter_path::AbstractString = "jupyter",
 )
     doc = WeaveDoc(source)
-    converted = convert_doc(doc, NotebookOutput())
+    converted = convert_to_notebook(doc)
     doc.cwd = get_cwd(doc, out_path)
     outfile = get_outname(out_path, doc, ext = "ipynb")
 

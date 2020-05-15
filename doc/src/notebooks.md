@@ -45,5 +45,5 @@ convert_doc("FIR_design.ipynb", "FIR_design.jmd")
 ```
 
 ```@docs
-convert_doc(infile::AbstractString, outfile::AbstractString)
+convert_doc
 ```

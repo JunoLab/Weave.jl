@@ -1,58 +1,79 @@
-import JSON
-import Mustache
-
-mutable struct NotebookOutput end
-
-mutable struct MarkdownOutput end
-
-mutable struct NowebOutput end
-
-mutable struct ScriptOutput end
-
-const output_formats = Dict{String,Any}(
-    "noweb" => NowebOutput(),
-    "notebook" => NotebookOutput(),
-    "markdown" => MarkdownOutput(),
-    "script" => ScriptOutput(),
-)
-
-"""Autodetect format for converter"""
-function detect_outformat(outfile::String)
-    ext = lowercase(splitext(outfile)[2])
-
-    ext == ".jl" && return "script"
-    ext == ".jmd" && return "markdown"
-    ext == ".ipynb" && return "notebook"
-    return "noweb"
-end
+using JSON, Mustache
 
 """
-    convert_doc(infile::AbstractString, outfile::AbstractString; format::Union{Nothing,AbstractString} = nothing)
+    convert_doc(infile::AbstractString, outfile::AbstractString; outformat::Union{Nothing,AbstractString} = nothing)
 
 Convert Weave documents between different formats
 
 - `infile`: Path of the input document
 - `outfile`: Path of the output document
-- `format = nothing`: Output document format (optional). It will be detected automatically from the `outfile` extension. You can also specify either of `"script"`, `"markdown"`, `"notebook"`, or `"noweb"`
+- `outformat = nothing`: Output document format (optional). By default (i.e. given `nothing`) Weave will try to automatically detect it from the `outfile`'s extension. You can also specify either of `"script"`, `"markdown"`, `"notebook"`, or `"noweb"`
 """
 function convert_doc(
     infile::AbstractString,
     outfile::AbstractString;
-    format::Union{Nothing,AbstractString} = nothing,
+    outformat::Union{Nothing,AbstractString} = nothing,
 )
     doc = WeaveDoc(infile)
 
-    isnothing(format) && (format = detect_outformat(outfile))
+    if isnothing(outformat)
+        ext = lowercase(splitext(outfile)[2])
+        outformat =
+            ext == ".jl" ? "script" :
+            ext == ".jmd" ?  "markdown" :
+            ext == ".ipynb" ? "notebook" :
+            "noweb" # fallback
+    end
 
-    converted = convert_doc(doc, output_formats[format])
+    converted = _convert_doc(doc, outformat)
 
     open(outfile, "w") do f
         write(f, converted)
     end
+    return outfile
 end
 
-"""Convert Weave document to Jupyter notebook format"""
-function convert_doc(doc::WeaveDoc, format::NotebookOutput)
+function _convert_doc(doc, outformat)
+    outformat == "script" ? convert_to_script(doc) :
+    outformat == "markdown" ? convert_to_markdown(doc) :
+    outformat == "notebook" ? convert_to_notebook(doc) :
+    convert_to_noweb(doc)
+end
+
+function convert_to_script(doc)
+    output = ""
+    for chunk in doc.chunks
+        if typeof(chunk) == Weave.DocChunk
+            content = join([repr(c) for c in chunk.content], "")
+            output *= join(["#' " * s for s in split(content, "\n")], "\n")
+        else
+            output *= "\n#+ "
+            isempty(chunk.optionstring) || (output *= strip(chunk.optionstring))
+            output *= "\n\n" * lstrip(chunk.content)
+            output *= "\n"
+        end
+    end
+
+    return output
+end
+
+function convert_to_markdown(doc)
+    output = ""
+    for chunk in doc.chunks
+        if isa(chunk, DocChunk)
+            output *= join([repr(c) for c in chunk.content], "")
+        else
+            output *= "\n" * "```julia"
+            isempty(chunk.optionstring) || (output *= ";" * chunk.optionstring)
+            output *= "\n" * lstrip(chunk.content)
+            output *= "```\n"
+        end
+    end
+
+    return output
+end
+
+function convert_to_notebook(doc)
     nb = Dict()
     nb["nbformat"] = 4
     nb["nbformat_minor"] = 2
@@ -117,25 +138,7 @@ function convert_doc(doc::WeaveDoc, format::NotebookOutput)
     return json_nb
 end
 
-"""Convert Weave document to Jupyter notebook format"""
-function convert_doc(doc::WeaveDoc, format::MarkdownOutput)
-    output = ""
-    for chunk in doc.chunks
-        if isa(chunk, DocChunk)
-            output *= join([repr(c) for c in chunk.content], "")
-        else
-            output *= "\n" * "```julia"
-            isempty(chunk.optionstring) || (output *= ";" * chunk.optionstring)
-            output *= "\n" * lstrip(chunk.content)
-            output *= "```\n"
-        end
-    end
-
-    return output
-end
-
-"""Convert Weave document to noweb format"""
-function convert_doc(doc::WeaveDoc, format::NowebOutput)
+function convert_to_noweb(doc)
     output = ""
     for chunk in doc.chunks
         if isa(chunk, DocChunk)
@@ -152,28 +155,5 @@ function convert_doc(doc::WeaveDoc, format::NowebOutput)
     return output
 end
 
-"""Convert Weave document to script format"""
-function convert_doc(doc::WeaveDoc, format::ScriptOutput)
-    output = ""
-    for chunk in doc.chunks
-        if typeof(chunk) == Weave.DocChunk
-            content = join([repr(c) for c in chunk.content], "")
-            output *= join(["#' " * s for s in split(content, "\n")], "\n")
-        else
-            output *= "\n#+ "
-            isempty(chunk.optionstring) || (output *= strip(chunk.optionstring))
-            output *= "\n\n" * lstrip(chunk.content)
-            output *= "\n"
-        end
-    end
-
-    return output
-end
-
-function Base.repr(c::InlineText)
-    return c.content
-end
-
-function Base.repr(c::InlineCode)
-    return "`j $(c.content)`"
-end
+Base.repr(c::InlineText) = c.content
+Base.repr(c::InlineCode) = "`j $(c.content)`"
