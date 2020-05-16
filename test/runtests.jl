@@ -30,7 +30,7 @@ end
         include("test_error_rendering.jl")
     end
 
-    @testset "convertions" begin
+    @testset "conversions" begin
         include("test_converter.jl")
     end
 
