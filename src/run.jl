@@ -1,5 +1,8 @@
 using Base64
 
+
+const PROGRESS_ID = "weave_progress"
+
 """
     run_doc(doc::WeaveDoc; kwargs...)
 
@@ -83,20 +86,23 @@ function run_doc(
         end
 
         executed = []
+        n = length(filter(chunk->isa(chunk,CodeChunk), doc.chunks))
+        i = 0
         for chunk in doc.chunks
-            if isa(chunk, CodeChunk)
+            if chunk isa CodeChunk
                 options = merge(doc.chunk_defaults, chunk.options)
                 merge!(chunk.options, options)
+
+                @info "Weaving chunk $(chunk.number) from line $(chunk.start_line)" progress=(i)/n _id=PROGRESS_ID
+                i+=1
             end
 
-            restore = (cache === :user && typeof(chunk) == CodeChunk && chunk.options[:cache])
-
-            result_chunks = if cached != nothing && (cache === :all || restore)
+            restore = (cache === :user && chunk isa CodeChunk && chunk.options[:cache])
+            result_chunks = if cached ≠ nothing && (cache === :all || restore)
                 restore_chunk(chunk, cached)
             else
                 run_chunk(chunk, doc, report, mod)
             end
-
             executed = [executed; result_chunks]
         end
 
@@ -111,6 +117,7 @@ function run_doc(
     catch err
         rethrow(err)
     finally
+        @info "Weaved all chunks" progress=1 _id=PROGRESS_ID
         popdisplay(report) # ensure display pops out even if internal error occurs
     end
 
@@ -133,10 +140,8 @@ function detect_doctype(pathname::AbstractString)
     return "pandoc"
 end
 
-function run_chunk(chunk::CodeChunk, doc::WeaveDoc, report::Report, SandBox::Module)
-    # TODO: integrate with Juno's progress metre
-    @info "Weaving chunk $(chunk.number) from line $(chunk.start_line)"
-    result = eval_chunk(chunk, report, SandBox)
+function run_chunk(chunk::CodeChunk, doc, report, mod)
+    result = eval_chunk(chunk, report, mod)
     occursin("2html", report.formatdict[:doctype]) && (embed_figures!(result, report.cwd))
     return result
 end
@@ -169,8 +174,8 @@ function img2base64(fig, cwd)
     end
 end
 
-function run_chunk(chunk::DocChunk, doc::WeaveDoc, report::Report, SandBox::Module)
-    chunk.content = [run_inline(c, doc, report, SandBox) for c in chunk.content]
+function run_chunk(chunk::DocChunk, doc, report, mod)
+    chunk.content = [run_inline(c, doc, report, mod) for c in chunk.content]
     return chunk
 end
 
