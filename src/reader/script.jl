@@ -1,9 +1,4 @@
-"""
-    parse_script(document_body)::Vector{WeaveChunk}
-
-Parse Julia script and returns [`WeaveChunk`](@ref)s.
-"""
-function parse_script(document_body)::Vector{WeaveChunk}
+function parse_script(document_body)
     lines = split(document_body, "\n")
 
     doc_line = r"(^#'.*)|(^#%%.*)|(^# %%.*)"
@@ -20,8 +15,6 @@ function parse_script(document_body)::Vector{WeaveChunk}
     optionString = ""
     chunks = WeaveChunk[]
     state = "code"
-    lineno = 1
-    n_emptylines = 0
 
     for lineno = 1:length(lines)
         line = lines[lineno]
@@ -81,12 +74,6 @@ function parse_script(document_body)::Vector{WeaveChunk}
             docno += 1
         end
         read *= line * "\n"
-
-        if strip(line) == ""
-            n_emptylines += 1
-        else
-            n_emptylines = 0
-        end
     end
 
     # Handle the last chunk
@@ -98,5 +85,5 @@ function parse_script(document_body)::Vector{WeaveChunk}
         push!(chunks, chunk)
     end
 
-    return chunks
+    return Dict(), chunks
 end

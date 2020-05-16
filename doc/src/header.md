@@ -5,7 +5,7 @@ A YAML header should be in the beginning of the input document delimited with `-
 
 
 !!! warning
-    YAML header configuration is only supported when `weave`ing [Julia markdown documents](@ref document-syntax).
+    YAML header configuration is only supported when `weave`ing [markdown or Noweb syntax documents](@ref document-syntax).
 
 
 ## Document Metadata
@@ -31,20 +31,20 @@ date: 16th May 2020
 
 ### Dynamic Metadata
 
-The metadata can be "dynamic"; if you have [inline code](@ref) within YAML header, they will be evaluated _after_ evaluating all the chunks and replaced with the results.
+The metadata can be given "dynamically"; if you have [inline code](@ref) within YAML header, they will be evaluated _after_ evaluating all the chunks and replaced with the results.
 
 The example document below will set `date` metadata dynamically.
 Note that `Date` is available since the chunk is evaluated first.
 ```md
-    ---
-    title : Header Example
-    author : Shuhei Kadowaki
-    date: `j Date(now())`
-    ---
+ ---
+ title : Header Example
+ author : Shuhei Kadowaki
+ date: `j Date(now())`
+ ---
 
-    ```julia; echo = false
-    using Datas
-    ```
+ ```julia; echo = false
+ using Datas
+ ```
 ```
 
 

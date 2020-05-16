@@ -75,7 +75,7 @@ return "noweb"
 
 ## Documentation Chunks
 
-In Markdown and Noweb input formats documentation chunks are the parts that aren't inside code delimiters. Documentation chunks can be written with several different markup languages.
+In markdown and Noweb input formats documentation chunks are the parts that aren't inside code delimiters. Documentation chunks can be written with several different markup languages.
 
 ## Code Chunks
 
@@ -148,7 +148,7 @@ Weave will remove the first empty space from each line of documentation.
 
 ## Configuration via YAML Header
 
-When `weave`ing markdown files, you use YAML header to provide additional metadata and configuration options.
+When `weave`ing markdown files, you can use YAML header to provide additional metadata and configuration options.
 See [Header Configuration](@ref) section for more details.
 
 

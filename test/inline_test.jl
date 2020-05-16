@@ -17,14 +17,20 @@ ms = collect(eachmatch(Weave.INLINE_REGEXES, doc))
 @test ms[2][1] == "code"
 @test ms[3][1] == "show(\"is\")"
 
-chunk = Weave.parse_markdown(doc)[1]
+let
+_, chunks = Weave.parse_markdown(doc)
+chunk = first(chunks)
 @test length(chunk.content) == 7
 @test chunk.content[2].content == ms[1][2]
 @test chunk.content[4].content == ms[2][1]
 @test chunk.content[6].content == ms[3][1]
+end
 
-chunknw = Weave.parse_markdown(doc, false)[1]
-@test all([chunknw.content[i].content == chunk.content[i].content for i in 1:7])
+let
+_, chunks = Weave.parse_markdown(doc)
+chunk = first(chunks)
+@test all([chunk.content[i].content == chunk.content[i].content for i in 1:7])
+end
 
 # Test with document
 

@@ -55,11 +55,8 @@ end
 function parse_doc(document, informat)
     document = replace(document, "\r\n" => "\n") # normalize line ending
 
-    header_text, document = separate_header_text(document)
-
-    return parse_header(header_text),
-        informat == "markdown" ? parse_markdown(document) :
-        informat == "noweb" ? parse_markdown(document, true) :
+    return informat == "markdown" ? parse_markdown(document) :
+        informat == "noweb" ? parse_markdown(document; is_pandoc = true) :
         informat == "script" ? parse_script(document) :
         informat == "notebook" ? parse_notebook(document) :
         error("unsupported input format given: $informat")
@@ -127,32 +124,6 @@ function parse_inlines(text)::Vector{Inline}
 end
 
 parse_inline(text) = Inline[InlineText(text, 1, length(text), 1)]
-
-# headers
-# -------
-
-const HEADER_REGEX = r"^---$(?<header>((?!---).)+)^---$"ms
-
-# TODO: non-Weave headers should keep live in a doc
-# separates header section from `text`
-function separate_header_text(text)
-    m = match(HEADER_REGEX, text)
-    isnothing(m) && return "", text
-    return m[:header], replace(text, HEADER_REGEX => ""; count = 1)
-end
-
-# HACK:
-# YAML.jl can't parse text including ``` characters, so first replace all the inline code
-# with these temporary code start/end string
-const HEADER_INLINE_START = "<weave_header_inline_start>"
-const   HEADER_INLINE_END = "<weave_header_inline_end>"
-
-function parse_header(header_text)
-    isempty(header_text) && return Dict()
-    pat = INLINE_REGEX => SubstitutionString("$(HEADER_INLINE_START)\\1$(HEADER_INLINE_END)")
-    header_text = replace(header_text, pat)
-    return YAML.load(header_text)
-end
 
 include("markdown.jl")
 include("script.jl")
