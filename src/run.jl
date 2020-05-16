@@ -493,8 +493,9 @@ replace_header_inline!(doc, report, mod) = _replace_header_inline!(doc, doc.head
 
 function _replace_header_inline!(doc, header, report, mod)
     replace!(header) do (k,v)
-        return k => v isa Dict ?
-            _replace_header_inline!(doc, v, report, mod) :
+        return k =>
+            v isa Dict ? _replace_header_inline!(doc, v, report, mod) :
+            !isa(v, AbstractString) ? v :
             replace(v, HEADER_INLINE => s -> begin
                 m = match(HEADER_INLINE, s)
                 run_inline_code(m[:code], doc, report, mod)
