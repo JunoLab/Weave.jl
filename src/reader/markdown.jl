@@ -1,14 +1,12 @@
 function parse_markdown(document_body; is_pandoc = false)
-    if is_pandoc
-        header = Dict()
-        offset = 0
-        code_start = r"^<<(?<options>.*?)>>=\s*$"
-        code_end = r"^@\s*$"
+    header_text, document_body, offset = separate_header_text(document_body)
+    header = parse_header(header_text)
+    code_start, code_end = if is_pandoc
+        r"^<<(?<options>.*?)>>=\s*$",
+        r"^@\s*$"
     else
-        header_text, document_body, offset = separate_header_text(document_body)
-        header = parse_header(header_text)
-        code_start = r"^[`~]{3}(?:\{?)julia(?:;?)\s*(?<options>.*?)(\}|\s*)$"
-        code_end = r"^[`~]{3}\s*$"
+        r"^[`~]{3}(?:\{?)julia(?:;?)\s*(?<options>.*?)(\}|\s*)$",
+        r"^[`~]{3}\s*$"
     end
     return header, parse_markdown_body(document_body, code_start, code_end, offset)
 end

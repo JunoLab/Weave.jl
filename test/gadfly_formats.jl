@@ -4,9 +4,11 @@ using Gadfly, Cairo
 
 
 function test_gadfly(doctype, fig_ext)
-    out = weave(joinpath(@__DIR__ , "documents/gadfly_formats_test.jnw"),
-        out_path = joinpath(@__DIR__ , "documents/gadfly/"),
-        doctype = doctype, fig_ext = fig_ext)
+    out = weave(
+        joinpath(@__DIR__ , "documents/gadfly_formats_test.jnw"),
+        doctype = doctype,
+        fig_ext = fig_ext
+    )
     result = read(out, String)
     # cp(out, out*fig_ext*"."*doctype, force=true) # Used when adding new tests
     ref =  read(out*fig_ext*"."*doctype, String)

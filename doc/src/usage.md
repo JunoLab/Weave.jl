@@ -75,7 +75,7 @@ return "noweb"
 
 ## Documentation Chunks
 
-In Markdown and Noweb input formats documentation chunks are the parts that aren't inside code delimiters. Documentation chunks can be written with several different markup languages.
+In markdown and Noweb input formats documentation chunks are the parts that aren't inside code delimiters. Documentation chunks can be written with several different markup languages.
 
 ## Code Chunks
 
