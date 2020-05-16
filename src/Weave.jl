@@ -3,6 +3,8 @@ module Weave
 using Highlights, Mustache, Requires
 
 
+const PKG_DIR = normpath(@__DIR__, "..")
+const TEMPLATE_DIR = normpath(PKG_DIR, "templates")
 const WEAVE_OPTION_NAME = "options" # TODO: rename to "weave_options"
 
 function __init__()

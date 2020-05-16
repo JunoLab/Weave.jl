@@ -1,5 +1,4 @@
-using Mustache, Highlights
-using .WeaveMarkdown, Markdown, Dates
+using Mustache, Highlights, .WeaveMarkdown, Markdown, Dates
 using REPL.REPLCompletions: latex_symbols
 
 function format(doc::WeaveDoc)
@@ -36,11 +35,11 @@ render_doc(formatted, doc, format) = formatted
 
 function highlight(
     mime::MIME,
-    source::AbstractString,
+    output,
     lexer,
     theme = Highlights.Themes.DefaultTheme,
 )
-    return sprint((io, x) -> Highlights.highlight(io, mime, x, lexer, theme), source)
+    return sprint((io, x) -> Highlights.highlight(io, mime, x, lexer, theme), output)
 end
 
 function stylesheet(m::MIME, theme)
@@ -54,22 +53,14 @@ function render_doc(formatted, doc, format::JMarkdown2HTML)
     wversion = ""
     wtime = string(Date(now()))
 
-    if isempty(doc.css)
-        theme_css =
-            read(joinpath(dirname(@__FILE__), "../templates/skeleton_css.css"), String)
-    else
-        theme_css = read(doc.css, String)
-    end
+    theme_path = isempty(doc.css) ? normpath(TEMPLATE_DIR, "skeleton_css.css") : doc.css
+    theme_css = read(theme_path, String)
 
-    if isa(doc.template, Mustache.MustacheTokens)
-        template = doc.template
-    elseif isempty(doc.template)
-        template = Mustache.template_from_file(joinpath(
-            dirname(@__FILE__),
-            "../templates/julia_html.tpl",
-        ))
+    template = if isa(doc.template, Mustache.MustacheTokens)
+        doc.template
     else
-        template = Mustache.template_from_file(doc.template)
+        template_path = isempty(doc.template) ? normpath(TEMPLATE_DIR, "julia_html.tpl") : doc.template
+        Mustache.template_from_file(template_path)
     end
 
     return Mustache.render(
@@ -92,15 +83,11 @@ function render_doc(formatted, doc, format::JMarkdown2tex)
     wversion = ""
     wtime = string(Date(now()))
 
-    if isa(doc.template, Mustache.MustacheTokens)
-        template = doc.template
-    elseif isempty(doc.template)
-        template = Mustache.template_from_file(joinpath(
-            dirname(@__FILE__),
-            "../templates/julia_tex.tpl",
-        ))
+    template = if isa(doc.template, Mustache.MustacheTokens)
+        doc.template
     else
-        template = Mustache.template_from_file(doc.template)
+        template_path = isempty(doc.template) ? normpath(TEMPLATE_DIR, "julia_tex.tpl") : doc.template
+        Mustache.template_from_file(template_path)
     end
 
     return Mustache.render(
@@ -124,18 +111,14 @@ function restore_header!(doc)
     pushfirst!(doc.chunks, DocChunk(header_text, 0, 0))
 end
 
-function format_chunk(chunk::DocChunk, formatdict, docformat)
-    return join([format_inline(c) for c in chunk.content], "")
-end
+format_chunk(chunk::DocChunk, formatdict, docformat) = join((format_inline(c) for c in chunk.content))
 
-function format_inline(inline::InlineText)
-    return inline.content
-end
+format_inline(inline::InlineText) = inline.content
 
 function format_inline(inline::InlineCode)
     isempty(inline.rich_output) || return inline.rich_output
     isempty(inline.figures) || return inline.figures[end]
-    isempty(inline.output) || return inline.output
+    return inline.output
 end
 
 function ioformat!(io::IOBuffer, out::IOBuffer, fun = WeaveMarkdown.latex)
@@ -146,10 +129,7 @@ function ioformat!(io::IOBuffer, out::IOBuffer, fun = WeaveMarkdown.latex)
     end
 end
 
-function addspace(op, inline)
-    inline.ctype == :line && (op = "\n$op\n")
-    return op
-end
+addspace(op, inline) = (inline.ctype === :line && (op = "\n$op\n"); op)
 
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
     out = IOBuffer()
@@ -266,15 +246,11 @@ function format_chunk(chunk::CodeChunk, formatdict, docformat)
     return result
 end
 
-function format_output(result::AbstractString, docformat)
-    return result
-end
+format_output(result, docformat) = result
 
-function format_output(result::AbstractString, docformat::JMarkdown2HTML)
-    return Markdown.htmlesc(result)
-end
+format_output(result, docformat::JMarkdown2HTML) = Markdown.htmlesc(result)
 
-function format_output(result::AbstractString, docformat::JMarkdown2tex)
+function format_output(result, docformat::JMarkdown2tex)
     # Highligts has some extra escaping defined, eg of $, ", ...
     result_escaped = sprint(
         (io, x) ->
@@ -285,11 +261,9 @@ function format_output(result::AbstractString, docformat::JMarkdown2tex)
     return result_escaped
 end
 
-function format_code(result::AbstractString, docformat)
-    return result
-end
+format_code(result, docformat) = result
 
-function format_code(result::AbstractString, docformat::JMarkdown2tex)
+function format_code(result, docformat::JMarkdown2tex)
     highlighted = highlight(
         MIME("text/latex"),
         strip(result),
@@ -330,7 +304,7 @@ function texify(s)
     return ts
 end
 
-function format_code(result::AbstractString, docformat::JMarkdown2HTML)
+function format_code(result, docformat::JMarkdown2HTML)
     return highlight(
         MIME("text/html"),
         strip(result),
@@ -339,7 +313,7 @@ function format_code(result::AbstractString, docformat::JMarkdown2HTML)
     )
 end
 
-function format_code(result::AbstractString, docformat::Pandoc2HTML)
+function format_code(result, docformat::Pandoc2HTML)
     return highlight(
         MIME("text/html"),
         strip(result),
@@ -400,9 +374,7 @@ function format_termchunk(chunk, formatdict, docformat::JMarkdown2tex)
     return result
 end
 
-function indent(text, nindent)
-    return join(map(x -> string(repeat(" ", nindent), x), split(text, "\n")), "\n")
-end
+indent(text, nindent) = join(map(x -> string(repeat(' ', nindent), x), split(text, '\n')), '\n')
 
 function wraplines(text, line_width = 75)
     result = AbstractString[]
