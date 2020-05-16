@@ -92,19 +92,6 @@ function convert_to_notebook(doc)
     cells = []
     ex_count = 1
 
-    # Handle header
-    head_tpl = """
-    {{#:title}}# {{:title}}{{/:title}}
-    {{#:author}}### {{{:author}}}{{/:author}}
-    {{#:date}}### {{{:date}}}{{/:date}}
-    """
-
-    if isa(doc.chunks[1], DocChunk)
-        strip_header!(doc)
-        doc.chunks[1].content[1].content =
-            Mustache.render(head_tpl; [Pair(Symbol(k), v) for (k, v) in doc.header]...) * doc.chunks[1].content[1].content
-    end
-
     for chunk in doc.chunks
         if isa(chunk, DocChunk)
             push!(
