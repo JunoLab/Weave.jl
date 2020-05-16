@@ -1,9 +1,4 @@
-"""
-    parse_notebook(document_body)::Vector{WeaveChunk}
-
-Parses Jupyter notebook and returns [`WeaveChunk`](@ref)s.
-"""
-function parse_notebook(document_body)::Vector{WeaveChunk}
+function parse_notebook(document_body)
     nb = JSON.parse(document_body)
     chunks = WeaveChunk[]
     options = Dict{Symbol,Any}()
@@ -25,5 +20,5 @@ function parse_notebook(document_body)::Vector{WeaveChunk}
         end
     end
 
-    return chunks
+    return Dict(), chunks
 end

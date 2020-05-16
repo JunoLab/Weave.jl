@@ -26,7 +26,7 @@ function restore_chunk(chunk::CodeChunk, cached)
 
     # Chunk types, don't match after loading. Fix by constructing chunks
     # from loaded content
-    new_chunks = Any[]
+    new_chunks = []
     for c in chunks
         newc = CodeChunk(c.content, c.number, c.start_line, c.optionstring, c.options)
         newc.result_no = c.result_no
