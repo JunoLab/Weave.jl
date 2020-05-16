@@ -1,4 +1,3 @@
-
 # Weave.jl - Scientific Reports Using Julia
 
 This is the documentation of [Weave.jl](http://github.com/mpastell/weave.jl).
@@ -22,10 +21,18 @@ and [Sweave](https://stat.ethz.ch/R-manual/R-patched/library/utils/doc/Sweave.pd
 
 ![Weave in Juno demo](https://user-images.githubusercontent.com/40514306/76081328-32f41900-5fec-11ea-958a-375f77f642a2.png)
 
-## Contents
+
+## Index
 
 ```@contents
-Pages = ["getting_started.md", "usage.md",
-"publish.md", "chunk_options.md", "notebooks.md",
-"function_index.md"]
+Pages = [
+    "index.md",
+    "getting_started.md",
+    "usage.md",
+    "publish.md",
+    "header.md",
+    "chunk_options.md",
+    "notebooks.md",
+    "function_index.md",
+]
 ```
