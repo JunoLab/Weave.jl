@@ -1,8 +1,4 @@
----
-title: FIR filter design with Julia
-author: Matti Pastell
-date: 21th April 2016
----
+
 
 
 # Introduction
@@ -120,6 +116,27 @@ The next code chunk is executed in term mode, see the [script](FIR_design.jl) fo
 
 ~~~~{.julia}
 julia> h_db = log10.(abs.(h));
+1024-element Array{Float32,1}:
+  0.0
+ -1.5272748f-6
+ -6.0314724f-6
+ -1.3538573f-5
+ -2.394518f-5
+ -3.7173842f-5
+ -5.3121257f-5
+ -7.165827f-5
+ -9.257809f-5
+ -0.00011577748
+  ⋮
+ -3.2165928
+ -3.1834154
+ -3.1560452
+ -3.1337893
+ -3.1161458
+ -3.102753
+ -3.0933545
+ -3.0877802
+ -3.0859327
 
 julia> ws = w/pi*(fs/2)
 0.0:0.009775171065493646:10.0

@@ -3,7 +3,7 @@
 <HEAD>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>FIR filter design with Julia</title>
+  
   
 
   <script type="text/x-mathjax-config">
@@ -656,12 +656,14 @@ div.title {text-align: center;}
         <div class = "col-md-12 twelve columns">
 
           <div class="title">
-            <h1 class="title">FIR filter design with Julia</h1>
-            <h5>Matti Pastell</h5>
-            <h5>21th April 2016</h5>
+            
+            
+            
           </div>
 
-          
+          <hr />
+<p>title: FIR filter design with Julia author: Matti Pastell date: 21th April 2016 –-</p>
+
 <h1>Introduction</h1>
 
 <p>This an example of a julia script that can be published using <a href="http://mpastell.github.io/Weave.jl/latest/usage/">Weave</a>. The script can be executed normally using Julia or published to HTML or pdf with Weave. Text is written in markdown in lines starting with &quot;<code>#&#39;</code> &quot; and code is executed and results are included in the published document.</p>
@@ -746,6 +748,27 @@ FIRfreqz &#40;generic function with 2 methods&#41;
 
 <pre class='hljl'>
 <span class='hljl-nB'>julia&gt; </span><span class='hljl-n'>h_db</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>log10</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>abs</span><span class='hljl-oB'>.</span><span class='hljl-p'>(</span><span class='hljl-n'>h</span><span class='hljl-p'>));</span><span class='hljl-t'>
+1024-element Array{Float32,1}:
+  0.0
+ -1.5272748f-6
+ -6.0314724f-6
+ -1.3538573f-5
+ -2.394518f-5
+ -3.7173842f-5
+ -5.3121257f-5
+ -7.165827f-5
+ -9.257809f-5
+ -0.00011577748
+  ⋮
+ -3.2165928
+ -3.1834154
+ -3.1560452
+ -3.1337893
+ -3.1161458
+ -3.102753
+ -3.0933545
+ -3.0877802
+ -3.0859327
 
 </span><span class='hljl-nB'>julia&gt; </span><span class='hljl-n'>ws</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-n'>w</span><span class='hljl-oB'>/</span><span class='hljl-n'>pi</span><span class='hljl-oB'>*</span><span class='hljl-p'>(</span><span class='hljl-n'>fs</span><span class='hljl-oB'>/</span><span class='hljl-ni'>2</span><span class='hljl-p'>)</span><span class='hljl-t'>
 0.0:0.009775171065493646:10.0</span>
@@ -778,7 +801,7 @@ FIRfreqz &#40;generic function with 2 methods&#41;
           <div class="footer"><p>
           Published from <a href="FIR_design_plots.jl">FIR_design_plots.jl</a> using
           <a href="http://github.com/mpastell/Weave.jl">Weave.jl</a>
-           on 2020-05-15.
+           on 2020-05-16.
           <p></div>
 
 
