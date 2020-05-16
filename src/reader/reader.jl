@@ -1,14 +1,12 @@
 using JSON, YAML
 
 
-function WeaveDoc(source, informat = nothing, doctype = nothing)
+function WeaveDoc(source, informat = nothing)
     path, fname = splitdir(abspath(source))
     basename = splitext(fname)[1]
 
     isnothing(informat) && (informat = detect_informat(source))
     header, chunks = parse_doc(read(source, String), informat)
-
-    isnothing(doctype) && (doctype = detect_doctype(source))
 
     # update default chunk options from header
     chunk_defaults = deepcopy(get_chunk_defaults())
@@ -27,7 +25,7 @@ function WeaveDoc(source, informat = nothing, doctype = nothing)
         chunks,
         "",
         nothing,
-        doctype,
+        "",
         "",
         header,
         "",
@@ -66,22 +64,6 @@ function pushopt(options::Dict, expr::Expr)
     if Base.Meta.isexpr(expr, :(=))
         options[expr.args[1]] = expr.args[2]
     end
-end
-
-"""
-    detect_doctype(path)
-
-Detect the output format based on file extension.
-"""
-function detect_doctype(path)
-    _, ext = lowercase.(splitext(path))
-
-    match(r"^\.(jl|.?md|ipynb)", ext) !== nothing && return "md2html"
-    ext == ".rst" && return "rst"
-    ext == ".tex" && return "texminted"
-    ext == ".txt" && return "asciidoc"
-
-    return "pandoc"
 end
 
 # inline

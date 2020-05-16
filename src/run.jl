@@ -46,9 +46,7 @@ function run_doc(
 )
     # cache :all, :user, :off, :refresh
 
-    # doctype detection is unnecessary here, but existing unit test requires this.
-    isnothing(doctype) && (doctype = detect_doctype(doc.source))
-    doc.doctype = doctype
+    doc.doctype = isnothing(doctype) ? (doctype = detect_doctype(doc.source)) : doctype
     doc.format = formats[doctype]
 
     if haskey(doc.format.formatdict, :keep_unicode)
@@ -124,13 +122,16 @@ function run_doc(
     return doc
 end
 
+run_doc(doc::WeaveDoc, doctype::Union{Nothing,AbstractString}; kwargs...) =
+    run_doc(doc; doctype = doctype, kwargs...)
+
 """
-    detect_doctype(pathname::AbstractString)
+    detect_doctype(path)
 
 Detect the output format based on file extension.
 """
-function detect_doctype(pathname::AbstractString)
-    _, ext = lowercase.(splitext(pathname))
+function detect_doctype(path)
+    _, ext = lowercase.(splitext(path))
 
     match(r"^\.(jl|.?md|ipynb)", ext) !== nothing && return "md2html"
     ext == ".rst" && return "rst"

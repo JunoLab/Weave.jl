@@ -116,7 +116,7 @@ function weave(
     latex_cmd::AbstractString = "xelatex",
     latex_keep_unicode::Bool = false,
 )
-    doc = WeaveDoc(source, informat, doctype)
+    doc = WeaveDoc(source, informat)
 
     # overwrites given options with header options, which have more precedence
     # NOTE:
@@ -202,6 +202,9 @@ function weave(
     return abspath(outname)
 end
 
+weave(doc::AbstractString, doctype::Union{Symbol,AbstractString}; kwargs...) =
+    weave(doc; doctype = doctype, kwargs...)
+
 function specific_options!(weave_options, doctype)
     fmts = keys(formats)
     for (k,v) in weave_options
@@ -211,9 +214,6 @@ function specific_options!(weave_options, doctype)
         end
     end
 end
-
-weave(doc::AbstractString, doctype::Union{Symbol,AbstractString}) =
-    weave(doc; doctype = doctype)
 
 """
     notebook(source::AbstractString; kwargs...)
