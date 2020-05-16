@@ -22,7 +22,12 @@ function separate_header_text(text)
     m = match(HEADER_REGEX, text)
     isnothing(m) && return "", text, 0
     header_text = m[:header]
-    return header_text, replace(text, HEADER_REGEX => ""; count = 1), count("\n", header_text)
+    offset = @static if VERSION ≥ v"1.4"
+        count("\n", header_text)
+    else
+        count(c->c==='\n', header_text)
+    end
+    return header_text, replace(text, HEADER_REGEX => ""; count = 1), offset
 end
 
 # HACK:
