@@ -21,34 +21,30 @@
   <style type="text/css">
   {{{ :themecss }}}
   </style>
-
-
-
 </HEAD>
-  <BODY>
-    <div class ="container">
-      <div class = "row">
-        <div class = "col-md-12 twelve columns">
 
-          <div class="title">
-            {{#:title}}<h1 class="title">{{:title}}</h1>{{/:title}}
-            {{#:author}}<h5>{{{:author}}}</h5>{{/:author}}
-            {{#:date}}<h5>{{{:date}}}</h5>{{/:date}}
-          </div>
+<BODY>
+  <div class ="container">
+    <div class = "row">
+      <div class = "col-md-12 twelve columns">
+        <div class="title">
+          {{#:title}}<h1 class="title">{{:title}}</h1>{{/:title}}
+          {{#:author}}<h5>{{{:author}}}</h5>{{/:author}}
+          {{#:date}}<h5>{{{:date}}}</h5>{{/:date}}
+        </div>
 
-          {{{ :body }}}
+        {{{ :body }}}
 
-
-          <HR/>
-          <div class="footer"><p>
-          Published from <a href="{{{:source}}}">{{{:source}}}</a> using
-          <a href="http://github.com/mpastell/Weave.jl">Weave.jl</a>
-          {{:wversion}} on {{:wtime}}.
-          <p></div>
-
-
+        <HR/>
+        <div class="footer">
+          <p>
+            Published from <a href="{{{:source}}}">{{{:source}}}</a>
+            using <a href="http://github.com/JunoLab/Weave.jl">Weave.jl</a> {{:wversion}} on {{:wdate}}.
+          </p>
         </div>
       </div>
     </div>
-  </BODY>
+  </div>
+</BODY>
+
 </HTML>

@@ -15,9 +15,7 @@ function pandoc2html(
     css = stylesheet(MIME("text/html"), doc.highlight_theme)
 
     path, wsource = splitdir(abspath(doc.source))
-    # wversion = string(Pkg.installed("Weave"))
-    wversion = ""
-    wtime = string(Date(now()))
+    wversion, wdate = weave_info()
 
     # Header is inserted from displayed plots
     header_script = doc.header_script
@@ -41,7 +39,7 @@ function pandoc2html(
         cmd = `pandoc -f markdown+raw_html -s --mathjax=""
         $filt $citeproc $pandoc_options
         --template $html_template -H $css_template $self_contained
-         -V wversion=$wversion -V wtime=$wtime -V wsource=$wsource
+         -V wversion=$wversion -V wdate=$wdate -V wsource=$wsource
          -V highlightcss=$css
          -V headerscript=$header_script
          -o $outname`
@@ -72,9 +70,6 @@ function pandoc2pdf(
     header_template = joinpath(weavedir, "../templates/pandoc_header.txt")
 
     path, wsource = splitdir(abspath(doc.source))
-    # wversion = string(Pkg.installed("Weave"))
-    wversion = ""
-    wtime = Date(now())
     outname = basename(outname)
 
     # Change path for pandoc

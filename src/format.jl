@@ -1,4 +1,4 @@
-using Mustache, Highlights, .WeaveMarkdown, Markdown, Dates
+using Mustache, Highlights, .WeaveMarkdown, Markdown, Dates, Pkg
 using REPL.REPLCompletions: latex_symbols
 
 function format(doc::WeaveDoc)
@@ -49,9 +49,7 @@ end
 function render_doc(formatted, doc, format::JMarkdown2HTML)
     css = stylesheet(MIME("text/html"), doc.highlight_theme)
     path, wsource = splitdir(abspath(doc.source))
-    # wversion = string(Pkg.installed("Weave"))
-    wversion = ""
-    wtime = string(Date(now()))
+    wversion, wdate = weave_info()
 
     theme_path = isempty(doc.css) ? normpath(TEMPLATE_DIR, "skeleton_css.css") : doc.css
     theme_css = read(theme_path, String)
@@ -70,8 +68,8 @@ function render_doc(formatted, doc, format::JMarkdown2HTML)
         body = formatted,
         header_script = doc.header_script,
         source = wsource,
-        wtime = wtime,
         wversion = wversion,
+        wdate = wdate,
         [Pair(Symbol(k), v) for (k, v) in doc.header]...,
     )
 end
@@ -79,9 +77,6 @@ end
 function render_doc(formatted, doc, format::JMarkdown2tex)
     highlight = stylesheet(MIME("text/latex"), doc.highlight_theme)
     path, wsource = splitdir(abspath(doc.source))
-    # wversion = string(Pkg.installed("Weave"))
-    wversion = ""
-    wtime = string(Date(now()))
 
     template = if isa(doc.template, Mustache.MustacheTokens)
         doc.template
@@ -97,6 +92,14 @@ function render_doc(formatted, doc, format::JMarkdown2tex)
         [Pair(Symbol(k), v) for (k, v) in doc.header]...,
     )
 end
+
+const WEAVE_VERSION = try
+    'v' * Pkg.TOML.parsefile(normpath(PKG_DIR, "Project.toml"))["version"]
+catch
+    ""
+end
+
+weave_info() = WEAVE_VERSION, string(Date(now()))
 
 # TODO: is there any other format where we want to restore headers ?
 const HEADER_PRESERVE_DOCTYPES = ("github", "hugo")
