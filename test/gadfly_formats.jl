@@ -8,7 +8,7 @@ function test_gadfly(doctype, fig_ext)
         out_path = joinpath(@__DIR__ , "documents/gadfly/"),
         doctype = doctype, fig_ext = fig_ext)
     result = read(out, String)
-    #cp(out, out*fig_ext*"."*doctype, force=true) # Used when adding new tests
+    # cp(out, out*fig_ext*"."*doctype, force=true) # Used when adding new tests
     ref =  read(out*fig_ext*"."*doctype, String)
     @test result == ref
     rm(out)
