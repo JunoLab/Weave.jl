@@ -47,7 +47,6 @@ let
     title: No. `j 1`
     ---
     """)
-    run_doc(d)
     @test d.header["title"] == "No. 1"
 end
 
@@ -60,8 +59,7 @@ let
     ---
     title: No. `j n`
     ---
-    """)
-    run_doc(d; mod = m)
+    """; mod = m)
     @test d.header["title"] == "No. 1"
 
     # strip quotes by default
@@ -70,8 +68,7 @@ let
     ---
     title: No. `j s`
     ---
-    """)
-    run_doc(d; mod = m)
+    """; mod = m)
     @test d.header["title"] == "No. 1" # otherwise `"No. "1""`
 end
 

@@ -1,6 +1,6 @@
 @testset "evaluation module" begin
     function mock_output(str, mod = nothing)
-        result_doc = run_doc(mock_doc(str), mod = mod)
+        result_doc = mock_doc(str; mod = mod)
         return result_doc.chunks[1].output
     end
 

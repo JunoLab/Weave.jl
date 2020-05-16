@@ -5,12 +5,14 @@ using Weave: WeaveDoc, run_doc
 # TODO: add test for header processsing
 # TODO: add test for `include_weave`
 
-# constructs `WeaveDoc` from `String`
-function mock_doc(str, format = "markdown")
+# constructs `WeaveDoc` from `String` and run it
+function mock_doc(str; informat = "markdown", run = true, doctype = "md2html", kwargs...)
     f = tempname()
     write(f, str)
-    return WeaveDoc(f, format)
+    doc = WeaveDoc(f, informat)
+    return run ? run_doc(doc; doctype = doctype, kwargs...) : doc
 end
+macro jmd_str(s) mock_doc(s) end
 
 
 @testset "Weave" begin
@@ -30,8 +32,12 @@ end
         include("test_error_rendering.jl")
     end
 
-    @testset "convertions" begin
+    @testset "conversions" begin
         include("test_converter.jl")
+    end
+
+    @testset "display" begin
+        include("test_display.jl")
     end
 
     @testset "Formatters" begin
