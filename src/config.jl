@@ -62,18 +62,3 @@ get_chunk_defaults() = rcParams[:chunk_defaults]
 Restore Weave.jl default chunk options.
 """
 restore_chunk_defaults!() = rcParams[:chunk_defaults] = defaultParams[:chunk_defaults]
-
-"""Combine format specific and common options from document header"""
-function combine_args(args, doctype)
-    common = Dict()
-    specific = Dict()
-    for key in keys(args)
-        if key in keys(Weave.formats)
-            specific[key] = args[key]
-        else
-            common[key] = args[key]
-        end
-    end
-    haskey(specific, doctype) && merge!(common, specific[doctype])
-    common
-end

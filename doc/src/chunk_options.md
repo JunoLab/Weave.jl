@@ -8,6 +8,7 @@ Options are separated using ";" and need to be valid Julia expressions. Example:
 
 Weave currently supports the following chunk options with the following defaults:
 
+
 ## Options for code
 
 - `echo = true`: Echo the code in the output document. If `false` the source code will be hidden.
@@ -20,6 +21,7 @@ Weave currently supports the following chunk options with the following defaults
 - `cache = false`: Cache results, depending on `cache` parameter on `weave` function.
 - `hold = false`: Hold all results until the end of the chunk.
 - `tangle = true`: Set tangle to `false` to exclude chunk from tangled code.
+
 
 ## Options for figures
 
@@ -42,7 +44,7 @@ You can set the default chunk options (and `weave` arguments) for a document usi
 ```yaml
 ---
 options:
-      out_width : 50%
+  out_width : 50%
 ---
 ```
 

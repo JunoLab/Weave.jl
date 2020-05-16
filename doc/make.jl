@@ -12,6 +12,7 @@ makedocs(
         "getting_started.md",
         "usage.md",
         "publish.md",
+        "header.md",
         "chunk_options.md",
         "notebooks.md",
         "function_index.md",

@@ -12,7 +12,7 @@ Some markdown with inline stuff and `j code`
 
 """
 
-ms = collect(eachmatch(Weave.INLINE_REGEX, doc))
+ms = collect(eachmatch(Weave.INLINE_REGEXES, doc))
 @test ms[1][2] == "println(\"Something\")"
 @test ms[2][1] == "code"
 @test ms[3][1] == "show(\"is\")"

@@ -1,6 +1,5 @@
-
 """
-`pandoc2html(formatted::AbstractString, doc::WeaveDoc)`
+    pandoc2html(formatted::AbstractString, doc::WeaveDoc)
 
 Convert output from pandoc markdown to html using Weave.jl template
 """
@@ -38,10 +37,6 @@ function pandoc2html(
     html = ""
     outname = basename(outname)
 
-    open("temp.md", "w") do io
-        println(io, formatted)
-    end
-
     try
         cmd = `pandoc -f markdown+raw_html -s --mathjax=""
         $filt $citeproc $pandoc_options
@@ -63,7 +58,7 @@ function pandoc2html(
 end
 
 """
-`pandoc2pdf(formatted::AbstractString, doc::WeaveDoc)`
+    pandoc2pdf(formatted::AbstractString, doc::WeaveDoc)
 
 Convert output from pandoc markdown to pdf using Weave.jl template
 """
@@ -95,7 +90,7 @@ function pandoc2pdf(
         citeproc = []
     end
 
-    @info("Done executing code. Running xelatex")
+    @info "Done executing code. Running xelatex"
     try
         cmd = `pandoc -f markdown+raw_tex -s  --pdf-engine=xelatex --highlight-style=tango
          $filt $citeproc $pandoc_options
@@ -117,7 +112,7 @@ function run_latex(doc::WeaveDoc, outname, latex_cmd = "xelatex")
     old_wd = pwd()
     cd(doc.cwd)
     xname = basename(outname)
-    @info("Weaved code to $outname . Running $latex_cmd") # space before '.' added for link to be clickable in Juno terminal
+    @info "Weaved code to $outname . Running $latex_cmd" # space before '.' added for link to be clickable in Juno terminal
     textmp = mktempdir(".")
     try
         out = read(

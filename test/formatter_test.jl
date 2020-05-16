@@ -51,33 +51,6 @@ doc.template = "templates/mini.tpl"
 rendered = Weave.render_doc("Hello", doc)
 @test rendered == "\nHello\n"
 
-# Test header parsing and stripping
-header = """
----
-title : Test block
-author : Matti Pastell
----
-
-# Actual header
-
-and some text
-
-"""
-
-dchunk = Weave.DocChunk(header, 1, 1)
-h = Weave.parse_header(dchunk)
-h_ref = Dict("author" => "Matti Pastell", "title" => "Test block")
-@test h_ref == h
-
-Weave.strip_header!(dchunk, "md2html")
-h_ref = """
-# Actual header
-
-and some text
-
-"""
-@test dchunk.content[1].content == h_ref
-
 # Test wrapping
 
 cows = repeat("🐄", 100)

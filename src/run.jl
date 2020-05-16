@@ -100,6 +100,8 @@ function run_doc(
             executed = [executed; result_chunks]
         end
 
+        replace_header_inline!(doc, report, mod) # evaluate and replace inline code in header
+
         doc.header_script = report.header_script
         doc.chunks = executed
 
@@ -172,9 +174,7 @@ function run_chunk(chunk::DocChunk, doc::WeaveDoc, report::Report, SandBox::Modu
     return chunk
 end
 
-function run_inline(inline::InlineText, doc::WeaveDoc, report::Report, SandBox::Module)
-    return inline
-end
+run_inline(inline::InlineText, doc::WeaveDoc, report::Report, SandBox::Module) = inline
 
 function run_inline(inline::InlineCode, doc::WeaveDoc, report::Report, SandBox::Module)
     # Make a temporary CodeChunk for running code. Collect results and don't wrap
@@ -237,17 +237,11 @@ function capture_output(expr, SandBox::Module, term, disp, lastline, throw_error
     reader = @async read(rw, String)
     try
         obj = Core.eval(SandBox, expr)
-        if (term || disp) && (typeof(expr) != Expr || expr.head != :toplevel)
-            isnothing(obj) || display(obj)
-            # This shows images and lone variables, result can
-            # Handle last line sepately
-        elseif lastline && !isnothing(obj)
-            (typeof(expr) != Expr || expr.head != :toplevel) && display(obj)
-        end
-    catch E
-        throw_errors && throw(E)
-        display(E)
-        @warn("ERROR: $(typeof(E)) occurred, including output in Weaved document")
+        !isnothing(obj) && ((term || disp) || lastline) && display(obj)
+    catch err
+        throw_errors && throw(err)
+        display(err)
+        @warn "ERROR: $(typeof(err)) occurred, including output in Weaved document"
     finally
         redirect_stdout(oldSTDOUT)
         close(wr)
@@ -485,4 +479,26 @@ function collect_results(chunk::CodeChunk, fmt::CollectResult)
         chunk.figures = [chunk.figures; r.figures]
     end
     return [chunk]
+end
+
+const HEADER_INLINE = Regex("$(HEADER_INLINE_START)(?<code>.+)$(HEADER_INLINE_END)")
+
+replace_header_inline!(doc, report, mod) = _replace_header_inline!(doc, doc.header, report, mod)
+
+function _replace_header_inline!(doc, header, report, mod)
+    replace!(header) do (k,v)
+        return k => v isa Dict ?
+            _replace_header_inline!(doc, v, report, mod) :
+            replace(v, HEADER_INLINE => s -> begin
+                m = match(HEADER_INLINE, s)
+                run_inline_code(m[:code], doc, report, mod)
+            end)
+    end
+    return header
+end
+
+function run_inline_code(s, doc, report, mod)
+    inline = InlineCode(s, 1, 1, 1, :inline)
+    inline = run_inline(inline, doc, report, mod)
+    return strip(inline.output, '"')
 end

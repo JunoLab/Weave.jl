@@ -509,7 +509,7 @@ function formatfigures(chunk, docformat::AsciiDoc)
 end
 
 # Add new supported formats here
-const formats = Dict{AbstractString,Any}(
+const formats = Dict(
     "tex" => tex,
     "texminted" => texminted,
     "pandoc" => pandoc,
