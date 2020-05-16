@@ -36,15 +36,15 @@ The metadata can be "dynamic"; if you have [inline code](@ref) within YAML heade
 The example document below will set `date` metadata dynamically.
 Note that `Date` is available since the chunk is evaluated first.
 ```md
-    ---
-    title : Header Example
-    author : Shuhei Kadowaki
-    date: `j Date(now())`
-    ---
+ ---
+ title : Header Example
+ author : Shuhei Kadowaki
+ date: `j Date(now())`
+ ---
 
-    ```julia; echo = false
-    using Datas
-    ```
+ ```julia; echo = false
+ using Datas
+ ```
 ```
 
 
