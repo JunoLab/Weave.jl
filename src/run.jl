@@ -238,13 +238,11 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
     return results
 end
 
-getstdout() = stdout
-
+# TODO: run in document source path
 function capture_output(expr, SandBox::Module, term, disp, lastline, throw_errors = false)
-    # oldSTDOUT = STDOUT
-    oldSTDOUT = getstdout()
     out = nothing
     obj = nothing
+    old = stdout
     rw, wr = redirect_stdout()
     reader = @async read(rw, String)
     try
@@ -255,12 +253,12 @@ function capture_output(expr, SandBox::Module, term, disp, lastline, throw_error
         display(err)
         @warn "ERROR: $(typeof(err)) occurred, including output in Weaved document"
     finally
-        redirect_stdout(oldSTDOUT)
+        redirect_stdout(old)
         close(wr)
         out = fetch(reader)
         close(rw)
     end
-    out = replace(out, r"\u001b\[.*?m" => "") # Remove ANSI color codes
+    out = replace(out, r"\u001b\[.*?m" => "") # remove ANSI color codes
     return (obj, out)
 end
 
@@ -503,15 +501,15 @@ function _replace_header_inline!(doc, header, report, mod)
             v isa Dict ? _replace_header_inline!(doc, v, report, mod) :
             !isa(v, AbstractString) ? v :
             replace(v, HEADER_INLINE => s -> begin
-                m = match(HEADER_INLINE, s)
-                run_inline_code(m[:code], doc, report, mod)
+                code = replace(s, HEADER_INLINE => s"\g<code>")
+                run_inline_code(code, doc, report, mod)
             end)
     end
     return header
 end
 
-function run_inline_code(s, doc, report, mod)
-    inline = InlineCode(s, 1, 1, 1, :inline)
+function run_inline_code(code, doc, report, mod)
+    inline = InlineCode(code, 1, 1, 1, :inline)
     inline = run_inline(inline, doc, report, mod)
     return strip(inline.output, '"')
 end
