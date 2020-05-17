@@ -182,9 +182,15 @@ end
 
 run_inline(inline::InlineText, doc::WeaveDoc, report::Report, SandBox::Module) = inline
 
+const INLINE_OPTIONS = Dict(
+    :term => false,
+    :hold => true,
+    :wrap => false
+)
+
 function run_inline(inline::InlineCode, doc::WeaveDoc, report::Report, SandBox::Module)
     # Make a temporary CodeChunk for running code. Collect results and don't wrap
-    chunk = CodeChunk(inline.content, 0, 0, "", Dict(:hold => true, :wrap => false))
+    chunk = CodeChunk(inline.content, 0, 0, "", INLINE_OPTIONS)
     options = merge(doc.chunk_defaults, chunk.options)
     merge!(chunk.options, options)
 
