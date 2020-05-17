@@ -80,6 +80,7 @@ options:
     - `highlight_theme`
     - `pandoc_options`
     - `latex_cmd`
+    - `keep_unicode`
 
     See also: [`weave`](@ref)
 

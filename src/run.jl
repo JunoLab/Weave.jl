@@ -26,7 +26,6 @@ Run code chunks and capture output from the parsed document.
   * `:user` caches based on chunk options
   * `:refresh` runs all code chunks and save new cache
 - `throw_errors::Bool = false`: If `false` errors are included in output document and the whole document is executed. If `true` errors are thrown when they occur
-- `latex_keep_unicode::Bool = false`: If `true`, do not convert unicode characters to their respective latex representation. This is especially useful if a font and tex-engine with support for unicode characters are used
 
 !!! note
     Run Weave from terminal and try to avoid weaving from IJulia or ESS; they tend to mess with capturing output.
@@ -42,14 +41,10 @@ function run_doc(
     cache_path::AbstractString = "cache",
     cache::Symbol = :off,
     throw_errors::Bool = false,
-    latex_keep_unicode::Bool = false,
 )
     # cache :all, :user, :off, :refresh
 
     doc.doctype = isnothing(doctype) ? (doctype = detect_doctype(doc.source)) : doctype
-    if haskey(doc.format.formatdict, :keep_unicode)
-        doc.format.formatdict[:keep_unicode] = latex_keep_unicode
-    end
     doc.format = deepcopy(formats[doctype])
 
     doc.cwd = get_cwd(doc, out_path)

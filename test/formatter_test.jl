@@ -85,6 +85,8 @@ mdoc = run_doc(parsed, doctype = "github")
 
 
 # Test disable escaping of unicode
+@testset "escape/unescape unicode characters" begin
+
 content = """
 # Test chunk
 α
@@ -106,15 +108,15 @@ str = """
 α = 10
 ```
 """
+doc = mock_doc(str; doctype = "md2tex")
+doc = Weave.format(doc)
+@test occursin(Weave.uc2tex("α"), doc)
+@test !occursin("α", doc)
 
-let
-    doc = mock_doc(str; doctype = "md2tex")
-    @test occursin(Weave.uc2tex("α"), Weave.format(doc))
-    @test !occursin("α", Weave.format(doc))
-end
+doc = mock_doc(str; doctype = "md2tex")
+doc.format.formatdict[:keep_unicode] = true
+doc = Weave.format(doc)
+@test occursin("α", doc)
+@test !occursin(Weave.uc2tex("α"), doc)
 
-let
-    doc = mock_doc(str; doctype = "md2tex", latex_keep_unicode = true)
-    @test occursin("α", Weave.format(doc))
-    @test !occursin(Weave.uc2tex("α"), Weave.format(doc))
 end

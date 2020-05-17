@@ -92,7 +92,7 @@ Weave an input document to output file.
 - `highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing`: Theme used for syntax highlighting (defaults to `Highlights.Themes.DefaultTheme`)
 - `pandoc_options::Vector{<:AbstractString} = String[]`: `String`s of options to pass to pandoc for `pandoc2html` and `pandoc2pdf` formats, e.g. `["--toc", "-N"]`
 - `latex_cmd::AbstractString = "xelatex"`: The command used to make PDF file from .tex
-- `latex_keep_unicode::Bool = false`: If `true`, do not convert unicode characters to their respective latex representation. This is especially useful if a font and tex-engine with support for unicode characters are used
+- `keep_unicode::Bool = false`: If `true`, do not convert unicode characters to their respective latex representation. This is especially useful if a font and tex-engine with support for unicode characters are used
 
 !!! note
     Run Weave from terminal and try to avoid weaving from IJulia or ESS; they tend to mess with capturing output.
@@ -114,7 +114,7 @@ function weave(
     highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing,
     pandoc_options::Vector{<:AbstractString} = String[],
     latex_cmd::AbstractString = "xelatex",
-    latex_keep_unicode::Bool = false,
+    keep_unicode::Bool = false,
 )
     doc = WeaveDoc(source, informat)
 
@@ -144,7 +144,6 @@ function weave(
         cache_path = get(weave_options, "cache_path", cache_path)
         cache = Symbol(get(weave_options, "cache", cache))
         throw_errors = get(weave_options, "throw_errors", throw_errors)
-        latex_keep_unicode = get(weave_options, "latex_keep_unicode", latex_keep_unicode)
     end
 
     doc = run_doc(
@@ -158,7 +157,6 @@ function weave(
         cache_path = cache_path,
         cache = cache,
         throw_errors = throw_errors,
-        latex_keep_unicode = latex_keep_unicode,
     )
 
     # format document
@@ -180,12 +178,14 @@ function weave(
         highlight_theme = get(weave_options, "highlight_theme", highlight_theme)
         pandoc_options = get(weave_options, "pandoc_options", pandoc_options)
         latex_cmd = get(weave_options, "latex_cmd", latex_cmd)
+        keep_unicode = get(weave_options, "keep_unicode", keep_unicode)
     end
 
     isnothing(template) || (doc.template = template)
     isnothing(highlight_theme) || (doc.highlight_theme = highlight_theme)
     # isnothing(theme) || (doc.theme = theme) # Reserved for themes
     isnothing(css) || (doc.css = css)
+    get!(doc.format.formatdict, :keep_unicode, keep_unicode)
     formatted = format(doc)
 
     outname = get_outname(out_path, doc)
