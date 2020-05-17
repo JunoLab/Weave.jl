@@ -33,27 +33,7 @@ render_doc(formatted, doc) = render_doc(formatted, doc, doc.format)
 
 render_doc(formatted, doc, format) = formatted
 
-function highlight(
-    mime::MIME,
-    output,
-    lexer,
-    theme = Highlights.Themes.DefaultTheme,
-)
-    return sprint((io, x) -> Highlights.highlight(io, mime, x, lexer, theme), output)
-end
-
-function stylesheet(m::MIME, theme)
-    return sprint((io, x) -> Highlights.stylesheet(io, m, x), theme)
-end
-
 function render_doc(formatted, doc, format::JMarkdown2HTML)
-    css = stylesheet(MIME("text/html"), doc.highlight_theme)
-    path, wsource = splitdir(abspath(doc.source))
-    wversion, wdate = weave_info()
-
-    theme_path = isempty(doc.css) ? normpath(TEMPLATE_DIR, "skeleton_css.css") : doc.css
-    theme_css = read(theme_path, String)
-
     template = if isa(doc.template, Mustache.MustacheTokens)
         doc.template
     else
@@ -61,13 +41,21 @@ function render_doc(formatted, doc, format::JMarkdown2HTML)
         Mustache.template_from_file(template_path)
     end
 
+    themepath = isempty(doc.css) ? normpath(TEMPLATE_DIR, "skeleton_css.css") : doc.css
+    themecss = read(themepath, String)
+
+    highlightcss = stylesheet(MIME("text/html"), doc.highlight_theme)
+
+    _, source = splitdir(abspath(doc.source))
+    wversion, wdate = weave_info()
+
     return Mustache.render(
         template;
-        themecss = theme_css,
-        highlightcss = css,
         body = formatted,
+        themecss = themecss,
+        highlightcss = highlightcss,
         header_script = doc.header_script,
-        source = wsource,
+        source = source,
         wversion = wversion,
         wdate = wdate,
         [Pair(Symbol(k), v) for (k, v) in doc.header]...,
@@ -75,15 +63,14 @@ function render_doc(formatted, doc, format::JMarkdown2HTML)
 end
 
 function render_doc(formatted, doc, format::JMarkdown2tex)
-    highlight = stylesheet(MIME("text/latex"), doc.highlight_theme)
-    path, wsource = splitdir(abspath(doc.source))
-
     template = if isa(doc.template, Mustache.MustacheTokens)
         doc.template
     else
         template_path = isempty(doc.template) ? normpath(TEMPLATE_DIR, "julia_tex.tpl") : doc.template
         Mustache.template_from_file(template_path)
     end
+
+    highlight = stylesheet(MIME("text/latex"), doc.highlight_theme)
 
     return Mustache.render(
         template;
@@ -92,6 +79,8 @@ function render_doc(formatted, doc, format::JMarkdown2tex)
         [Pair(Symbol(k), v) for (k, v) in doc.header]...,
     )
 end
+
+stylesheet(m::MIME, theme) = sprint((io, x) -> Highlights.stylesheet(io, m, x), theme)
 
 const WEAVE_VERSION = try
     'v' * Pkg.TOML.parsefile(normpath(PKG_DIR, "Project.toml"))["version"]
@@ -377,6 +366,15 @@ function format_termchunk(chunk, formatdict, docformat::JMarkdown2tex)
         result = ""
     end
     return result
+end
+
+function highlight(
+    mime::MIME,
+    output,
+    lexer,
+    theme = Highlights.Themes.DefaultTheme,
+)
+    return sprint((io, x) -> Highlights.highlight(io, mime, x, lexer, theme), output)
 end
 
 indent(text, nindent) = join(map(x -> string(repeat(' ', nindent), x), split(text, '\n')), '\n')
