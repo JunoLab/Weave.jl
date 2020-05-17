@@ -132,7 +132,7 @@ function weave(
                 if out_path == ":doc" || out_path == ":pwd"
                     Symbol(out_path)
                 else
-                    joinpath(dirname(source), out_path)
+                    normpath(dirname(source), out_path)
                 end
             end
         end
@@ -145,10 +145,13 @@ function weave(
         throw_errors = get(weave_options, "throw_errors", throw_errors)
         if haskey(weave_options, "template")
             template = weave_options["template"]
-            template isa AbstractString && (template = joinpath(dirname(source), template))
+            template isa AbstractString && (template = normpath(dirname(source), template))
+        end
+        if haskey(weave_options, "css")
+            css = weave_options["css"]
+            css isa AbstractString && (css = normpath(dirname(source), css))
         end
         highlight_theme = get(weave_options, "highlight_theme", highlight_theme)
-        css = get(weave_options, "css", css)
         pandoc_options = get(weave_options, "pandoc_options", pandoc_options)
         latex_cmd = get(weave_options, "latex_cmd", latex_cmd)
         latex_keep_unicode = get(weave_options, "latex_cmd", latex_keep_unicode)
