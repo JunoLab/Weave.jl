@@ -1,9 +1,11 @@
 using Documenter, Weave
 
+CI_FLG = get(ENV, "CI", nothing) == "true"
+
 makedocs(
     modules = [Weave],
     format = Documenter.HTML(
-        prettyurls = get(ENV, "CI", nothing) == "true",
+        prettyurls = CI_FLG,
         canonical = "http://weavejl.mpastell.com/stable/",
     ),
     sitename = "Weave.jl",
@@ -19,7 +21,7 @@ makedocs(
     ],
 )
 
-get(ENV, "CI", false) && include("make_examples.jl")
+CI_FLG && include("make_examples.jl")
 
 deploydocs(
     repo = "github.com/JunoLab/Weave.jl.git",
