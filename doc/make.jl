@@ -19,7 +19,7 @@ makedocs(
     ],
 )
 
-include("make_examples.jl")
+get(ENV, "CI", false) && include("make_examples.jl")
 
 deploydocs(
     repo = "github.com/JunoLab/Weave.jl.git",
