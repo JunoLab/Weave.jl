@@ -71,6 +71,17 @@ options:
     - configurations specified within the YAML header have higher precedence than those specified via `weave` keyword arguments
     - chunk options specified within each chunk have higher precedence than the global global chunk options specified within the YAML header
 
+!!! warning
+    As opposed to metadata, _most_ of those configuration options can't be given dynamically (i.e. can't be via inline code),
+    since they are needed for evaluation of chunks themselves.
+    But some configuration options that are needed "formatting" document can still be given dynamically:
+    - `template`
+    - `css`
+    - `highlight_theme`
+    - `pandoc_options`
+    - `latex_cmd`
+
+    See also: [`weave`](@ref)
 
 ## Format Specific Options
 

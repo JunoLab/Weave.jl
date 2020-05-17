@@ -1,12 +1,11 @@
 using Mustache, Highlights, .WeaveMarkdown, Markdown, Dates, Pkg
 using REPL.REPLCompletions: latex_symbols
 
-function format(doc::WeaveDoc)
-    formatted = String[]
-    docformat = doc.format
+function format(doc)
+    format = doc.format
 
     # Complete format dictionaries with defaults
-    formatdict = docformat.formatdict
+    formatdict = format.formatdict
     get!(formatdict, :termstart, formatdict[:codestart])
     get!(formatdict, :termend, formatdict[:codeend])
     get!(formatdict, :out_width, nothing)
@@ -14,17 +13,18 @@ function format(doc::WeaveDoc)
     get!(formatdict, :fig_pos, nothing)
     get!(formatdict, :fig_env, nothing)
 
-    docformat.formatdict[:cwd] = doc.cwd # pass wd to figure formatters
-    docformat.formatdict[:theme] = doc.highlight_theme
+    formatdict[:cwd] = doc.cwd # pass wd to figure formatters
+    formatdict[:theme] = doc.highlight_theme
 
     restore_header!(doc)
 
+    formatted = String[]
     for chunk in copy(doc.chunks)
-        result = format_chunk(chunk, formatdict, docformat)
+        result = format_chunk(chunk, formatdict, format)
         push!(formatted, result)
     end
-
     formatted = join(formatted, "\n")
+
     # Render using a template if needed
     return render_doc(formatted, doc)
 end

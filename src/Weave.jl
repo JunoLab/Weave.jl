@@ -88,8 +88,8 @@ Weave an input document to output file.
   * `:refresh` runs all code chunks and save new cache
 - `throw_errors::Bool = false`: If `false` errors are included in output document and the whole document is executed. If `true` errors are thrown when they occur
 - `template::Union{Nothing,AbstractString,Mustache.MustacheTokens} = nothing`: Template (file path) or `Mustache.MustacheTokens`s for `md2html` or `md2tex` formats
-- `highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing`: Theme used for syntax highlighting (defaults to `Highlights.Themes.DefaultTheme`)
 - `css::Union{Nothing,AbstractString} = nothing`: Path of a CSS file used for md2html format
+- `highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing`: Theme used for syntax highlighting (defaults to `Highlights.Themes.DefaultTheme`)
 - `pandoc_options::Vector{<:AbstractString} = String[]`: `String`s of options to pass to pandoc for `pandoc2html` and `pandoc2pdf` formats, e.g. `["--toc", "-N"]`
 - `latex_cmd::AbstractString = "xelatex"`: The command used to make PDF file from .tex
 - `latex_keep_unicode::Bool = false`: If `true`, do not convert unicode characters to their respective latex representation. This is especially useful if a font and tex-engine with support for unicode characters are used
@@ -110,18 +110,19 @@ function weave(
     cache::Symbol = :off,
     throw_errors::Bool = false,
     template::Union{Nothing,AbstractString,Mustache.MustacheTokens} = nothing,
-    highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing,
     css::Union{Nothing,AbstractString} = nothing,
+    highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing,
     pandoc_options::Vector{<:AbstractString} = String[],
     latex_cmd::AbstractString = "xelatex",
     latex_keep_unicode::Bool = false,
 )
     doc = WeaveDoc(source, informat)
 
-    # overwrites given options with header options, which have more precedence
-    # NOTE:
-    # - support format specific option specification
-    # - fix paths relative to `source`
+    # run document
+    # ------------
+
+    # overwrites options with those specified in header, that are needed for running document
+    # NOTE: these YAML options can NOT be given dynamically
     weave_options = get(doc.header, WEAVE_OPTION_NAME, Dict())
     if !isempty(weave_options)
         doctype = get(weave_options, "doctype", doctype)
@@ -132,7 +133,7 @@ function weave(
                 if out_path == ":doc" || out_path == ":pwd"
                     Symbol(out_path)
                 else
-                    normpath(dirname(source), out_path)
+                    normpath(dirname(source), out_path) # resolve relative to this document
                 end
             end
         end
@@ -143,27 +144,11 @@ function weave(
         cache_path = get(weave_options, "cache_path", cache_path)
         cache = Symbol(get(weave_options, "cache", cache))
         throw_errors = get(weave_options, "throw_errors", throw_errors)
-        if haskey(weave_options, "template")
-            template = weave_options["template"]
-            template isa AbstractString && (template = normpath(dirname(source), template))
-        end
-        if haskey(weave_options, "css")
-            css = weave_options["css"]
-            css isa AbstractString && (css = normpath(dirname(source), css))
-        end
-        highlight_theme = get(weave_options, "highlight_theme", highlight_theme)
-        pandoc_options = get(weave_options, "pandoc_options", pandoc_options)
-        latex_cmd = get(weave_options, "latex_cmd", latex_cmd)
-        latex_keep_unicode = get(weave_options, "latex_cmd", latex_keep_unicode)
+        latex_keep_unicode = get(weave_options, "latex_keep_unicode", latex_keep_unicode)
     end
 
-    isnothing(template) || (doc.template = template)
-    isnothing(highlight_theme) || (doc.highlight_theme = highlight_theme)
-    # isnothing(theme) || (doc.theme = theme) # Reserved for themes
-    isnothing(css) || (doc.css = css)
-
     doc = run_doc(
-        doc,
+        doc;
         doctype = doctype,
         mod = mod,
         out_path = out_path,
@@ -176,13 +161,38 @@ function weave(
         latex_keep_unicode = latex_keep_unicode,
     )
 
+    # format document
+    # ---------------
+
+    # overwrites options with those specified in header, that are needed for formatting document
+    # NOTE: these YAML options can be given dynamically
+    if !isempty(weave_options)
+        if haskey(weave_options, "template")
+            template = weave_options["template"]
+             # resolve relative to this document
+            template isa AbstractString && (template = normpath(dirname(source), template))
+        end
+        if haskey(weave_options, "css")
+            css = weave_options["css"]
+             # resolve relative to this document
+            css isa AbstractString && (css = normpath(dirname(source), css))
+        end
+        highlight_theme = get(weave_options, "highlight_theme", highlight_theme)
+        pandoc_options = get(weave_options, "pandoc_options", pandoc_options)
+        latex_cmd = get(weave_options, "latex_cmd", latex_cmd)
+    end
+
+    isnothing(template) || (doc.template = template)
+    isnothing(highlight_theme) || (doc.highlight_theme = highlight_theme)
+    # isnothing(theme) || (doc.theme = theme) # Reserved for themes
+    isnothing(css) || (doc.css = css)
     formatted = format(doc)
 
     outname = get_outname(out_path, doc)
 
     open(io->write(io,formatted), outname, "w")
 
-    # Special for that need external programs
+    # document generation via external programs
     doctype = doc.doctype
     if doctype == "pandoc2html"
         mdname = outname
