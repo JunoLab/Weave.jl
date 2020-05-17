@@ -89,15 +89,15 @@ content = """
 # Test chunk
 α
 """
+chunk = Weave.DocChunk(content, 1, 1)
+fmt = deepcopy(Weave.formats["md2tex"])
+fmtdict = fmt.formatdict
 
-dchunk = Weave.DocChunk(content, 1, 1)
-
-pformat = Weave.formats["md2tex"]
-
-f = Weave.format_chunk(dchunk, pformat.formatdict, pformat)
+f = Weave.format_chunk(chunk, fmtdict, fmt)
 @test f == "\\section{Test chunk}\n\\ensuremath{\\alpha}\n\n"
-pformat.formatdict[:keep_unicode] = true
-f = Weave.format_chunk(dchunk, pformat.formatdict, pformat)
+
+fmtdict[:keep_unicode] = true
+f = Weave.format_chunk(chunk, fmtdict, fmt)
 @test f == "\\section{Test chunk}\nα\n\n"
 
 

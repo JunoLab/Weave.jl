@@ -47,11 +47,10 @@ function run_doc(
     # cache :all, :user, :off, :refresh
 
     doc.doctype = isnothing(doctype) ? (doctype = detect_doctype(doc.source)) : doctype
-    doc.format = formats[doctype]
-
     if haskey(doc.format.formatdict, :keep_unicode)
         doc.format.formatdict[:keep_unicode] = latex_keep_unicode
     end
+    doc.format = deepcopy(formats[doctype])
 
     doc.cwd = get_cwd(doc, out_path)
     isdir(doc.cwd) || mkpath(doc.cwd)
