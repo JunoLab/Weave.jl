@@ -17,6 +17,14 @@ function WeaveDoc(source, informat = nothing)
             end
         end
     end
+    if haskey(header, WEAVE_OPTION_NAME_DEPRECATED)
+        @warn "Weave: `options` key is deprecated. Use `weave_options` key instead."
+        for key in keys(chunk_defaults)
+            if (val = get(header[WEAVE_OPTION_NAME_DEPRECATED], string(key), nothing)) !== nothing
+                chunk_defaults[key] = val
+            end
+        end
+    end
 
     return WeaveDoc(
         source,

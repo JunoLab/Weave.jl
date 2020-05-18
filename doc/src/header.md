@@ -59,7 +59,7 @@ The example below sets `out_path` and `doctype` options and overwrites `term` an
 title : Header Example
 author : Shuhei Kadowaki
 date: 16th May 2020
-options:
+weave_options:
   out_path: relative/path/to/this/document
   doctype: github
   term: true
@@ -91,7 +91,7 @@ The header configurations can be format specific.
 Here is how to set different `out_path` for `md2html` and `md2pdf` and set `fig_ext` globally:
 ```yaml
 ---
-options:
+weave_options:
   md2html:
     out_path : html
   md2pdf:

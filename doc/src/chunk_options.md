@@ -1,4 +1,4 @@
-# Chunk options
+# Chunk Options
 
 I've mostly followed [Knitr](http://yihui.name/knitr/options)'s naming for chunk options, but not all options are implemented.
 
@@ -9,7 +9,7 @@ Options are separated using ";" and need to be valid Julia expressions. Example:
 Weave currently supports the following chunk options with the following defaults:
 
 
-## Options for code
+## Options for Code
 
 - `echo = true`: Echo the code in the output document. If `false` the source code will be hidden.
 - `results = "markup"`: The output format of the printed results. `"markup"` for literal block, `"hidden"` for hidden results, or anything else for raw output (I tend to use `"tex"` for Latex and `"rst"` for rest). Raw output is useful if you want to e.g. create tables from code chunks.
@@ -23,7 +23,7 @@ Weave currently supports the following chunk options with the following defaults
 - `tangle = true`: Set tangle to `false` to exclude chunk from tangled code.
 
 
-## Options for figures
+## Options for Figures
 
 - `fig_width = 6`: Figure width passed to plotting library.
 - `fig_height = 4`: Figure height passed to plotting library.
@@ -37,13 +37,14 @@ Weave currently supports the following chunk options with the following defaults
 - `fig_env = "figure"`: Figure environment in Latex.
 
 
-## Set default chunk options
+## Set Default Chunk Options
 
-You can set the default chunk options (and `weave` arguments) for a document using the YAML header `options` field. E.g. to set the default `out_width` of all figures you can use:
+You can set the default chunk options (and `weave` arguments) for a document using `weave_options` key in YAML [Header Configuration](@ref).
+E.g. to set the default `out_width` of all figures you can use:
 
 ```yaml
 ---
-options:
+weave_options:
   out_width : 50%
 ---
 ```

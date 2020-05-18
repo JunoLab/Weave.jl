@@ -1,6 +1,6 @@
 ---
-options :
-  out_path : gadfly
+weave_options:
+  out_path: gadfly
 ---
 
 <<fig_cap="sin(x) function."; label="sin_fun"; fig_pos="ht">>=
