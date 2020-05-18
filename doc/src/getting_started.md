@@ -5,10 +5,8 @@ The best way to get started using Weave.jl is to look at the example input and
 output documents. Examples for different formats are included in the packages
 [`examples`](https://github.com/JunoLab/Weave.jl/tree/master/examples) directory.
 
-First have a look at source document using markdown code chunks and
-[Plots.jl](https://github.com/JuliaPlots/Plots.jl) for figures:
-[FIR_design.jmd](../examples/FIR_design.jmd) and then see the
-output in different formats:
+First have a look at source document using markdown code chunks and [Plots.jl](https://github.com/JuliaPlots/Plots.jl) for figures:
+[FIR_design.jmd](../examples/FIR_design.jmd) (its path is bound to `Weave.SAMPLE_JMD_DOC`) and then see the output in different formats:
 
 - HTML: [`FIR_design.html`](../examples/FIR_design.html)
 - PDF: [`FIR_design.pdf`](../examples/FIR_design.pdf)
@@ -29,23 +27,14 @@ Weave the files to your working directory:
 using Weave
 
 # Julia markdown to HTML
-weave(
-  joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd");
-  doctype = "md2html",
-  out_path = :pwd
-)
+weave(Weave.SAMPLE_JMD_DOC; doctype = "md2html", out_path = :pwd)
 
 # Julia markdown to PDF
-weave(
-  joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd");
-  doctype = "md2pdf",
-  out_path = :pwd
-)
+weave(Weave.SAMPLE_JMD_DOC; doctype = "md2pdf", out_path = :pwd)
 
 # Julia markdown to Pandoc markdown
-weave(
-  joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd");
-  doctype = "pandoc",
-  out_path = :pwd
-)
+weave(Weave.SAMPLE_JMD_DOC; doctype = "pandoc", out_path = :pwd)
 ```
+
+!!! tips
+    `Weave.SAMPLE_JMD_DOC` is the path of [FIR_design.jmd](../examples/FIR_design.jmd).

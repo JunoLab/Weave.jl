@@ -8,13 +8,13 @@ syntax and use [`weave`](@ref) function to execute to document to capture result
 Weave document with markup and julia code using `Plots.jl` for plots,
 `out_path = :pwd` makes the results appear in the current working directory.
 
-> A prepared example
+> A prepared example: [`Weave.SAMPLE_JL_DOC`](../examples/FIR_design.jmd)
 
 ```julia
 # First add depencies for the example
 using Pkg; Pkg.add.(["Plots", "DSP"])
 using Weave
-weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"), out_path=:pwd)
+weave(Weave.SAMPLE_JL_DOC; out_path=:pwd)
 ```
 
 ```@docs

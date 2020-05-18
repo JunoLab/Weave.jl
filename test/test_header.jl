@@ -5,7 +5,7 @@ using Weave: separate_header_text, parse_header, specific_options!
 @testset "header separation" begin
 
 header_body = """
-options:
+weave_options:
     foo: bar
 """
 
@@ -79,7 +79,7 @@ end
 
 header = parse_header("""
 ---
-options:
+weave_options:
     out_path: reports # should be overwrote
     md2html:
         out_path : html/

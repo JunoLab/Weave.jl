@@ -98,6 +98,10 @@ function restore_header!(doc)
 
     # only strips Weave headers
     delete!(doc.header, WEAVE_OPTION_NAME)
+    if haskey(doc.header, WEAVE_OPTION_NAME_DEPRECATED)
+        @warn "Weave: `options` key is deprecated. Use `weave_options` key instead."
+        delete!(doc.header, WEAVE_OPTION_NAME_DEPRECATED)
+    end
     isempty(doc.header) && return
 
     # restore remained headers as `DocChunk`
