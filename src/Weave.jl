@@ -8,6 +8,11 @@ const TEMPLATE_DIR = normpath(PKG_DIR, "templates")
 const WEAVE_OPTION_NAME = "weave_options"
 const WEAVE_OPTION_NAME_DEPRECATED = "options" # remove this when tagging v0.11
 
+# keeps paths of sample documents for easy try
+const SAMPLE_JMD_DOC = normpath(PKG_DIR, "examples", "FIR_design.jmd")
+const  SAMPLE_JL_DOC = normpath(PKG_DIR, "examples", "FIR_design.jl")
+
+
 function __init__()
     @require Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80" include("plots.jl")
     @require Gadfly = "c91e804a-d5a3-530f-b6f0-dfbca275c004" include("gadfly.jl")

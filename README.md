@@ -40,24 +40,25 @@ using Pkg
 Pkg.add("Weave")
 ```
 
+
 ## Usage
 
-Run from julia using Plots.jl for plots:
-
 ```julia
-# First add depencies for the example
-using Pkg; Pkg.add.(["Plots", "DSP"])
-
-# Use Weave
 using Weave
-weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"), out_path=:pwd)
+
+# add depencies for the example
+using Pkg; Pkg.add(["Plots", "DSP"])
+weave(Weave.SAMPLE_JMD_DOC, out_path = :pwd)
 ```
 
 If you have LaTeX installed you can also weave directly to pdf.
 
 ```julia
-weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"), out_path = :pwd, doctype = "md2pdf")
+weave(Weave.SAMPLE_JMD_DOC), out_path = :pwd, doctype = "md2pdf")
 ```
+
+NOTE: `Weave.SAMPLE_JMD_DOC` is the path of [this document](./examples/FIR_design.jmd).
+
 
 ## Documentation
 
@@ -65,6 +66,7 @@ Documenter.jl with MKDocs generated documentation:
 
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](http://weavejl.mpastell.com/stable/)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](http://weavejl.mpastell.com/dev/)
+
 
 ## Editor support
 
@@ -75,15 +77,18 @@ html and pdf output.
 The [Julia extension for Visual Studio Code](https://www.julia-vscode.org/)
 adds Weave support to [Visual Studio Code](https://code.visualstudio.com/).
 
+
 ## Contributing
 
 You can contribute to this package by opening issues on GitHub or implementing things yourself and making a pull request.
 We'd also appreciate more example documents written using Weave.
 
+
 ## Contributors
 
 You can see the list of contributors on GitHub: https://github.com/JunoLab/Weave.jl/graphs/contributors .
 Thanks for the important additions, fixes and comments.
+
 
 ## Example projects using Weave
 

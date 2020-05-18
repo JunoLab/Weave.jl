@@ -16,15 +16,18 @@ date: 15th December 2016
 ```
 
 Here are sample input and outputs:
-- input (Julia markdown format): [`FIR_design_plots.jl`](../examples/FIR_design_plots.jl)
+- input (Julia markdown format): [`FIR_design_plots.jl`](../examples/FIR_design_plots.jl) (its path is bound to `Weave.SAMPLE_JL_DOC`)
 - HTML output: [`FIR_design_plots.html`](../examples/FIR_design_plots.html)
 -  PDF output: [`FIR_design_plots.pdf`](../examples/FIR_design_plots.pdf)
 
 They are generated as follows:
 ```julia
-weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design_plots.jl")) # default to md2html output format
-weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design_plots.jl"), doctype = "md2pdf")
+weave(Weave.SAMPLE_JL_DOC)) # default to md2html output format
+weave(Weave.SAMPLE_JL_DOC; doctype = "md2pdf")
 ```
+
+!!! tips
+    `Weave.SAMPLE_JL_DOC` is the path of [FIR_design.jl](../examples/FIR_design.jl).
 
 !!! note
     `"md2html"` and `"md2pdf"` assume Julia markdown format as an input,
