@@ -1,19 +1,22 @@
-
-# Release notes for Weave.jl
+## Release notes for Weave.jl
 
 ### v0.4.1
-* Disable precompilation due to warnings from depencies
+
+* Disable precompilation due to warnings from dependencies
 * Fix deprecation warnings for Julia 0.6
 * Fix PyPlot for Julia 0.6
 * Support citations in `pandoc2html` and `pandoc2pdf` output
 * Fix extra whitespace when `term=true`
 * Fix mime type priority for `md2html`
 
+
 ### V0.4.0
+
 * Support passing arguments to document using `args` option
 * Add `include_weave` for including code from Weave documents
 * Add support for inline code chunks
 * Remove generated figure files when publishing to html and pdf
+
 
 ### v0.3.0
 
@@ -25,10 +28,12 @@
   * Fix extra whitespace from code chunk output
 * Improved GR and GLVisualize support with Plots
 
+
 ### v0.2.2
 
 * Add IJulia notebook as input format
 * Add `convert_doc` method to convert between input formats
+
 
 ### v0.2.1
 
@@ -36,6 +41,7 @@
 * Add support for Plots.jl plotly and plotlyjs backends for including javascipt
   output in published HTML documents.
 * Fix semicolons for `term=true`
+
 
 ### v0.2
 
@@ -57,6 +63,7 @@
   - Fix parsing of lone variables from chunks
   - Fix error with md2html formatter and dates #38
 
+
 ### v0.1.2
 
 27th April 2016
@@ -65,6 +72,7 @@
 * Fix md2html and md2pdf on Windows
 * Improve doctype autodetection
 * Improved regex for parsing markdown input format
+
 
 ### v0.1.1
 
@@ -80,6 +88,7 @@
 * Added support for figure width in Pandoc
 * Autodetect input and output formats based on filename
 * Allow `out_path` be a file or directory.
+
 
 ### v0.1.0
 
@@ -97,6 +106,7 @@
     - Chunks are now represented with their own type. Allows multiple dispatch
       and easier implementation of new chunks.
 
+
 ### 0.0.4
 
 4th January 2015
@@ -105,6 +115,7 @@
 * Default plotting library changed to Gadfly
 * New option: `out_path` for controlling where weaved documents and figures are saved
 * Command line script `bin/weave.jl` for calling weave from command line
+
 
 ### 0.0.3
 
@@ -121,8 +132,8 @@
 
 7th December 2014
 
-* First release
-    * Noweb and markdown input formats
-    * Support for Gadfly, Winston and PyPlot figures
-    * Term and script chunks
-    * Support for markdown, tex and rst output
+First release:
+- Noweb and markdown input formats
+- Support for Gadfly, Winston and PyPlot figures
+- Term and script chunks
+- Support for markdown, tex and rst output
