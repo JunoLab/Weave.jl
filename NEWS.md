@@ -1,5 +1,35 @@
 ## Release notes for Weave.jl
 
+### v0.10 - 2020/05/18
+
+improvements:
+- `weave` is now integrated with Juno's progress bar; just call `weave` function inside Juno or use `julia-client: weave-to-html(pdf)` command (#331)
+- document metadata in YAML header can be given dynamically (#329)
+- headers are now striped more gracefully; only Weave.jl related header is stripped when weaving to `github` or `hugo` document (#329, #305)
+- `WeavePlots`/`GadflyPlots` won't be loaded into `Main` module (#322)
+- un`const` bindings in a sandbox module are correctly cleared, helping GC free as much memory usage as possible (#317)
+- keep latex figures even if weaving failed (#302)
+- bunch of documentation improvements (#297, #295)
+- code size in HTML header is now not hardcoded, leading to more readable font size (#281)
+
+bug fixes:
+- display of "big" object is fixed and limited (#311)
+- fix dependencies issues
+
+internal:
+- bunch of internal refactors, code clean up (#330, #327, #325, #321, #320, #319, #318, #313)
+- internal error now doesn't mess up display system (#316)
+- format code base (#312)
+
+breaking change:
+- `options` YAML key is deprecated, use `weave_options` key instead (#334)
+- `set_chunk_defaults` is now renamed to `set_chunk_defaults!` (#323)
+- `restore_chunk_defaults` is now renamed to `restore_chunk_defaults!` (#323)
+
+
+---
+
+
 ### v0.4.1
 
 * Disable precompilation due to warnings from dependencies
