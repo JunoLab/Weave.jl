@@ -18,6 +18,10 @@ If you're viewing the published version have a look at the
 [source](FIR_design_plots.jl) to see the markup.
 
 
+<!-- this setup dependencies, but doesn't appear in the generated document -->
+
+
+
 
 # FIR Filter Design
 
@@ -151,7 +155,7 @@ plot(ws, h_db,
 ~~~~~~~~~~~~~
 
 
-![](figures/FIR_design_4_1.png)\ 
+![](figures/FIR_design_5_1.png)\ 
 
 
 
@@ -165,5 +169,5 @@ plot(ws, h_phase,
 ~~~~~~~~~~~~~
 
 
-![](figures/FIR_design_5_1.png)\ 
+![](figures/FIR_design_6_1.png)\ 
 
