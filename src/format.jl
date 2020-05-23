@@ -1,3 +1,5 @@
+# TODO: reorganize this file into multiple files corresponding to each output format
+
 using Mustache, Highlights, .WeaveMarkdown, Markdown, Dates, Pkg
 using REPL.REPLCompletions: latex_symbols
 
