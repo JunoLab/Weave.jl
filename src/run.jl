@@ -58,6 +58,7 @@ function run_doc(
     # This is needed for latex and should work on all output formats
     @static Sys.iswindows() && (fig_path = replace(fig_path, "\\" => "/"))
 
+    doc.fig_path = fig_path
     set_rc_params(doc, fig_path, fig_ext)
 
     # New sandbox for each document with args exposed
