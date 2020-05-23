@@ -12,7 +12,7 @@ function pandoc2html(
     weavedir = dirname(@__FILE__)
     html_template = joinpath(weavedir, "../templates/pandoc_skeleton.html")
     css_template = joinpath(weavedir, "../templates/pandoc_skeleton.css")
-    css = stylesheet(MIME("text/html"), doc.highlight_theme)
+    highlightcss = stylesheet(MIME("text/html"), doc.highlight_theme)
 
     path, wsource = splitdir(abspath(doc.source))
     wversion, wdate = weave_info()
@@ -30,7 +30,7 @@ function pandoc2html(
     end
 
     # Change path for pandoc
-    old_wd = pwd()
+    cd_back = let d = pwd(); () -> cd(d); end
     cd(doc.cwd)
     html = ""
     outname = basename(outname)
@@ -40,18 +40,18 @@ function pandoc2html(
         $filt $citeproc $pandoc_options
         --template $html_template -H $css_template $self_contained
          -V wversion=$wversion -V wdate=$wdate -V wsource=$wsource
-         -V highlightcss=$css
+         -V highlightcss=$highlightcss
          -V headerscript=$header_script
          -o $outname`
         proc = open(cmd, "r+")
         println(proc.in, formatted)
         close(proc.in)
         proc_output = read(proc.out, String)
-        cd(old_wd)
-    catch e
-        cd(old_wd)
-        @warn("Error converting document to HTML")
-        throw(e)
+    catch
+        @warn "Error converting document to HTML"
+        rethrow() # TODO: just show error content instead of rethrow the err
+    finally
+        cd_back()
     end
 end
 
@@ -73,9 +73,8 @@ function pandoc2pdf(
     outname = basename(outname)
 
     # Change path for pandoc
-    old_wd = pwd()
+    cd_back = let d = pwd(); () -> cd(d); end
     cd(doc.cwd)
-    html = ""
 
     if haskey(doc.header, "bibliography")
         filt = "--filter"
@@ -95,37 +94,30 @@ function pandoc2pdf(
         println(proc.in, formatted)
         close(proc.in)
         proc_output = read(proc.out, String)
-        cd(old_wd)
-    catch e
-        cd(old_wd)
-        @warn("Error converting document to pdf")
-        throw(e)
+    catch
+        @warn "Error converting document to pdf"
+        rethrow()
+    finally
+        cd_back()
     end
 end
 
 function run_latex(doc::WeaveDoc, outname, latex_cmd = "xelatex")
-    old_wd = pwd()
+    cd_back = let d = pwd(); () -> cd(d); end
     cd(doc.cwd)
+
     xname = basename(outname)
     @info "Weaved code to $outname . Running $latex_cmd" # space before '.' added for link to be clickable in Juno terminal
     textmp = mktempdir(".")
     try
-        out = read(
-            `$latex_cmd -shell-escape $xname -aux-directory $textmp -include-directory $(doc.cwd)`,
-            String,
-        )
-        out = read(
-            `$latex_cmd -shell-escape $xname -aux-directory $textmp -include-directory $(doc.cwd)`,
-            String,
-        )
+        cmd = `$latex_cmd -shell-escape $xname -aux-directory $textmp -include-directory $(doc.cwd)`
+        run(cmd); run(cmd) # XXX: is twice enough for every case ?
+    catch
+        @warn "Error converting document to pdf. Try running latex manually"
+        rethrow()
+    finally
         rm(xname)
         rm(textmp, recursive = true)
-        cd(old_wd)
-        return true
-    catch e
-        @warn("Error converting document to pdf. Try running latex manually")
-        cd(old_wd)
-        rm(textmp)
-        return false
+        cd_back()
     end
 end

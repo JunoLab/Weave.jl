@@ -215,8 +215,7 @@ function weave(
         pandoc2pdf(formatted, doc, outname, pandoc_options)
         rm(mdname)
     elseif doctype == "md2pdf"
-        success = run_latex(doc, outname, latex_cmd)
-        success || return
+        run_latex(doc, outname, latex_cmd)
         outname = get_outname(out_path, doc, ext = "pdf")
     end
 
