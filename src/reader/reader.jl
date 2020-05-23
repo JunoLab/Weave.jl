@@ -10,9 +10,9 @@ function WeaveDoc(source, informat = nothing)
 
     # update default chunk options from header
     chunk_defaults = deepcopy(get_chunk_defaults())
-    if haskey(header, WEAVE_OPTION_NAME)
+    if (weave_options = get(header, WEAVE_OPTION_NAME, nothing)) !== nothing
         for key in keys(chunk_defaults)
-            if (val = get(header[WEAVE_OPTION_NAME], string(key), nothing)) !== nothing
+            if (val = get(weave_options, string(key), nothing)) !== nothing
                 chunk_defaults[key] = val
             end
         end
