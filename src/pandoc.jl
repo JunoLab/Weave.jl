@@ -32,7 +32,6 @@ function pandoc2html(
     # Change path for pandoc
     cd_back = let d = pwd(); () -> cd(d); end
     cd(doc.cwd)
-    html = ""
     outname = basename(outname)
 
     try
