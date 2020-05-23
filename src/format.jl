@@ -112,7 +112,7 @@ function ioformat!(io::IOBuffer, out::IOBuffer, fun = WeaveMarkdown.latex)
     end
 end
 
-addspace(op, inline) = (inline.ctype === :line && (op = "\n$op\n"); op)
+addlines(op, inline) = (inline.ctype === :line && (op = "\n$op\n"); op)
 
 function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
     out = IOBuffer()
@@ -122,11 +122,11 @@ function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2tex)
             write(io, inline.content)
         elseif !isempty(inline.rich_output)
             ioformat!(io, out)
-            write(out, addspace(inline.rich_output, inline))
+            write(out, addlines(inline.rich_output, inline))
         elseif !isempty(inline.figures)
             write(io, inline.figures[end], inline)
         elseif !isempty(inline.output)
-            write(io, addspace(inline.output, inline))
+            write(io, addlines(inline.output, inline))
         end
     end
     ioformat!(io, out)
@@ -143,11 +143,11 @@ function format_chunk(chunk::DocChunk, formatdict, docformat::JMarkdown2HTML)
             write(io, inline.content)
         elseif !isempty(inline.rich_output)
             ioformat!(io, out, fun)
-            write(out, addspace(inline.rich_output, inline))
+            write(out, addlines(inline.rich_output, inline))
         elseif !isempty(inline.figures)
             write(io, inline.figures[end])
         elseif !isempty(inline.output)
-            write(io, addspace(inline.output, inline))
+            write(io, addlines(inline.output, inline))
         end
     end
     ioformat!(io, out, fun)
