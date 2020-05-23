@@ -115,7 +115,7 @@ function weave(
     cache::Symbol = :off,
     throw_errors::Bool = false,
     template::Union{Nothing,AbstractString,Mustache.MustacheTokens} = nothing,
-    css::Union{Nothing,AbstractString} = nothing,
+    css::Union{Nothing,AbstractString} = nothing, # TODO: rename to `stylesheet`
     highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing,
     pandoc_options::Vector{<:AbstractString} = String[],
     latex_cmd::AbstractString = "xelatex",
@@ -191,12 +191,8 @@ function weave(
         keep_unicode = get(weave_options, "keep_unicode", keep_unicode)
     end
 
-    isnothing(template) || (doc.template = template)
-    isnothing(highlight_theme) || (doc.highlight_theme = highlight_theme)
-    # isnothing(theme) || (doc.theme = theme) # Reserved for themes
-    isnothing(css) || (doc.css = css)
     get!(doc.format.formatdict, :keep_unicode, keep_unicode)
-    formatted = format(doc)
+    formatted = format(doc, template, highlight_theme; css = css)
 
     outname = get_outname(out_path, doc)
 
@@ -207,7 +203,7 @@ function weave(
     if doctype == "pandoc2html"
         mdname = outname
         outname = get_outname(out_path, doc, ext = "html")
-        pandoc2html(formatted, doc, outname, pandoc_options)
+        pandoc2html(formatted, doc, highlight_theme, outname, pandoc_options)
         rm(mdname)
     elseif doctype == "pandoc2pdf"
         mdname = outname

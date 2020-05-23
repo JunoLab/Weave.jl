@@ -1,7 +1,7 @@
 using Mustache, Highlights, .WeaveMarkdown, Markdown, Dates, Pkg
 using REPL.REPLCompletions: latex_symbols
 
-function format(doc)
+function format(doc, template = nothing, highlight_theme = nothing; css = nothing)
     format = doc.format
 
     # Complete format dictionaries with defaults
@@ -13,46 +13,29 @@ function format(doc)
     get!(formatdict, :fig_pos, nothing)
     get!(formatdict, :fig_env, nothing)
 
-    formatdict[:theme] = doc.highlight_theme
+    formatdict[:theme] = highlight_theme = get_highlight_theme(highlight_theme)
 
     restore_header!(doc)
 
-    formatted = String[]
-    for chunk in copy(doc.chunks)
-        result = format_chunk(chunk, formatdict, format)
-        push!(formatted, result)
+    formatted_lines = map(copy(doc.chunks)) do chunk
+        format_chunk(chunk, formatdict, format)
     end
-    formatted = join(formatted, "\n")
+    formatted = join(formatted_lines, '\n')
 
-    # Render using a template if needed
-    return render_doc(formatted, doc)
+    return format isa JMarkdown2HTML ? render2html(formatted, doc, template, css, highlight_theme) :
+           format isa JMarkdown2tex ? render2tex(formatted, doc, template, highlight_theme) :
+           formatted
 end
 
-render_doc(formatted, doc) = render_doc(formatted, doc, doc.format)
-
-render_doc(formatted, doc, format) = formatted
-
-function render_doc(formatted, doc, format::JMarkdown2HTML)
-    template = if isa(doc.template, Mustache.MustacheTokens)
-        doc.template
-    else
-        template_path = isempty(doc.template) ? normpath(TEMPLATE_DIR, "julia_html.tpl") : doc.template
-        Mustache.template_from_file(template_path)
-    end
-
-    themepath = isempty(doc.css) ? normpath(TEMPLATE_DIR, "skeleton_css.css") : doc.css
-    themecss = read(themepath, String)
-
-    highlightcss = stylesheet(MIME("text/html"), doc.highlight_theme)
-
+function render2html(formatted, doc, template, css, highlight_theme)
     _, source = splitdir(abspath(doc.source))
     wversion, wdate = weave_info()
 
     return Mustache.render(
-        template;
+        get_template(template, false);
         body = formatted,
-        themecss = themecss,
-        highlightcss = highlightcss,
+        themecss = get_stylesheet(css),
+        highlightcss = get_highlight_stylesheet(MIME("text/html"), highlight_theme),
         header_script = doc.header_script,
         source = source,
         wversion = wversion,
@@ -61,25 +44,28 @@ function render_doc(formatted, doc, format::JMarkdown2HTML)
     )
 end
 
-function render_doc(formatted, doc, format::JMarkdown2tex)
-    template = if isa(doc.template, Mustache.MustacheTokens)
-        doc.template
-    else
-        template_path = isempty(doc.template) ? normpath(TEMPLATE_DIR, "julia_tex.tpl") : doc.template
-        Mustache.template_from_file(template_path)
-    end
-
-    highlight = stylesheet(MIME("text/latex"), doc.highlight_theme)
-
+function render2tex(formatted, doc, template, highlight_theme)
     return Mustache.render(
-        template;
+        get_template(template, true);
         body = formatted,
-        highlight = highlight,
+        highlight = get_highlight_stylesheet(MIME("text/latex"), highlight_theme),
         [Pair(Symbol(k), v) for (k, v) in doc.header]...,
     )
 end
 
-stylesheet(m::MIME, theme) = sprint((io, x) -> Highlights.stylesheet(io, m, x), theme)
+get_highlight_theme(::Nothing) = Highlights.Themes.DefaultTheme
+get_highlight_theme(highlight_theme::Type{<:Highlights.AbstractTheme}) = highlight_theme
+
+get_template(::Nothing, tex::Bool = false) =
+    Mustache.template_from_file(normpath(TEMPLATE_DIR, tex ? "julia_tex.tpl" : "julia_html.tpl"))
+get_template(path::AbstractString, tex) = Mustache.template_from_file(path)
+get_template(tpl::Mustache.MustacheTokens, tex) = tpl
+
+get_stylesheet(::Nothing) = get_stylesheet(normpath(TEMPLATE_DIR, "skeleton_css.css"))
+get_stylesheet(path::AbstractString) = read(path, String)
+
+get_highlight_stylesheet(mime, highlight_theme) =
+    sprint((io, x) -> Highlights.stylesheet(io, mime, x), highlight_theme)
 
 const WEAVE_VERSION = try
     'v' * Pkg.TOML.parsefile(normpath(PKG_DIR, "Project.toml"))["version"]

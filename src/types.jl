@@ -12,9 +12,6 @@ mutable struct WeaveDoc
     doctype::String
     header_script::String
     header::Dict
-    template::Union{AbstractString,Mustache.MustacheTokens}
-    css::AbstractString
-    highlight_theme::Type{<:Highlights.AbstractTheme}
     chunk_defaults::Dict{Symbol,Any}
 end
 
