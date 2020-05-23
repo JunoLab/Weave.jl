@@ -16,10 +16,10 @@
   <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
   </script>
 
-  {{{ :highlightcss }}}
+  {{{ :highlight_stylesheet }}}
 
   <style type="text/css">
-  {{{ :themecss }}}
+  {{{ :stylesheet }}}
   </style>
 </HEAD>
 
@@ -38,8 +38,8 @@
         <HR/>
         <div class="footer">
           <p>
-            Published from <a href="{{{:source}}}">{{{:source}}}</a>
-            using <a href="http://github.com/JunoLab/Weave.jl">Weave.jl</a> {{:wversion}} on {{:wdate}}.
+            Published from <a href="{{{:weave_source}}}">{{{:weave_source}}}</a>
+            using <a href="http://github.com/JunoLab/Weave.jl">Weave.jl</a> {{:weave_version}} on {{:weave_date}}.
           </p>
         </div>
       </div>

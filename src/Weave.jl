@@ -192,23 +192,23 @@ function weave(
     end
 
     get!(doc.format.formatdict, :keep_unicode, keep_unicode)
-    formatted = format(doc, template, highlight_theme; css = css)
+    rendered = format(doc, template, highlight_theme; css = css)
 
     outname = get_outname(out_path, doc)
 
-    open(io->write(io,formatted), outname, "w")
+    open(io->write(io,rendered), outname, "w")
 
     # document generation via external programs
     doctype = doc.doctype
     if doctype == "pandoc2html"
         mdname = outname
         outname = get_outname(out_path, doc, ext = "html")
-        pandoc2html(formatted, doc, highlight_theme, outname, pandoc_options)
+        pandoc2html(rendered, doc, highlight_theme, outname, pandoc_options)
         rm(mdname)
     elseif doctype == "pandoc2pdf"
         mdname = outname
         outname = get_outname(out_path, doc, ext = "pdf")
-        pandoc2pdf(formatted, doc, outname, pandoc_options)
+        pandoc2pdf(rendered, doc, outname, pandoc_options)
         rm(mdname)
     elseif doctype == "md2pdf"
         run_latex(doc, outname, latex_cmd)

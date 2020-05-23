@@ -17,37 +17,37 @@ function format(doc, template = nothing, highlight_theme = nothing; css = nothin
 
     restore_header!(doc)
 
-    formatted_lines = map(copy(doc.chunks)) do chunk
+    lines = map(copy(doc.chunks)) do chunk
         format_chunk(chunk, formatdict, format)
     end
-    formatted = join(formatted_lines, '\n')
+    body = join(lines, '\n')
 
-    return format isa JMarkdown2HTML ? render2html(formatted, doc, template, css, highlight_theme) :
-           format isa JMarkdown2tex ? render2tex(formatted, doc, template, highlight_theme) :
-           formatted
+    return format isa JMarkdown2HTML ? render2html(body, doc, template, css, highlight_theme) :
+           format isa JMarkdown2tex ? render2tex(body, doc, template, highlight_theme) :
+           body
 end
 
-function render2html(formatted, doc, template, css, highlight_theme)
-    _, source = splitdir(abspath(doc.source))
-    wversion, wdate = weave_info()
+function render2html(body, doc, template, css, highlight_theme)
+    _, weave_source = splitdir(abspath(doc.source))
+    weave_version, weave_date = weave_info()
 
     return Mustache.render(
         get_template(template, false);
-        body = formatted,
-        themecss = get_stylesheet(css),
-        highlightcss = get_highlight_stylesheet(MIME("text/html"), highlight_theme),
+        body = body,
+        stylesheet = get_stylesheet(css),
+        highlight_stylesheet = get_highlight_stylesheet(MIME("text/html"), highlight_theme),
         header_script = doc.header_script,
-        source = source,
-        wversion = wversion,
-        wdate = wdate,
+        weave_source = weave_source,
+        weave_version = weave_version,
+        weave_date = weave_date,
         [Pair(Symbol(k), v) for (k, v) in doc.header]...,
     )
 end
 
-function render2tex(formatted, doc, template, highlight_theme)
+function render2tex(body, doc, template, highlight_theme)
     return Mustache.render(
         get_template(template, true);
-        body = formatted,
+        body = body,
         highlight = get_highlight_stylesheet(MIME("text/latex"), highlight_theme),
         [Pair(Symbol(k), v) for (k, v) in doc.header]...,
     )
