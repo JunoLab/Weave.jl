@@ -21,6 +21,7 @@ end
     isnothing(::Any) = false
     isnothing(::Nothing) = true
 end
+take2string!(io) = String(take!(io))
 
 """
     list_out_formats()

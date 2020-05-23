@@ -1,5 +1,4 @@
 
-
 <pre class='hljl'>
 <span class='hljl-k'>import</span><span class='hljl-t'> </span><span class='hljl-n'>Base</span><span class='hljl-t'>
 </span><span class='hljl-k'>function</span><span class='hljl-t'> </span><span class='hljl-n'>Base</span><span class='hljl-oB'>.</span><span class='hljl-nf'>show</span><span class='hljl-p'>(</span><span class='hljl-n'>io</span><span class='hljl-oB'>::</span><span class='hljl-n'>IO</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>m</span><span class='hljl-oB'>::</span><span class='hljl-so'>MIME&quot;text/html&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>x</span><span class='hljl-oB'>::</span><span class='hljl-n'>Array</span><span class='hljl-p'>)</span><span class='hljl-t'>
@@ -81,4 +80,3 @@
 
 <div class="markdown"><p><strong>Some Markdown</strong></p>
 </div>
-
