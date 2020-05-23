@@ -1,6 +1,7 @@
 module Weave
 
 using Highlights, Mustache, Requires, Pkg, REPL
+using InteractiveUtils: subtypes
 
 
 # directories
@@ -53,6 +54,16 @@ get_format(doctype::AbstractString) = FORMATS[doctype]
 List supported output formats with its description.
 """
 list_out_formats() = [k => v.description for (k,v) in FORMATS]
+
+"""
+    list_highlight_themes()
+
+List all the available syntax highlight themes, which can be passed to [`weave`](@ref)'s
+  `highlight_theme` keyword argument.
+
+See also: [`weave`](@ref), [Highlights.jl's showcase page](https://juliadocs.github.io/Highlights.jl/latest/demo/themes/)
+"""
+list_highlight_themes() = subtypes(Highlights.AbstractTheme)
 
 """
     tangle(source::AbstractString; kwargs...)
@@ -114,7 +125,10 @@ Weave an input document to output file.
   * `:refresh` runs all code chunks and save new cache
 - `template::Union{Nothing,AbstractString,Mustache.MustacheTokens} = nothing`: Template (file path) or `Mustache.MustacheTokens`s for `md2html` or `md2tex` formats
 - `css::Union{Nothing,AbstractString} = nothing`: Path of a CSS file used for md2html format
-- `highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing`: Theme used for syntax highlighting (defaults to `Highlights.Themes.DefaultTheme`)
+- `highlight_theme::Union{Nothing,AbstractString,Symbol,Type{<:Highlights.AbstractTheme}} = nothing`: Theme used for syntax highlighting.
+  * If given `nothing` (default), Weave will use `Highlights.Themes.DefaultTheme`
+  * If given an instance of `AbstractString` or `Symbol`, Weave will try to search a theme based on string matching, e.g. `highlight_theme = "github"` will use `Highlights.Themes.GitHubTheme`
+  * If given an instance of `Highlights.AbstractTheme`, it will be directly used
 - `pandoc_options::Vector{<:AbstractString} = $(DEFAULT_PANDOC_OPTIONS)`: `String`s of options to pass to pandoc for `pandoc2html` and `pandoc2pdf` formats, e.g. `["--toc", "-N"]`
 - `latex_cmd::Vector{<:AbstractString} = $(DEFAULT_LATEX_CMD)`: The command used to make PDF file from .tex
 - `keep_unicode::Bool = false`: If `true`, do not convert unicode characters to their respective latex representation. This is especially useful if a font and tex-engine with support for unicode characters are used
@@ -135,7 +149,7 @@ function weave(
     cache::Symbol = :off,
     template::Union{Nothing,AbstractString,Mustache.MustacheTokens} = nothing,
     css::Union{Nothing,AbstractString} = nothing, # TODO: rename to `stylesheet`
-    highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing,
+    highlight_theme::Union{Nothing,AbstractString,Symbol,Type{<:Highlights.AbstractTheme}} = nothing,
     pandoc_options::Vector{<:AbstractString} = DEFAULT_PANDOC_OPTIONS,
     latex_cmd::Vector{<:AbstractString} = DEFAULT_LATEX_CMD,
     keep_unicode::Bool = false,
@@ -326,6 +340,7 @@ include_weave(source, informat = nothing) = include_weave(Main, source, informat
 
 export weave,
     list_out_formats,
+    list_highlight_themes,
     tangle,
     convert_doc,
     notebook,
