@@ -22,6 +22,7 @@ end
     isnothing(::Any) = false
     isnothing(::Nothing) = true
 end
+take2string!(io) = String(take!(io))
 
 """
     list_out_formats()
@@ -116,7 +117,7 @@ function weave(
     cache::Symbol = :off,
     throw_errors::Bool = false,
     template::Union{Nothing,AbstractString,Mustache.MustacheTokens} = nothing,
-    css::Union{Nothing,AbstractString} = nothing,
+    css::Union{Nothing,AbstractString} = nothing, # TODO: rename to `stylesheet`
     highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing,
     pandoc_options::Vector{<:AbstractString} = String[],
     latex_cmd::AbstractString = "xelatex",
@@ -192,28 +193,24 @@ function weave(
         keep_unicode = get(weave_options, "keep_unicode", keep_unicode)
     end
 
-    isnothing(template) || (doc.template = template)
-    isnothing(highlight_theme) || (doc.highlight_theme = highlight_theme)
-    # isnothing(theme) || (doc.theme = theme) # Reserved for themes
-    isnothing(css) || (doc.css = css)
     get!(doc.format.formatdict, :keep_unicode, keep_unicode)
-    formatted = format(doc)
+    rendered = format(doc, template, highlight_theme; css = css)
 
     outname = get_outname(out_path, doc)
 
-    open(io->write(io,formatted), outname, "w")
+    open(io->write(io,rendered), outname, "w")
 
     # document generation via external programs
     doctype = doc.doctype
     if doctype == "pandoc2html"
         mdname = outname
         outname = get_outname(out_path, doc, ext = "html")
-        pandoc2html(formatted, doc, outname, pandoc_options)
+        pandoc2html(rendered, doc, highlight_theme, outname, pandoc_options)
         rm(mdname)
     elseif doctype == "pandoc2pdf"
         mdname = outname
         outname = get_outname(out_path, doc, ext = "pdf")
-        pandoc2pdf(formatted, doc, outname, pandoc_options)
+        pandoc2pdf(rendered, doc, outname, pandoc_options)
         rm(mdname)
     elseif doctype == "md2pdf"
         run_latex(doc, outname, latex_cmd)

@@ -1,21 +1,10 @@
-"""
-    pandoc2html(formatted::AbstractString, doc::WeaveDoc)
+function pandoc2html(rendered, doc, highlight_theme, outname, pandoc_options)
+    template_path = normpath(PKG_DIR, "templates/pandoc_skeleton.html")
+    stylesheet_path = normpath(PKG_DIR, "templates/pandoc_skeleton.css")
+    highlight_stylesheet = get_highlight_stylesheet(MIME("text/html"), highlight_theme)
 
-Convert output from pandoc markdown to html using Weave.jl template
-"""
-function pandoc2html(
-    formatted::AbstractString,
-    doc::WeaveDoc,
-    outname::AbstractString,
-    pandoc_options,
-)
-    weavedir = dirname(@__FILE__)
-    html_template = joinpath(weavedir, "../templates/pandoc_skeleton.html")
-    css_template = joinpath(weavedir, "../templates/pandoc_skeleton.css")
-    highlightcss = stylesheet(MIME("text/html"), doc.highlight_theme)
-
-    path, wsource = splitdir(abspath(doc.source))
-    wversion, wdate = weave_info()
+    _, weave_source = splitdir(abspath(doc.source))
+    weave_version, weave_date = weave_info()
 
     # Header is inserted from displayed plots
     header_script = doc.header_script
@@ -37,13 +26,17 @@ function pandoc2html(
     try
         cmd = `pandoc -f markdown+raw_html -s --mathjax=""
         $filt $citeproc $pandoc_options
-        --template $html_template -H $css_template $self_contained
-         -V wversion=$wversion -V wdate=$wdate -V wsource=$wsource
-         -V highlightcss=$highlightcss
-         -V headerscript=$header_script
-         -o $outname`
+        --template $template_path
+        -H $stylesheet_path
+        $self_contained
+        -V highlight_stylesheet=$highlight_stylesheet
+        -V weave_version=$weave_version
+        -V weave_date=$weave_date
+        -V weave_source=$weave_source
+        -V headerscript=$header_script
+        -o $outname`
         proc = open(cmd, "r+")
-        println(proc.in, formatted)
+        println(proc.in, rendered)
         close(proc.in)
         proc_output = read(proc.out, String)
     catch
@@ -54,21 +47,10 @@ function pandoc2html(
     end
 end
 
-"""
-    pandoc2pdf(formatted::AbstractString, doc::WeaveDoc)
-
-Convert output from pandoc markdown to pdf using Weave.jl template
-"""
-function pandoc2pdf(
-    formatted::AbstractString,
-    doc::WeaveDoc,
-    outname::AbstractString,
-    pandoc_options,
-)
+function pandoc2pdf(rendered, doc, outname, pandoc_options)
     weavedir = dirname(@__FILE__)
     header_template = joinpath(weavedir, "../templates/pandoc_header.txt")
 
-    path, wsource = splitdir(abspath(doc.source))
     outname = basename(outname)
 
     # Change path for pandoc
@@ -90,7 +72,7 @@ function pandoc2pdf(
          --include-in-header=$header_template
          -V fontsize=12pt -o $outname`
         proc = open(cmd, "r+")
-        println(proc.in, formatted)
+        println(proc.in, rendered)
         close(proc.in)
         proc_output = read(proc.out, String)
     catch

@@ -111,7 +111,7 @@ end
 function Base.display(report::Report, m::MIME"text/html", data)
     io = IOBuffer()
     show(IOContext(io, :limit => true), m, data)
-    report.rich_output *= "\n" * String(take!(io))
+    report.rich_output *= string('\n', take2string!(io))
 end
 
 # Catch "rich_output"
@@ -131,7 +131,7 @@ end
 
 function Base.display(report::Report, m::MIME"text/latex", data)
     s = repr(m, data)
-    report.rich_output *= "\n" * s
+    report.rich_output *= string('\n', s)
 end
 
 """Add saved figure name to results and return the name"""

@@ -1,7 +1,10 @@
 # This module extends the julia markdown parser to improve compatibility with Jupyter, Pandoc etc.
 module WeaveMarkdown
+
+using ..Weave: isnothing, take2string!
 using Markdown
 import Markdown: @trigger, @breaking, Code, MD, withstream, startswith, LaTeX
+
 
 function __init__()
     # NOTE:
@@ -37,7 +40,7 @@ end
             if !isempty(estr)
                 estr = Markdown.startswith(stream, r"^\$\$$"m)
                 if isempty(estr)
-                    push!(block, LaTeX(String(take!(buffer)) |> chomp))
+                    push!(block, LaTeX(take2string!(buffer) |> chomp))
                 end
                 return true
             else
@@ -58,7 +61,7 @@ end
             line = readline(stream, keep = true)
             write(buffer, line)
             if occursin(r"-->$", line)
-                s = replace(String(take!(buffer)) |> chomp, r"-->$" => "")
+                s = replace(take2string!(buffer) |> chomp, r"-->$" => "")
                 push!(block, Comment(s))
                 return true
             end
@@ -71,7 +74,7 @@ end
     withstream(stream) do
         Markdown.startswith(stream, "<!--") || return
         text = Markdown.readuntil(stream, "-->")
-        text ≡ nothing && return
+        isnothing(text) && return
         return Comment(text)
     end
 end
@@ -88,6 +91,8 @@ for key in keys(Markdown.julia.inner)
     end
 end
 
+
 include("html.jl")
 include("latex.jl")
-end
+
+end  # module

@@ -36,10 +36,6 @@ function WeaveDoc(source, informat = nothing)
         "",
         "",
         header,
-        "",
-        "",
-        Highlights.Themes.DefaultTheme,
-        "",
         chunk_defaults,
     )
 end
