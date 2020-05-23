@@ -9,8 +9,7 @@ const WEAVE_OPTION_NAME = "weave_options"
 const WEAVE_OPTION_NAME_DEPRECATED = "options" # remove this when tagging v0.11
 
 # keeps paths of sample documents for easy try
-const SAMPLE_JMD_DOC = normpath(PKG_DIR, "examples", "FIR_design.jmd")
-const  SAMPLE_JL_DOC = normpath(PKG_DIR, "examples", "FIR_design.jl")
+const EXAMPLE_FOLDER = normpath(PKG_DIR, "examples")
 
 
 function __init__()

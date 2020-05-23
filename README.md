@@ -48,16 +48,19 @@ using Weave
 
 # add depencies for the example
 using Pkg; Pkg.add(["Plots", "DSP"])
-weave(Weave.SAMPLE_JMD_DOC, out_path = :pwd)
+
+filename = normpath(Weave.EXAMPLE_FOLDER, "FIR_design.jmd")
+weave(filename, out_path = :pwd)
 ```
 
 If you have LaTeX installed you can also weave directly to pdf.
 
 ```julia
-weave(Weave.SAMPLE_JMD_DOC), out_path = :pwd, doctype = "md2pdf")
+filename = normpath(Weave.EXAMPLE_FOLDER, "FIR_design.jmd")
+weave(filename, out_path = :pwd, doctype = "md2pdf")
 ```
 
-NOTE: `Weave.SAMPLE_JMD_DOC` is the path of [this document](./examples/FIR_design.jmd).
+NOTE: `Weave.EXAMPLE_FOLDER` just points to [`examples` directory](./examples).
 
 
 ## Documentation
