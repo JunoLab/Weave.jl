@@ -7,6 +7,7 @@ const PKG_DIR = normpath(@__DIR__, "..")
 const TEMPLATE_DIR = normpath(PKG_DIR, "templates")
 const WEAVE_OPTION_NAME = "weave_options"
 const WEAVE_OPTION_NAME_DEPRECATED = "options" # remove this when tagging v0.11
+const WEAVE_OPTION_DEPRECATE_ID = "weave_option_duplicate_id"
 
 # keeps paths of sample documents for easy try
 const EXAMPLE_FOLDER = normpath(PKG_DIR, "examples")
@@ -130,7 +131,7 @@ function weave(
     # NOTE: these YAML options can NOT be given dynamically
     weave_options = get(doc.header, WEAVE_OPTION_NAME, nothing)
     if haskey(doc.header, WEAVE_OPTION_NAME_DEPRECATED)
-        @warn "Weave: `options` key is deprecated. Use `weave_options` key instead."
+        @warn "Weave: `options` key is deprecated. Use `weave_options` key instead." _id = WEAVE_OPTION_DEPRECATE_ID maxlog = 1
         weave_options = get(doc.header, WEAVE_OPTION_NAME_DEPRECATED, nothing)
     end
 

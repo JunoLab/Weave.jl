@@ -99,7 +99,7 @@ function restore_header!(doc)
     # only strips Weave headers
     delete!(doc.header, WEAVE_OPTION_NAME)
     if haskey(doc.header, WEAVE_OPTION_NAME_DEPRECATED)
-        @warn "Weave: `options` key is deprecated. Use `weave_options` key instead."
+        @warn "Weave: `options` key is deprecated. Use `weave_options` key instead." _id = WEAVE_OPTION_DEPRECATE_ID maxlog = 1
         delete!(doc.header, WEAVE_OPTION_NAME_DEPRECATED)
     end
     isempty(doc.header) && return
