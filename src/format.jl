@@ -22,8 +22,8 @@ function format(doc, template = nothing, highlight_theme = nothing; css = nothin
     end
     body = join(lines, '\n')
 
-    return format isa JMarkdown2HTML ? render2html(body, doc, template, css, highlight_theme) :
-           format isa JMarkdown2tex ? render2tex(body, doc, template, highlight_theme) :
+    return docformat isa JMarkdown2HTML ? render2html(body, doc, template, css, highlight_theme) :
+           docformat isa JMarkdown2tex ? render2tex(body, doc, template, highlight_theme) :
            body
 end
 
