@@ -13,6 +13,7 @@ function format(doc)
     get!(formatdict, :fig_pos, nothing)
     get!(formatdict, :fig_env, nothing)
 
+    formatdict[:cwd] = doc.cwd # pass wd to figure formatters
     formatdict[:theme] = doc.highlight_theme
 
     restore_header!(doc)
