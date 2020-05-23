@@ -13,7 +13,7 @@ function format(doc, template = nothing, highlight_theme = nothing; css = nothin
     get!(docformat.formatdict, :out_height, nothing)
     get!(docformat.formatdict, :fig_pos, nothing)
     get!(docformat.formatdict, :fig_env, nothing)
-    get_highlight_theme(docformat) = highlight_theme = get_highlight_theme(highlight_theme)
+    docformat.formatdict[:highlight_theme] = highlight_theme = get_highlight_theme(highlight_theme)
 
     restore_header!(doc)
 
@@ -55,7 +55,6 @@ end
 
 get_highlight_theme(::Nothing) = Highlights.Themes.DefaultTheme
 get_highlight_theme(highlight_theme::Type{<:Highlights.AbstractTheme}) = highlight_theme
-get_highlight_theme(docformat) = get_highlight_theme(get(docformat.formatdict, :highlight_theme, nothing))
 
 get_template(::Nothing, tex::Bool = false) =
     Mustache.template_from_file(normpath(TEMPLATE_DIR, tex ? "julia_tex.tpl" : "julia_html.tpl"))
@@ -241,7 +240,7 @@ format_code(code, docformat) = code
 
 # return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
 function format_code(code, docformat::JMarkdown2tex)
-    ret = highlight_code(MIME("text/latex"), code, get_highlight_theme(docformat))
+    ret = highlight_code(MIME("text/latex"), code, docformat.formatdict[:highlight_theme])
     docformat.formatdict[:keep_unicode] || return uc2tex(ret)
     return ret
 end
@@ -274,10 +273,10 @@ function texify(s)
 end
 
 format_code(code, docformat::JMarkdown2HTML) =
-    highlight_code(MIME("text/html"), code, get_highlight_theme(docformat))
+    highlight_code(MIME("text/html"), code, docformat.formatdict[:highlight_theme])
 
 format_code(code, docformat::Pandoc2HTML) =
-    highlight_code(MIME("text/html"), code, get_highlight_theme(docformat))
+    highlight_code(MIME("text/html"), code, docformat.formatdict[:highlight_theme])
 
 function format_termchunk(chunk, docformat)
     return if should_render(chunk)
@@ -289,14 +288,14 @@ function format_termchunk(chunk, docformat)
 end
 
 format_termchunk(chunk, docformat::JMarkdown2HTML) =
-    should_render(chunk) ? highlight_term(MIME("text/html"), chunk.output, get_highlight_theme(docformat)) : ""
+    should_render(chunk) ? highlight_term(MIME("text/html"), chunk.output, docformat.formatdict[:highlight_theme]) : ""
 
 format_termchunk(chunk, docformat::Pandoc2HTML) =
-    should_render(chunk) ? highlight_term(MIME("text/html"), chunk.output, get_highlight_theme(docformat)) : ""
+    should_render(chunk) ? highlight_term(MIME("text/html"), chunk.output, docformat.formatdict[:highlight_theme]) : ""
 
 # return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
 format_termchunk(chunk, docformat::JMarkdown2tex) =
-    should_render(chunk) ? highlight_term(MIME("text/latex"), chunk.output, get_highlight_theme(docformat)) : ""
+    should_render(chunk) ? highlight_term(MIME("text/latex"), chunk.output, docformat.formatdict[:highlight_theme]) : ""
 
 should_render(chunk) = chunk.options[:echo] && chunk.options[:results] ≠ "hidden"
 
