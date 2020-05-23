@@ -39,6 +39,16 @@ end
 end
 
 
+@testset "empty header" begin
+    str = """
+    ---
+    weave_options:
+    ---
+    """
+    @test (mock_doc(str; run = true); true) # no throw
+end
+
+
 @testset "dynamic header specifications" begin
 
 let

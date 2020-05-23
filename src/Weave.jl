@@ -128,12 +128,13 @@ function weave(
 
     # overwrites options with those specified in header, that are needed for running document
     # NOTE: these YAML options can NOT be given dynamically
-    weave_options = get(doc.header, WEAVE_OPTION_NAME, Dict())
+    weave_options = get(doc.header, WEAVE_OPTION_NAME, nothing)
     if haskey(doc.header, WEAVE_OPTION_NAME_DEPRECATED)
         @warn "Weave: `options` key is deprecated. Use `weave_options` key instead."
-        weave_options = get(doc.header, WEAVE_OPTION_NAME_DEPRECATED, Dict())
+        weave_options = get(doc.header, WEAVE_OPTION_NAME_DEPRECATED, nothing)
     end
-    if !isempty(weave_options)
+
+    if !isnothing(weave_options)
         doctype = get(weave_options, "doctype", doctype)
         specific_options!(weave_options, doctype)
         if haskey(weave_options, "out_path")
@@ -173,7 +174,7 @@ function weave(
 
     # overwrites options with those specified in header, that are needed for formatting document
     # NOTE: these YAML options can be given dynamically
-    if !isempty(weave_options)
+    if !isnothing(weave_options)
         if haskey(weave_options, "template")
             template = weave_options["template"]
              # resolve relative to this document
