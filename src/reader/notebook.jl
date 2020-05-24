@@ -1,22 +1,21 @@
+using JSON
+
+
 function parse_notebook(document_body)
     nb = JSON.parse(document_body)
-    chunks = WeaveChunk[]
+    code_no = 0
+    doc_no = 0
+
+    # TODO: handle some of options ?
     options = Dict{Symbol,Any}()
     opt_string = ""
-    docno = 1
-    codeno = 1
 
-    for cell in nb["cells"]
-        srctext = "\n" * join(cell["source"], "")
-
-        if cell["cell_type"] == "code"
-            chunk = CodeChunk(rstrip(srctext), codeno, 0, opt_string, options)
-            push!(chunks, chunk)
-            codeno += 1
+    chunks = map(nb["cells"]) do cell
+        text = string('\n', join(cell["source"]), '\n')
+        return if cell["cell_type"] == "code"
+            CodeChunk(text, code_no += 1, 0, opt_string, options)
         else
-            chunk = DocChunk(srctext * "\n", docno, 0; notebook = true)
-            push!(chunks, chunk)
-            docno += 1
+            DocChunk(text, doc_no += 1, 0; notebook = true)
         end
     end
 

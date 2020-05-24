@@ -1,4 +1,4 @@
-using JSON, YAML
+using YAML
 
 
 function WeaveDoc(source, informat = nothing)
