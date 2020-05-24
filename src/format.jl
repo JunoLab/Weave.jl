@@ -13,7 +13,7 @@ function format(doc, template = nothing, highlight_theme = nothing; css = nothin
     get!(docformat.formatdict, :out_height, nothing)
     get!(docformat.formatdict, :fig_pos, nothing)
     get!(docformat.formatdict, :fig_env, nothing)
-    docformat.formatdict[:highlight_theme] = highlight_theme = get_highlight_theme(highlight_theme)
+    docformat.formatdict[:highlight_theme] = get_highlight_theme(highlight_theme)
 
     restore_header!(doc)
 
@@ -65,6 +65,8 @@ get_stylesheet(::Nothing) = get_stylesheet(normpath(STYLESHEET_DIR, "skeleton.cs
 get_stylesheet(path::AbstractString) = read(path, String)
 
 get_highlight_stylesheet(mime, highlight_theme) =
+    get_highlight_stylesheet(mime, get_highlight_theme(highlight_theme))
+get_highlight_stylesheet(mime, highlight_theme::Type{<:Highlights.AbstractTheme}) =
     sprint((io, x) -> Highlights.stylesheet(io, mime, x), highlight_theme)
 
 const WEAVE_VERSION = try
