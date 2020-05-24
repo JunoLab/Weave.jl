@@ -1,6 +1,8 @@
 using Weave: parse_options, parse_markdown
 
 
+@static @isdefined(hasproperty) || (hasproperty(x, s::Symbol) = s in propertynames(x))
+
 @testset "`parse_options`" begin
 
 # general

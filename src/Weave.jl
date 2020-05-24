@@ -19,6 +19,7 @@ function __init__()
     @require Gadfly = "c91e804a-d5a3-530f-b6f0-dfbca275c004" include("gadfly.jl")
 end
 
+# utilitity functions
 @static @isdefined(isnothing) || begin
     isnothing(::Any) = false
     isnothing(::Nothing) = true
