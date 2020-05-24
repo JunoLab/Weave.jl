@@ -82,34 +82,23 @@ end
 const   INLINE_REGEX = r"`j\s+(.*?)`"
 const INLINE_REGEXES = r"`j\s+(.*?)`|^!\s(.*)$"m
 
-function parse_inlines(text)::Vector{Inline}
-    occursin(INLINE_REGEXES, text) || return parse_inline(text)
-
-    inline_chunks = eachmatch(INLINE_REGEXES, text)
+# handle code units correctly !
+function parse_inlines(str)
+    ret = Inline[]
     s = 1
-    e = 1
-    res = Inline[]
-    textno = 1
-    codeno = 1
-
-    for ic in inline_chunks
-        s = ic.offset
-        doc = InlineText(text[e:(s-1)], e, s - 1, textno)
-        textno += 1
-        push!(res, doc)
-        e = s + lastindex(ic.match)
-        ic.captures[1] !== nothing && (ctype = :inline)
-        ic.captures[2] !== nothing && (ctype = :line)
-        cap = filter(x -> x !== nothing, ic.captures)[1]
-        push!(res, InlineCode(cap, s, e, codeno, ctype))
-        codeno += 1
+    code_no = text_no = 0
+    for m in eachmatch(INLINE_REGEXES, str)
+        e = m.offset
+        push!(ret, InlineText((str[s:prevind(str,e)]), text_no += 1))
+        i = findfirst(!isnothing, m.captures)
+        push!(ret, InlineCode(m.captures[i], code_no += 1, isone(i) ? :inline : :line))
+        s = e + ncodeunits(m.match)
     end
-    push!(res, InlineText(text[e:end], e, length(text), textno))
-
-    return res
+    push!(ret, InlineText(str[s:end], text_no += 1))
+    return ret
 end
 
-parse_inline(text) = Inline[InlineText(text, 1, length(text), 1)]
+parse_inline(str) = Inline[InlineText(str, 1)]
 
 include("markdown.jl")
 include("script.jl")
