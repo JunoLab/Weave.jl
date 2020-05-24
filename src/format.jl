@@ -13,7 +13,7 @@ function format(doc, template = nothing, highlight_theme = nothing; css = nothin
     get!(docformat.formatdict, :out_height, nothing)
     get!(docformat.formatdict, :fig_pos, nothing)
     get!(docformat.formatdict, :fig_env, nothing)
-    docformat.formatdict[:highlight_theme] = highlight_theme = get_highlight_theme(highlight_theme)
+    docformat.formatdict[:highlight_theme] = get_highlight_theme(highlight_theme)
 
     restore_header!(doc)
 
