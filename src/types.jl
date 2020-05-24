@@ -47,7 +47,7 @@ function CodeChunk(content, number, start_line, optionstring, options)
         options,
         "",
         "",
-        AbstractStringString[],
+        AbstractString[],
         ChunkOutput[]
     )
 end

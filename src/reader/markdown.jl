@@ -5,7 +5,7 @@ function parse_markdown(document_body; is_pandoc = false)
         r"^<<(?<options>.*?)>>=\s*$",
         r"^@\s*$"
     else
-        r"^[`~]{3}(?:\{?)julia(?:;?)\s*(?<options>.*?)(\}|\s*)$",
+        r"^[`~]{3}(\{?)julia\s*([;,]?)\s*(?<options>.*?)(\}|\s*)$",
         r"^[`~]{3}\s*$"
     end
     return header, parse_markdown_body(document_body, code_start, code_end, offset)
@@ -55,22 +55,17 @@ function parse_markdown_body(document_body, code_start, code_end, offset)
     content = ""
     start_line = offset
 
-    options = Dict()
+    options = OptionDict()
     option_string = ""
+
     chunks = WeaveChunk[]
     for (line_no, line) in enumerate(lines)
         m = match(code_start, line)
         if !isnothing(m) && state === :doc
             state = :code
-            option_string = isnothing(m[:options]) ? "" : strip(m[:options])
 
-            options = Dict{Symbol,Any}()
-            if !isempty(option_string)
-                expr = Meta.parse(option_string)
-                Base.Meta.isexpr(expr, :(=)) && (options[expr.args[1]] = expr.args[2])
-                Base.Meta.isexpr(expr, :toplevel) &&
-                    map(pushopt, fill(options, length(expr.args)), expr.args)
-            end
+            option_string = isnothing(m[:options]) ? "" : strip(m[:options])
+            options = parse_options(option_string)
             haskey(options, :label) && (options[:name] = options[:label])
             haskey(options, :name) || (options[:name] = nothing)
 

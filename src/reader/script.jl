@@ -12,14 +12,14 @@ function parse_script(document_body)
     code_no = 0
     start_line = 1
 
-    options = Dict{Symbol,Any}()
+    options = OptionDict()
     option_string = ""
-    chunks = WeaveChunk[]
 
+    chunks = WeaveChunk[]
     for (line_no, line) in enumerate(lines)
         if (m = match(doc_line, line)) !== nothing && (m = match(opt_line, line)) === nothing
             line = replace(line, doc_start => "", count = 1)
-            startswith(line, ' ') && (line = line[2:end])
+            startswith(line, ' ') && (line = replace(line, ' ' => "", count = 1))
             if state === :code && !isempty(strip(content))
                 push!(chunks, CodeChunk(string('\n', strip(content)), code_no += 1, start_line, option_string, options))
                 content = ""
@@ -39,13 +39,7 @@ function parse_script(document_body)
             end
 
             option_string = replace(line, opt_start => "", count = 1)
-            options = Dict{Symbol,Any}()
-            if !isempty(option_string)
-                expr = Meta.parse(option_string)
-                Base.Meta.isexpr(expr, :(=)) && (options[expr.args[1]] = expr.args[2])
-                Base.Meta.isexpr(expr, :toplevel) &&
-                    map(pushopt, fill(options, length(expr.args)), expr.args)
-            end
+            options = parse_options(option_string)
             haskey(options, :label) && (options[:name] = options[:label])
             haskey(options, :name) || (options[:name] = nothing)
 

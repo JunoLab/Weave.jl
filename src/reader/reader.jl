@@ -64,12 +64,6 @@ function parse_doc(document, informat)
         error("unsupported input format given: $informat")
 end
 
-function pushopt(options::Dict, expr::Expr)
-    if Base.Meta.isexpr(expr, :(=))
-        options[expr.args[1]] = expr.args[2]
-    end
-end
-
 # inline
 # ------
 
@@ -99,6 +93,34 @@ function parse_inlines(str)
 end
 
 parse_inline(str) = Inline[InlineText(str, 1)]
+
+# options
+# -------
+
+const OptionDict = Dict{Symbol,Any}
+
+function parse_options(str)::OptionDict
+    str = string('(', str, ')')
+    ex = Meta.parse(str)
+    nt = if Meta.isexpr(ex, (
+        :block, # "(k1 = v1; k2 = v2, ...)"
+        :tuple, # "(k1 = v1, k2 = v2, ...)"
+    ))
+        eval(Expr(:tuple, filter(is_valid_kv, ex.args)...))
+    elseif is_valid_kv(ex) # "(k = v)"
+        eval(Expr(:tuple, ex))
+    else
+        NamedTuple{}()
+    end
+    return dict(nt)
+end
+
+is_valid_kv(x) = Meta.isexpr(x, :(=))
+dict(nt) = Dict((k => v for (k,v) in zip(keys(nt), values(nt))))
+nt(dict) = NamedTuple{(Symbol.(keys(dict))...,)}((collect(values(dict))...,))
+
+# each input format
+# -----------------
 
 include("markdown.jl")
 include("script.jl")
