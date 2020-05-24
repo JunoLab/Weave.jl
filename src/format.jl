@@ -57,11 +57,11 @@ get_highlight_theme(::Nothing) = Highlights.Themes.DefaultTheme
 get_highlight_theme(highlight_theme::Type{<:Highlights.AbstractTheme}) = highlight_theme
 
 get_template(::Nothing, tex::Bool = false) =
-    Mustache.template_from_file(normpath(TEMPLATE_DIR, tex ? "julia_tex.tpl" : "julia_html.tpl"))
+    Mustache.template_from_file(normpath(TEMPLATE_DIR, tex ? "md2pdf.tpl" : "md2html.tpl"))
 get_template(path::AbstractString, tex) = Mustache.template_from_file(path)
 get_template(tpl::Mustache.MustacheTokens, tex) = tpl
 
-get_stylesheet(::Nothing) = get_stylesheet(normpath(TEMPLATE_DIR, "skeleton_css.css"))
+get_stylesheet(::Nothing) = get_stylesheet(normpath(STYLESHEET_DIR, "skeleton.css"))
 get_stylesheet(path::AbstractString) = read(path, String)
 
 get_highlight_stylesheet(mime, highlight_theme) =
