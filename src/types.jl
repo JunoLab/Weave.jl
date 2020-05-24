@@ -37,7 +37,7 @@ mutable struct CodeChunk <: WeaveChunk
     result::Vector{ChunkOutput}
     function CodeChunk(content, number, start_line, optionstring, options)
         new(
-            rstrip(content) * "\n",
+            string(rstrip(content), '\n'), # normalize end of chunk
             number,
             0,
             start_line,

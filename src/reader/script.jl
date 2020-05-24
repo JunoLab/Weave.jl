@@ -1,59 +1,47 @@
 function parse_script(document_body)
-    lines = split(document_body, "\n")
+    lines = split(document_body, '\n')
 
     doc_line = r"(^#'.*)|(^#%%.*)|(^# %%.*)"
     doc_start = r"(^#')|(^#%%)|(^# %%)"
     opt_line = r"(^#\+.*$)|(^#%%\+.*$)|(^# %%\+.*$)"
     opt_start = r"(^#\+)|(^#%%\+)|(^# %%\+)"
 
-    read = ""
-    docno = 1
-    codeno = 1
     content = ""
+    state = :code
+    doc_no = 0
+    code_no = 0
     start_line = 1
+
     options = Dict{Symbol,Any}()
-    optionString = ""
+    option_string = ""
     chunks = WeaveChunk[]
-    state = "code"
 
-    for lineno = 1:length(lines)
-        line = lines[lineno]
-        if (m = match(doc_line, line)) != nothing && (m = match(opt_line, line)) == nothing
+    for (line_no, line) in enumerate(lines)
+        if (m = match(doc_line, line)) !== nothing && (m = match(opt_line, line)) === nothing
             line = replace(line, doc_start => "", count = 1)
-            if startswith(line, " ")
-                line = replace(line, " " => "", count = 1)
+            startswith(line, ' ') && (line = line[2:end])
+            if state === :code && !isempty(strip(content))
+                push!(chunks, CodeChunk(string('\n', strip(content)), code_no += 1, start_line, option_string, options))
+                content = ""
+                start_line = line_no
             end
-            if state == "code" && strip(read) != ""
-                chunk =
-                    CodeChunk("\n" * strip(read), codeno, start_line, optionString, options)
-                push!(chunks, chunk)
-                codeno += 1
-                read = ""
-                start_line = lineno
+            state = :doc
+        elseif (m = match(opt_line, line)) !== nothing
+            start_line = line_no
+            if state === :code && !isempty(strip(content))
+                push!(chunks, CodeChunk(string('\n', strip(content)), code_no += 1, start_line, option_string, options))
+                content = ""
             end
-            state = "doc"
-        elseif (m = match(opt_line, line)) != nothing
-            start_line = lineno
-            if state == "code" && strip(read) != ""
-                chunk =
-                    CodeChunk("\n" * strip(read), codeno, start_line, optionString, options)
-                push!(chunks, chunk)
-                read = ""
-                codeno += 1
-            end
-            if state == "doc" && strip(read) != ""
-                (docno > 1) && (read = "\n" * read) # Add whitespace to doc chunk. Needed for markdown output
-                chunk = DocChunk(read, docno, start_line)
-                push!(chunks, chunk)
-                read = ""
-                docno += 1
+            if state === :doc && !isempty(strip(content))
+                iszero(doc_no) || (content = string('\n', content)) # Add whitespace to doc chunk. Needed for markdown output
+                push!(chunks, DocChunk(content, doc_no += 1, start_line))
+                content = ""
             end
 
-            optionString = replace(line, opt_start => "", count = 1)
-            # Get options
+            option_string = replace(line, opt_start => "", count = 1)
             options = Dict{Symbol,Any}()
-            if length(optionString) > 0
-                expr = Meta.parse(optionString)
+            if !isempty(option_string)
+                expr = Meta.parse(option_string)
                 Base.Meta.isexpr(expr, :(=)) && (options[expr.args[1]] = expr.args[2])
                 Base.Meta.isexpr(expr, :toplevel) &&
                     map(pushopt, fill(options, length(expr.args)), expr.args)
@@ -61,29 +49,25 @@ function parse_script(document_body)
             haskey(options, :label) && (options[:name] = options[:label])
             haskey(options, :name) || (options[:name] = nothing)
 
-            state = "code"
+            state = :code
             continue
-        elseif state == "doc" # && strip(line) != "" && strip(read) != ""
-            state = "code"
-            (docno > 1) && (read = "\n" * read) # Add whitespace to doc chunk. Needed for markdown output
-            chunk = DocChunk(read, docno, start_line)
-            push!(chunks, chunk)
+        elseif state === :doc # && strip(line) != "" && strip(content) != ""
+            state = :code
+            iszero(doc_no) || (content = string('\n', content)) # Add whitespace to doc chunk. Needed for markdown output
+            push!(chunks, DocChunk(content, doc_no += 1, start_line))
+            content = ""
+
             options = Dict{Symbol,Any}()
-            start_line = lineno
-            read = ""
-            docno += 1
+            start_line = line_no
         end
-        read *= line * "\n"
+        content *= string(line, '\n')
     end
 
     # Handle the last chunk
-    if state == "code"
-        chunk = CodeChunk("\n" * strip(read), codeno, start_line, optionString, options)
-        push!(chunks, chunk)
-    else
-        chunk = DocChunk(read, docno, start_line)
-        push!(chunks, chunk)
-    end
+    chunk = state === :code ?
+        CodeChunk(string('\n', strip(content)), code_no, start_line, option_string, options) :
+        DocChunk(content, doc_no, start_line)
+    push!(chunks, chunk)
 
     return Dict(), chunks
 end

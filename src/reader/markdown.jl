@@ -49,29 +49,24 @@ end
 function parse_markdown_body(document_body, code_start, code_end, offset)
     lines = split(document_body, '\n')
 
-    state = "doc"
-
-    docno = 1
-    codeno = 1
+    state = :doc
+    doc_no = 0
+    code_no = 0
     content = ""
     start_line = offset
 
     options = Dict()
-    optionString = ""
+    option_string = ""
     chunks = WeaveChunk[]
-    for (lineno, line) in enumerate(lines)
+    for (line_no, line) in enumerate(lines)
         m = match(code_start, line)
-        if !isnothing(m) && state == "doc"
-            state = "code"
-            if m.captures[1] == nothing
-                optionString = ""
-            else
-                optionString = strip(m.captures[1])
-            end
+        if !isnothing(m) && state === :doc
+            state = :code
+            option_string = isnothing(m[:options]) ? "" : strip(m[:options])
 
             options = Dict{Symbol,Any}()
-            if length(optionString) > 0
-                expr = Meta.parse(optionString)
+            if !isempty(option_string)
+                expr = Meta.parse(option_string)
                 Base.Meta.isexpr(expr, :(=)) && (options[expr.args[1]] = expr.args[2])
                 Base.Meta.isexpr(expr, :toplevel) &&
                     map(pushopt, fill(options, length(expr.args)), expr.args)
@@ -79,42 +74,27 @@ function parse_markdown_body(document_body, code_start, code_end, offset)
             haskey(options, :label) && (options[:name] = options[:label])
             haskey(options, :name) || (options[:name] = nothing)
 
-            if !isempty(strip(content))
-                chunk = DocChunk(content, docno, start_line)
-                docno += 1
-                push!(chunks, chunk)
-            end
+            isempty(strip(content)) || push!(chunks, DocChunk(content, doc_no += 1, start_line))
 
+            start_line = line_no + offset
             content = ""
-            start_line = lineno + offset
-
             continue
         end
 
-        if occursin(code_end, line) && state == "code"
-            chunk = CodeChunk(content, codeno, start_line, optionString, options)
+        if occursin(code_end, line) && state === :code
+            push!(chunks, CodeChunk(content, code_no += 1, start_line, option_string, options))
 
-            codeno += 1
-            start_line = lineno + offset
+            start_line = line_no + offset
             content = ""
-            state = "doc"
-            push!(chunks, chunk)
+            state = :doc
             continue
         end
 
-        if lineno == 1
-            content *= line
-        else
-            content *= "\n" * line
-        end
+        content *= isone(line_no) ? line : string('\n', line)
     end
 
     # Remember the last chunk
-    if strip(content) != ""
-        chunk = DocChunk(content, docno, start_line)
-        # chunk =  Dict{Symbol,Any}(:type => "doc", :content => content,
-        #                                 :number =>  docno, :start_line => start_line)
-        push!(chunks, chunk)
-    end
+    isempty(strip(content)) || push!(chunks, DocChunk(content, doc_no += 1, start_line))
+
     return chunks
 end
