@@ -28,6 +28,10 @@ macro jmd_str(s) mock_doc(s) end
         include("test_header.jl")
     end
 
+    @testset "inline" begin
+        include("test_inline.jl")
+    end
+
     @testset "error rendering" begin
         include("test_error_rendering.jl")
     end
@@ -62,12 +66,16 @@ macro jmd_str(s) mock_doc(s) end
         include("gadfly_formats.jl")
     end
 
-    @testset "Inline code" begin
-        include("inline_test.jl")
-    end
-
     # @testset "Notebooks" begin
     #     @info("Testing Jupyter options")
     #     include("notebooks.jl")
     # end
+
+    try
+        @testset "end2end (maybe fail)" begin
+            include("end2end.jl")
+        end
+    catch err
+        @error err
+    end
 end
