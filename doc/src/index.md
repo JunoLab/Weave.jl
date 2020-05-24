@@ -30,8 +30,8 @@ Pages = [
     "getting_started.md",
     "usage.md",
     "publish.md",
-    "header.md",
     "chunk_options.md",
+    "header.md",
     "notebooks.md",
     "function_index.md",
 ]

@@ -73,62 +73,69 @@ ext == ".ipynb" && return "notebook"
 return "noweb"
 ```
 
-## Documentation Chunks
+
+### Documentation Chunks
 
 In markdown and Noweb input formats documentation chunks are the parts that aren't inside code delimiters. Documentation chunks can be written with several different markup languages.
 
-## Code Chunks
 
-### Markdown Format
+### [Code Chunks](@id code-chunks)
 
-Markdown code chunks are defined using fenced code blocks with options following on the same line. e.g. to hide code from output you can use:
+Code chunks are written in different ways in different formats.
 
+#### Markdown Format
+
+Weave code chunks are defined using fenced code blocks, same as with [common markdown](https://spec.commonmark.org/0.29/#fenced-code-blocks):
+```markdown
+ ```julia
+ code
+ ...
+ ```
 ```
- ```julia; echo=false
+
+Weave code chunks can optionally be followed by [chunk options](@ref) on the same line.
+E.g. the chunk below will hide code itself from generated output:
+```markdown
+ ```julia, echo = false
+ code
+ ...
+ ```
 ```
 
-[Sample document]( https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jmd)
+#### Noweb Format
 
-## [Inline Code](@id inline-code)
+Code chunks start with a line marked with `<<>>=` or `<<options>>=` and end with line marked with `@`.
+The code between the start and end markers is executed and the output is captured to the output document.
+
+### [Inline Code](@id inline-code)
 
 You can also add inline code to your documents using
-
 ```
 `j juliacode`
 ```
-
 or
-
 ```
 ! juliacode
 ```
+syntax.
 
-syntax. Using the `j code` syntax you can insert code anywhere in a line and with
-the `!` syntax the whole line after `!` will be executed. The code will be replaced
-with captured output in the weaved document.
+The former syntax allows you to insert code _anywhere_ in a line
+while the `!` syntax treats the whole line as code,
+and the code will be replaced with captured output in the weaved document.
 
-If the code produces figures the filename or base64 encoded string will be
-added to output e.g. to include a Plots figure in markdown you can use:
-
+If the code produces figures, the filename or base64 encoded string will be added to output,
+e.g. to include a Plots figure in markdown you can use:
 ```
 ![A plot](`j plot(1:10)`)
 ```
-
-or to produce any html output:
-
+or to produce any HTML output:
 ```
 ! display("text/html", "Header from julia");
 ```
 
-
-### Noweb Format
-
-Code chunks start with a line marked with `<<>>=` or `<<options>>=` and end with line marked with `@`. The code between the start and end markers is executed and the output is captured to the output document. See [chunk options](../chunk_options/).
-
-
 ### Script Format
 
-Weave also support script input format with a markup in comments.
+Weave also supports script input format with a markup in comments.
 These scripts can be executed normally using Julia or published with Weave.
 
 Lines starting with `#'`, `#%%` or `# %%` are treated as document.
@@ -143,7 +150,11 @@ hoge # some code comes here
 The format is identical to [Pweave](http://mpastell.com/pweave/pypublish.html) and the concept is similar to publishing documents with MATLAB or using Knitr's [spin](http://yihui.name/knitr/demo/stitch/).
 Weave will remove the first empty space from each line of documentation.
 
-[See sample document:](https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jl)
+!!! tip
+    - Here are sample documents:
+      + [markdown format](https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jmd)
+      + [script format](https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jl)
+    - [Details about chunk options](@ref chunk-options)
 
 
 ## Configuration via YAML Header
