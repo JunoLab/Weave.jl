@@ -502,7 +502,7 @@ function _replace_header_inline!(doc, header, report, mod)
 end
 
 function run_inline_code(code, doc, report, mod)
-    inline = InlineCode(code, 1, 1, 1, :inline)
+    inline = InlineCode(code, 1, :inline)
     inline = run_inline(inline, doc, report, mod)
     return strip(inline.output, '"')
 end

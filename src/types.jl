@@ -1,6 +1,7 @@
 # TODO: concreate typing
 
 abstract type WeaveChunk end
+abstract type Inline end
 
 mutable struct WeaveDoc
     source::AbstractString
@@ -50,34 +51,26 @@ mutable struct CodeChunk <: WeaveChunk
     end
 end
 
-abstract type Inline end
-
 mutable struct DocChunk <: WeaveChunk
     content::Vector{Inline}
     number::Int
     start_line::Int
 end
 
-mutable struct InlineText <: Inline
-    content::AbstractString
-    si::Int
-    ei::Int
+struct InlineText <: Inline
+    content::String
     number::Int
 end
 
 mutable struct InlineCode <: Inline
-    content::AbstractString
-    si::Int
-    ei::Int
+    content::String
     number::Int
     ctype::Symbol
-    output::AbstractString
-    rich_output::AbstractString
-    figures::Vector{AbstractString}
-    function InlineCode(content, si, ei, number, ctype)
-        new(content, si, ei, number, ctype, "", "", AbstractString[])
-    end
+    output::String
+    rich_output::String
+    figures::Vector{String}
 end
+InlineCode(content, number, ctype) = InlineCode(content, number, ctype, "", "", String[])
 
 struct TermResult end
 struct ScriptResult end
