@@ -1,6 +1,6 @@
 function pandoc2html(rendered, doc, highlight_theme, outname, pandoc_options)
-    template_path = normpath(PKG_DIR, "templates/pandoc_skeleton.html")
-    stylesheet_path = normpath(PKG_DIR, "templates/pandoc_skeleton.css")
+    template_path = normpath(TEMPLATE_DIR, "pandoc2html.html")
+    stylesheet_path = normpath(STYLESHEET_DIR, "pandoc2html_skeleton.css")
     highlight_stylesheet = get_highlight_stylesheet(MIME("text/html"), highlight_theme)
 
     _, weave_source = splitdir(abspath(doc.source))
@@ -48,8 +48,7 @@ function pandoc2html(rendered, doc, highlight_theme, outname, pandoc_options)
 end
 
 function pandoc2pdf(rendered, doc, outname, pandoc_options)
-    weavedir = dirname(@__FILE__)
-    header_template = joinpath(weavedir, "../templates/pandoc_header.txt")
+    header_template = normpath(TEMPLATE_DIR, "pandoc2pdf_header.txt")
 
     outname = basename(outname)
 

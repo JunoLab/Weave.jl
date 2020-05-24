@@ -5,6 +5,7 @@ using Highlights, Mustache, Requires
 
 const PKG_DIR = normpath(@__DIR__, "..")
 const TEMPLATE_DIR = normpath(PKG_DIR, "templates")
+const STYLESHEET_DIR = normpath(PKG_DIR, "stylesheets")
 const WEAVE_OPTION_NAME = "weave_options"
 const WEAVE_OPTION_NAME_DEPRECATED = "options" # remove this when tagging v0.11
 const WEAVE_OPTION_DEPRECATE_ID = "weave_option_duplicate_id"
