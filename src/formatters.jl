@@ -2,8 +2,9 @@
 
 using Printf
 
+abstract type TexFormat end
 
-struct Tex
+struct Tex <: TexFormat
     description::AbstractString
     formatdict::Dict{Symbol,Any}
 end
@@ -172,7 +173,7 @@ const md2html = JMarkdown2HTML(
 )
 
 # Julia markdown
-struct JMarkdown2tex
+struct JMarkdown2tex <: TexFormat
     description::AbstractString
     formatdict::Dict{Symbol,Any}
 end
@@ -307,7 +308,7 @@ function md_length_to_latex(def, reference)
     return def
 end
 
-function formatfigures(chunk, docformat::Union{Tex,JMarkdown2tex})
+function formatfigures(chunk, docformat::TexFormat)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
     width = chunk.options[:out_width]

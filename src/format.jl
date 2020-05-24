@@ -23,7 +23,7 @@ function format(doc, template = nothing, highlight_theme = nothing; css = nothin
     body = join(lines, '\n')
 
     return docformat isa JMarkdown2HTML ? render2html(body, doc, template, css, highlight_theme) :
-           docformat isa JMarkdown2tex ? render2tex(body, doc, template, highlight_theme) :
+           docformat isa TexFormat ? render2tex(body, doc, template, highlight_theme) :
            body
 end
 
@@ -106,7 +106,7 @@ function format_inline(inline::InlineCode)
     return inline.output
 end
 
-function format_chunk(chunk::DocChunk, docformat::JMarkdown2tex)
+function format_chunk(chunk::DocChunk, docformat::TexFormat)
     out = IOBuffer()
     io = IOBuffer()
     for inline in chunk.content
@@ -227,7 +227,7 @@ format_output(result, docformat) = result
 
 format_output(result, docformat::JMarkdown2HTML) = Markdown.htmlesc(result)
 
-function format_output(result, docformat::JMarkdown2tex)
+function format_output(result, docformat::TexFormat)
     # Highligts has some extra escaping defined, eg of $, ", ...
     result_escaped = sprint(
         (io, x) ->
@@ -241,7 +241,7 @@ end
 format_code(code, docformat) = code
 
 # return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
-function format_code(code, docformat::JMarkdown2tex)
+function format_code(code, docformat::TexFormat)
     ret = highlight_code(MIME("text/latex"), code, docformat.formatdict[:highlight_theme])
     docformat.formatdict[:keep_unicode] || return uc2tex(ret)
     return ret
@@ -296,7 +296,7 @@ format_termchunk(chunk, docformat::Pandoc2HTML) =
     should_render(chunk) ? highlight_term(MIME("text/html"), chunk.output, docformat.formatdict[:highlight_theme]) : ""
 
 # return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
-format_termchunk(chunk, docformat::JMarkdown2tex) =
+format_termchunk(chunk, docformat::TexFormat) =
     should_render(chunk) ? highlight_term(MIME("text/latex"), chunk.output, docformat.formatdict[:highlight_theme]) : ""
 
 should_render(chunk) = chunk.options[:echo] && chunk.options[:results] ≠ "hidden"
