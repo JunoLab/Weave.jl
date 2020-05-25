@@ -39,7 +39,6 @@ register_format!("md2html", JMarkdown2HTML(
             "text/plain",
         ],
         :extension => "html",
-        :doctype => "md2html",
     ),
 ))
 
@@ -61,7 +60,6 @@ register_format!("pandoc2html", Pandoc2HTML(
             "text/markdown",
             "text/plain",
         ],
-        :doctype => "pandoc2html",
     ),
 ))
 
@@ -88,7 +86,6 @@ let t = JMarkdown2tex(
                 "text/markdown",
                 "text/plain",
             ],
-            :doctype => "md2tex",
             :keep_unicode => false,
         )
     )
@@ -111,7 +108,6 @@ register_format!("tex", Tex(
         :out_width => "\\linewidth",
         :fig_env => "figure",
         :fig_pos => "htpb",
-        :doctype => "tex",
         :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"],
         :keep_unicode => false,
     ),
@@ -133,7 +129,6 @@ register_format!("texminted", Tex(
         :out_width => "\\linewidth",
         :fig_env => "figure",
         :fig_pos => "htpb",
-        :doctype => "texminted",
         :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"],
         :keep_unicode => false,
     ),
@@ -157,7 +152,6 @@ let p = Pandoc(
             # Prefer png figures for markdown conversion, svg doesn't work with latex
             :mimetypes =>
                 ["image/png", "image/jpg", "image/svg+xml", "text/markdown", "text/plain"],
-            :doctype => "pandoc",
         ),
     )
     register_format!("pandoc", p)
@@ -180,7 +174,6 @@ register_format!("github", GitHubMarkdown(
         :extension => "md",
         :mimetypes =>
             ["image/png", "image/svg+xml", "image/jpg", "text/markdown", "text/plain"],
-        :doctype => "github",
     ),
 ))
 
@@ -194,7 +187,6 @@ register_format!("hugo", Hugo(
         :outputend => "````\n\n",
         :fig_ext => ".png",
         :extension => "md",
-        :doctype => "hugo",
         :uglyURLs => false, # if `false`, prepend figure path by `..`
     ),
 ))
@@ -209,7 +201,6 @@ register_format!("multimarkdown", MultiMarkdown(
         :outputend => "````\n\n",
         :fig_ext => ".png",
         :extension => "md",
-        :doctype => "github",
     ),
 ))
 
@@ -229,7 +220,6 @@ register_format!("rst", Rest(
         :fig_ext => ".png",
         :extension => "rst",
         :out_width => "15 cm",
-        :doctype => "rst",
     ),
 ))
 
@@ -249,7 +239,6 @@ register_format!("asciidoc", AsciiDoc(
         :fig_ext => ".png",
         :extension => "txt",
         :out_width => "600",
-        :doctype => "asciidoc",
     ),
 ))
 
