@@ -6,7 +6,7 @@ Most of the ideas came from [chunk options in RMarkdown](http://yihui.name/knitr
 
 ## Syntax
 
-Chunk options come after at the top of [code chunk](@ref code-chunks).
+Chunk options come after code chunk starter at the top of [code chunk](@ref code-chunks).
 There are two (slightly) different syntax to write them:
 - (Julia's toplevel expression) options are separated by semicolon (`;`)
 - (RMarkdown style) options are separated by comma (`,`)

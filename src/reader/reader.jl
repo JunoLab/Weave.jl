@@ -116,7 +116,7 @@ function parse_options(str)::OptionDict
 end
 
 is_valid_kv(x) = Meta.isexpr(x, :(=))
-dict(nt) = Dict((k => v for (k,v) in zip(keys(nt), values(nt))))
+dict(nt) = Dict((k => v for (k,v) in zip(keys(nt), values(nt)))...)
 nt(dict) = NamedTuple{(Symbol.(keys(dict))...,)}((collect(values(dict))...,))
 
 # each input format

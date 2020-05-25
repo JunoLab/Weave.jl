@@ -10,9 +10,9 @@ using Weave: parse_options, parse_markdown
 @test (:opt => nothing) in parse_options("opt = nothing")
 
 # Weave style -- semicolon separated
-let opts = parse_options("opt1 = 1; opt2 = 2")
+let opts = parse_options("opt1 = 1; opt2 = \"2\"")
     @test (:opt1 => 1) in opts
-    @test (:opt2 => 2) in opts
+    @test (:opt2 => "2") in opts
 end
 # robust parsing
 @test let opts = parse_options("invalid; valid = nothing")
@@ -21,9 +21,9 @@ end
 end
 
 # RMarkdown style -- comma separated
-let opts = parse_options("opt1 = 1, opt2 = 2")
+let opts = parse_options("opt1 = 1, opt2 = \"2\"")
     @test (:opt1 => 1) in opts
-    @test (:opt2 => 2) in opts
+    @test (:opt2 => "2") in opts
 end
 # robust parsing
 @test let opts = parse_options("invalid, valid = nothing")
@@ -51,13 +51,13 @@ get_options(str) =
 @test get_options("```julia; \n```") |> length === 1
 @test (:opt => nothing) in get_options("```julia; opt = nothing\n```")
 @test (:opt => nothing) in get_options("```{julia; opt = nothing}\n```")
-let opts = get_options("```julia; opt1 = 1; opt2 = 2\n```")
+let opts = get_options("```julia; opt1 = 1; opt2 = \"2\"\n```")
     @test (:opt1 => 1) in opts
-    @test (:opt2 => 2) in opts
+    @test (:opt2 => "2") in opts
 end
-let opts = get_options("```{julia; opt1 = 1; opt2 = 2}\n```")
+let opts = get_options("```{julia; opt1 = 1; opt2 = \"2\"}\n```")
     @test (:opt1 => 1) in opts
-    @test (:opt2 => 2) in opts
+    @test (:opt2 => "2") in opts
 end
 
 # RMarkdown style -- comma separated
@@ -66,13 +66,13 @@ end
 @test get_options("```julia, \n```") |> length === 1
 @test (:opt => nothing) in get_options("```julia, opt = nothing\n```")
 @test (:opt => nothing) in get_options("```{julia, opt = nothing}\n```")
-let opts = get_options("```{julia, opt1 = 1, opt2 = 2}\n```")
+let opts = get_options("```{julia, opt1 = 1, opt2 = \"2\"}\n```")
     @test (:opt1 => 1) in opts
-    @test (:opt2 => 2) in opts
+    @test (:opt2 => "2") in opts
 end
-let opts = get_options("```julia, opt1 = 1, opt2 = 2\n```")
+let opts = get_options("```julia, opt1 = 1, opt2 = \"2\"\n```")
     @test (:opt1 => 1) in opts
-    @test (:opt2 => 2) in opts
+    @test (:opt2 => "2") in opts
 end
 
 end
@@ -85,13 +85,13 @@ get_options(str) =
 
 @test get_options("<<>>=\n@") |> length === 1
 @test (:opt => nothing) in get_options("<<opt = nothing>>=\n@")
-let opts = get_options("<<opt1 = 1; opt2 = 2>>=\n@")
+let opts = get_options("<<opt1 = 1; opt2 = \"2\">>=\n@")
     @test (:opt1 => 1) in opts
-    @test (:opt2 => 2) in opts
+    @test (:opt2 => "2") in opts
 end
-let opts = get_options("<<opt1 = 1, opt2 = 2>>=\n@")
+let opts = get_options("<<opt1 = 1, opt2 = \"2\">>=\n@")
     @test (:opt1 => 1) in opts
-    @test (:opt2 => 2) in opts
+    @test (:opt2 => "2") in opts
 end
 
 end
