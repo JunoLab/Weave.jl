@@ -7,6 +7,8 @@
 \usepackage{graphicx}
 \usepackage{microtype}
 \usepackage{hyperref}
+{{#:minted}}\usepacakge{minted}{{/:minted}}
+
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1.2ex}
 

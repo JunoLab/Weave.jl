@@ -22,17 +22,17 @@ function format(doc, template = nothing, highlight_theme = nothing; css = nothin
     end
     body = join(lines, '\n')
 
-    return docformat isa JMarkdown2HTML ? render2html(body, doc, template, css, highlight_theme) :
-           docformat isa TexFormat ? render2tex(body, doc, template, highlight_theme) :
-           body
+    return render_doc(docformat, body, doc, template, css, highlight_theme)
 end
 
-function render2html(body, doc, template, css, highlight_theme)
+render_doc(_, body, args...) = body
+
+function render_doc(::JMarkdown2HTML, body, doc, template, css, highlight_theme)
     _, weave_source = splitdir(abspath(doc.source))
     weave_version, weave_date = weave_info()
 
     return Mustache.render(
-        get_template(template, false);
+        get_html_template(template);
         body = body,
         stylesheet = get_stylesheet(css),
         highlight_stylesheet = get_highlight_stylesheet(MIME("text/html"), highlight_theme),
@@ -44,11 +44,30 @@ function render2html(body, doc, template, css, highlight_theme)
     )
 end
 
-function render2tex(body, doc, template, highlight_theme)
+function render_doc(::JMarkdown2tex, body, doc, template, _, highlight_theme)
     return Mustache.render(
-        get_template(template, true);
+        get_tex_template(template);
         body = body,
         highlight = get_highlight_stylesheet(MIME("text/latex"), highlight_theme),
+        [Pair(Symbol(k), v) for (k, v) in doc.header]...,
+    )
+end
+
+function render_doc(::Tex, body, doc, template, _, highlight_theme)
+    return Mustache.render(
+        get_tex_template(template);
+        body = body,
+        highlight = get_highlight_stylesheet(MIME("text/latex"), highlight_theme),
+        [Pair(Symbol(k), v) for (k, v) in doc.header]...,
+    )
+end
+
+function render_doc(::TexMinted, body, doc, template, _, highlight_theme)
+    return Mustache.render(
+        get_tex_template(template);
+        body = body,
+        highlight = get_highlight_stylesheet(MIME("text/latex"), highlight_theme),
+        minted = true,
         [Pair(Symbol(k), v) for (k, v) in doc.header]...,
     )
 end
@@ -56,10 +75,12 @@ end
 get_highlight_theme(::Nothing) = Highlights.Themes.DefaultTheme
 get_highlight_theme(highlight_theme::Type{<:Highlights.AbstractTheme}) = highlight_theme
 
-get_template(::Nothing, tex::Bool = false) =
-    Mustache.template_from_file(normpath(TEMPLATE_DIR, tex ? "md2pdf.tpl" : "md2html.tpl"))
-get_template(path::AbstractString, tex) = Mustache.template_from_file(path)
-get_template(tpl::Mustache.MustacheTokens, tex) = tpl
+get_html_template(::Nothing) = get_template(normpath(TEMPLATE_DIR, "md2html.tpl"))
+get_html_template(x) = get_template(x)
+get_tex_template(::Nothing) = get_template(normpath(TEMPLATE_DIR, "md2pdf.tpl"))
+get_tex_template(x) = get_template(x)
+get_template(path::AbstractString) = Mustache.template_from_file(path)
+get_template(tpl::Mustache.MustacheTokens) = tpl
 
 get_stylesheet(::Nothing) = get_stylesheet(normpath(STYLESHEET_DIR, "skeleton.css"))
 get_stylesheet(path::AbstractString) = read(path, String)
