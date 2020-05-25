@@ -27,15 +27,11 @@ end
 take2string!(io) = String(take!(io))
 
 """
-    list_out_formats()
+    list_out_formats(io = stdout)
 
 List supported output formats
 """
-function list_out_formats()
-    for format in keys(formats)
-        println(string(format, ": ", formats[format].description))
-    end
-end
+list_out_formats(io = stdout) = for (k, v) in FORMATS; println(io, string(k, ": ", v.description)); end
 
 """
     tangle(source::AbstractString; kwargs...)
@@ -228,7 +224,7 @@ weave(doc::AbstractString, doctype::Union{Symbol,AbstractString}; kwargs...) =
     weave(doc; doctype = doctype, kwargs...)
 
 function specific_options!(weave_options, doctype)
-    fmts = keys(formats)
+    fmts = keys(FORMATS)
     for (k,v) in weave_options
         if k in fmts
             k == doctype && merge!(weave_options, v)
@@ -335,7 +331,7 @@ include("display_methods.jl")
 include("reader/reader.jl")
 include("run.jl")
 include("cache.jl")
-include("formatters.jl")
+include("formats.jl")
 include("format.jl")
 include("pandoc.jl")
 include("converter.jl")
