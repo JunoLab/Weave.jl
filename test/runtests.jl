@@ -64,14 +64,16 @@ macro jmd_str(s) mock_doc(s) end
     # end
 
     # trigger only on CI
-    get(ENV, "CI", nothing) == "true" && begin
+    if get(ENV, "CI", nothing) == "true"
         @testset "Plots" begin
             include("plotsjl_test.jl")
         end
-        
+
         @testset "Gadfly" begin
             include("gadfly_formats.jl")
         end
+    else
+        @info "skipped Plots.jl and Gadfly.jl integration test"
     end
 
     try
