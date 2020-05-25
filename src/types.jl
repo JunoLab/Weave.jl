@@ -25,30 +25,31 @@ struct ChunkOutput
 end
 
 mutable struct CodeChunk <: WeaveChunk
-    content::AbstractString
+    content::String
     number::Int
     result_no::Int
     start_line::Int
-    optionstring::AbstractString
+    optionstring::String
     options::Dict{Symbol,Any}
     output::AbstractString
     rich_output::AbstractString
-    figures::Vector{AbstractString}
+    figures::Vector{String}
     result::Vector{ChunkOutput}
-    function CodeChunk(content, number, start_line, optionstring, options)
-        new(
-            string(rstrip(content), '\n'), # normalize end of chunk
-            number,
-            0,
-            start_line,
-            optionstring,
-            options,
-            "",
-            "",
-            AbstractString[],
-            ChunkOutput[],
-        )
-    end
+end
+
+function CodeChunk(content, number, start_line, optionstring, options)
+    return CodeChunk(
+        string(rstrip(content), '\n'), # normalize end of chunk)
+        number,
+        0,
+        start_line,
+        optionstring,
+        options,
+        "",
+        "",
+        AbstractString[],
+        ChunkOutput[]
+    )
 end
 
 mutable struct DocChunk <: WeaveChunk

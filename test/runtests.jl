@@ -16,10 +16,6 @@ macro jmd_str(s) mock_doc(s) end
 
 
 @testset "Weave" begin
-    @testset "Chunk options" begin
-        include("chunk_options.jl")
-    end
-
     @testset "module evaluation" begin
         include("test_module_evaluation.jl")
     end
@@ -30,6 +26,10 @@ macro jmd_str(s) mock_doc(s) end
 
     @testset "inline" begin
         include("test_inline.jl")
+    end
+
+    @testset "chunk options" begin
+        include("test_chunk_options.jl")
     end
 
     @testset "error rendering" begin
@@ -64,14 +64,16 @@ macro jmd_str(s) mock_doc(s) end
     # end
 
     # trigger only on CI
-    get(ENV, "CI", nothing) == "true" && begin
+    if get(ENV, "CI", nothing) == "true"
         @testset "Plots" begin
             include("plotsjl_test.jl")
         end
-        
+
         @testset "Gadfly" begin
             include("gadfly_formats.jl")
         end
+    else
+        @info "skipped Plots.jl and Gadfly.jl integration test"
     end
 
     try

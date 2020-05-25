@@ -16,3 +16,17 @@ rm(out)
 out = weave(joinpath(@__DIR__, "documents", "markdown_beamer.jmd"), doctype="md2tex", template=tpl)
 @test read(out, String) == read(out*".ref", String)
 rm(out)
+
+
+@testset "chunk options" begin
+
+result =  read("documents/chunk_options.md", String)
+ref =  read("documents/chunk_options_ref.md", String)
+@test result == ref
+
+tangle("documents/chunk_options.noweb", out_path = "documents/tangle")
+result =  read("documents/tangle/chunk_options.jl", String)
+ref =  read("documents/tangle/chunk_options.jl.ref", String)
+@test ref == result
+
+end
