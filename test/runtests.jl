@@ -54,22 +54,25 @@ macro jmd_str(s) mock_doc(s) end
         include("rich_output.jl")
     end
 
-    @testset "Plots" begin
-        include("plotsjl_test.jl")
-    end
-
     @testset "Cache" begin
         include("cache_test.jl")
-    end
-
-    @testset "Gadfly" begin
-        include("gadfly_formats.jl")
     end
 
     # @testset "Notebooks" begin
     #     @info("Testing Jupyter options")
     #     include("notebooks.jl")
     # end
+
+    # trigger only on CI
+    get(ENV, "CI", nothing) == "true" && begin
+        @testset "Plots" begin
+            include("plotsjl_test.jl")
+        end
+        
+        @testset "Gadfly" begin
+            include("gadfly_formats.jl")
+        end
+    end
 
     try
         @testset "end2end (maybe fail)" begin
