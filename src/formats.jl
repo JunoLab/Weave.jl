@@ -9,6 +9,7 @@ const FORMATS = Dict{String,WeaveFormat}()
 register_format!(format_name::AbstractString, format::WeaveFormat) = push!(FORMATS, format_name => format)
 
 macro define_format(type_name, supertype = WeaveFormat)
+    @assert supertype <: WeaveFormat "$type_name should be subtype of WeaveFormat"
     return quote
         struct $(type_name) <: $(supertype)
             description::String
