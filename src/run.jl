@@ -3,40 +3,13 @@ using Base64
 
 const PROGRESS_ID = "weave_progress"
 
-"""
-    run_doc(doc::WeaveDoc; kwargs...)
-
-Run code chunks and capture output from the parsed document.
-
-## Keyword options
-
-- `doctype::Union{Nothing,AbstractString} = nothing`: Output document format. By default (i.e. given `nothing`), Weave will set it automatically based on file extension. You can also manually specify it; see [`list_out_formats()`](@ref) for the supported formats
-- `out_path::Union{Symbol,AbstractString} = :doc`: Path where the output is generated can be either of:
-  * `:doc`: Path of the source document (default)
-  * `:pwd`: Julia working directory
-  * `"somepath"`: `String` of output directory e.g. `"~/outdir"`, or of filename e.g. `"~/outdir/outfile.tex"`
-- `args::Dict = Dict()`: Arguments to be passed to the weaved document; will be available as `WEAVE_ARGS` in the document
-- `mod::Union{Module,Nothing} = nothing`: Module where Weave `eval`s code. You can pass a `Module` object, otherwise create an new sandbox module.
-- `fig_path::AbstractString = "figures"`: Where figures will be generated, relative to `out_path`
-- `fig_ext::Union{Nothing,AbstractString} = nothing`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`
-- `cache_path::AbstractString = "cache"`: Where of cached output will be saved
-- `cache::Symbol = :off`: Controls caching of code:
-  * `:off` means no caching (default)
-  * `:all` caches everything
-  * `:user` caches based on chunk options
-  * `:refresh` runs all code chunks and save new cache
-- `throw_errors::Bool = false`: If `false` errors are included in output document and the whole document is executed. If `true` errors are thrown when they occur
-
-!!! note
-    Run Weave from terminal and try to avoid weaving from IJulia or ESS; they tend to mess with capturing output.
-"""
 function run_doc(
     doc::WeaveDoc;
     doctype::Union{Nothing,AbstractString} = nothing,
     out_path::Union{Symbol,AbstractString} = :doc,
     args::Dict = Dict(),
     mod::Union{Module,Nothing} = nothing,
-    fig_path::AbstractString = "figures",
+    fig_path::Union{Nothing,AbstractString} = nothing,
     fig_ext::Union{Nothing,AbstractString} = nothing,
     cache_path::AbstractString = "cache",
     cache::Symbol = :off,
@@ -47,18 +20,22 @@ function run_doc(
     doc.doctype = isnothing(doctype) ? (doctype = detect_doctype(doc.source)) : doctype
     doc.format = deepcopy(FORMATS[doctype])
 
-    doc.cwd = get_cwd(doc, out_path)
-    isdir(doc.cwd) || mkpath(doc.cwd)
-    if (occursin("2pdf", doctype) && cache == :off) || occursin("2html", doctype)
-        fig_path = mktempdir(abspath(doc.cwd))
+    cwd = doc.cwd = get_cwd(doc, out_path)
+    isdir(cwd) || mkpath(cwd)
+
+    if isnothing(fig_path)
+        fig_path = if (endswith(doctype, "2pdf") && cache === :off) || endswith(doctype, "2html")
+            basename(mktempdir(abspath(doc.cwd)))
+        else
+            DEFAULT_FIG_PATH
+        end
     end
-
-    cache === :off || @eval import Serialization # XXX: evaluate in a more sensible module
-
+    let d = normpath(cwd, fig_path); isdir(d) || mkdir(d); end
     # This is needed for latex and should work on all output formats
     @static Sys.iswindows() && (fig_path = replace(fig_path, "\\" => "/"))
-
     set_rc_params(doc, fig_path, fig_ext)
+
+    cache === :off || @eval import Serialization # XXX: evaluate in a more sensible module
 
     # New sandbox for each document with args exposed
     isnothing(mod) && (mod = sandbox = Core.eval(Main, :(module $(gensym(:WeaveSandBox)) end))::Module)
@@ -335,26 +312,21 @@ function clear_module!(mod::Module)
 end
 
 function get_figname(report::Report, chunk; fignum = nothing, ext = nothing)
-    figpath = joinpath(report.cwd, chunk.options[:fig_path])
-    isdir(figpath) || mkpath(figpath)
     isnothing(ext) && (ext = chunk.options[:fig_ext])
     isnothing(fignum) && (fignum = report.fignum)
 
     chunkid = isnothing(chunk.options[:label]) ? chunk.number : chunk.options[:label]
-    full_name = joinpath(
-        report.cwd,
-        chunk.options[:fig_path],
-        "$(report.basename)_$(chunkid)_$(fignum)$ext",
-    )
-    rel_name = "$(chunk.options[:fig_path])/$(report.basename)_$(chunkid)_$(fignum)$ext" # Relative path is used in output
+    basename = string(report.basename, '_', chunkid, '_', fignum, ext)
+    full_name = normpath(report.cwd, chunk.options[:fig_path], basename)
+    rel_name = string(chunk.options[:fig_path], '/', basename) # Relative path is used in output
     return full_name, rel_name
 end
 
 function get_cwd(doc::WeaveDoc, out_path)
     # Set the output directory
-    if out_path == :doc
+    if out_path === :doc
         cwd = doc.path
-    elseif out_path == :pwd
+    elseif out_path === :pwd
         cwd = pwd()
     else
         # If there is no extension, use as path
@@ -393,7 +365,6 @@ function set_rc_params(doc::WeaveDoc, fig_path, fig_ext)
         doc.chunk_defaults[:fig_ext] = fig_ext
     end
     doc.chunk_defaults[:fig_path] = fig_path
-    return nothing
 end
 
 function collect_results(chunk::CodeChunk, fmt::ScriptResult)

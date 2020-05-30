@@ -3,16 +3,18 @@ module Weave
 using Highlights, Mustache, Requires
 
 
+# directories
 const PKG_DIR = normpath(@__DIR__, "..")
 const TEMPLATE_DIR = normpath(PKG_DIR, "templates")
 const STYLESHEET_DIR = normpath(PKG_DIR, "stylesheets")
-const WEAVE_OPTION_NAME = "weave_options"
-const WEAVE_OPTION_NAME_DEPRECATED = "options" # remove this when tagging v0.11
-const WEAVE_OPTION_DEPRECATE_ID = "weave_option_duplicate_id"
-
 # keeps paths of sample documents for easy try
 const EXAMPLE_FOLDER = normpath(PKG_DIR, "examples")
 
+# constant names
+const WEAVE_OPTION_NAME = "weave_options"
+const WEAVE_OPTION_NAME_DEPRECATED = "options" # remove this when tagging v0.11
+const WEAVE_OPTION_DEPRECATE_ID = "weave_option_duplicate_id"
+const DEFAULT_FIG_PATH = "figures"
 
 function __init__()
     @require Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80" include("plots.jl")
@@ -83,7 +85,7 @@ Weave an input document to output file.
   * `"somepath"`: `String` of output directory e.g. `"~/outdir"`, or of filename e.g. `"~/outdir/outfile.tex"`
 - `args::Dict = Dict()`: Arguments to be passed to the weaved document; will be available as `WEAVE_ARGS` in the document
 - `mod::Union{Module,Nothing} = nothing`: Module where Weave `eval`s code. You can pass a `Module` object, otherwise create an new sandbox module.
-- `fig_path::AbstractString = "figures"`: Where figures will be generated, relative to `out_path`
+- `fig_path::Union{Nothing,AbstractString} = nothing`: Where figures will be generated, relative to `out_path`. By default (i.e. given `nothing`), Weave will automatically create `$(DEFAULT_FIG_PATH)` directory.
 - `fig_ext::Union{Nothing,AbstractString} = nothing`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`
 - `cache_path::AbstractString = "cache"`: Where of cached output will be saved
 - `cache::Symbol = :off`: Controls caching of code:
@@ -109,7 +111,7 @@ function weave(
     out_path::Union{Symbol,AbstractString} = :doc,
     args::Dict = Dict(),
     mod::Union{Module,Nothing} = nothing,
-    fig_path::AbstractString = "figures",
+    fig_path::Union{Nothing,AbstractString} = nothing,
     fig_ext::Union{Nothing,AbstractString} = nothing,
     cache_path::AbstractString = "cache",
     cache::Symbol = :off,
