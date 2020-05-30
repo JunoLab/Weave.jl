@@ -1,6 +1,7 @@
 module Weave
 
 using Highlights, Mustache, Requires
+using Printf
 
 
 const PKG_DIR = normpath(@__DIR__, "..")
@@ -12,7 +13,12 @@ const WEAVE_OPTION_DEPRECATE_ID = "weave_option_duplicate_id"
 
 # keeps paths of sample documents for easy try
 const EXAMPLE_FOLDER = normpath(PKG_DIR, "examples")
-
+const WEAVE_VERSION = try
+    'v' * Pkg.TOML.parsefile(normpath(PKG_DIR, "Project.toml"))["version"]
+catch
+    ""
+end
+weave_info() = WEAVE_VERSION, string(Date(now()))
 
 function __init__()
     @require Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80" include("plots.jl")
@@ -333,6 +339,11 @@ include("run.jl")
 include("cache.jl")
 include("formats.jl")
 include("format.jl")
+include("rendering/common.jl")
+include("rendering/htmlformats.jl")
+include("rendering/markdownformats.jl")
+include("rendering/texformats.jl")
+include("rendering/variousformats.jl")
 include("pandoc.jl")
 include("converter.jl")
 
