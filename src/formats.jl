@@ -1,160 +1,147 @@
 # TODO:
-# - 1. turn each `.formatdict` value into fields
-# - 2. do assertions for definition mandatory fields in `@define_format` macro
-# - 3. export as public API
+# - 1. do assertions for definition mandatory fields in `@define_format` macro
+# - 2. implement fallback format/rendering functions in format.jl
+# - 3. export this as public API
 
 
 abstract type WeaveFormat end
 const FORMATS = Dict{String,WeaveFormat}()
-register_format!(format_name::AbstractString, format::WeaveFormat) = push!(FORMATS, format_name => format)
 
-macro define_format(type_name, supertype = WeaveFormat)
-    @assert supertype <: WeaveFormat "$type_name should be subtype of WeaveFormat"
+macro define_format(type_name, supertype = :WeaveFormat)
     return quote
+        @assert $(supertype) <: WeaveFormat "$($(supertype)) should be subtype of WeaveFormat"
         struct $(type_name) <: $(supertype)
-            description::String
             formatdict::Dict{Symbol,Any}
         end
     end
 end
-
+# TODO: do some assertion for necessary fields of `formatdict`
+register_format!(format_name::AbstractString, format::WeaveFormat) = push!(FORMATS, format_name => format)
 
 # HTML
 # ----
 
 @define_format JMarkdown2HTML
-register_format!("md2html", JMarkdown2HTML(
-    "Julia markdown to html",
-    Dict(
-        :codestart => "\n",
-        :codeend => "\n",
-        :outputstart => "<pre class=\"output\">",
-        :outputend => "</pre>\n",
-        :fig_ext => ".png",
-        :mimetypes => [
-            "image/png",
-            "image/jpg",
-            "image/svg+xml",
-            "text/html",
-            "text/markdown",
-            "text/plain",
-        ],
-        :extension => "html",
-    ),
-))
+register_format!("md2html", JMarkdown2HTML(Dict(
+    :description => "Julia markdown to html",
+    :codestart => "\n",
+    :codeend => "\n",
+    :outputstart => "<pre class=\"output\">",
+    :outputend => "</pre>\n",
+    :fig_ext => ".png",
+    :mimetypes => [
+        "image/png",
+        "image/jpg",
+        "image/svg+xml",
+        "text/html",
+        "text/markdown",
+        "text/plain",
+    ],
+    :extension => "html",
+)))
 
 @define_format Pandoc2HTML
-register_format!("pandoc2html", Pandoc2HTML(
-    "Markdown to HTML (requires Pandoc 2)",
-    Dict(
-        :codestart => "\n",
-        :codeend => "\n",
-        :outputstart => "\n",
-        :outputend => "\n",
-        :fig_ext => ".png",
-        :extension => "md",
-        :mimetypes => [
-            "image/png",
-            "image/svg+xml",
-            "image/jpg",
-            "text/html",
-            "text/markdown",
-            "text/plain",
-        ],
-    ),
-))
+register_format!("pandoc2html", Pandoc2HTML(Dict(
+    :description => "Markdown to HTML (requires Pandoc 2)",
+    :codestart => "\n",
+    :codeend => "\n",
+    :outputstart => "\n",
+    :outputend => "\n",
+    :fig_ext => ".png",
+    :extension => "md",
+    :mimetypes => [
+        "image/png",
+        "image/svg+xml",
+        "image/jpg",
+        "text/html",
+        "text/markdown",
+        "text/plain",
+    ],
+)))
 
 
 # PDF and Tex
 # -----------
 
 @define_format JMarkdown2tex
-let t = JMarkdown2tex(
-        "Julia markdown to latex",
-        Dict(
-            :codestart => "",
-            :codeend => "",
-            :outputstart => "\\begin{lstlisting}",
-            :outputend => "\\end{lstlisting}\n",
-            :fig_ext => ".pdf",
-            :extension => "tex",
-            :out_width => "\\linewidth",
-            :mimetypes => [
-                "application/pdf",
-                "image/png",
-                "image/jpg",
-                "text/latex",
-                "text/markdown",
-                "text/plain",
-            ],
-            :keep_unicode => false,
-        )
-    )
+let t = JMarkdown2tex(Dict(
+        :description => "Julia markdown to latex",
+        :codestart => "",
+        :codeend => "",
+        :outputstart => "\\begin{lstlisting}",
+        :outputend => "\\end{lstlisting}\n",
+        :fig_ext => ".pdf",
+        :extension => "tex",
+        :out_width => "\\linewidth",
+        :mimetypes => [
+            "application/pdf",
+            "image/png",
+            "image/jpg",
+            "text/latex",
+            "text/markdown",
+            "text/plain",
+        ],
+        :keep_unicode => false,
+    ))
     register_format!("md2pdf", t)
     register_format!("md2tex", t)
 end
 
 @define_format Tex
-register_format!("tex", Tex(
-    "Latex with custom code environments",
-    Dict(
-        :codestart => "\\begin{juliacode}",
-        :codeend => "\\end{juliacode}",
-        :outputstart => "\\begin{juliaout}",
-        :outputend => "\\end{juliaout}",
-        :termstart => "\\begin{juliaterm}",
-        :termend => "\\end{juliaterm}",
-        :fig_ext => ".pdf",
-        :extension => "tex",
-        :out_width => "\\linewidth",
-        :fig_env => "figure",
-        :fig_pos => "htpb",
-        :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"],
-        :keep_unicode => false,
-    ),
-))
-register_format!("texminted", Tex(
-    "Latex using minted for highlighting",
-    Dict(
-        :codestart =>
-            "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}",
-        :codeend => "\\end{minted}",
-        :outputstart =>
-            "\\begin{minted}[fontsize=\\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}",
-        :outputend => "\\end{minted}",
-        :termstart =>
-            "\\begin{minted}[fontsize=\\footnotesize, xleftmargin=0.5em, mathescape]{jlcon}",
-        :termend => "\\end{minted}",
-        :fig_ext => ".pdf",
-        :extension => "tex",
-        :out_width => "\\linewidth",
-        :fig_env => "figure",
-        :fig_pos => "htpb",
-        :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"],
-        :keep_unicode => false,
-    ),
-))
+register_format!("tex", Tex(Dict(
+    :description => "Latex with custom code environments",
+    :codestart => "\\begin{juliacode}",
+    :codeend => "\\end{juliacode}",
+    :outputstart => "\\begin{juliaout}",
+    :outputend => "\\end{juliaout}",
+    :termstart => "\\begin{juliaterm}",
+    :termend => "\\end{juliaterm}",
+    :fig_ext => ".pdf",
+    :extension => "tex",
+    :out_width => "\\linewidth",
+    :fig_env => "figure",
+    :fig_pos => "htpb",
+    :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"],
+    :keep_unicode => false,
+)))
+register_format!("texminted", Tex(Dict(
+    :description => "Latex using minted for highlighting",
+    :codestart =>
+        "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}",
+    :codeend => "\\end{minted}",
+    :outputstart =>
+        "\\begin{minted}[fontsize=\\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}",
+    :outputend => "\\end{minted}",
+    :termstart =>
+        "\\begin{minted}[fontsize=\\footnotesize, xleftmargin=0.5em, mathescape]{jlcon}",
+    :termend => "\\end{minted}",
+    :fig_ext => ".pdf",
+    :extension => "tex",
+    :out_width => "\\linewidth",
+    :fig_env => "figure",
+    :fig_pos => "htpb",
+    :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"],
+    :keep_unicode => false,
+)))
 
 
 # pandoc
 # ------
 
 @define_format Pandoc
-let p = Pandoc(
-        "Pandoc markdown",
-        Dict(
-            :codestart => "~~~~{.julia}",
-            :codeend => "~~~~~~~~~~~~~\n\n",
-            :outputstart => "~~~~",
-            :outputend => "~~~~\n\n",
-            :fig_ext => ".png",
-            :out_width => nothing,
-            :extension => "md",
-            # Prefer png figures for markdown conversion, svg doesn't work with latex
-            :mimetypes =>
-                ["image/png", "image/jpg", "image/svg+xml", "text/markdown", "text/plain"],
-        ),
-    )
+let p = Pandoc(Dict(
+        :description => "Pandoc markdown",
+        :codestart => "~~~~{.julia}",
+        :codeend => "~~~~~~~~~~~~~\n\n",
+        :outputstart => "~~~~",
+        :outputend => "~~~~\n\n",
+        :fig_ext => ".png",
+        :out_width => nothing,
+        :extension => "md",
+        # Prefer png figures for markdown conversion, svg doesn't work with latex
+        :mimetypes =>
+            ["image/png", "image/jpg", "image/svg+xml", "text/markdown", "text/plain"],
+    ))
     register_format!("pandoc", p)
     register_format!("pandoc2pdf", p)
 end
@@ -164,65 +151,57 @@ end
 # --------
 
 @define_format GitHubMarkdown
-register_format!("github", GitHubMarkdown(
-    "GitHub markdown",
-    Dict(
-        :codestart => "````julia",
-        :codeend => "````\n\n",
-        :outputstart => "````",
-        :outputend => "````\n\n",
-        :fig_ext => ".png",
-        :extension => "md",
-        :mimetypes =>
-            ["image/png", "image/svg+xml", "image/jpg", "text/markdown", "text/plain"],
-    ),
-))
+register_format!("github", GitHubMarkdown(Dict(
+    :description => "GitHub markdown",
+    :codestart => "````julia",
+    :codeend => "````\n\n",
+    :outputstart => "````",
+    :outputend => "````\n\n",
+    :fig_ext => ".png",
+    :extension => "md",
+    :mimetypes =>
+        ["image/png", "image/svg+xml", "image/jpg", "text/markdown", "text/plain"],
+)))
 
 @define_format Hugo
-register_format!("hugo", Hugo(
-    "Hugo markdown (using shortcodes)",
-    Dict(
-        :codestart => "````julia",
-        :codeend => "````\n\n",
-        :outputstart => "````",
-        :outputend => "````\n\n",
-        :fig_ext => ".png",
-        :extension => "md",
-        :uglyURLs => false, # if `false`, prepend figure path by `..`
-    ),
-))
+register_format!("hugo", Hugo(Dict(
+    :description => "Hugo markdown (using shortcodes)",
+    :codestart => "````julia",
+    :codeend => "````\n\n",
+    :outputstart => "````",
+    :outputend => "````\n\n",
+    :fig_ext => ".png",
+    :extension => "md",
+    :uglyURLs => false, # if `false`, prepend figure path by `..`
+)))
 
 @define_format MultiMarkdown
-register_format!("multimarkdown", MultiMarkdown(
-    "MultiMarkdown",
-    Dict(
-        :codestart => "````julia",
-        :codeend => "````\n\n",
-        :outputstart => "````",
-        :outputend => "````\n\n",
-        :fig_ext => ".png",
-        :extension => "md",
-    ),
-))
+register_format!("multimarkdown", MultiMarkdown(Dict(
+    :description => "MultiMarkdown",
+    :codestart => "````julia",
+    :codeend => "````\n\n",
+    :outputstart => "````",
+    :outputend => "````\n\n",
+    :fig_ext => ".png",
+    :extension => "md",
+)))
 
 
 # Rest
 # ----
 
 @define_format Rest
-register_format!("rst", Rest(
-    "reStructuredText and Sphinx",
-    Dict(
-        :codestart => ".. code-block:: julia\n",
-        :codeend => "\n\n",
-        :outputstart => "::\n",
-        :outputend => "\n\n",
-        :indent => 4,
-        :fig_ext => ".png",
-        :extension => "rst",
-        :out_width => "15 cm",
-    ),
-))
+register_format!("rst", Rest(Dict(
+    :description => "reStructuredText and Sphinx",
+    :codestart => ".. code-block:: julia\n",
+    :codeend => "\n\n",
+    :outputstart => "::\n",
+    :outputend => "\n\n",
+    :indent => 4,
+    :fig_ext => ".png",
+    :extension => "rst",
+    :out_width => "15 cm",
+)))
 
 
 # Ansii
@@ -230,18 +209,16 @@ register_format!("rst", Rest(
 
 # asciidoc -b html5 -a source-highlighter=pygments ...
 @define_format AsciiDoc
-register_format!("asciidoc", AsciiDoc(
-    "AsciiDoc",
-    Dict(
-        :codestart => "[source,julia]\n--------------------------------------",
-        :codeend => "--------------------------------------\n\n",
-        :outputstart => "--------------------------------------",
-        :outputend => "--------------------------------------\n\n",
-        :fig_ext => ".png",
-        :extension => "txt",
-        :out_width => "600",
-    ),
-))
+register_format!("asciidoc", AsciiDoc(Dict(
+    :description => "AsciiDoc",
+    :codestart => "[source,julia]\n--------------------------------------",
+    :codeend => "--------------------------------------\n\n",
+    :outputstart => "--------------------------------------",
+    :outputend => "--------------------------------------\n\n",
+    :fig_ext => ".png",
+    :extension => "txt",
+    :out_width => "600",
+)))
 
 
 # TODO: move this functions where used

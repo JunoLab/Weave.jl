@@ -31,7 +31,7 @@ take2string!(io) = String(take!(io))
 
 List supported output formats
 """
-list_out_formats(io = stdout) = for (k, v) in FORMATS; println(io, string(k, ": ", v.description)); end
+list_out_formats(io = stdout) = for (k, v) in FORMATS; println(io, string(k, ": ", v.formatdict[:description])); end
 
 """
     tangle(source::AbstractString; kwargs...)
