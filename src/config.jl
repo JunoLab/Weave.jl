@@ -14,7 +14,7 @@ const defaultParams = Dict{Symbol,Any}(
         # Size in inches
         :fig_width => 6,
         :fig_height => 4,
-        :fig_path => "figures",
+        :fig_path => DEFAULT_FIG_PATH,
         :dpi => 96,
         :term => false,
         :display => false,
