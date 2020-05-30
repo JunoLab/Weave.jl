@@ -89,31 +89,15 @@ register_format!("texminted", TexMinted(Dict(
 
 
 
-#### These function are identical
-function render_doc(::JMarkdown2tex, body, doc, template, _, highlight_theme)
-    return Mustache.render(
-        get_tex_template(template);
-        body = body,
-        highlight = get_highlight_stylesheet(MIME("text/latex"), highlight_theme),
-        [Pair(Symbol(k), v) for (k, v) in doc.header]...,
-    )
-end
+isminted(::TexFormat) = false
+isminted(::TexMinted) = true
 
-function render_doc(::Tex, body, doc, template, _, highlight_theme)
+function render_doc(docformat::TexFormat, body, doc, template, _, highlight_theme)
     return Mustache.render(
         get_tex_template(template);
         body = body,
-        highlight = get_highlight_stylesheet(MIME("text/latex"), highlight_theme),
-        [Pair(Symbol(k), v) for (k, v) in doc.header]...,
-    )
-end
-
-function render_doc(::TexMinted, body, doc, template, _, highlight_theme)
-    return Mustache.render(
-        get_tex_template(template);
-        body = body,
-        highlight = get_highlight_stylesheet(MIME("text/latex"), highlight_theme),
-        minted = true,
+        highlight = get_highlight_stylesheet(MIME("text/latex"), highlight_theme,
+        minted = isminted(docformat)),
         [Pair(Symbol(k), v) for (k, v) in doc.header]...,
     )
 end

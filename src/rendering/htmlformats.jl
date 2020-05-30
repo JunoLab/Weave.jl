@@ -1,7 +1,8 @@
 # HTML
 # ----
+abstract type HTMLFormat <: WeaveFormat end
 
-@define_format JMarkdown2HTML
+@define_format JMarkdown2HTML <: HTMLFormat
 register_format!("md2html", JMarkdown2HTML(Dict(
     :description => "Julia markdown to html",
     :codestart => "\n",
@@ -20,7 +21,7 @@ register_format!("md2html", JMarkdown2HTML(Dict(
     :extension => "html",
 )))
 
-@define_format Pandoc2HTML
+@define_format Pandoc2HTML <: HTMLFormat
 register_format!("pandoc2html", Pandoc2HTML(Dict(
     :description => "Markdown to HTML (requires Pandoc 2)",
     :codestart => "\n",
@@ -79,20 +80,13 @@ end
 
 format_output(result, docformat::JMarkdown2HTML) = Markdown.htmlesc(result)
 
-format_code(code, docformat::JMarkdown2HTML) =
+format_code(code, docformat::HTMLFormat) =
     highlight_code(MIME("text/html"), code, docformat.formatdict[:highlight_theme])
 
-format_code(code, docformat::Pandoc2HTML) =
-    highlight_code(MIME("text/html"), code, docformat.formatdict[:highlight_theme])
-
-
-
-format_termchunk(chunk, docformat::JMarkdown2HTML) =
+format_termchunk(chunk, docformat::HTMLFormat) =
     should_render(chunk) ? highlight_term(MIME("text/html"), chunk.output, docformat.formatdict[:highlight_theme]) : ""
 
-format_termchunk(chunk, docformat::Pandoc2HTML) =
-    should_render(chunk) ? highlight_term(MIME("text/html"), chunk.output, docformat.formatdict[:highlight_theme]) : ""
-
+formatfigures(chunk, docformat::Pandoc2HTML) = formatfigures(chunk, pandoc)
 
 function formatfigures(chunk, docformat::JMarkdown2HTML)
     fignames = chunk.figures
@@ -132,6 +126,3 @@ function formatfigures(chunk, docformat::JMarkdown2HTML)
 
     return result
 end
-
-
-formatfigures(chunk, docformat::Pandoc2HTML) = formatfigures(chunk, pandoc)

@@ -65,8 +65,7 @@ end
 
 function formatfigures(chunk, docformat::Hugo)
     relpath = docformat.formatdict[:uglyURLs] ? "" : ".."
-    function format_shortcode(index_and_fig)
-        index, fig = index_and_fig
+    mapreduce(*, enumerate(chunk.figures), init = "") do (index, fig)
         if index > 1
             @warn("Only the first figure gets a caption.")
             title_spec = ""
@@ -76,7 +75,6 @@ function formatfigures(chunk, docformat::Hugo)
         end
         "{{< figure src=\"$(joinpath(relpath, fig))\" $(title_spec) >}}"
     end
-    mapreduce(format_shortcode, *, enumerate(chunk.figures), init = "")
 end
 
 function formatfigures(chunk, docformat::MultiMarkdown)
