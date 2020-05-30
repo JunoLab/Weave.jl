@@ -7,12 +7,23 @@
 abstract type WeaveFormat end
 const FORMATS = Dict{String,WeaveFormat}()
 
-macro define_format(type_name, supertype = :WeaveFormat)
-    return quote
-        @assert $(supertype) <: WeaveFormat "$($(supertype)) should be subtype of WeaveFormat"
-        struct $(type_name) <: $(supertype)
-            formatdict::Dict{Symbol,Any}
+macro define_format(ex)
+    return if ex isa Symbol
+        quote
+            struct $(ex) <: $(WeaveFormat)
+                formatdict::Dict{Symbol,Any}
+            end
         end
+    elseif Meta.isexpr(ex, :<:)
+        type_name, supertype = ex.args
+        quote
+            @assert $(esc(supertype)) <: $(WeaveFormat) "$($(esc(supertype))) should be subtype of WeaveFormat"
+            struct $(type_name) <: $(esc(supertype))
+                formatdict::Dict{Symbol,Any}
+            end
+        end
+    else
+        error("@define_format expects T or T<:S expression")
     end
 end
 # TODO: do some assertion for necessary fields of `formatdict`
@@ -65,7 +76,7 @@ register_format!("pandoc2html", Pandoc2HTML(Dict(
 
 abstract type TexFormat <: WeaveFormat end
 
-@define_format JMarkdown2tex TexFormat
+@define_format JMarkdown2tex <: TexFormat
 let t = JMarkdown2tex(Dict(
         :description => "Julia markdown to latex",
         :codestart => "",
@@ -89,7 +100,7 @@ let t = JMarkdown2tex(Dict(
     register_format!("md2tex", t)
 end
 
-@define_format Tex TexFormat
+@define_format Tex <: TexFormat
 register_format!("tex", Tex(Dict(
     :description => "Latex with custom code environments",
     :codestart => "\\begin{juliacode}",
@@ -106,7 +117,9 @@ register_format!("tex", Tex(Dict(
     :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"],
     :keep_unicode => false,
 )))
-register_format!("texminted", Tex(Dict(
+
+@define_format TexMinted <: TexFormat
+register_format!("texminted", TexMinted(Dict(
     :description => "Latex using minted for highlighting",
     :codestart =>
         "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}",
