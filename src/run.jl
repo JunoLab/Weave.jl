@@ -45,7 +45,7 @@ function run_doc(
     # cache :all, :user, :off, :refresh
 
     doc.doctype = isnothing(doctype) ? (doctype = detect_doctype(doc.source)) : doctype
-    doc.format = deepcopy(formats[doctype])
+    doc.format = deepcopy(FORMATS[doctype])
 
     doc.cwd = get_cwd(doc, out_path)
     isdir(doc.cwd) || mkpath(doc.cwd)
@@ -136,7 +136,7 @@ end
 
 function run_chunk(chunk::CodeChunk, doc, report, mod)
     result = eval_chunk(chunk, report, mod)
-    occursin("2html", report.formatdict[:doctype]) && (embed_figures!(result, report.cwd))
+    occursin("2html", doc.doctype) && (embed_figures!(result, report.cwd))
     return result
 end
 
@@ -188,7 +188,7 @@ function run_inline(inline::InlineCode, doc::WeaveDoc, report::Report, SandBox::
     merge!(chunk.options, options)
 
     chunks = eval_chunk(chunk, report, SandBox)
-    occursin("2html", report.formatdict[:doctype]) && (embed_figures!(chunks, report.cwd))
+    occursin("2html", doc.doctype) && (embed_figures!(chunks, report.cwd))
 
     output = chunks[1].output
     endswith(output, "\n") && (output = output[1:end-1])

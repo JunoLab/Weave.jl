@@ -11,11 +11,11 @@ Test rendering \$\alpha\$
 
 dchunk = Weave.DocChunk(content, 1, 1)
 
-pformat = Weave.formats["github"]
+pformat = Weave.FORMATS["github"]
 f = Weave.format_chunk(dchunk, pformat)
 @test f == content
 
-docformat = Weave.formats["md2html"]
+docformat = Weave.FORMATS["md2html"]
 f_check = "<h1>Test chunk</h1>\n<p>Test rendering <span class=\"math\">\$\alpha\$</span></p>\n"
 f = Weave.format_chunk(dchunk, docformat)
 @test f_check == f
@@ -88,7 +88,7 @@ content = """
 α
 """
 chunk = Weave.DocChunk(content, 1, 1)
-fmt = deepcopy(Weave.formats["md2tex"])
+fmt = deepcopy(Weave.FORMATS["md2tex"])
 
 f = Weave.format_chunk(chunk, fmt)
 @test f == "\\section{Test chunk}\n\\ensuremath{\\alpha}\n\n"
