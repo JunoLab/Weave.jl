@@ -6,15 +6,7 @@ using REPL.REPLCompletions: latex_symbols
 function format(doc, template = nothing, highlight_theme = nothing; css = nothing)
     docformat = doc.format
 
-    # This could instead be made defaults in Base.@kwdef type declaration
-    # Complete format dictionaries with defaults
-    get!(docformat.formatdict, :termstart, docformat.formatdict[:codestart])
-    get!(docformat.formatdict, :termend, docformat.formatdict[:codeend])
-    get!(docformat.formatdict, :out_width, nothing)
-    get!(docformat.formatdict, :out_height, nothing)
-    get!(docformat.formatdict, :fig_pos, nothing)
-    get!(docformat.formatdict, :fig_env, nothing)
-    docformat.formatdict[:highlight_theme] = get_highlight_theme(highlight_theme)
+    docformat.highlight_theme = get_highlight_theme(highlight_theme)
 
     restore_header!(doc)
 

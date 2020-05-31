@@ -4,7 +4,7 @@ using Markdown, .WeaveMarkdown
 mutable struct Report <: AbstractDisplay
     cwd::AbstractString
     basename::AbstractString
-    formatdict::Dict{Symbol,Any}
+    format::WeaveFormat
     pending_code::AbstractString
     cur_result::AbstractString
     rich_output::AbstractString
@@ -18,11 +18,11 @@ mutable struct Report <: AbstractDisplay
     throw_errors::Bool
 end
 
-function Report(cwd, basename, formatdict, mimetypes, throw_errors)
+function Report(cwd, basename, format, mimetypes, throw_errors)
     Report(
         cwd,
         basename,
-        formatdict,
+        format,
         "",
         "",
         "",

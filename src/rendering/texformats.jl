@@ -3,88 +3,80 @@
 
 abstract type TexFormat <: WeaveFormat end
 
-@define_format JMarkdown2tex <: TexFormat
-let t = JMarkdown2tex(Dict(
-        :description => "Julia markdown to latex",
-        :codestart => "",
-        :codeend => "",
-        :outputstart => "\\begin{lstlisting}",
-        :outputend => "\\end{lstlisting}\n",
-        :fig_ext => ".pdf",
-        :extension => "tex",
-        :out_width => "\\linewidth",
-        :mimetypes => [
-            "application/pdf",
-            "image/png",
-            "image/jpg",
-            "text/latex",
-            "text/markdown",
-            "text/plain",
-        ],
-        :keep_unicode => false,
-    ))
-    register_format!("md2pdf", t)
-    register_format!("md2tex", t)
+Base.@kwdef mutable struct JMarkdown2tex <: TexFormat
+    description = "Julia markdown to latex"
+    codestart = ""
+    codeend = ""
+    outputstart = "\\begin{lstlisting}"
+    outputend = "\\end{lstlisting}\n"
+    fig_ext = ".pdf"
+    extension = "tex"
+    out_width = "\\linewidth",
+    mimetypes = ["application/pdf", "image/png", "image/jpg",
+        "text/latex", "text/markdown", "text/plain"]
+    keep_unicode = false
+    termstart = codestart
+    termend = codeend
+    out_width = nothing
+    out_height = nothing
+    fig_pos = nothing
+    fig_env = nothing
+    highlight_theme = nothing
 end
+register_format!("md2tex", JMarkdown2tex())
 
-# Base.@kwdef mutable struct JMarkdown2tex <: TexFormat
-#     codestart = ""
-#     codeend = ""
-#     outputstart = "\\begin{lstlisting}",
-#     outputend = "\\end{lstlisting}\n",
-#     fig_ext = ".pdf",
-#     extension = "tex",
-#     out_width = "\\linewidth",
-#     mimetypes => [
-#         "application/pdf",
-#         "image/png",
-#         "image/jpg",
-#         "text/latex",
-#         "text/markdown",
-#         "text/plain",
-#     ],
-#     keep_unicode => false,
-# end
-# register_format!("md2tex", JMarkdown2tex())
+mutable struct Tex <: TexFormat
+    description = "Latex with custom code environments"
+    codestart = "\\begin{juliacode}"
+    codeend = "\\end{juliacode}"
+    outputstart = "\\begin{juliaout}"
+    outputend = "\\end{juliaout}"
+    termstart = "\\begin{juliaterm}"
+    termend = "\\end{juliaterm}"
+    fig_ext = ".pdf"
+    extension = "tex"
+    out_width = "\\linewidth"
+    fig_env = "figure"
+    fig_pos = "htpb"
+    mimetypes = ["application/pdf", "image/png", "text/latex", "text/plain"]
+    keep_unicode = false
+    termstart = codestart
+    termend = codeend
+    out_width = nothing
+    out_height = nothing
+    fig_pos = nothing
+    fig_env = nothing
+    highlight_theme = nothing
+end
+register_format!("tex", Tex())
 
-@define_format Tex <: TexFormat
-register_format!("tex", Tex(Dict(
-    :description => "Latex with custom code environments",
-    :codestart => "\\begin{juliacode}",
-    :codeend => "\\end{juliacode}",
-    :outputstart => "\\begin{juliaout}",
-    :outputend => "\\end{juliaout}",
-    :termstart => "\\begin{juliaterm}",
-    :termend => "\\end{juliaterm}",
-    :fig_ext => ".pdf",
-    :extension => "tex",
-    :out_width => "\\linewidth",
-    :fig_env => "figure",
-    :fig_pos => "htpb",
-    :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"],
-    :keep_unicode => false,
-)))
-
-@define_format TexMinted <: TexFormat
-register_format!("texminted", TexMinted(Dict(
-    :description => "Latex using minted for highlighting",
-    :codestart =>
-        "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}",
-    :codeend => "\\end{minted}",
-    :outputstart =>
-        "\\begin{minted}[fontsize=\\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}",
-    :outputend => "\\end{minted}",
-    :termstart =>
-        "\\begin{minted}[fontsize=\\footnotesize, xleftmargin=0.5em, mathescape]{jlcon}",
-    :termend => "\\end{minted}",
-    :fig_ext => ".pdf",
-    :extension => "tex",
-    :out_width => "\\linewidth",
-    :fig_env => "figure",
-    :fig_pos => "htpb",
-    :mimetypes => ["application/pdf", "image/png", "text/latex", "text/plain"],
-    :keep_unicode => false,
-)))
+mutable struct TexMinted <: TexFormat
+    description = "Latex using minted for highlighting"
+    codestart =
+        "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}"
+    codeend = "\\end{minted}"
+    outputstart =
+    "\\begin{minted}[fontsize=\\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}"
+    outputend = "\\end{minted}"
+    termstart =
+    "\\begin{minted}[fontsize=\\footnotesize, xleftmargin=0.5em, mathescape]{jlcon}"
+    termend = "\\end{minted}"
+    fig_ext = ".pdf"
+    extension = "tex"
+    out_width = "\\linewidth"
+    fig_env = "figure"
+    fig_pos = "htpb"
+    mimetypes = ["application/pdf", "image/png", "text/latex", "text/plain"]
+    keep_unicode = false
+    termstart = codestart
+    termend = codeend
+    out_width = nothing
+    out_height = nothing
+    fig_pos = nothing
+    fig_env = nothing
+    highlight_theme = nothing
+end
+register_format!("texminted", TexMinted())
 
 
 
@@ -121,7 +113,7 @@ function format_chunk(chunk::DocChunk, docformat::TexFormat)
     end
     clear_buffer_and_format!(io, out, WeaveMarkdown.latex)
     out = take2string!(out)
-    return docformat.formatdict[:keep_unicode] ? out : uc2tex(out)
+    return docformat.keep_unicode ? out : uc2tex(out)
 end
 
 function format_output(result, docformat::TexFormat)
@@ -131,14 +123,14 @@ function format_output(result, docformat::TexFormat)
             Highlights.Format.escape(io, MIME("text/latex"), x, charescape = true),
         result,
     )
-    docformat.formatdict[:keep_unicode] || return uc2tex(result_escaped, true)
+    docformat.keep_unicode || return uc2tex(result_escaped, true)
     return result_escaped
 end
 
 # return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
 function format_code(code, docformat::TexFormat)
-    ret = highlight_code(MIME("text/latex"), code, docformat.formatdict[:highlight_theme])
-    docformat.formatdict[:keep_unicode] || return uc2tex(ret)
+    ret = highlight_code(MIME("text/latex"), code, docformat.highlight_theme)
+    docformat.keep_unicode || return uc2tex(ret)
     return ret
 end
 
@@ -158,7 +150,7 @@ end
 
 # return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
 format_termchunk(chunk, docformat::TexFormat) =
-    should_render(chunk) ? highlight_term(MIME("text/latex"), chunk.output, docformat.formatdict[:highlight_theme]) : ""
+    should_render(chunk) ? highlight_term(MIME("text/latex"), chunk.output, docformat.highlight_theme]) : ""
 
 
 function formatfigures(chunk, docformat::TexFormat)

@@ -40,24 +40,23 @@ end
 addlines(op, inline) = inline.ctype === :line ? string('\n', op, '\n') : op
 
 function format_chunk(chunk::CodeChunk, docformat)
-    formatdict = docformat.formatdict
 
     # Fill undefined options with format specific defaults
-    isnothing(chunk.options[:out_width]) && (chunk.options[:out_width] = formatdict[:out_width])
-    isnothing(chunk.options[:fig_pos]) && (chunk.options[:fig_pos] = formatdict[:fig_pos])
+    isnothing(chunk.options[:out_width]) && (chunk.options[:out_width] = docformat.out_width)
+    isnothing(chunk.options[:fig_pos]) && (chunk.options[:fig_pos] = docformat.fig_pos)
 
     # Only use floats if chunk has caption or sets fig_env
     if !isnothing(chunk.options[:fig_cap]) && isnothing(chunk.options[:fig_env])
-        (chunk.options[:fig_env] = formatdict[:fig_env])
+        (chunk.options[:fig_env] = docformat.fig_env)
     end
 
-    haskey(formatdict, :indent) && (chunk.content = indent(chunk.content, formatdict[:indent]))
+    hasfield(docformat, :indent) && (chunk.content = indent(chunk.content, docformat.indent))
 
     chunk.content = format_code(chunk.content, docformat)
 
     if !chunk.options[:eval]
         return if chunk.options[:echo]
-            string(formatdict[:codestart], '\n', chunk.content, formatdict[:codeend])
+            string(docformat.codestart, '\n', chunk.content, docformat.codeend)
         else
             ""
         end
@@ -68,7 +67,7 @@ function format_chunk(chunk::CodeChunk, docformat)
     else
         result = if chunk.options[:echo]
             # Convert to output format and highlight (html, tex...) if needed
-            string(formatdict[:codestart], chunk.content, formatdict[:codeend], '\n')
+            string(docformat.codestart, chunk.content, docformat.codeend, '\n')
         else
             ""
         end
@@ -88,11 +87,11 @@ function format_chunk(chunk::CodeChunk, docformat)
                     chunk.output = format_output(chunk.output, docformat)
                 end
 
-                if haskey(formatdict, :indent)
-                    chunk.output = indent(chunk.output, formatdict[:indent])
+                if hasfield(docformat, :indent)
+                    chunk.output = indent(chunk.output, docformat.indent)
                 end
                 strip(chunk.output) ≠ "" && (
-                    result *= "$(formatdict[:outputstart])$(chunk.output)\n$(formatdict[:outputend])\n"
+                    result *= "$(docformat.outputstart)$(chunk.output)\n$(docformat.outputend)\n"
                 )
                 strip(chunk.rich_output) ≠ "" && (result *= chunk.rich_output * '\n')
             end
@@ -131,8 +130,7 @@ end
 
 function format_termchunk(chunk, docformat)
     return if should_render(chunk)
-        fd = docformat.formatdict
-        string(fd[:termstart], chunk.output, '\n', fd[:termend], '\n')
+        string(docformat.termstart, chunk.output, '\n', docformat.termend, '\n')
     else
         ""
     end

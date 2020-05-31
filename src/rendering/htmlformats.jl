@@ -2,43 +2,47 @@
 # ----
 abstract type HTMLFormat <: WeaveFormat end
 
-@define_format JMarkdown2HTML <: HTMLFormat
-register_format!("md2html", JMarkdown2HTML(Dict(
-    :description => "Julia markdown to html",
-    :codestart => "\n",
-    :codeend => "\n",
-    :outputstart => "<pre class=\"output\">",
-    :outputend => "</pre>\n",
-    :fig_ext => ".png",
-    :mimetypes => [
-        "image/png",
-        "image/jpg",
-        "image/svg+xml",
-        "text/html",
-        "text/markdown",
-        "text/plain",
-    ],
-    :extension => "html",
-)))
+mutable struct JMarkdown2HTML <: HTMLFormat
+    description = "Julia markdown to html"
+    codestart = "\n"
+    codeend = "\n"
+    outputstart = "<pre class=\"output\">"
+    outputend = "</pre>\n"
+    fig_ext = ".png"
+    mimetypes = ["image/png", "image/jpg", "image/svg+xml",
+                "text/html", "text/markdown", "text/plain"]
+    keep_unicode = false
+    extension = "html"
+    termstart = codestart
+    termend = codeend
+    out_width = nothing
+    out_height = nothing
+    fig_pos = nothing
+    fig_env = nothing
+    highlight_theme = nothing
+end
+register_format!("md2html", JMarkdown2HTML())
 
-@define_format Pandoc2HTML <: HTMLFormat
-register_format!("pandoc2html", Pandoc2HTML(Dict(
-    :description => "Markdown to HTML (requires Pandoc 2)",
-    :codestart => "\n",
-    :codeend => "\n",
-    :outputstart => "\n",
-    :outputend => "\n",
-    :fig_ext => ".png",
-    :extension => "md",
-    :mimetypes => [
-        "image/png",
-        "image/svg+xml",
-        "image/jpg",
-        "text/html",
-        "text/markdown",
-        "text/plain",
-    ],
-)))
+mutable struct Pandoc2HTML <: HTMLFormat
+    description = "Markdown to HTML (requires Pandoc 2)"
+    codestart = "\n"
+    codeend = "\n"
+    outputstart = "\n"
+    outputend = "\n"
+    fig_ext = ".png"
+    extension = "md"
+    mimetypes = ["image/png", "image/svg+xml", "image/jpg",
+                "text/html", "text/markdown", "text/plain"]
+    keep_unicode = false
+    termstart = codestart
+    termend = codeend
+    out_width = nothing
+    out_height = nothing
+    fig_pos = nothing
+    fig_env = nothing
+    highlight_theme = nothing
+end
+register_format!("pandoc2html", Pandoc2HTML())
 
 
 function render_doc(::JMarkdown2HTML, body, doc, template, css, highlight_theme)
@@ -81,10 +85,10 @@ end
 format_output(result, docformat::JMarkdown2HTML) = Markdown.htmlesc(result)
 
 format_code(code, docformat::HTMLFormat) =
-    highlight_code(MIME("text/html"), code, docformat.formatdict[:highlight_theme])
+    highlight_code(MIME("text/html"), code, docformat.highlight_theme)
 
 format_termchunk(chunk, docformat::HTMLFormat) =
-    should_render(chunk) ? highlight_term(MIME("text/html"), chunk.output, docformat.formatdict[:highlight_theme]) : ""
+    should_render(chunk) ? highlight_term(MIME("text/html"), chunk.output, docformat.highlight_theme) : ""
 
 formatfigures(chunk, docformat::Pandoc2HTML) = formatfigures(chunk, pandoc)
 

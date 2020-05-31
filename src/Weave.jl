@@ -37,7 +37,7 @@ take2string!(io) = String(take!(io))
 
 List supported output formats
 """
-list_out_formats(io = stdout) = for (k, v) in FORMATS; println(io, string(k, ": ", v.formatdict[:description])); end
+list_out_formats(io = stdout) = for (k, v) in FORMATS; println(io, string(k, ": ", v.description)); end
 
 """
     tangle(source::AbstractString; kwargs...)
@@ -197,7 +197,7 @@ function weave(
         keep_unicode = get(weave_options, "keep_unicode", keep_unicode)
     end
 
-    get!(doc.format.formatdict, :keep_unicode, keep_unicode)
+    doc.format.keep_unicode = doc.format.keep_unicode | keep_unicode
     rendered = format(doc, template, highlight_theme; css = css)
 
     outname = get_outname(out_path, doc)

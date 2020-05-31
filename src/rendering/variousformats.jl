@@ -1,59 +1,51 @@
-# pandoc
-# ------
-
-@define_format Pandoc
-let p = Pandoc(Dict(
-        :description => "Pandoc markdown",
-        :codestart => "~~~~{.julia}",
-        :codeend => "~~~~~~~~~~~~~\n\n",
-        :outputstart => "~~~~",
-        :outputend => "~~~~\n\n",
-        :fig_ext => ".png",
-        :out_width => nothing,
-        :extension => "md",
-        # Prefer png figures for markdown conversion, svg doesn't work with latex
-        :mimetypes =>
-            ["image/png", "image/jpg", "image/svg+xml", "text/markdown", "text/plain"],
-    ))
-    register_format!("pandoc", p)
-    register_format!("pandoc2pdf", p)
-end
-
-
-
-
 # Rest
 # ----
 
-@define_format Rest
-register_format!("rst", Rest(Dict(
-    :description => "reStructuredText and Sphinx",
-    :codestart => ".. code-block:: julia\n",
-    :codeend => "\n\n",
-    :outputstart => "::\n",
-    :outputend => "\n\n",
-    :indent => 4,
-    :fig_ext => ".png",
-    :extension => "rst",
-    :out_width => "15 cm",
-)))
+mutable struct Rest <: WeaveFormat
+    description = "reStructuredText and Sphinx"
+    codestart = ".. code-block:: julia\n"
+    codeend = "\n\n"
+    outputstart = "::\n"
+    outputend = "\n\n"
+    indent = 4
+    fig_ext = ".png"
+    extension = "rst"
+    out_width = "15 cm"
+    keep_unicode = false
+    termstart = codestart
+    termend = codeend
+    out_width = nothing
+    out_height = nothing
+    fig_pos = nothing
+    fig_env = nothing
+    highlight_theme = nothing
+end
+register_format!("rst", Rest())
 
 
 # Ansii
 # -----
 
 # asciidoc -b html5 -a source-highlighter=pygments ...
-@define_format AsciiDoc
-register_format!("asciidoc", AsciiDoc(Dict(
-    :description => "AsciiDoc",
-    :codestart => "[source,julia]\n--------------------------------------",
-    :codeend => "--------------------------------------\n\n",
-    :outputstart => "--------------------------------------",
-    :outputend => "--------------------------------------\n\n",
-    :fig_ext => ".png",
-    :extension => "txt",
-    :out_width => "600",
-)))
+mutable struct AsciiDoc <: WeaveFormat
+    description = "AsciiDoc"
+    codestart = "[source,julia]\n--------------------------------------"
+    codeend = "--------------------------------------\n\n"
+    outputstart = "--------------------------------------"
+    outputend = "--------------------------------------\n\n"
+    fig_ext = ".png"
+    extension = "txt"
+    out_width = "600"
+    keep_unicode = false
+    termstart = codestart
+    termend = codeend
+    out_width = nothing
+    out_height = nothing
+    fig_pos = nothing
+    fig_env = nothing
+    highlight_theme = nothing
+end
+register_format!("asciidoc", AsciiDoc())
 
 
 

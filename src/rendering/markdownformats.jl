@@ -1,44 +1,94 @@
+abstract type MarkdownFormat end
 # markdown
 # --------
 
-@define_format GitHubMarkdown
-register_format!("github", GitHubMarkdown(Dict(
-    :description => "GitHub markdown",
-    :codestart => "````julia",
-    :codeend => "````\n\n",
-    :outputstart => "````",
-    :outputend => "````\n\n",
-    :fig_ext => ".png",
-    :extension => "md",
-    :mimetypes =>
-        ["image/png", "image/svg+xml", "image/jpg", "text/markdown", "text/plain"],
-)))
+@define_format GitHubMarkdown <: MarkdownFormat
+    description = "GitHub markdown",
+    codestart = "````julia",
+    codeend = "````\n\n",
+    outputstart = "````",
+    outputend = "````\n\n",
+    fig_ext = ".png",
+    extension = "md",
+    mimetypes =
+        ["image/png", "image/svg+xml", "image/jpg", "text/markdown", "text/plain"]
+    keep_unicode = false
+    termstart = codestart
+    termend = codeend
+    out_width = nothing
+    out_height = nothing
+    fig_pos = nothing
+    fig_env = nothing
+    highlight_theme = nothing
+end
+register_format!("github", GitHubMarkdown())
 
-@define_format Hugo
-register_format!("hugo", Hugo(Dict(
-    :description => "Hugo markdown (using shortcodes)",
-    :codestart => "````julia",
-    :codeend => "````\n\n",
-    :outputstart => "````",
-    :outputend => "````\n\n",
-    :fig_ext => ".png",
-    :extension => "md",
-    :uglyURLs => false, # if `false`, prepend figure path by `..`
-)))
+mutable struct Hugo <: MarkdownFormat
+    description = "Hugo markdown (using shortcodes)"
+    codestart = "````julia"
+    codeend = "````\n\n"
+    outputstart = "````"
+    outputend = "````\n\n"
+    fig_ext = ".png"
+    extension = "md"
+    uglyURLs = false # if `false`, prepend figure path by `..`
+    keep_unicode = false
+    termstart = codestart
+    termend = codeend
+    out_width = nothing
+    out_height = nothing
+    fig_pos = nothing
+    fig_env = nothing
+    highlight_theme = nothing
+end
+register_format!("hugo", Hugo())
 
-@define_format MultiMarkdown
-register_format!("multimarkdown", MultiMarkdown(Dict(
-    :description => "MultiMarkdown",
-    :codestart => "````julia",
-    :codeend => "````\n\n",
-    :outputstart => "````",
-    :outputend => "````\n\n",
-    :fig_ext => ".png",
-    :extension => "md",
-)))
+mutable struct MultiMarkdown <: MarkdownFormat
+    description = "MultiMarkdown"
+    codestart = "````julia"
+    codeend = "````\n\n"
+    outputstart = "````"
+    outputend = "````\n\n"
+    fig_ext = ".png"
+    extension = "md"
+    keep_unicode = false
+    termstart = codestart
+    termend = codeend
+    out_width = nothing
+    out_height = nothing
+    fig_pos = nothing
+    fig_env = nothing
+    highlight_theme = nothing
+end
+register_format!("multimarkdown", MultiMarkdown())
 
 
+# pandoc
+# ------
 
+mutable struct Pandoc <: MarkdownFormat
+    description = "Pandoc markdown"
+    codestart = "~~~~{.julia}"
+    codeend = "~~~~~~~~~~~~~\n\n"
+    outputstart = "~~~~"
+    outputend = "~~~~\n\n"
+    fig_ext = ".png"
+    out_width = nothing
+    extension = "md"
+    # Prefer png figures for markdown conversion, svg doesn't work with latex
+    mimetypes = ["image/png", "image/jpg", "image/svg+xml",
+                "text/markdown", "text/plain"]
+    keep_unicode = false
+    termstart = codestart
+    termend = codeend
+    out_width = nothing
+    out_height = nothing
+    fig_pos = nothing
+    fig_env = nothing
+    highlight_theme = nothing
+end
+register_format!("pandoc", Pandoc())
+register_format!("pandoc2pdf", Pandoc())
 
 
 function formatfigures(chunk, docformat::GitHubMarkdown)
@@ -64,7 +114,7 @@ function formatfigures(chunk, docformat::GitHubMarkdown)
 end
 
 function formatfigures(chunk, docformat::Hugo)
-    relpath = docformat.formatdict[:uglyURLs] ? "" : ".."
+    relpath = docformat.uglyURLs ? "" : ".."
     mapreduce(*, enumerate(chunk.figures), init = "") do (index, fig)
         if index > 1
             @warn("Only the first figure gets a caption.")
