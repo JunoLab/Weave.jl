@@ -10,18 +10,12 @@ const FORMATS = Dict{String,WeaveFormat}()
 register_format!(format_name::AbstractString, format::WeaveFormat) = push!(FORMATS, format_name => format)
 register_format!(_,format) = error("Format needs to be a subtype of WeaveFormat.")
 
-
-# TODO: reorganize this file into multiple files corresponding to each output format
-
 using Mustache, Highlights, .WeaveMarkdown, Markdown, Dates, Pkg
 using REPL.REPLCompletions: latex_symbols
 
-function format(doc, template = nothing, highlight_theme = nothing; css = nothing)
+function format(doc; css = nothing)
     docformat = doc.format
-    # TODO : put docformat things earlier into docformat struct. that allows us to pass around fewer args
-    docformat.highlight_theme = get_highlight_theme(highlight_theme)
-    # this overwrites template given in docformat
-    docformat.template = template
+
     restore_header!(doc)
 
     lines = map(copy(doc.chunks)) do chunk

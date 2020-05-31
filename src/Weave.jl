@@ -129,6 +129,7 @@ function weave(
 )
     doc = WeaveDoc(source, informat)
 
+    # TODO : put all argument parsing into separate function
     # run document
     # ------------
 
@@ -198,7 +199,10 @@ function weave(
     end
 
     doc.format.keep_unicode = doc.format.keep_unicode | keep_unicode
-    rendered = format(doc, template, highlight_theme; css = css)
+    doc.format.highlight_theme = get_highlight_theme(highlight_theme)
+    # this overwrites template given in docformat
+    doc.format.template = template
+    rendered = format(doc; css = css)
 
     outname = get_outname(out_path, doc)
 

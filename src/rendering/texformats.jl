@@ -25,6 +25,7 @@ Base.@kwdef mutable struct JMarkdown2tex <: TexFormat
     tex_deps = ""
 end
 register_format!("md2tex", JMarkdown2tex())
+register_format!("md2pdf", JMarkdown2tex())
 
 Base.@kwdef mutable struct Tex <: TexFormat
     description = "Latex with custom code environments"
@@ -122,8 +123,8 @@ end
 
 
 # Highlight code is currently only compatible with lstlistings (JMarkdown2tex)
-highlight_code(docformat::TexFormat, code) = code
-highlight_code(docformat::JMarkdown2tex, code) =
+highlight_code(code, docformat::TexFormat) = code
+highlight_code(code, docformat::JMarkdown2tex) =
     highlight_code(MIME("text/latex"), code, docformat.highlight_theme)
 
 function format_code(code, docformat::TexFormat)

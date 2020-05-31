@@ -20,6 +20,7 @@ Base.@kwdef mutable struct JMarkdown2HTML <: HTMLFormat
     fig_pos = nothing
     fig_env = nothing
     highlight_theme = nothing
+    template = normpath(TEMPLATE_DIR, "md2html.tpl")
 end
 register_format!("md2html", JMarkdown2HTML())
 
@@ -41,6 +42,7 @@ Base.@kwdef mutable struct Pandoc2HTML <: HTMLFormat
     fig_pos = nothing
     fig_env = nothing
     highlight_theme = nothing
+    template = normpath(TEMPLATE_DIR, "pandoc2html.tpl")
 end
 register_format!("pandoc2html", Pandoc2HTML())
 
@@ -90,7 +92,7 @@ format_code(code, docformat::HTMLFormat) =
 format_termchunk(chunk, docformat::HTMLFormat) =
     should_render(chunk) ? highlight_term(MIME("text/html"), chunk.output, docformat.highlight_theme) : ""
 
-formatfigures(chunk, docformat::Pandoc2HTML) = formatfigures(chunk, pandoc)
+formatfigures(chunk, docformat::Pandoc2HTML) = formatfigures(chunk, Pandoc())
 
 function formatfigures(chunk, docformat::JMarkdown2HTML)
     fignames = chunk.figures

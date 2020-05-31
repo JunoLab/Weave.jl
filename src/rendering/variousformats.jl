@@ -18,6 +18,10 @@ Base.@kwdef mutable struct Rest <: WeaveFormat
     fig_pos = nothing
     fig_env = nothing
     highlight_theme = nothing
+    #this could be removed if argument parsing checked whether the format was
+    # compatible with templates
+    template = nothing
+    mimetypes = default_mime_types
 end
 register_format!("rst", Rest())
 
@@ -42,6 +46,9 @@ Base.@kwdef mutable struct AsciiDoc <: WeaveFormat
     fig_pos = nothing
     fig_env = nothing
     highlight_theme = nothing
+    #this could be removed
+    template = nothing
+    mimetypes = default_mime_types
 end
 register_format!("asciidoc", AsciiDoc())
 
