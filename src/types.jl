@@ -2,6 +2,7 @@
 
 abstract type WeaveChunk end
 abstract type Inline end
+abstract type WeaveFormat end
 
 mutable struct WeaveDoc
     source::AbstractString

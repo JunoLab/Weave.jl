@@ -1,7 +1,7 @@
 # Rest
 # ----
 
-mutable struct Rest <: WeaveFormat
+Base.@kwdef mutable struct Rest <: WeaveFormat
     description = "reStructuredText and Sphinx"
     codestart = ".. code-block:: julia\n"
     codeend = "\n\n"
@@ -10,11 +10,10 @@ mutable struct Rest <: WeaveFormat
     indent = 4
     fig_ext = ".png"
     extension = "rst"
-    out_width = "15 cm"
     keep_unicode = false
     termstart = codestart
     termend = codeend
-    out_width = nothing
+    out_width = "15 cm"
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
@@ -27,7 +26,7 @@ register_format!("rst", Rest())
 # -----
 
 # asciidoc -b html5 -a source-highlighter=pygments ...
-mutable struct AsciiDoc <: WeaveFormat
+Base.@kwdef mutable struct AsciiDoc <: WeaveFormat
     description = "AsciiDoc"
     codestart = "[source,julia]\n--------------------------------------"
     codeend = "--------------------------------------\n\n"
@@ -35,11 +34,10 @@ mutable struct AsciiDoc <: WeaveFormat
     outputend = "--------------------------------------\n\n"
     fig_ext = ".png"
     extension = "txt"
-    out_width = "600"
     keep_unicode = false
     termstart = codestart
     termend = codeend
-    out_width = nothing
+    out_width = "600"
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing

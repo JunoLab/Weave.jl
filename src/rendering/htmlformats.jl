@@ -2,7 +2,7 @@
 # ----
 abstract type HTMLFormat <: WeaveFormat end
 
-mutable struct JMarkdown2HTML <: HTMLFormat
+Base.@kwdef mutable struct JMarkdown2HTML <: HTMLFormat
     description = "Julia markdown to html"
     codestart = "\n"
     codeend = "\n"
@@ -23,7 +23,7 @@ mutable struct JMarkdown2HTML <: HTMLFormat
 end
 register_format!("md2html", JMarkdown2HTML())
 
-mutable struct Pandoc2HTML <: HTMLFormat
+Base.@kwdef mutable struct Pandoc2HTML <: HTMLFormat
     description = "Markdown to HTML (requires Pandoc 2)"
     codestart = "\n"
     codeend = "\n"

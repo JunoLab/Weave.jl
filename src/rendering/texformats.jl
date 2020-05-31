@@ -11,13 +11,12 @@ Base.@kwdef mutable struct JMarkdown2tex <: TexFormat
     outputend = "\\end{lstlisting}\n"
     fig_ext = ".pdf"
     extension = "tex"
-    out_width = "\\linewidth",
     mimetypes = ["application/pdf", "image/png", "image/jpg",
         "text/latex", "text/markdown", "text/plain"]
     keep_unicode = false
     termstart = codestart
     termend = codeend
-    out_width = nothing
+    out_width = "\\linewidth"
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
@@ -25,7 +24,7 @@ Base.@kwdef mutable struct JMarkdown2tex <: TexFormat
 end
 register_format!("md2tex", JMarkdown2tex())
 
-mutable struct Tex <: TexFormat
+Base.@kwdef mutable struct Tex <: TexFormat
     description = "Latex with custom code environments"
     codestart = "\\begin{juliacode}"
     codeend = "\\end{juliacode}"
@@ -35,22 +34,17 @@ mutable struct Tex <: TexFormat
     termend = "\\end{juliaterm}"
     fig_ext = ".pdf"
     extension = "tex"
-    out_width = "\\linewidth"
     fig_env = "figure"
     fig_pos = "htpb"
     mimetypes = ["application/pdf", "image/png", "text/latex", "text/plain"]
     keep_unicode = false
-    termstart = codestart
-    termend = codeend
-    out_width = nothing
+    out_width = "\\linewidth"
     out_height = nothing
-    fig_pos = nothing
-    fig_env = nothing
     highlight_theme = nothing
 end
 register_format!("tex", Tex())
 
-mutable struct TexMinted <: TexFormat
+Base.@kwdef mutable struct TexMinted <: TexFormat
     description = "Latex using minted for highlighting"
     codestart =
         "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}"
@@ -58,22 +52,17 @@ mutable struct TexMinted <: TexFormat
     outputstart =
     "\\begin{minted}[fontsize=\\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}"
     outputend = "\\end{minted}"
+    fig_ext = ".pdf"
+    extension = "tex"
+    mimetypes = ["application/pdf", "image/png", "text/latex", "text/plain"]
+    keep_unicode = false
     termstart =
     "\\begin{minted}[fontsize=\\footnotesize, xleftmargin=0.5em, mathescape]{jlcon}"
     termend = "\\end{minted}"
-    fig_ext = ".pdf"
-    extension = "tex"
     out_width = "\\linewidth"
+    out_height = nothing
     fig_env = "figure"
     fig_pos = "htpb"
-    mimetypes = ["application/pdf", "image/png", "text/latex", "text/plain"]
-    keep_unicode = false
-    termstart = codestart
-    termend = codeend
-    out_width = nothing
-    out_height = nothing
-    fig_pos = nothing
-    fig_env = nothing
     highlight_theme = nothing
 end
 register_format!("texminted", TexMinted())
@@ -150,7 +139,7 @@ end
 
 # return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
 format_termchunk(chunk, docformat::TexFormat) =
-    should_render(chunk) ? highlight_term(MIME("text/latex"), chunk.output, docformat.highlight_theme]) : ""
+    should_render(chunk) ? highlight_term(MIME("text/latex"), chunk.output, docformat.highlight_theme) : ""
 
 
 function formatfigures(chunk, docformat::TexFormat)

@@ -1,17 +1,17 @@
-abstract type MarkdownFormat end
+abstract type MarkdownFormat <: WeaveFormat end
 # markdown
 # --------
 
-@define_format GitHubMarkdown <: MarkdownFormat
-    description = "GitHub markdown",
-    codestart = "````julia",
-    codeend = "````\n\n",
-    outputstart = "````",
-    outputend = "````\n\n",
-    fig_ext = ".png",
-    extension = "md",
-    mimetypes =
-        ["image/png", "image/svg+xml", "image/jpg", "text/markdown", "text/plain"]
+Base.@kwdef mutable struct GitHubMarkdown <: MarkdownFormat
+    description = "GitHub markdown"
+    codestart = "````julia"
+    codeend = "````\n\n"
+    outputstart = "````"
+    outputend = "````\n\n"
+    fig_ext = ".png"
+    extension = "md"
+    mimetypes = ["image/png", "image/svg+xml", "image/jpg",
+                "text/markdown", "text/plain"]
     keep_unicode = false
     termstart = codestart
     termend = codeend
@@ -23,7 +23,7 @@ abstract type MarkdownFormat end
 end
 register_format!("github", GitHubMarkdown())
 
-mutable struct Hugo <: MarkdownFormat
+Base.@kwdef mutable struct Hugo <: MarkdownFormat
     description = "Hugo markdown (using shortcodes)"
     codestart = "````julia"
     codeend = "````\n\n"
@@ -43,7 +43,7 @@ mutable struct Hugo <: MarkdownFormat
 end
 register_format!("hugo", Hugo())
 
-mutable struct MultiMarkdown <: MarkdownFormat
+Base.@kwdef mutable struct MultiMarkdown <: MarkdownFormat
     description = "MultiMarkdown"
     codestart = "````julia"
     codeend = "````\n\n"
@@ -66,14 +66,13 @@ register_format!("multimarkdown", MultiMarkdown())
 # pandoc
 # ------
 
-mutable struct Pandoc <: MarkdownFormat
+Base.@kwdef mutable struct Pandoc <: MarkdownFormat
     description = "Pandoc markdown"
     codestart = "~~~~{.julia}"
     codeend = "~~~~~~~~~~~~~\n\n"
     outputstart = "~~~~"
     outputend = "~~~~\n\n"
     fig_ext = ".png"
-    out_width = nothing
     extension = "md"
     # Prefer png figures for markdown conversion, svg doesn't work with latex
     mimetypes = ["image/png", "image/jpg", "image/svg+xml",
