@@ -1,7 +1,11 @@
 # TODO:
-# - 1. do assertions for definition mandatory fields in `@define_format` macro
-# - 2. implement fallback format/rendering functions in format.jl
-# - 3. export this as public API
+# - 1. Improve argument handling
+# - 2. Update code to use UnPack.jl to make it more readable
+# - 3. Export new interface
+# - 4. Document Interface
+
+using Mustache, Highlights, .WeaveMarkdown, Markdown, Dates, Pkg
+using REPL.REPLCompletions: latex_symbols
 
 
 const FORMATS = Dict{String,WeaveFormat}()
@@ -9,9 +13,6 @@ const FORMATS = Dict{String,WeaveFormat}()
 # TODO: do some assertion for necessary fields of `format`
 register_format!(format_name::AbstractString, format::WeaveFormat) = push!(FORMATS, format_name => format)
 register_format!(_,format) = error("Format needs to be a subtype of WeaveFormat.")
-
-using Mustache, Highlights, .WeaveMarkdown, Markdown, Dates, Pkg
-using REPL.REPLCompletions: latex_symbols
 
 function format(doc; css = nothing)
     docformat = doc.format
@@ -46,3 +47,10 @@ get_highlight_stylesheet(mime, highlight_theme) =
     get_highlight_stylesheet(mime, get_highlight_theme(highlight_theme))
 get_highlight_stylesheet(mime, highlight_theme::Type{<:Highlights.AbstractTheme}) =
     sprint((io, x) -> Highlights.stylesheet(io, mime, x), highlight_theme)
+
+
+include("common.jl")
+include("htmlformats.jl")
+include("texformats.jl")
+include("variousformats.jl")
+include("markdownformats.jl")

@@ -113,21 +113,6 @@ format_code(code, docformat) = code
 format_output(result, docformat) = result
 
 
-# Make julia symbols (\bf* etc.) valid latex
-function texify(s)
-    return if occursin(r"^\\bf[A-Z]$", s)
-        replace(s, "\\bf" => "\\bm{\\mathrm{") * "}}"
-    elseif startswith(s, "\\bfrak")
-        replace(s, "\\bfrak" => "\\bm{\\mathfrak{") * "}}"
-    elseif startswith(s, "\\bf")
-        replace(s, "\\bf" => "\\bm{\\") * "}"
-    elseif startswith(s, "\\frak")
-        replace(s, "\\frak" => "\\mathfrak{") * "}"
-    else
-        s
-    end
-end
-
 function format_termchunk(chunk, docformat)
     return if should_render(chunk)
         string(docformat.termstart, chunk.output, '\n', docformat.termend, '\n')
