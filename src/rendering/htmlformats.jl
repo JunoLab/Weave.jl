@@ -45,7 +45,7 @@ end
 register_format!("pandoc2html", Pandoc2HTML())
 
 
-function render_doc(::JMarkdown2HTML, body, doc, template, css, highlight_theme)
+function render_doc(docformat::JMarkdown2HTML, body, doc, template, css)
     _, weave_source = splitdir(abspath(doc.source))
     weave_version, weave_date = weave_info()
 
@@ -53,7 +53,7 @@ function render_doc(::JMarkdown2HTML, body, doc, template, css, highlight_theme)
         get_html_template(template);
         body = body,
         stylesheet = get_stylesheet(css),
-        highlight_stylesheet = get_highlight_stylesheet(MIME("text/html"), highlight_theme),
+        highlight_stylesheet = get_highlight_stylesheet(MIME("text/html"), docformat.highlight_theme),
         header_script = doc.header_script,
         weave_source = weave_source,
         weave_version = weave_version,
@@ -62,7 +62,7 @@ function render_doc(::JMarkdown2HTML, body, doc, template, css, highlight_theme)
     )
 end
 
-
+# very similar to tex version of function
 function format_chunk(chunk::DocChunk, docformat::JMarkdown2HTML)
     out = IOBuffer()
     io = IOBuffer()

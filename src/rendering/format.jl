@@ -18,7 +18,7 @@ using REPL.REPLCompletions: latex_symbols
 
 function format(doc, template = nothing, highlight_theme = nothing; css = nothing)
     docformat = doc.format
-
+    # TODO : put docformat things earlier into docformat struct. that allows us to pass around fewer args
     docformat.highlight_theme = get_highlight_theme(highlight_theme)
 
     restore_header!(doc)
@@ -28,7 +28,7 @@ function format(doc, template = nothing, highlight_theme = nothing; css = nothin
     end
     body = join(lines, '\n')
 
-    return render_doc(docformat, body, doc, template, css, highlight_theme)
+    return render_doc(docformat, body, doc, template, css)
 end
 
 render_doc(_, body, args...) = body

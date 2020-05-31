@@ -50,7 +50,7 @@ function format_chunk(chunk::CodeChunk, docformat)
         (chunk.options[:fig_env] = docformat.fig_env)
     end
 
-    hasfield(docformat, :indent) && (chunk.content = indent(chunk.content, docformat.indent))
+    hasproperty(docformat, :indent) && (chunk.content = indent(chunk.content, docformat.indent))
 
     chunk.content = format_code(chunk.content, docformat)
 
@@ -87,7 +87,7 @@ function format_chunk(chunk::CodeChunk, docformat)
                     chunk.output = format_output(chunk.output, docformat)
                 end
 
-                if hasfield(docformat, :indent)
+                if hasproperty(docformat, :indent)
                     chunk.output = indent(chunk.output, docformat.indent)
                 end
                 strip(chunk.output) ≠ "" && (

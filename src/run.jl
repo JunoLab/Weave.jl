@@ -283,7 +283,7 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     report.fignum = 1
     report.cur_chunk = chunk
 
-    if hasfield(report.format, :out_width) && isnothing(chunk.options[:out_width])
+    if hasproperty(report.format, :out_width) && isnothing(chunk.options[:out_width])
         chunk.options[:out_width] = report.format.out_width
     end
 
