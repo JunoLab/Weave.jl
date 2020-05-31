@@ -45,12 +45,12 @@ end
 register_format!("pandoc2html", Pandoc2HTML())
 
 
-function render_doc(docformat::JMarkdown2HTML, body, doc, template, css)
+function render_doc(docformat::JMarkdown2HTML, body, doc, css)
     _, weave_source = splitdir(abspath(doc.source))
     weave_version, weave_date = weave_info()
 
     return Mustache.render(
-        get_html_template(template);
+        get_html_template(docformat.template);
         body = body,
         stylesheet = get_stylesheet(css),
         highlight_stylesheet = get_highlight_stylesheet(MIME("text/html"), docformat.highlight_theme),

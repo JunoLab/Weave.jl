@@ -20,7 +20,8 @@ function format(doc, template = nothing, highlight_theme = nothing; css = nothin
     docformat = doc.format
     # TODO : put docformat things earlier into docformat struct. that allows us to pass around fewer args
     docformat.highlight_theme = get_highlight_theme(highlight_theme)
-
+    # this overwrites template given in docformat
+    docformat.template = template
     restore_header!(doc)
 
     lines = map(copy(doc.chunks)) do chunk
@@ -28,7 +29,7 @@ function format(doc, template = nothing, highlight_theme = nothing; css = nothin
     end
     body = join(lines, '\n')
 
-    return render_doc(docformat, body, doc, template, css)
+    return render_doc(docformat, body, doc, css)
 end
 
 render_doc(_, body, args...) = body

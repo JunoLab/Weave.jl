@@ -74,26 +74,15 @@ end
 register_format!("texminted", TexMinted())
 
 
+highlight_str(docformat::TexFormat) = ""
+highlight_str(docformat::JMarkdown2tex) =
+    get_highlight_stylesheet(MIME("text/latex"), docformat.highlight_theme)
 
-
-isminted(::TexFormat) = false
-isminted(::TexMinted) = true
-
-# TODO: template in docformat currently not used
-function render_doc(docformat::TexFormat, body, doc, template, _)
+function render_doc(docformat::TexFormat, body, doc, _)
     return Mustache.render(
-        get_tex_template(template);
+        get_tex_template(docformat.template);
         body = body,
-        highlight = "",
-        tex_deps = docformat.tex_deps,
-        [Pair(Symbol(k), v) for (k, v) in doc.header]...,
-    )
-end
-function render_doc(docformat::JMarkdown2tex, body, doc, template, _)
-    return Mustache.render(
-        get_tex_template(template);
-        body = body,
-        highlight = get_highlight_stylesheet(MIME("text/latex"), docformat.highlight_theme),
+        highlight = highlight_str(docformat),
         tex_deps = docformat.tex_deps,
         [Pair(Symbol(k), v) for (k, v) in doc.header]...,
     )
@@ -131,14 +120,14 @@ function format_output(result, docformat::TexFormat)
     return result_escaped
 end
 
-# return "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}\n$result\n\\end{minted}\n"
+
+# Highlight code is currently only compatible with lstlistings (JMarkdown2tex)
+highlight_code(docformat::TexFormat, code) = code
+highlight_code(docformat::JMarkdown2tex, code) =
+    highlight_code(MIME("text/latex"), code, docformat.highlight_theme)
+
 function format_code(code, docformat::TexFormat)
-    #ret = highlight_code(MIME("text/latex"), code, docformat.highlight_theme)
-    docformat.keep_unicode || return uc2tex(code)
-    return code
-end
-function format_code(code, docformat::JMarkdown2tex)
-    ret = highlight_code(MIME("text/latex"), code, docformat.highlight_theme)
+    ret = highlight_code(code, docformat)
     docformat.keep_unicode || return uc2tex(ret)
     return ret
 end
