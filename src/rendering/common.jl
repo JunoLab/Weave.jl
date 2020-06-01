@@ -1,8 +1,9 @@
+# fallback methods
+# ----------------
 
 # TODO: is there any other format where we want to restore headers ?
 # make this field of format struct
 const HEADER_PRESERVE_DOCTYPES = ("github", "hugo")
-
 
 function restore_header!(doc)
     doc.doctype in HEADER_PRESERVE_DOCTYPES || return # don't restore
@@ -29,15 +30,6 @@ function format_inline(inline::InlineCode)
     isempty(inline.figures) || return inline.figures[end]
     return inline.output
 end
-
-
-function clear_buffer_and_format!(io::IOBuffer, out::IOBuffer, render_function)
-    text = take2string!(io)
-    m = Markdown.parse(text, flavor = WeaveMarkdown.weavemd)
-    write(out, string(render_function(m)))
-end
-
-addlines(op, inline) = inline.ctype === :line ? string('\n', op, '\n') : op
 
 function format_chunk(chunk::CodeChunk, docformat)
 
@@ -110,29 +102,6 @@ end
 
 format_code(code, docformat) = code
 
-format_output(result, docformat) = result
-
-
-function format_termchunk(chunk, docformat)
-    return if should_render(chunk)
-        string(docformat.termstart, chunk.output, '\n', docformat.termend, '\n')
-    else
-        ""
-    end
-end
-
-
-should_render(chunk) = chunk.options[:echo] && chunk.options[:results] ≠ "hidden"
-
-highlight_code(mime, code, highlight_theme) =
-    highlight(mime, strip(code), Highlights.Lexers.JuliaLexer, highlight_theme)
-highlight_term(mime, output, highlight_theme) =
-    highlight(mime, strip(output), Highlights.Lexers.JuliaConsoleLexer, highlight_theme)
-highlight(mime, output, lexer, theme = Highlights.Themes.DefaultTheme) =
-    sprint((io, x) -> Highlights.highlight(io, mime, x, lexer, theme), output)
-
-
-
 indent(text, nindent) = join(map(x -> string(repeat(' ', nindent), x), split(text, '\n')), '\n')
 
 function wraplines(text, line_width = 75)
@@ -157,3 +126,46 @@ function wrapline(text, line_width = 75)
     end
     result *= text
 end
+
+format_output(result, docformat) = result
+
+function format_termchunk(chunk, docformat)
+    return if should_render(chunk)
+        string(docformat.termstart, chunk.output, '\n', docformat.termend, '\n')
+    else
+        ""
+    end
+end
+
+should_render(chunk) = chunk.options[:echo] && chunk.options[:results] ≠ "hidden"
+
+render_doc(_, body, args...; kwargs...) = body
+
+# utilities
+# ---------
+
+function clear_buffer_and_format!(io::IOBuffer, out::IOBuffer, render_function)
+    text = take2string!(io)
+    m = Markdown.parse(text, flavor = WeaveMarkdown.weavemd)
+    write(out, string(render_function(m)))
+end
+
+addlines(op, inline) = inline.ctype === :line ? string('\n', op, '\n') : op
+
+get_template(path::AbstractString) = Mustache.template_from_file(path)
+get_template(tpl::Mustache.MustacheTokens) = tpl
+
+get_highlight_stylesheet(mime, highlight_theme) =
+    get_highlight_stylesheet(mime, get_highlight_theme(highlight_theme))
+get_highlight_stylesheet(mime, highlight_theme::Type{<:Highlights.AbstractTheme}) =
+    sprint((io, x) -> Highlights.stylesheet(io, mime, x), highlight_theme)
+
+get_highlight_theme(::Nothing) = Highlights.Themes.DefaultTheme
+get_highlight_theme(highlight_theme::Type{<:Highlights.AbstractTheme}) = highlight_theme
+
+highlight_code(mime, code, highlight_theme) =
+    highlight(mime, strip(code), Highlights.Lexers.JuliaLexer, highlight_theme)
+highlight_term(mime, output, highlight_theme) =
+    highlight(mime, strip(output), Highlights.Lexers.JuliaConsoleLexer, highlight_theme)
+highlight(mime, output, lexer, theme = Highlights.Themes.DefaultTheme) =
+    sprint((io, x) -> Highlights.highlight(io, mime, x, lexer, theme), output)

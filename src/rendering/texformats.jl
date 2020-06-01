@@ -71,16 +71,6 @@ Base.@kwdef mutable struct TexMinted <: TexFormat
 end
 register_format!("texminted", TexMinted())
 
-
-function render_doc(docformat::JMarkdown2tex, body, doc, _)
-    return Mustache.render(
-        get_tex_template(docformat.template);
-        body = body,
-        highlight = get_highlight_stylesheet(MIME("text/latex"), docformat.highlight_theme),
-        [Pair(Symbol(k), v) for (k, v) in doc.header]...,
-    )
-end
-
 # very similar to export to html
 function format_chunk(chunk::DocChunk, docformat::JMarkdown2tex)
     out = IOBuffer()
@@ -119,7 +109,6 @@ function format_code(code, docformat::JMarkdown2tex)
     return ret
 end
 
-
 # Convert unicode to tex, escape listings if needed
 function uc2tex(s, escape = false)
     for key in keys(latex_symbols)
@@ -132,11 +121,24 @@ function uc2tex(s, escape = false)
     return s
 end
 
-
 #should_render(chunk) ? highlight_term(MIME("text/latex"), , docformat.highlight_theme) : ""
 format_termchunk(chunk, docformat::JMarkdown2tex) =
     should_render(chunk) ? highlight_term(MIME("text/latex"), chunk.output, docformat.highlight_theme) : ""
 
+# Make julia symbols (\bf* etc.) valid latex
+function texify(s)
+    return if occursin(r"^\\bf[A-Z]$", s)
+        replace(s, "\\bf" => "\\bm{\\mathrm{") * "}}"
+    elseif startswith(s, "\\bfrak")
+        replace(s, "\\bfrak" => "\\bm{\\mathfrak{") * "}}"
+    elseif startswith(s, "\\bf")
+        replace(s, "\\bf" => "\\bm{\\") * "}"
+    elseif startswith(s, "\\frak")
+        replace(s, "\\frak" => "\\mathfrak{") * "}"
+    else
+        s
+    end
+end
 
 function formatfigures(chunk, docformat::TexFormat)
     fignames = chunk.figures
@@ -196,7 +198,6 @@ function formatfigures(chunk, docformat::TexFormat)
     return result
 end
 
-
 function md_length_to_latex(def, reference)
     if occursin("%", def)
         _def = tryparse(Float64, replace(def, "%" => ""))
@@ -207,18 +208,14 @@ function md_length_to_latex(def, reference)
     return def
 end
 
-
-# Make julia symbols (\bf* etc.) valid latex
-function texify(s)
-    return if occursin(r"^\\bf[A-Z]$", s)
-        replace(s, "\\bf" => "\\bm{\\mathrm{") * "}}"
-    elseif startswith(s, "\\bfrak")
-        replace(s, "\\bfrak" => "\\bm{\\mathfrak{") * "}}"
-    elseif startswith(s, "\\bf")
-        replace(s, "\\bf" => "\\bm{\\") * "}"
-    elseif startswith(s, "\\frak")
-        replace(s, "\\frak" => "\\mathfrak{") * "}"
-    else
-        s
-    end
+function render_doc(docformat::JMarkdown2tex, body, doc; kwargs...)
+    return Mustache.render(
+        get_tex_template(docformat.template);
+        body = body,
+        highlight = get_highlight_stylesheet(MIME("text/latex"), docformat.highlight_theme),
+        [Pair(Symbol(k), v) for (k, v) in doc.header]...,
+    )
 end
+
+get_tex_template(::Nothing) = get_template(normpath(TEMPLATE_DIR, "md2pdf.tpl"))
+get_tex_template(x) = get_template(x)

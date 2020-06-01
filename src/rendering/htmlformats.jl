@@ -1,5 +1,6 @@
 # HTML
 # ----
+
 abstract type HTMLFormat <: WeaveFormat end
 
 Base.@kwdef mutable struct JMarkdown2HTML <: HTMLFormat
@@ -45,24 +46,6 @@ Base.@kwdef mutable struct Pandoc2HTML <: HTMLFormat
     template = normpath(TEMPLATE_DIR, "pandoc2html.tpl")
 end
 register_format!("pandoc2html", Pandoc2HTML())
-
-
-function render_doc(docformat::JMarkdown2HTML, body, doc, css)
-    _, weave_source = splitdir(abspath(doc.source))
-    weave_version, weave_date = weave_info()
-
-    return Mustache.render(
-        get_html_template(docformat.template);
-        body = body,
-        stylesheet = get_stylesheet(css),
-        highlight_stylesheet = get_highlight_stylesheet(MIME("text/html"), docformat.highlight_theme),
-        header_script = doc.header_script,
-        weave_source = weave_source,
-        weave_version = weave_version,
-        weave_date = weave_date,
-        [Pair(Symbol(k), v) for (k, v) in doc.header]...,
-    )
-end
 
 # very similar to tex version of function
 function format_chunk(chunk::DocChunk, docformat::JMarkdown2HTML)
@@ -132,3 +115,25 @@ function formatfigures(chunk, docformat::JMarkdown2HTML)
 
     return result
 end
+
+function render_doc(docformat::JMarkdown2HTML, body, doc; css = nothing)
+    _, weave_source = splitdir(abspath(doc.source))
+    weave_version, weave_date = weave_info()
+
+    return Mustache.render(
+        get_html_template(docformat.template);
+        body = body,
+        stylesheet = get_stylesheet(css),
+        highlight_stylesheet = get_highlight_stylesheet(MIME("text/html"), docformat.highlight_theme),
+        header_script = doc.header_script,
+        weave_source = weave_source,
+        weave_version = weave_version,
+        weave_date = weave_date,
+        [Pair(Symbol(k), v) for (k, v) in doc.header]...,
+    )
+end
+
+get_stylesheet(::Nothing) = get_stylesheet(normpath(STYLESHEET_DIR, "skeleton.css"))
+get_stylesheet(path::AbstractString) = read(path, String)
+get_html_template(::Nothing) = get_template(normpath(TEMPLATE_DIR, "md2html.tpl"))
+get_html_template(x) = get_template(x)

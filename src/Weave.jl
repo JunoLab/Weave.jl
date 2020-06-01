@@ -1,7 +1,6 @@
 module Weave
 
-using Highlights, Mustache, Requires
-using Printf
+using Highlights, Mustache, Requires, Pkg
 
 
 const PKG_DIR = normpath(@__DIR__, "..")
