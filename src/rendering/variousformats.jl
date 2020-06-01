@@ -10,17 +10,12 @@ Base.@kwdef mutable struct Rest <: WeaveFormat
     indent = 4
     fig_ext = ".png"
     extension = "rst"
-    keep_unicode = false
     termstart = codestart
     termend = codeend
     out_width = "15 cm"
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
-    highlight_theme = nothing
-    #this could be removed if argument parsing checked whether the format was
-    # compatible with templates
-    template = nothing
     mimetypes = default_mime_types
 end
 register_format!("rst", Rest())
@@ -60,16 +55,12 @@ Base.@kwdef mutable struct AsciiDoc <: WeaveFormat
     outputend = "--------------------------------------\n\n"
     fig_ext = ".png"
     extension = "txt"
-    keep_unicode = false
     termstart = codestart
     termend = codeend
     out_width = "600"
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
-    highlight_theme = nothing
-    #this could be removed
-    template = nothing
     mimetypes = default_mime_types
 end
 register_format!("asciidoc", AsciiDoc())

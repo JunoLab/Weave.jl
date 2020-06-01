@@ -12,7 +12,6 @@ Base.@kwdef mutable struct JMarkdown2HTML <: HTMLFormat
     fig_ext = ".png"
     mimetypes = ["image/png", "image/jpg", "image/svg+xml",
                 "text/html", "text/markdown", "text/plain"]
-    keep_unicode = false
     extension = "html"
     termstart = codestart
     termend = codeend
@@ -20,10 +19,23 @@ Base.@kwdef mutable struct JMarkdown2HTML <: HTMLFormat
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
+    template = nothing
+    stylesheet = nothing
     highlight_theme = nothing
-    template = normpath(TEMPLATE_DIR, "md2html.tpl")
 end
 register_format!("md2html", JMarkdown2HTML())
+
+function set_rendering_options!(docformat::JMarkdown2HTML; template = nothing, css = nothing, highlight_theme = nothing, kwargs...)
+    docformat.template = get_html_template(template)
+    docformat.stylesheet = get_stylesheet(css)
+    docformat.highlight_theme = get_highlight_theme(highlight_theme)
+end
+
+get_html_template(::Nothing) = get_template(normpath(TEMPLATE_DIR, "md2html.tpl"))
+get_html_template(x) = get_template(x)
+
+get_stylesheet(::Nothing) = get_stylesheet(normpath(STYLESHEET_DIR, "skeleton.css"))
+get_stylesheet(path::AbstractString) = read(path, String)
 
 Base.@kwdef mutable struct Pandoc2HTML <: HTMLFormat
     description = "Markdown to HTML (requires Pandoc 2)"
@@ -35,15 +47,12 @@ Base.@kwdef mutable struct Pandoc2HTML <: HTMLFormat
     extension = "md"
     mimetypes = ["image/png", "image/svg+xml", "image/jpg",
                 "text/html", "text/markdown", "text/plain"]
-    keep_unicode = false
     termstart = codestart
     termend = codeend
     out_width = nothing
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
-    highlight_theme = nothing
-    template = normpath(TEMPLATE_DIR, "pandoc2html.tpl")
 end
 register_format!("pandoc2html", Pandoc2HTML())
 
@@ -121,9 +130,9 @@ function render_doc(docformat::JMarkdown2HTML, body, doc; css = nothing)
     weave_version, weave_date = weave_info()
 
     return Mustache.render(
-        get_html_template(docformat.template);
+        docformat.template;
         body = body,
-        stylesheet = get_stylesheet(css),
+        stylesheet = docformat.stylesheet,
         highlight_stylesheet = get_highlight_stylesheet(MIME("text/html"), docformat.highlight_theme),
         header_script = doc.header_script,
         weave_source = weave_source,
@@ -132,8 +141,3 @@ function render_doc(docformat::JMarkdown2HTML, body, doc; css = nothing)
         [Pair(Symbol(k), v) for (k, v) in doc.header]...,
     )
 end
-
-get_stylesheet(::Nothing) = get_stylesheet(normpath(STYLESHEET_DIR, "skeleton.css"))
-get_stylesheet(path::AbstractString) = read(path, String)
-get_html_template(::Nothing) = get_template(normpath(TEMPLATE_DIR, "md2html.tpl"))
-get_html_template(x) = get_template(x)

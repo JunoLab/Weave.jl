@@ -128,7 +128,6 @@ function weave(
 )
     doc = WeaveDoc(source, informat)
 
-    # TODO : put all argument parsing into separate function
     # run document
     # ------------
 
@@ -175,20 +174,20 @@ function weave(
         throw_errors = throw_errors,
     )
 
-    # format document
+    # render document
     # ---------------
 
-    # overwrites options with those specified in header, that are needed for formatting document
+    # overwrites options with those specified in header, that are needed for rendering document
     # NOTE: these YAML options can be given dynamically
     if !isnothing(weave_options)
         if haskey(weave_options, "template")
             template = weave_options["template"]
-             # resolve relative to this document
+            # resolve relative to this document
             template isa AbstractString && (template = normpath(dirname(source), template))
         end
         if haskey(weave_options, "css")
             css = weave_options["css"]
-             # resolve relative to this document
+            # resolve relative to this document
             css isa AbstractString && (css = normpath(dirname(source), css))
         end
         highlight_theme = get(weave_options, "highlight_theme", highlight_theme)
@@ -197,11 +196,8 @@ function weave(
         keep_unicode = get(weave_options, "keep_unicode", keep_unicode)
     end
 
-    doc.format.keep_unicode = doc.format.keep_unicode | keep_unicode
-    doc.format.highlight_theme = get_highlight_theme(highlight_theme)
-    # this overwrites template given in docformat
-    doc.format.template = template
-    rendered = format(doc; css = css)
+    set_rendering_options!(doc; template = template, highlight_theme = highlight_theme, css = css, keep_unicode = keep_unicode)
+    rendered = render_doc(doc)
 
     outname = get_outname(out_path, doc)
 

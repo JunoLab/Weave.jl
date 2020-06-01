@@ -1,5 +1,9 @@
+# TODO: fix terminologies: `format_foo` -> `render_foo`
+
 # fallback methods
 # ----------------
+
+set_rendering_options!(docformat::WeaveFormat; kwargs...) = return
 
 # TODO: is there any other format where we want to restore headers ?
 # make this field of format struct
@@ -139,7 +143,7 @@ end
 
 should_render(chunk) = chunk.options[:echo] && chunk.options[:results] ≠ "hidden"
 
-render_doc(_, body, args...; kwargs...) = body
+render_doc(docformat, body, args...) = body
 
 # utilities
 # ---------

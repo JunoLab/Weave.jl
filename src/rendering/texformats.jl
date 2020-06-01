@@ -3,6 +3,8 @@
 
 abstract type TexFormat <: WeaveFormat end
 
+set_rendering_options!(docformat::TexFormat; keep_unicode = false, kwargs...) = docformat.keep_unicode |= keep_unicode
+
 Base.@kwdef mutable struct JMarkdown2tex <: TexFormat
     description = "Julia markdown to latex"
     codestart = ""
@@ -26,6 +28,24 @@ end
 register_format!("md2tex", JMarkdown2tex())
 register_format!("md2pdf", JMarkdown2tex())
 
+function set_rendering_options!(docformat::JMarkdown2tex; template = nothing, highlight_theme = nothing, keep_unicode = false, kwargs...)
+    docformat.template = get_tex_template(template)
+    docformat.highlight_theme = get_highlight_theme(highlight_theme)
+    docformat.keep_unicode |= keep_unicode
+end
+
+get_tex_template(::Nothing) = get_template(normpath(TEMPLATE_DIR, "md2pdf.tpl"))
+get_tex_template(x) = get_template(x)
+
+function render_doc(docformat::JMarkdown2tex, body, doc)
+    return Mustache.render(
+        docformat.template;
+        body = body,
+        highlight = get_highlight_stylesheet(MIME("text/latex"), docformat.highlight_theme),
+        [Pair(Symbol(k), v) for (k, v) in doc.header]...,
+    )
+end
+
 Base.@kwdef mutable struct Tex <: TexFormat
     description = "Latex with custom code environments"
     codestart = "\\begin{juliacode}"
@@ -42,8 +62,6 @@ Base.@kwdef mutable struct Tex <: TexFormat
     keep_unicode = false
     out_width = "\\linewidth"
     out_height = nothing
-    highlight_theme = nothing
-    template = normpath(TEMPLATE_DIR, "md2pdf.tpl")
 end
 register_format!("tex", Tex())
 
@@ -66,8 +84,6 @@ Base.@kwdef mutable struct TexMinted <: TexFormat
     out_height = nothing
     fig_env = "figure"
     fig_pos = "htpb"
-    highlight_theme = nothing
-    template = normpath(TEMPLATE_DIR, "md2pdf.tpl")
 end
 register_format!("texminted", TexMinted())
 
@@ -121,7 +137,7 @@ function uc2tex(s, escape = false)
     return s
 end
 
-#should_render(chunk) ? highlight_term(MIME("text/latex"), , docformat.highlight_theme) : ""
+# should_render(chunk) ? highlight_term(MIME("text/latex"), , docformat.highlight_theme) : ""
 format_termchunk(chunk, docformat::JMarkdown2tex) =
     should_render(chunk) ? highlight_term(MIME("text/latex"), chunk.output, docformat.highlight_theme) : ""
 
@@ -207,15 +223,3 @@ function md_length_to_latex(def, reference)
     end
     return def
 end
-
-function render_doc(docformat::JMarkdown2tex, body, doc; kwargs...)
-    return Mustache.render(
-        get_tex_template(docformat.template);
-        body = body,
-        highlight = get_highlight_stylesheet(MIME("text/latex"), docformat.highlight_theme),
-        [Pair(Symbol(k), v) for (k, v) in doc.header]...,
-    )
-end
-
-get_tex_template(::Nothing) = get_template(normpath(TEMPLATE_DIR, "md2pdf.tpl"))
-get_tex_template(x) = get_template(x)

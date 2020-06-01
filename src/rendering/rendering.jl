@@ -12,9 +12,11 @@ const FORMATS = Dict{String,WeaveFormat}()
 
 # TODO: do some assertion for necessary fields of `format`
 register_format!(format_name::AbstractString, format::WeaveFormat) = push!(FORMATS, format_name => format)
-register_format!(_,format) = error("Format needs to be a subtype of WeaveFormat.")
+register_format!(_, format) = error("Format needs to be a subtype of WeaveFormat.")
 
-function format(doc; kwargs...)
+set_rendering_options!(doc; kwargs...) = set_rendering_options!(doc.format; kwargs...)
+
+function render_doc(doc)
     docformat = doc.format
 
     restore_header!(doc)
@@ -24,7 +26,7 @@ function format(doc; kwargs...)
     end
     body = join(lines, '\n')
 
-    return render_doc(docformat, body, doc; kwargs...)
+    return render_doc(docformat, body, doc)
 end
 
 

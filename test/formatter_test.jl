@@ -104,13 +104,14 @@ str = """
 ```
 """
 doc = mock_doc(str; doctype = "md2tex")
-doc = Weave.format(doc)
+Weave.set_rendering_options!(doc.format)
+doc = Weave.render_doc(doc)
 @test occursin(Weave.uc2tex("α"), doc)
 @test !occursin("α", doc)
 
 doc = mock_doc(str; doctype = "md2tex")
-doc.format.keep_unicode = true
-doc = Weave.format(doc)
+Weave.set_rendering_options!(doc.format; keep_unicode = true)
+doc = Weave.render_doc(doc)
 @test occursin("α", doc)
 @test !occursin(Weave.uc2tex("α"), doc)
 

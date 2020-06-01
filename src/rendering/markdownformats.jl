@@ -13,16 +13,12 @@ Base.@kwdef mutable struct GitHubMarkdown <: MarkdownFormat
     extension = "md"
     mimetypes = ["image/png", "image/svg+xml", "image/jpg",
                 "text/markdown", "text/plain"]
-    keep_unicode = false
     termstart = codestart
     termend = codeend
     out_width = nothing
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
-    highlight_theme = nothing
-    #this could be removed
-    template = nothing
 end
 register_format!("github", GitHubMarkdown())
 
@@ -60,7 +56,6 @@ Base.@kwdef mutable struct Hugo <: MarkdownFormat
     fig_ext = ".png"
     extension = "md"
     uglyURLs = false # if `false`, prepend figure path by `..`
-    keep_unicode = false
     mimetypes = default_mime_types
     termstart = codestart
     termend = codeend
@@ -68,9 +63,6 @@ Base.@kwdef mutable struct Hugo <: MarkdownFormat
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
-    highlight_theme = nothing
-    #this could be removed
-    template = nothing
 end
 register_format!("hugo", Hugo())
 
@@ -99,16 +91,12 @@ Base.@kwdef mutable struct MultiMarkdown <: MarkdownFormat
     outputend = "````\n\n"
     fig_ext = ".png"
     extension = "md"
-    keep_unicode = false
     termstart = codestart
     termend = codeend
     out_width = nothing
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
-    highlight_theme = nothing
-    #this could be removed
-    template = nothing
     mimetypes = default_mime_types
 end
 register_format!("multimarkdown", MultiMarkdown())
@@ -158,15 +146,12 @@ Base.@kwdef mutable struct Pandoc <: MarkdownFormat
     # Prefer png figures for markdown conversion, svg doesn't work with latex
     mimetypes = ["image/png", "image/jpg", "image/svg+xml",
                 "text/markdown", "text/plain"]
-    keep_unicode = false
     termstart = codestart
     termend = codeend
     out_width = nothing
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
-    highlight_theme = nothing
-    template = nothing
 end
 register_format!("pandoc", Pandoc())
 register_format!("pandoc2pdf", Pandoc())
