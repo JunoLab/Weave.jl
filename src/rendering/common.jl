@@ -5,12 +5,8 @@
 
 set_rendering_options!(docformat::WeaveFormat; kwargs...) = return
 
-# TODO: is there any other format where we want to restore headers ?
-# make this field of format struct
-const HEADER_PRESERVE_DOCTYPES = ("github", "hugo")
-
 function restore_header!(doc)
-    doc.doctype in HEADER_PRESERVE_DOCTYPES || return # don't restore
+    (hasproperty(doc.format, :restore_header) && doc.format.restore_header) || return
 
     # only strips Weave headers
     delete!(doc.header, WEAVE_OPTION_NAME)
@@ -83,9 +79,8 @@ function format_chunk(chunk::CodeChunk, docformat)
                     chunk.output = format_output(chunk.output, docformat)
                 end
 
-                if hasproperty(docformat, :indent)
-                    chunk.output = indent(chunk.output, docformat.indent)
-                end
+                hasproperty(docformat, :indent) && (chunk.output = indent(chunk.output, docformat.indent))
+
                 strip(chunk.output) ≠ "" && (
                     result *= "$(docformat.outputstart)$(chunk.output)\n$(docformat.outputend)\n"
                 )
