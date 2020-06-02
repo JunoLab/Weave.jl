@@ -5,20 +5,22 @@ abstract type MarkdownFormat <: WeaveFormat end
 
 Base.@kwdef mutable struct GitHubMarkdown <: MarkdownFormat
     description = "GitHub markdown"
+    extension = "md"
     codestart = "````julia"
     codeend = "````\n\n"
+    termstart = codestart
+    termend = codeend
     outputstart = "````"
     outputend = "````\n\n"
     fig_ext = ".png"
-    extension = "md"
     mimetypes = ["image/png", "image/svg+xml", "image/jpg",
                 "text/markdown", "text/plain"]
-    termstart = codestart
-    termend = codeend
     out_width = nothing
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
+    # specials
+    preserve_header = true
 end
 register_format!("github", GitHubMarkdown())
 
@@ -49,20 +51,22 @@ end
 
 Base.@kwdef mutable struct Hugo <: MarkdownFormat
     description = "Hugo markdown (using shortcodes)"
+    extension = "md"
     codestart = "````julia"
     codeend = "````\n\n"
-    outputstart = "````"
-    outputend = "````\n\n"
-    fig_ext = ".png"
-    extension = "md"
-    uglyURLs = false # if `false`, prepend figure path by `..`
-    mimetypes = default_mime_types
     termstart = codestart
     termend = codeend
+    outputstart = "````"
+    outputend = "````\n\n"
+    mimetypes = default_mime_types
+    fig_ext = ".png"
     out_width = nothing
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
+    # specials
+    preserve_header = true
+    uglyURLs = false # if `false`, prepend figure path by `..`
 end
 register_format!("hugo", Hugo())
 
@@ -85,19 +89,21 @@ end
 
 Base.@kwdef mutable struct MultiMarkdown <: MarkdownFormat
     description = "MultiMarkdown"
+    extension = "md"
     codestart = "````julia"
     codeend = "````\n\n"
-    outputstart = "````"
-    outputend = "````\n\n"
-    fig_ext = ".png"
-    extension = "md"
     termstart = codestart
     termend = codeend
+    outputstart = "````"
+    outputend = "````\n\n"
+    mimetypes = default_mime_types
+    fig_ext = ".png"
     out_width = nothing
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
-    mimetypes = default_mime_types
+    # specials
+    preserve_header = true
 end
 register_format!("multimarkdown", MultiMarkdown())
 
@@ -137,17 +143,17 @@ end
 
 Base.@kwdef mutable struct Pandoc <: MarkdownFormat
     description = "Pandoc markdown"
+    extension = "md"
     codestart = "~~~~{.julia}"
     codeend = "~~~~~~~~~~~~~\n\n"
+    termstart = codestart
+    termend = codeend
     outputstart = "~~~~"
     outputend = "~~~~\n\n"
-    fig_ext = ".png"
-    extension = "md"
     # Prefer png figures for markdown conversion, svg doesn't work with latex
     mimetypes = ["image/png", "image/jpg", "image/svg+xml",
                 "text/markdown", "text/plain"]
-    termstart = codestart
-    termend = codeend
+    fig_ext = ".png"
     out_width = nothing
     out_height = nothing
     fig_pos = nothing

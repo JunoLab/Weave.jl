@@ -5,20 +5,21 @@ abstract type HTMLFormat <: WeaveFormat end
 
 Base.@kwdef mutable struct JMarkdown2HTML <: HTMLFormat
     description = "Julia markdown to html"
+    extension = "html"
     codestart = "\n"
     codeend = "\n"
-    outputstart = "<pre class=\"output\">"
-    outputend = "</pre>\n"
-    fig_ext = ".png"
-    mimetypes = ["image/png", "image/jpg", "image/svg+xml",
-                "text/html", "text/markdown", "text/plain"]
-    extension = "html"
     termstart = codestart
     termend = codeend
+    outputstart = "<pre class=\"output\">"
+    outputend = "</pre>\n"
+    mimetypes = ["image/png", "image/jpg", "image/svg+xml",
+                "text/html", "text/markdown", "text/plain"]
+    fig_ext = ".png"
     out_width = nothing
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
+    # specials
     template = nothing
     stylesheet = nothing
     highlight_theme = nothing
@@ -39,16 +40,16 @@ get_stylesheet(path::AbstractString) = read(path, String)
 
 Base.@kwdef mutable struct Pandoc2HTML <: HTMLFormat
     description = "Markdown to HTML (requires Pandoc 2)"
+    extension = "md"
     codestart = "\n"
     codeend = "\n"
-    outputstart = "\n"
-    outputend = "\n"
-    fig_ext = ".png"
-    extension = "md"
-    mimetypes = ["image/png", "image/svg+xml", "image/jpg",
-                "text/html", "text/markdown", "text/plain"]
     termstart = codestart
     termend = codeend
+    outputstart = "\n"
+    outputend = "\n"
+    mimetypes = ["image/png", "image/svg+xml", "image/jpg",
+                "text/html", "text/markdown", "text/plain"]
+    fig_ext = ".png"
     out_width = nothing
     out_height = nothing
     fig_pos = nothing

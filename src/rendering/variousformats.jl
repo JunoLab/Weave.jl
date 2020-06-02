@@ -3,20 +3,21 @@
 
 Base.@kwdef mutable struct Rest <: WeaveFormat
     description = "reStructuredText and Sphinx"
+    extension = "rst"
     codestart = ".. code-block:: julia\n"
     codeend = "\n\n"
-    outputstart = "::\n"
-    outputend = "\n\n"
-    indent = 4
-    fig_ext = ".png"
-    extension = "rst"
     termstart = codestart
     termend = codeend
+    outputstart = "::\n"
+    outputend = "\n\n"
+    mimetypes = default_mime_types
+    fig_ext = ".png"
     out_width = "15 cm"
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
-    mimetypes = default_mime_types
+    # specials
+    indent = 4
 end
 register_format!("rst", Rest())
 
@@ -49,19 +50,19 @@ end
 # asciidoc -b html5 -a source-highlighter=pygments ...
 Base.@kwdef mutable struct AsciiDoc <: WeaveFormat
     description = "AsciiDoc"
+    extension = "txt"
     codestart = "[source,julia]\n--------------------------------------"
     codeend = "--------------------------------------\n\n"
-    outputstart = "--------------------------------------"
-    outputend = "--------------------------------------\n\n"
-    fig_ext = ".png"
-    extension = "txt"
     termstart = codestart
     termend = codeend
+    outputstart = "--------------------------------------"
+    outputend = "--------------------------------------\n\n"
+    mimetypes = default_mime_types
+    fig_ext = ".png"
     out_width = "600"
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
-    mimetypes = default_mime_types
 end
 register_format!("asciidoc", AsciiDoc())
 
