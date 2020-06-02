@@ -32,11 +32,11 @@ end
 take2string!(io) = String(take!(io))
 
 """
-    list_out_formats(io = stdout)
+    list_out_formats()
 
-List supported output formats
+List supported output formats with its description.
 """
-list_out_formats(io = stdout) = for (k, v) in FORMATS; println(io, string(k, ": ", v.description)); end
+list_out_formats() = [k => v.description for (k,v) in FORMATS]
 
 """
     tangle(source::AbstractString; kwargs...)
