@@ -29,7 +29,6 @@ function restore_chunk(chunk::CodeChunk, cached)
     new_chunks = []
     for c in chunks
         newc = CodeChunk(c.content, c.number, c.start_line, c.optionstring, c.options)
-        newc.result_no = c.result_no
         newc.figures = c.figures
         newc.result = c.result
         newc.output = c.output

@@ -182,28 +182,23 @@ function reset_report(report::Report)
 end
 
 function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
-    expressions = parse_input(chunk.content)
-    N = length(expressions)
-    # @show expressions
-    result_no = 1
+    exs = parse_input(chunk.content)
+    n = length(exs)
     results = ChunkOutput[]
-
-    for (str_expr, expr) in expressions
+    for (i, (str_expr, expr)) in enumerate(exs)
         reset_report(report)
-        lastline = (result_no == N)
-        (obj, out) = capture_output(
+        obj, out = capture_output(
             expr,
             SandBox,
             chunk.options[:term],
             chunk.options[:display],
-            lastline,
+            i == n,
             report.throw_errors,
         )
         figures = report.figures # Captured figures
         result = ChunkOutput(str_expr, out, report.cur_result, report.rich_output, figures)
         report.rich_output = ""
         push!(results, result)
-        result_no += 1
     end
     return results
 end
@@ -271,12 +266,12 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
         chunk = Base.invokelatest(hook, chunk)
     end
 
-    if chunk.options[:term]
-        chunks = collect_results(chunk, TermResult())
+    chunks = if chunk.options[:term]
+        collect_term_results(chunk)
     elseif chunk.options[:hold]
-        chunks = collect_results(chunk, CollectResult())
+        collect_hold_results(chunk)
     else
-        chunks = collect_results(chunk, ScriptResult())
+        collect_results(chunk)
     end
 
     # else
@@ -366,9 +361,8 @@ function set_rc_params(doc::WeaveDoc, fig_path, fig_ext)
     doc.chunk_defaults[:fig_path] = fig_path
 end
 
-function collect_results(chunk::CodeChunk, fmt::ScriptResult)
+function collect_results(chunk::CodeChunk)
     content = ""
-    result_no = 1
     result_chunks = CodeChunk[]
     for r in chunk.result
         # Check if there is any output from chunk
@@ -384,8 +378,6 @@ function collect_results(chunk::CodeChunk, fmt::ScriptResult)
                 copy(chunk.options),
             )
             content = ""
-            rchunk.result_no = result_no
-            result_no *= 1
             rchunk.figures = r.figures
             rchunk.output = r.stdout * r.displayed
             rchunk.rich_output = r.rich_output
@@ -407,10 +399,9 @@ function collect_results(chunk::CodeChunk, fmt::ScriptResult)
     return result_chunks
 end
 
-function collect_results(chunk::CodeChunk, fmt::TermResult)
+function collect_term_results(chunk::CodeChunk)
     output = ""
     prompt = chunk.options[:prompt]
-    result_no = 1
     result_chunks = CodeChunk[]
     for r in chunk.result
         output *= prompt * r.code
@@ -444,8 +435,7 @@ function collect_results(chunk::CodeChunk, fmt::TermResult)
     return result_chunks
 end
 
-function collect_results(chunk::CodeChunk, fmt::CollectResult)
-    result_no = 1
+function collect_hold_results(chunk::CodeChunk)
     for r in chunk.result
         chunk.output *= r.stdout
         chunk.rich_output *= r.rich_output
