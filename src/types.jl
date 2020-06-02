@@ -28,7 +28,6 @@ end
 mutable struct CodeChunk <: WeaveChunk
     content::String
     number::Int
-    result_no::Int
     start_line::Int
     optionstring::String
     options::Dict{Symbol,Any}
@@ -42,7 +41,6 @@ function CodeChunk(content, number, start_line, optionstring, options)
     return CodeChunk(
         string(rstrip(content), '\n'), # normalize end of chunk)
         number,
-        0,
         start_line,
         optionstring,
         options,
@@ -73,7 +71,3 @@ mutable struct InlineCode <: Inline
     figures::Vector{String}
 end
 InlineCode(content, number, ctype) = InlineCode(content, number, ctype, "", "", String[])
-
-struct TermResult end
-struct ScriptResult end
-struct CollectResult end
