@@ -29,10 +29,6 @@ function __init__()
 end
 
 # utilitity functions
-@static @isdefined(isnothing) || begin
-    isnothing(::Any) = false
-    isnothing(::Nothing) = true
-end
 take2string!(io) = String(take!(io))
 
 """
