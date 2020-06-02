@@ -1,9 +1,126 @@
-# PDF and Tex
-# -----------
+# Tex
+# ---
 
 abstract type TexFormat <: WeaveFormat end
 
 set_rendering_options!(docformat::TexFormat; keep_unicode = false, kwargs...) = docformat.keep_unicode |= keep_unicode
+
+function formatfigures(chunk, docformat::TexFormat)
+    fignames = chunk.figures
+    caption = chunk.options[:fig_cap]
+    width = chunk.options[:out_width]
+    height = chunk.options[:out_height]
+    f_pos = chunk.options[:fig_pos]
+    f_env = chunk.options[:fig_env]
+    result = ""
+    figstring = ""
+
+    if f_env == nothing && caption != nothing
+        f_env = "figure"
+    end
+
+    (f_pos == nothing) && (f_pos = "!h")
+    # Set size
+    attribs = ""
+    width == nothing || (attribs = "width=$(md_length_to_latex(width,"\\linewidth"))")
+    (attribs != "" && height != nothing) && (attribs *= ",")
+    height == nothing || (attribs *= "height=$(md_length_to_latex(height,"\\paperheight"))")
+
+    if f_env != nothing
+        result *= "\\begin{$f_env}"
+        (f_pos != "") && (result *= "[$f_pos]")
+        result *= "\n"
+    end
+
+    for fig in fignames
+        if splitext(fig)[2] == ".tex" # Tikz figures
+            figstring *= "\\resizebox{$width}{!}{\\input{$fig}}\n"
+        else
+            if isempty(attribs)
+                figstring *= "\\includegraphics{$fig}\n"
+            else
+                figstring *= "\\includegraphics[$attribs]{$fig}\n"
+            end
+        end
+    end
+
+    # Figure environment
+    if caption != nothing
+        result *= string("\\center\n", "$figstring", "\\caption{$caption}\n")
+    else
+        result *= figstring
+    end
+
+    if chunk.options[:label] != nothing && f_env != nothing
+        label = chunk.options[:label]
+        result *= "\\label{fig:$label}\n"
+    end
+
+    if f_env != nothing
+        result *= "\\end{$f_env}\n"
+    end
+
+    return result
+end
+
+function md_length_to_latex(def, reference)
+    if occursin("%", def)
+        _def = tryparse(Float64, replace(def, "%" => ""))
+        _def == nothing && return def
+        perc = round(_def / 100, digits = 2)
+        return "$perc$reference"
+    end
+    return def
+end
+
+# plain Tex
+# ---------
+
+Base.@kwdef mutable struct Tex <: TexFormat
+    description = "Latex with custom code environments"
+    extension = "tex"
+    codestart = "\\begin{juliacode}"
+    codeend = "\\end{juliacode}"
+    termstart = "\\begin{juliaterm}"
+    termend = "\\end{juliaterm}"
+    outputstart = "\\begin{juliaout}"
+    outputend = "\\end{juliaout}"
+    mimetypes = ["application/pdf", "image/png", "text/latex", "text/plain"]
+    fig_ext = ".pdf"
+    out_width = "\\linewidth"
+    out_height = nothing
+    fig_pos = "htpb"
+    fig_env = "figure"
+    # specials
+    keep_unicode = false
+end
+register_format!("tex", Tex())
+
+# minted Tex
+# ----------
+
+Base.@kwdef mutable struct TexMinted <: TexFormat
+    description = "Latex using minted for highlighting"
+    extension = "tex"
+    codestart = "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}"
+    codeend = "\\end{minted}"
+    termstart = "\\begin{minted}[fontsize=\\footnotesize, xleftmargin=0.5em, mathescape]{jlcon}"
+    termend = "\\end{minted}"
+    outputstart = "\\begin{minted}[fontsize=\\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}"
+    outputend = "\\end{minted}"
+    mimetypes = ["application/pdf", "image/png", "text/latex", "text/plain"]
+    fig_ext = ".pdf"
+    out_width = "\\linewidth"
+    out_height = nothing
+    fig_pos = "htpb"
+    fig_env = "figure"
+    # specials
+    keep_unicode = false
+end
+register_format!("texminted", TexMinted())
+
+# Tex (directly to PDF)
+# ---------------------
 
 Base.@kwdef mutable struct JMarkdown2tex <: TexFormat
     description = "Julia markdown to latex"
@@ -46,46 +163,6 @@ function render_doc(docformat::JMarkdown2tex, body, doc)
         [Pair(Symbol(k), v) for (k, v) in doc.header]...,
     )
 end
-
-Base.@kwdef mutable struct Tex <: TexFormat
-    description = "Latex with custom code environments"
-    extension = "tex"
-    codestart = "\\begin{juliacode}"
-    codeend = "\\end{juliacode}"
-    termstart = "\\begin{juliaterm}"
-    termend = "\\end{juliaterm}"
-    outputstart = "\\begin{juliaout}"
-    outputend = "\\end{juliaout}"
-    mimetypes = ["application/pdf", "image/png", "text/latex", "text/plain"]
-    fig_ext = ".pdf"
-    out_width = "\\linewidth"
-    out_height = nothing
-    fig_pos = "htpb"
-    fig_env = "figure"
-    # specials
-    keep_unicode = false
-end
-register_format!("tex", Tex())
-
-Base.@kwdef mutable struct TexMinted <: TexFormat
-    description = "Latex using minted for highlighting"
-    extension = "tex"
-    codestart = "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}"
-    codeend = "\\end{minted}"
-    termstart = "\\begin{minted}[fontsize=\\footnotesize, xleftmargin=0.5em, mathescape]{jlcon}"
-    termend = "\\end{minted}"
-    outputstart = "\\begin{minted}[fontsize=\\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}"
-    outputend = "\\end{minted}"
-    mimetypes = ["application/pdf", "image/png", "text/latex", "text/plain"]
-    fig_ext = ".pdf"
-    out_width = "\\linewidth"
-    out_height = nothing
-    fig_pos = "htpb"
-    fig_env = "figure"
-    # specials
-    keep_unicode = false
-end
-register_format!("texminted", TexMinted())
 
 # very similar to export to html
 function format_chunk(chunk::DocChunk, docformat::JMarkdown2tex)
@@ -154,72 +231,4 @@ function texify(s)
     else
         s
     end
-end
-
-function formatfigures(chunk, docformat::TexFormat)
-    fignames = chunk.figures
-    caption = chunk.options[:fig_cap]
-    width = chunk.options[:out_width]
-    height = chunk.options[:out_height]
-    f_pos = chunk.options[:fig_pos]
-    f_env = chunk.options[:fig_env]
-    result = ""
-    figstring = ""
-
-    if f_env == nothing && caption != nothing
-        f_env = "figure"
-    end
-
-    (f_pos == nothing) && (f_pos = "!h")
-    # Set size
-    attribs = ""
-    width == nothing || (attribs = "width=$(md_length_to_latex(width,"\\linewidth"))")
-    (attribs != "" && height != nothing) && (attribs *= ",")
-    height == nothing || (attribs *= "height=$(md_length_to_latex(height,"\\paperheight"))")
-
-    if f_env != nothing
-        result *= "\\begin{$f_env}"
-        (f_pos != "") && (result *= "[$f_pos]")
-        result *= "\n"
-    end
-
-    for fig in fignames
-        if splitext(fig)[2] == ".tex" # Tikz figures
-            figstring *= "\\resizebox{$width}{!}{\\input{$fig}}\n"
-        else
-            if isempty(attribs)
-                figstring *= "\\includegraphics{$fig}\n"
-            else
-                figstring *= "\\includegraphics[$attribs]{$fig}\n"
-            end
-        end
-    end
-
-    # Figure environment
-    if caption != nothing
-        result *= string("\\center\n", "$figstring", "\\caption{$caption}\n")
-    else
-        result *= figstring
-    end
-
-    if chunk.options[:label] != nothing && f_env != nothing
-        label = chunk.options[:label]
-        result *= "\\label{fig:$label}\n"
-    end
-
-    if f_env != nothing
-        result *= "\\end{$f_env}\n"
-    end
-
-    return result
-end
-
-function md_length_to_latex(def, reference)
-    if occursin("%", def)
-        _def = tryparse(Float64, replace(def, "%" => ""))
-        _def == nothing && return def
-        perc = round(_def / 100, digits = 2)
-        return "$perc$reference"
-    end
-    return def
 end

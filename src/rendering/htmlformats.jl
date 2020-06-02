@@ -3,6 +3,15 @@
 
 abstract type HTMLFormat <: WeaveFormat end
 
+format_code(code, docformat::HTMLFormat) =
+    highlight_code(MIME("text/html"), code, docformat.highlight_theme)
+
+format_termchunk(chunk, docformat::HTMLFormat) =
+    should_render(chunk) ? highlight_term(MIME("text/html"), chunk.output, docformat.highlight_theme) : ""
+
+# Julia markdown
+# --------------
+
 Base.@kwdef mutable struct JMarkdown2HTML <: HTMLFormat
     description = "Julia markdown to html"
     extension = "html"
@@ -38,25 +47,6 @@ get_html_template(x) = get_template(x)
 get_stylesheet(::Nothing) = get_stylesheet(normpath(STYLESHEET_DIR, "skeleton.css"))
 get_stylesheet(path::AbstractString) = read(path, String)
 
-Base.@kwdef mutable struct Pandoc2HTML <: HTMLFormat
-    description = "Markdown to HTML (requires Pandoc 2)"
-    extension = "md"
-    codestart = "\n"
-    codeend = "\n"
-    termstart = codestart
-    termend = codeend
-    outputstart = "\n"
-    outputend = "\n"
-    mimetypes = ["image/png", "image/svg+xml", "image/jpg",
-                "text/html", "text/markdown", "text/plain"]
-    fig_ext = ".png"
-    out_width = nothing
-    out_height = nothing
-    fig_pos = nothing
-    fig_env = nothing
-end
-register_format!("pandoc2html", Pandoc2HTML())
-
 # very similar to tex version of function
 function format_chunk(chunk::DocChunk, docformat::JMarkdown2HTML)
     out = IOBuffer()
@@ -78,14 +68,6 @@ function format_chunk(chunk::DocChunk, docformat::JMarkdown2HTML)
 end
 
 format_output(result, docformat::JMarkdown2HTML) = Markdown.htmlesc(result)
-
-format_code(code, docformat::HTMLFormat) =
-    highlight_code(MIME("text/html"), code, docformat.highlight_theme)
-
-format_termchunk(chunk, docformat::HTMLFormat) =
-    should_render(chunk) ? highlight_term(MIME("text/html"), chunk.output, docformat.highlight_theme) : ""
-
-formatfigures(chunk, docformat::Pandoc2HTML) = formatfigures(chunk, Pandoc())
 
 function formatfigures(chunk, docformat::JMarkdown2HTML)
     fignames = chunk.figures
@@ -142,3 +124,27 @@ function render_doc(docformat::JMarkdown2HTML, body, doc; css = nothing)
         [Pair(Symbol(k), v) for (k, v) in doc.header]...,
     )
 end
+
+# Pandoc
+# ------
+
+Base.@kwdef mutable struct Pandoc2HTML <: HTMLFormat
+    description = "Markdown to HTML (requires Pandoc 2)"
+    extension = "md"
+    codestart = "\n"
+    codeend = "\n"
+    termstart = codestart
+    termend = codeend
+    outputstart = "\n"
+    outputend = "\n"
+    mimetypes = ["image/png", "image/svg+xml", "image/jpg",
+                "text/html", "text/markdown", "text/plain"]
+    fig_ext = ".png"
+    out_width = nothing
+    out_height = nothing
+    fig_pos = nothing
+    fig_env = nothing
+end
+register_format!("pandoc2html", Pandoc2HTML())
+
+formatfigures(chunk, docformat::Pandoc2HTML) = formatfigures(chunk, Pandoc())
