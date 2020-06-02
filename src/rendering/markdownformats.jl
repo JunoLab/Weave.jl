@@ -32,7 +32,7 @@ function formatfigures(chunk, docformat::GitHubMarkdown)
 
     length(fignames) > 0 || (return "")
 
-    if caption != nothing
+    if !isnothing(caption)
         result *= "![$caption]($(fignames[1]))\n"
         for fig in fignames[2:end]
             result *= "![]($fig)\n"
@@ -78,7 +78,7 @@ function formatfigures(chunk, docformat::Hugo)
             title_spec = ""
         else
             caption = chunk.options[:fig_cap]
-            title_spec = caption == nothing ? "" : "title=\"$(caption)\" "
+            title_spec = isnothing(caption) ? "" : "title=\"$(caption)\" "
         end
         "{{< figure src=\"$(joinpath(relpath, fig))\" $(title_spec) >}}"
     end
@@ -121,7 +121,7 @@ function formatfigures(chunk, docformat::MultiMarkdown)
 
     length(fignames) > 0 || (return "")
 
-    if caption != nothing
+    if !isnothing(caption)
         result *= "![$caption][$(fignames[1])]\n\n"
         result *= "[$(fignames[1])]: $(fignames[1]) $width\n"
         for fig in fignames[2:end]
@@ -176,12 +176,12 @@ function formatfigures(chunk, docformat::Pandoc)
 
     # Build figure attibutes
     attribs = String[]
-    width == nothing || push!(attribs, "width=$width")
-    height == nothing || push!(attribs, "height=$height")
-    label == nothing || push!(attribs, "#fig:$label")
+    isnothing(width) || push!(attribs, "width=$width")
+    isnothing(height) || push!(attribs, "height=$height")
+    isnothing(label) || push!(attribs, "#fig:$label")
     attribs = isempty(attribs) ? "" : "{" * join(attribs, " ") * "}"
 
-    if caption != nothing
+    if !isnothing(caption)
         result *= "![$caption]($(fignames[1]))$attribs\n"
         for fig in fignames[2:end]
             result *= "![]($fig)$attribs\n"

@@ -81,11 +81,11 @@ function formatfigures(chunk, docformat::JMarkdown2HTML)
 
     # Set size
     attribs = ""
-    width == nothing || (attribs = "width=\"$width\"")
-    (attribs != "" && height != nothing) && (attribs *= ",")
-    height == nothing || (attribs *= " height=\"$height\" ")
+    isnothing(width) || (attribs = "width=\"$width\"")
+    (!isempty(attribs) && !isnothing(height)) && (attribs *= ",")
+    isnothing(height) || (attribs *= " height=\"$height\" ")
 
-    if caption != nothing
+    if !isnothing(caption)
         result *= """<figure>\n"""
     end
 
@@ -95,13 +95,13 @@ function formatfigures(chunk, docformat::JMarkdown2HTML)
 
     result *= figstring
 
-    if caption != nothing
+    if !isnothing(caption)
         result *= """
           <figcaption>$caption</figcaption>
           """
     end
 
-    if caption != nothing
+    if !isnothing(caption)
         result *= "</figure>\n"
     end
 

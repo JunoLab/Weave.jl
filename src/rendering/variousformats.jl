@@ -32,7 +32,7 @@ function formatfigures(chunk, docformat::Rest)
         figstring *= @sprintf(".. image:: %s\n   :width: %s\n\n", fig, width)
     end
 
-    if caption != nothing
+    if !isnothing(caption)
         result *= string(
             ".. figure:: $(fignames[1])\n",
             "   :width: $width\n\n",
@@ -77,7 +77,7 @@ function formatfigures(chunk, docformat::AsciiDoc)
         figstring *= @sprintf("image::%s[width=%s]\n", fig, width)
     end
 
-    if caption != nothing
+    if !isnothing(caption)
         result *= string("image::$(fignames[1])", "[width=$width,", "title=\"$caption\"]")
     else
         result *= figstring

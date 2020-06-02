@@ -392,7 +392,7 @@ function collect_results(chunk::CodeChunk, fmt::ScriptResult)
             push!(result_chunks, rchunk)
         end
     end
-    if content != ""
+    if !isempty(content)
         startswith(content, "\n") || (content = "\n" * content)
         rchunk = CodeChunk(
             content,
@@ -429,7 +429,7 @@ function collect_results(chunk::CodeChunk, fmt::TermResult)
             push!(result_chunks, rchunk)
         end
     end
-    if output != ""
+    if !isempty(output)
         rchunk = CodeChunk(
             "",
             chunk.number,

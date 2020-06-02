@@ -15,20 +15,20 @@ function formatfigures(chunk, docformat::TexFormat)
     result = ""
     figstring = ""
 
-    if f_env == nothing && caption != nothing
+    if isnothing(f_env) && !isnothing(caption)
         f_env = "figure"
     end
 
-    (f_pos == nothing) && (f_pos = "!h")
+    (isnothing(f_pos)) && (f_pos = "!h")
     # Set size
     attribs = ""
-    width == nothing || (attribs = "width=$(md_length_to_latex(width,"\\linewidth"))")
-    (attribs != "" && height != nothing) && (attribs *= ",")
-    height == nothing || (attribs *= "height=$(md_length_to_latex(height,"\\paperheight"))")
+    isnothing(width) || (attribs = "width=$(md_length_to_latex(width,"\\linewidth"))")
+    (!isempty(attribs) && !isnothing(height)) && (attribs *= ",")
+    isnothing(height) || (attribs *= "height=$(md_length_to_latex(height,"\\paperheight"))")
 
-    if f_env != nothing
+    if !isnothing(f_env)
         result *= "\\begin{$f_env}"
-        (f_pos != "") && (result *= "[$f_pos]")
+        (!isempty(f_pos)) && (result *= "[$f_pos]")
         result *= "\n"
     end
 
@@ -45,18 +45,18 @@ function formatfigures(chunk, docformat::TexFormat)
     end
 
     # Figure environment
-    if caption != nothing
+    if !isnothing(caption)
         result *= string("\\center\n", "$figstring", "\\caption{$caption}\n")
     else
         result *= figstring
     end
 
-    if chunk.options[:label] != nothing && f_env != nothing
+    if !isnothing(chunk.options[:label]) && !isnothing(f_env)
         label = chunk.options[:label]
         result *= "\\label{fig:$label}\n"
     end
 
-    if f_env != nothing
+    if !isnothing(f_env)
         result *= "\\end{$f_env}\n"
     end
 
@@ -66,7 +66,7 @@ end
 function md_length_to_latex(def, reference)
     if occursin("%", def)
         _def = tryparse(Float64, replace(def, "%" => ""))
-        _def == nothing && return def
+        isnothing(_def) && return def
         perc = round(_def / 100, digits = 2)
         return "$perc$reference"
     end
