@@ -41,9 +41,9 @@ function run_doc(
     isnothing(mod) && (mod = sandbox = Core.eval(Main, :(module $(gensym(:WeaveSandBox)) end))::Module)
     @eval mod WEAVE_ARGS = $args
 
-    mimetypes = get(doc.format.formatdict, :mimetypes, default_mime_types)
+    mimetypes = doc.format.mimetypes
 
-    report = Report(doc.cwd, doc.basename, doc.format.formatdict, mimetypes, throw_errors)
+    report = Report(doc.cwd, doc.basename, doc.format, mimetypes, throw_errors)
     pushdisplay(report)
     try
         if cache !== :off && cache !== :refresh
@@ -260,8 +260,8 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
     report.fignum = 1
     report.cur_chunk = chunk
 
-    if haskey(report.formatdict, :out_width) && isnothing(chunk.options[:out_width])
-        chunk.options[:out_width] = report.formatdict[:out_width]
+    if hasproperty(report.format, :out_width) && isnothing(chunk.options[:out_width])
+        chunk.options[:out_width] = report.format.out_width
     end
 
     chunk.result = run_code(chunk, report, SandBox)
@@ -342,13 +342,13 @@ end
 
 """Get output file name based on out_path"""
 function get_outname(out_path::Symbol, doc::WeaveDoc; ext = nothing)
-    isnothing(ext) && (ext = doc.format.formatdict[:extension])
+    isnothing(ext) && (ext = doc.format.extension)
     outname = "$(doc.cwd)/$(doc.basename).$ext"
 end
 
 """Get output file name based on out_path"""
 function get_outname(out_path::AbstractString, doc::WeaveDoc; ext = nothing)
-    isnothing(ext) && (ext = doc.format.formatdict[:extension])
+    isnothing(ext) && (ext = doc.format.extension)
     splitted = splitext(out_path)
     if (splitted[2]) == ""
         outname = "$(doc.cwd)/$(doc.basename).$ext"
@@ -358,9 +358,8 @@ function get_outname(out_path::AbstractString, doc::WeaveDoc; ext = nothing)
 end
 
 function set_rc_params(doc::WeaveDoc, fig_path, fig_ext)
-    formatdict = doc.format.formatdict
     if isnothing(fig_ext)
-        doc.chunk_defaults[:fig_ext] = formatdict[:fig_ext]
+        doc.chunk_defaults[:fig_ext] = doc.format.fig_ext
     else
         doc.chunk_defaults[:fig_ext] = fig_ext
     end
@@ -393,7 +392,7 @@ function collect_results(chunk::CodeChunk, fmt::ScriptResult)
             push!(result_chunks, rchunk)
         end
     end
-    if content != ""
+    if !isempty(content)
         startswith(content, "\n") || (content = "\n" * content)
         rchunk = CodeChunk(
             content,
@@ -430,7 +429,7 @@ function collect_results(chunk::CodeChunk, fmt::TermResult)
             push!(result_chunks, rchunk)
         end
     end
-    if output != ""
+    if !isempty(output)
         rchunk = CodeChunk(
             "",
             chunk.number,

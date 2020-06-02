@@ -26,7 +26,7 @@ parsed = Weave.WeaveDoc("documents/chunk_options.noweb")
 doc = run_doc(parsed, doctype = "md2html")
 
 c_check = "<pre class='hljl'>\n<span class='hljl-n'>x</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-p'>[</span><span class='hljl-ni'>12</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-ni'>10</span><span class='hljl-p'>]</span><span class='hljl-t'>\n</span><span class='hljl-nf'>println</span><span class='hljl-p'>(</span><span class='hljl-n'>y</span><span class='hljl-p'>)</span>\n</pre>\n"
-doc.format.formatdict[:highlight_theme] = DefaultTheme
+doc.format.highlight_theme = DefaultTheme
 c = Weave.format_code(doc.chunks[3].content, doc.format)
 @test c_check == c
 
@@ -39,7 +39,7 @@ parsed = Weave.WeaveDoc("documents/chunk_options.noweb")
 doc = run_doc(parsed, doctype = "md2tex")
 
 c_check = "\\begin{lstlisting}\n(*@\\HLJLnf{println}@*)(*@\\HLJLp{(}@*)(*@\\HLJLn{x}@*)(*@\\HLJLp{)}@*)\n\\end{lstlisting}\n"
-doc.format.formatdict[:highlight_theme] = DefaultTheme
+doc.format.highlight_theme = DefaultTheme
 c = Weave.format_code(doc.chunks[4].content, doc.format)
 @test c_check == c
 
@@ -93,7 +93,7 @@ fmt = deepcopy(Weave.FORMATS["md2tex"])
 f = Weave.format_chunk(chunk, fmt)
 @test f == "\\section{Test chunk}\n\\ensuremath{\\alpha}\n\n"
 
-fmt.formatdict[:keep_unicode] = true
+fmt.keep_unicode = true
 f = Weave.format_chunk(chunk, fmt)
 @test f == "\\section{Test chunk}\nα\n\n"
 
@@ -104,13 +104,14 @@ str = """
 ```
 """
 doc = mock_doc(str; doctype = "md2tex")
-doc = Weave.format(doc)
+Weave.set_rendering_options!(doc.format)
+doc = Weave.render_doc(doc)
 @test occursin(Weave.uc2tex("α"), doc)
 @test !occursin("α", doc)
 
 doc = mock_doc(str; doctype = "md2tex")
-doc.format.formatdict[:keep_unicode] = true
-doc = Weave.format(doc)
+Weave.set_rendering_options!(doc.format; keep_unicode = true)
+doc = Weave.render_doc(doc)
 @test occursin("α", doc)
 @test !occursin(Weave.uc2tex("α"), doc)
 

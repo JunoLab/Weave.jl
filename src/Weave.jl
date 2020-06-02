@@ -1,6 +1,6 @@
 module Weave
 
-using Highlights, Mustache, Requires
+using Highlights, Mustache, Requires, Pkg
 
 
 # directories
@@ -16,16 +16,19 @@ const WEAVE_OPTION_NAME_DEPRECATED = "options" # remove this when tagging v0.11
 const WEAVE_OPTION_DEPRECATE_ID = "weave_option_duplicate_id"
 const DEFAULT_FIG_PATH = "figures"
 
+const WEAVE_VERSION = try
+    'v' * Pkg.TOML.parsefile(normpath(PKG_DIR, "Project.toml"))["version"]
+catch
+    ""
+end
+weave_info() = WEAVE_VERSION, string(Date(now()))
+
 function __init__()
     @require Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80" include("plots.jl")
     @require Gadfly = "c91e804a-d5a3-530f-b6f0-dfbca275c004" include("gadfly.jl")
 end
 
 # utilitity functions
-@static @isdefined(isnothing) || begin
-    isnothing(::Any) = false
-    isnothing(::Nothing) = true
-end
 take2string!(io) = String(take!(io))
 
 """
@@ -33,7 +36,7 @@ take2string!(io) = String(take!(io))
 
 List supported output formats
 """
-list_out_formats(io = stdout) = for (k, v) in FORMATS; println(io, string(k, ": ", v.formatdict[:description])); end
+list_out_formats(io = stdout) = for (k, v) in FORMATS; println(io, string(k, ": ", v.description)); end
 
 """
     tangle(source::AbstractString; kwargs...)
@@ -171,36 +174,40 @@ function weave(
         throw_errors = throw_errors,
     )
 
-    # format document
+    # render document
     # ---------------
 
-    # overwrites options with those specified in header, that are needed for formatting document
+    # overwrites options with those specified in header, that are needed for rendering document
     # NOTE: these YAML options can be given dynamically
     if !isnothing(weave_options)
         if haskey(weave_options, "template")
             template = weave_options["template"]
-             # resolve relative to this document
+            # resolve relative to this document
             template isa AbstractString && (template = normpath(dirname(source), template))
         end
         if haskey(weave_options, "css")
             css = weave_options["css"]
-             # resolve relative to this document
+            # resolve relative to this document
             css isa AbstractString && (css = normpath(dirname(source), css))
         end
         highlight_theme = get(weave_options, "highlight_theme", highlight_theme)
-        pandoc_options = get(weave_options, "pandoc_options", pandoc_options)
         latex_cmd = get(weave_options, "latex_cmd", latex_cmd)
         keep_unicode = get(weave_options, "keep_unicode", keep_unicode)
     end
 
-    get!(doc.format.formatdict, :keep_unicode, keep_unicode)
-    rendered = format(doc, template, highlight_theme; css = css)
+    set_rendering_options!(doc; template = template, highlight_theme = highlight_theme, css = css, keep_unicode = keep_unicode)
+    rendered = render_doc(doc)
 
     outname = get_outname(out_path, doc)
-
     open(io->write(io,rendered), outname, "w")
 
     # document generation via external programs
+    # -----------------------------------------
+
+    if !isnothing(weave_options)
+        pandoc_options = get(weave_options, "pandoc_options", pandoc_options)
+    end
+
     doctype = doc.doctype
     if doctype == "pandoc2html"
         mdname = outname
@@ -333,8 +340,7 @@ include("display_methods.jl")
 include("reader/reader.jl")
 include("run.jl")
 include("cache.jl")
-include("formats.jl")
-include("format.jl")
+include("rendering/rendering.jl")
 include("pandoc.jl")
 include("converter.jl")
 
