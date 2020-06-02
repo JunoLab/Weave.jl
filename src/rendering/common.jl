@@ -138,7 +138,7 @@ end
 
 should_render(chunk) = chunk.options[:echo] && chunk.options[:results] ≠ "hidden"
 
-render_doc(docformat, body, args...) = body
+render_doc(docformat, body, doc) = body
 
 # utilities
 # ---------

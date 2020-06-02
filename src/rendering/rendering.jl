@@ -16,16 +16,14 @@ register_format!(_, format) = error("Format needs to be a subtype of WeaveFormat
 
 set_rendering_options!(doc; kwargs...) = set_rendering_options!(doc.format; kwargs...)
 
-function render_doc(doc)
-    docformat = doc.format
-
+function render_doc(doc::WeaveDoc)
     restore_header!(doc)
 
+    docformat = doc.format
     lines = map(copy(doc.chunks)) do chunk
         format_chunk(chunk, docformat)
     end
     body = join(lines, '\n')
-
     return render_doc(docformat, body, doc)
 end
 
