@@ -191,7 +191,6 @@ function weave(
             css isa AbstractString && (css = normpath(dirname(source), css))
         end
         highlight_theme = get(weave_options, "highlight_theme", highlight_theme)
-        pandoc_options = get(weave_options, "pandoc_options", pandoc_options)
         latex_cmd = get(weave_options, "latex_cmd", latex_cmd)
         keep_unicode = get(weave_options, "keep_unicode", keep_unicode)
     end
@@ -200,10 +199,15 @@ function weave(
     rendered = render_doc(doc)
 
     outname = get_outname(out_path, doc)
-
     open(io->write(io,rendered), outname, "w")
 
     # document generation via external programs
+    # -----------------------------------------
+
+    if !isnothing(weave_options)
+        pandoc_options = get(weave_options, "pandoc_options", pandoc_options)
+    end
+
     doctype = doc.doctype
     if doctype == "pandoc2html"
         mdname = outname
