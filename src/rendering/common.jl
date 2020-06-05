@@ -6,7 +6,7 @@
 set_rendering_options!(docformat::WeaveFormat; kwargs...) = return
 
 function restore_header!(doc)
-    (hasproperty(doc.format, :restore_header) && doc.format.restore_header) || return
+    (hasproperty(doc.format, :preserve_header) && doc.format.preserve_header) || return
 
     # only strips Weave headers
     delete!(doc.header, WEAVE_OPTION_NAME)
