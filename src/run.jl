@@ -150,7 +150,7 @@ function run_chunk(chunk::DocChunk, doc, report, mod)
     return chunk
 end
 
-run_inline(inline::InlineText, doc::WeaveDoc, report::Report, SandBox::Module) = inline
+run_inline(inline::InlineText, ::WeaveDoc, ::Report, ::Module) = inline
 
 const INLINE_OPTIONS = Dict(
     :term => false,
@@ -158,13 +158,13 @@ const INLINE_OPTIONS = Dict(
     :wrap => false
 )
 
-function run_inline(inline::InlineCode, doc::WeaveDoc, report::Report, SandBox::Module)
+function run_inline(inline::InlineCode, doc::WeaveDoc, report::Report, mod::Module)
     # Make a temporary CodeChunk for running code. Collect results and don't wrap
     chunk = CodeChunk(inline.content, 0, 0, "", INLINE_OPTIONS)
     options = merge(doc.chunk_defaults, chunk.options)
     merge!(chunk.options, options)
 
-    chunks = eval_chunk(chunk, report, SandBox)
+    chunks = eval_chunk(chunk, report, mod)
     occursin("2html", doc.doctype) && (embed_figures!(chunks, report.cwd))
 
     output = chunks[1].output
@@ -181,7 +181,7 @@ function reset_report(report::Report)
     report.term_state = :text
 end
 
-function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
+function run_code(chunk::CodeChunk, report::Report, mod::Module)
     exs = parse_input(chunk.content)
     n = length(exs)
     results = ChunkOutput[]
@@ -189,7 +189,7 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
         reset_report(report)
         obj, out = capture_output(
             expr,
-            SandBox,
+            mod,
             chunk.options[:term],
             chunk.options[:display],
             i == n,
@@ -204,14 +204,14 @@ function run_code(chunk::CodeChunk, report::Report, SandBox::Module)
 end
 
 # TODO: run in document source path
-function capture_output(expr, SandBox::Module, term, disp, lastline, throw_errors = false)
+function capture_output(expr, mod, term, disp, lastline, throw_errors = false)
     out = nothing
     obj = nothing
     old = stdout
     rw, wr = redirect_stdout()
     reader = @async read(rw, String)
     try
-        obj = Core.eval(SandBox, expr)
+        obj = Core.eval(mod, expr)
         !isnothing(obj) && ((term || disp) || lastline) && display(obj)
     catch err
         throw_errors && throw(err)
@@ -240,7 +240,7 @@ function parse_input(s)
     return res
 end
 
-function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
+function eval_chunk(chunk::CodeChunk, report::Report, mod::Module)
     if !chunk.options[:eval]
         chunk.output = ""
         chunk.options[:fig] = false
@@ -259,7 +259,7 @@ function eval_chunk(chunk::CodeChunk, report::Report, SandBox::Module)
         chunk.options[:out_width] = report.format.out_width
     end
 
-    chunk.result = run_code(chunk, report, SandBox)
+    chunk.result = run_code(chunk, report, mod)
 
     # Run post_execute chunks
     for hook in postexecute_hooks
