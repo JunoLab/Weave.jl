@@ -320,7 +320,7 @@ end
 function get_cwd(doc::WeaveDoc, out_path)
     # Set the output directory
     if out_path === :doc
-        cwd = doc.path
+        cwd = dirname(doc.path)
     elseif out_path === :pwd
         cwd = pwd()
     else

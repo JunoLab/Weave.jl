@@ -304,7 +304,7 @@ function include_weave(
 )
     old_path = pwd()
     doc = WeaveDoc(source, informat)
-    cd(doc.path)
+    cd(dirname(doc.path))
     try
         code = join(
             [x.content for x in filter(x -> isa(x, Weave.CodeChunk), doc.chunks)],
