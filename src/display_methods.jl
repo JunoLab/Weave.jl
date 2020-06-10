@@ -9,8 +9,7 @@ mutable struct Report <: AbstractDisplay
     cur_result::AbstractString
     rich_output::AbstractString
     fignum::Int
-    figures::Array{AbstractString}
-    term_state::Symbol
+    figures::Vector{String}
     cur_chunk::Any
     mimetypes::Array{AbstractString}
     first_plot::Bool
@@ -25,10 +24,8 @@ function Report(cwd, basename, format, mimetypes, throw_errors)
         format,
         "",
         "",
-        "",
         1,
-        AbstractString[],
-        :text,
+        String[],
         nothing,
         mimetypes,
         true,
