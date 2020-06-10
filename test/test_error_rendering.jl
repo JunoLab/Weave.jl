@@ -1,11 +1,11 @@
-function get_err_str(ex)
+function get_err_str(str::AbstractString)
     try
-        eval(ex)
+        include_string(Main, str)
     catch err
-        return sprint(showerror, err)
+        s = sprint(showerror, err)
+        return replace(s, r"in expression starting at .+$" => "") # ignore file
     end
 end
-get_err_str(str::AbstractString) = get_err_str(Meta.parse(str; raise = false))
 
 err_stmt1 = "using NonExisting"
 err_stmt2 = "x = "
@@ -44,6 +44,6 @@ let doc = mock_run(str; doctype = "github")
     @test occursin(err_str3_2, get_output(3))
 end
 
-@test_throws ArgumentError mock_run(str; doctype = "github", throw_errors = true)
+@test_throws LoadError mock_run(str; doctype = "github", throw_errors = true)
 
 # TODO: test error rendering in `rich_output`
