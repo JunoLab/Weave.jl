@@ -112,7 +112,7 @@ function detect_doctype(path)
 end
 
 function run_chunk(chunk::CodeChunk, doc, report, mod)
-    result = eval_chunk(chunk, report, mod)
+    result = eval_chunk(doc, chunk, report, mod)
     occursin("2html", doc.doctype) && (embed_figures!(result, report.cwd))
     return result
 end
@@ -164,7 +164,7 @@ function run_inline(inline::InlineCode, doc::WeaveDoc, report::Report, mod::Modu
     options = merge(doc.chunk_defaults, chunk.options)
     merge!(chunk.options, options)
 
-    chunks = eval_chunk(chunk, report, mod)
+    chunks = eval_chunk(doc, chunk, report, mod)
     occursin("2html", doc.doctype) && (embed_figures!(chunks, report.cwd))
 
     output = chunks[1].output
@@ -181,66 +181,75 @@ function reset_report(report::Report)
     report.term_state = :text
 end
 
-function run_code(chunk::CodeChunk, report::Report, mod::Module)
-    exs = parse_input(chunk.content)
-    n = length(exs)
+function run_code(doc::WeaveDoc, chunk::CodeChunk, report::Report, mod::Module)
+    ss = parse_input(chunk.content)
+    n = length(ss)
     results = ChunkOutput[]
-    for (i, (str_expr, expr)) in enumerate(exs)
+    for (i, s) in enumerate(ss)
         reset_report(report)
         obj, out = capture_output(
-            expr,
             mod,
+            s,
+            doc.path,
             chunk.options[:term],
             chunk.options[:display],
             i == n,
             report.throw_errors,
         )
         figures = report.figures # Captured figures
-        result = ChunkOutput(str_expr, out, report.cur_result, report.rich_output, figures)
+        result = ChunkOutput(s, out, report.cur_result, report.rich_output, figures)
         report.rich_output = ""
         push!(results, result)
     end
     return results
 end
 
-# TODO: run in document source path
-function capture_output(expr, mod, term, disp, lastline, throw_errors = false)
-    out = nothing
-    obj = nothing
-    old = stdout
-    rw, wr = redirect_stdout()
-    reader = @async read(rw, String)
-    try
-        obj = Core.eval(mod, expr)
-        !isnothing(obj) && ((term || disp) || lastline) && display(obj)
-    catch err
-        throw_errors && throw(err)
-        display(err)
-        @warn "ERROR: $(typeof(err)) occurred, including output in Weaved document"
-    finally
-        redirect_stdout(old)
-        close(wr)
-        out = fetch(reader)
-        close(rw)
-    end
-    out = replace(out, r"\u001b\[.*?m" => "") # remove ANSI color codes
-    return (obj, out)
-end
-
 # Parse chunk input to array of expressions
 function parse_input(s)
-    res = []
+    res = String[]
     s = lstrip(s)
     n = sizeof(s)
-    pos = 1 # The first character is extra line end
+    pos = 1
     while (oldpos = pos) ≤ n
-        ex, pos = Meta.parse(s, pos)
-        push!(res, (s[oldpos:pos-1], ex))
+        _, pos = Meta.parse(s, pos)
+        push!(res, s[oldpos:pos-1])
     end
     return res
 end
 
-function eval_chunk(chunk::CodeChunk, report::Report, mod::Module)
+function capture_output(mod, s, path, term, disp, lastline, throw_errors = false)
+    local out = nothing
+    local obj = nothing
+
+    old = stdout
+    rw, wr = redirect_stdout()
+    reader = @async read(rw, String)
+
+    task_local_storage(:SOURCE_PATH, path) do
+        try
+            obj = include_string(mod, s, path) # TODO: fix line number
+            !isnothing(obj) && ((term || disp) || lastline) && display(obj)
+        catch _err
+            err = unwrap_load_err(_err)
+            throw_errors && throw(err)
+            display(err)
+            @warn "ERROR: $(typeof(err)) occurred, including output in Weaved document"
+        finally
+            redirect_stdout(old)
+            close(wr)
+            out = fetch(reader)
+            close(rw)
+        end
+    end
+
+    out = replace(out, r"\u001b\[.*?m" => "") # remove ANSI color codes
+    return (obj, out)
+end
+
+unwrap_load_err(err) = return err
+unwrap_load_err(err::LoadError) = return err.error
+
+function eval_chunk(doc::WeaveDoc, chunk::CodeChunk, report::Report, mod::Module)
     if !chunk.options[:eval]
         chunk.output = ""
         chunk.options[:fig] = false
@@ -259,7 +268,7 @@ function eval_chunk(chunk::CodeChunk, report::Report, mod::Module)
         chunk.options[:out_width] = report.format.out_width
     end
 
-    chunk.result = run_code(chunk, report, mod)
+    chunk.result = run_code(doc, chunk, report, mod)
 
     # Run post_execute chunks
     for hook in postexecute_hooks
