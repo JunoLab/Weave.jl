@@ -1,11 +1,14 @@
-function get_err_str(ex)
+using Weave: unwrap_load_err
+
+
+function get_err_str(str::AbstractString)
     try
-        eval(ex)
-    catch err
+        include_string(Main, str)
+    catch _err
+        err = unwrap_load_err(_err)
         return sprint(showerror, err)
     end
 end
-get_err_str(str::AbstractString) = get_err_str(Meta.parse(str; raise = false))
 
 err_stmt1 = "using NonExisting"
 err_stmt2 = "x = "
