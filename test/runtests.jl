@@ -62,10 +62,6 @@ end
         include("figureformatter_test.jl")
     end
 
-    @testset "Rich output" begin
-        include("rich_output.jl")
-    end
-
     @testset "Cache" begin
         include("cache_test.jl")
     end
