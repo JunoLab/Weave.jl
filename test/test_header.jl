@@ -45,14 +45,14 @@ end
     weave_options:
     ---
     """
-    @test (mock_doc(str; run = true); true) # no throw
+    @test (mock_run(str); true) # no throw
 end
 
 
 @testset "dynamic header specifications" begin
 
 let
-    d = mock_doc("""
+    d = mock_run("""
     ---
     title: No. `j 1`
     ---
@@ -65,7 +65,7 @@ let
 
     # run in target module
     @eval m n = 1
-    d = mock_doc("""
+    d = mock_run("""
     ---
     title: No. `j n`
     ---
@@ -74,7 +74,7 @@ let
 
     # strip quotes by default
     @eval m s = "1"
-    d = mock_doc("""
+    d = mock_run("""
     ---
     title: No. `j s`
     ---
@@ -116,6 +116,51 @@ end
 let github_options = copy(weave_options)
     specific_options!(github_options, "github")
     @test github_options == Dict("fig_ext" => ".png", "out_path" => "md/")
+end
+
+end
+
+
+@testset "end to end test" begin
+
+# preserve header
+test_mock_weave("""
+---
+key: value
+---
+
+find_me
+"""; informat = "markdown", doctype = "github") do body
+    @test occursin("key: \"value\"", body)
+    @test occursin("find_me", body)
+end
+
+# only strips weave specific header
+test_mock_weave("""
+---
+key: value
+weave_options:
+    doctype: github
+---
+
+find_me
+"""; informat = "markdown", doctype = "github") do body
+    @test occursin("key: \"value\"", body)
+    @test !occursin("weave_options", body)
+    @test occursin("find_me", body)
+end
+
+# don't preserve header
+test_mock_weave("""
+---
+weave_options:
+    doctype: md2html
+---
+
+find_me
+"""; informat = "markdown", doctype = "md2html") do body
+    @test !occursin("weave_options", body)
+    @test occursin("find_me", body)
 end
 
 end

@@ -18,11 +18,10 @@ mutable struct WeaveDoc
 end
 
 struct ChunkOutput
-    code::AbstractString
-    stdout::AbstractString
-    displayed::AbstractString
-    rich_output::AbstractString
-    figures::Vector{AbstractString}
+    code::String
+    stdout::String
+    rich_output::String
+    figures::Vector{String}
 end
 
 mutable struct CodeChunk <: WeaveChunk

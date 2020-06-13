@@ -5,12 +5,9 @@ mutable struct Report <: AbstractDisplay
     cwd::AbstractString
     basename::AbstractString
     format::WeaveFormat
-    pending_code::AbstractString
-    cur_result::AbstractString
     rich_output::AbstractString
     fignum::Int
-    figures::Array{AbstractString}
-    term_state::Symbol
+    figures::Vector{String}
     cur_chunk::Any
     mimetypes::Array{AbstractString}
     first_plot::Bool
@@ -24,11 +21,8 @@ function Report(cwd, basename, format, mimetypes, throw_errors)
         basename,
         format,
         "",
-        "",
-        "",
         1,
-        AbstractString[],
-        :text,
+        String[],
         nothing,
         mimetypes,
         true,

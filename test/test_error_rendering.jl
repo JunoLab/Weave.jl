@@ -1,11 +1,14 @@
-function get_err_str(ex)
+using Weave: unwrap_load_err
+
+
+function get_err_str(str::AbstractString)
     try
-        eval(ex)
-    catch err
+        include_string(Main, str)
+    catch _err
+        err = unwrap_load_err(_err)
         return sprint(showerror, err)
     end
 end
-get_err_str(str::AbstractString) = get_err_str(Meta.parse(str; raise = false))
 
 err_stmt1 = "using NonExisting"
 err_stmt2 = "x = "
@@ -35,7 +38,7 @@ err_str3_1 = get_err_str("plot(x)")
 err_str3_2 = get_err_str("f(y")
 
 
-let doc = mock_doc(str; doctype = "github")
+let doc = mock_run(str; doctype = "github")
     get_output(i) = doc.chunks[i].output
 
     @test occursin(err_str1, get_output(1))
@@ -44,6 +47,6 @@ let doc = mock_doc(str; doctype = "github")
     @test occursin(err_str3_2, get_output(3))
 end
 
-@test_throws ArgumentError mock_doc(str; doctype = "github", throw_errors = true)
+@test_throws ArgumentError mock_run(str; doctype = "github", throw_errors = true)
 
 # TODO: test error rendering in `rich_output`

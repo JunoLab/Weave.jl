@@ -59,9 +59,9 @@ function tangle(
     doc = WeaveDoc(source, informat)
     doc.cwd = get_cwd(doc, out_path)
 
-    outname = get_outname(out_path, doc, ext = "jl")
+    out_path = get_out_path(doc, out_path, "jl")
 
-    open(outname, "w") do io
+    open(out_path, "w") do io
         for chunk in doc.chunks
             if typeof(chunk) == CodeChunk
                 options = merge(doc.chunk_defaults, chunk.options)
@@ -69,8 +69,8 @@ function tangle(
             end
         end
     end
-    doc.cwd == pwd() && (outname = basename(outname))
-    @info("Writing to file $outname")
+
+    @info "Tangled to $(out_path)"
 end
 
 """
@@ -198,8 +198,8 @@ function weave(
     set_rendering_options!(doc; template = template, highlight_theme = highlight_theme, css = css, keep_unicode = keep_unicode)
     rendered = render_doc(doc)
 
-    outname = get_outname(out_path, doc)
-    open(io->write(io,rendered), outname, "w")
+    out_path = get_out_path(doc, out_path)
+    write(out_path, rendered)
 
     # document generation via external programs
     # -----------------------------------------
@@ -210,23 +210,22 @@ function weave(
 
     doctype = doc.doctype
     if doctype == "pandoc2html"
-        mdname = outname
-        outname = get_outname(out_path, doc, ext = "html")
-        pandoc2html(rendered, doc, highlight_theme, outname, pandoc_options)
-        rm(mdname)
+        intermediate = out_path
+        out_path = get_out_path(doc, out_path, "html")
+        pandoc2html(rendered, doc, highlight_theme, out_path, pandoc_options)
+        rm(intermediate)
     elseif doctype == "pandoc2pdf"
-        mdname = outname
-        outname = get_outname(out_path, doc, ext = "pdf")
-        pandoc2pdf(rendered, doc, outname, pandoc_options)
-        rm(mdname)
+        intermediate = out_path
+        out_path = get_out_path(doc, out_path, "pdf")
+        pandoc2pdf(rendered, doc, out_path, pandoc_options)
+        rm(intermediate)
     elseif doctype == "md2pdf"
-        run_latex(doc, outname, latex_cmd)
-        outname = get_outname(out_path, doc, ext = "pdf")
+        run_latex(doc, out_path, latex_cmd)
+        out_path = get_out_path(doc, out_path, ext = "pdf")
     end
 
-    doc.cwd == pwd() && (outname = basename(outname))
-    @info "Report weaved to $outname"
-    return abspath(outname)
+    @info "Weaved to $(out_path)"
+    return out_path
 end
 
 weave(doc::AbstractString, doctype::Union{Symbol,AbstractString}; kwargs...) =
@@ -241,6 +240,9 @@ function specific_options!(weave_options, doctype)
         end
     end
 end
+
+get_out_path(doc, out_path, ext::Nothing = nothing) = get_out_path(doc, out_path, doc.format.extension)
+get_out_path(doc, out_path, ext) = abspath(get_cwd(doc, out_path), string(doc.basename , '.', ext))
 
 """
     notebook(source::AbstractString; kwargs...)
@@ -277,15 +279,13 @@ function notebook(
     doc = WeaveDoc(source)
     converted = convert_to_notebook(doc)
     doc.cwd = get_cwd(doc, out_path)
-    outfile = get_outname(out_path, doc, ext = "ipynb")
+    out_path = get_out_path(doc, out_path, "ipynb")
 
-    open(outfile, "w") do f
-        write(f, converted)
-    end
+    write(out_path, converted)
 
-    @info "Running nbconvert"
+    @info "Running nbconvert ..."
     return read(
-        `$jupyter_path nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile  $nbconvert_options --output $outfile`,
+        `$jupyter_path nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $(out_path)  $nbconvert_options --output $(out_path)`,
         String,
     )
 end
@@ -304,7 +304,7 @@ function include_weave(
 )
     old_path = pwd()
     doc = WeaveDoc(source, informat)
-    cd(doc.path)
+    cd(dirname(doc.path))
     try
         code = join(
             [x.content for x in filter(x -> isa(x, Weave.CodeChunk), doc.chunks)],

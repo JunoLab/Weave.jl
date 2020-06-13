@@ -1,4 +1,4 @@
-function pandoc2html(rendered, doc, highlight_theme, outname, pandoc_options)
+function pandoc2html(rendered, doc, highlight_theme, out_path, pandoc_options)
     template_path = normpath(TEMPLATE_DIR, "pandoc2html.html")
     stylesheet_path = normpath(STYLESHEET_DIR, "pandoc2html_skeleton.css")
     highlight_stylesheet = get_highlight_stylesheet(MIME("text/html"), highlight_theme)
@@ -21,7 +21,7 @@ function pandoc2html(rendered, doc, highlight_theme, outname, pandoc_options)
     # Change path for pandoc
     cd_back = let d = pwd(); () -> cd(d); end
     cd(doc.cwd)
-    outname = basename(outname)
+    out_path = basename(out_path)
 
     try
         cmd = `pandoc -f markdown+raw_html -s --mathjax=""
@@ -34,7 +34,7 @@ function pandoc2html(rendered, doc, highlight_theme, outname, pandoc_options)
         -V weave_date=$weave_date
         -V weave_source=$weave_source
         -V headerscript=$header_script
-        -o $outname`
+        -o $out_path`
         proc = open(cmd, "r+")
         println(proc.in, rendered)
         close(proc.in)
@@ -47,10 +47,10 @@ function pandoc2html(rendered, doc, highlight_theme, outname, pandoc_options)
     end
 end
 
-function pandoc2pdf(rendered, doc, outname, pandoc_options)
+function pandoc2pdf(rendered, doc, out_path, pandoc_options)
     header_template = normpath(TEMPLATE_DIR, "pandoc2pdf_header.txt")
 
-    outname = basename(outname)
+    out_path = basename(out_path)
 
     # Change path for pandoc
     cd_back = let d = pwd(); () -> cd(d); end
@@ -69,7 +69,7 @@ function pandoc2pdf(rendered, doc, outname, pandoc_options)
         cmd = `pandoc -f markdown+raw_tex -s  --pdf-engine=xelatex --highlight-style=tango
          $filt $citeproc $pandoc_options
          --include-in-header=$header_template
-         -V fontsize=12pt -o $outname`
+         -V fontsize=12pt -o $out_path`
         proc = open(cmd, "r+")
         println(proc.in, rendered)
         close(proc.in)
@@ -82,12 +82,12 @@ function pandoc2pdf(rendered, doc, outname, pandoc_options)
     end
 end
 
-function run_latex(doc::WeaveDoc, outname, latex_cmd = "xelatex")
+function run_latex(doc::WeaveDoc, out_path, latex_cmd = "xelatex")
     cd_back = let d = pwd(); () -> cd(d); end
     cd(doc.cwd)
 
-    xname = basename(outname)
-    @info "Weaved code to $outname . Running $latex_cmd" # space before '.' added for link to be clickable in Juno terminal
+    xname = basename(out_path)
+    @info "Weaved code to $out_path . Running $latex_cmd" # space before '.' added for link to be clickable in Juno terminal
     textmp = mktempdir(".")
     try
         cmd = `$latex_cmd -shell-escape $xname -aux-directory $textmp -include-directory $(doc.cwd)`
