@@ -91,9 +91,7 @@ function format_chunk(chunk::CodeChunk, docformat)
 
     # Handle figures
     if chunk.options[:fig] && length(chunk.figures) > 0
-        if chunk.options[:include]
-            result *= formatfigures(chunk, docformat)
-        end
+        result *= formatfigures(chunk, docformat)
     end
 
     return result

@@ -1,9 +1,9 @@
+# TODO: follow RMarkdown convention more
 const _DEFAULT_PARAMS = Dict{Symbol,Any}(
     :echo => true,
     :results => "markup",
     :hold => false,
     :fig => true,
-    :include => true,
     :eval => true,
     :tangle => true,
     :cache => false,
@@ -18,7 +18,6 @@ const _DEFAULT_PARAMS = Dict{Symbol,Any}(
     :label => nothing,
     :wrap => true,
     :line_width => 75,
-    :engine => "julia",
     :fig_ext => nothing,
     :fig_pos => nothing,
     :fig_env => nothing,

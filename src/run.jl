@@ -269,10 +269,7 @@ function eval_chunk(doc::WeaveDoc, chunk::CodeChunk, report::Report, mod::Module
         return chunk
     end
 
-    # Run preexecute_hooks
-    for hook in preexecute_hooks
-        chunk = Base.invokelatest(hook, chunk)
-    end
+    execute_prehooks!(chunk)
 
     report.fignum = 1
     report.cur_chunk = chunk
@@ -283,10 +280,7 @@ function eval_chunk(doc::WeaveDoc, chunk::CodeChunk, report::Report, mod::Module
 
     chunk.result = run_code(doc, chunk, report, mod)
 
-    # Run post_execute chunks
-    for hook in postexecute_hooks
-        chunk = Base.invokelatest(hook, chunk)
-    end
+    execute_posthooks!(chunk)
 
     chunks = if chunk.options[:term]
         collect_term_results(chunk)
@@ -296,12 +290,27 @@ function eval_chunk(doc::WeaveDoc, chunk::CodeChunk, report::Report, mod::Module
         collect_results(chunk)
     end
 
-    # else
-    #   chunk.options[:fig] && (chunk.figures = copy(report.figures))
-    # end
-
     return chunks
 end
+
+# Hooks to run before and after chunks, this is form IJulia,
+const preexecution_hooks = Function[]
+push_preexecution_hook!(f::Function) = push!(preexecution_hooks, f)
+function pop_preexecution_hook!(f::Function)
+    i = findfirst(x -> x == f, preexecution_hooks)
+    isnothing(i) && error("this function has not been registered in the pre-execution hook yet")
+    return splice!(preexecution_hooks, i)
+end
+execute_prehooks!(chunk::CodeChunk) = for prehook in preexecution_hooks; Base.invokelatest(prehook, chunk); end
+
+const postexecution_hooks = Function[]
+push_postexecution_hook!(f::Function) = push!(postexecution_hooks, f)
+function pop_postexecution_hook!(f::Function)
+    i = findfirst(x -> x == f, postexecution_hooks)
+    isnothing(i) && error("this function has not been registered in the post-execution hook yet")
+    return splice!(postexecution_hooks, i)
+end
+execute_posthooks!(chunk::CodeChunk) = for posthook in postexecution_hooks; Base.invokelatest(posthook, chunk); end
 
 """
     clear_module!(mod::Module)

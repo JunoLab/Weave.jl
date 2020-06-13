@@ -2,14 +2,14 @@ using Markdown, .WeaveMarkdown
 
 # Contains report global properties
 mutable struct Report <: AbstractDisplay
-    cwd::AbstractString
-    basename::AbstractString
+    cwd::String
+    basename::String
     format::WeaveFormat
-    rich_output::AbstractString
+    rich_output::String
     fignum::Int
     figures::Vector{String}
-    cur_chunk::Any
-    mimetypes::Array{AbstractString}
+    cur_chunk::Union{Nothing,CodeChunk}
+    mimetypes::Vector{String}
     first_plot::Bool
     header_script::String
     throw_errors::Bool
