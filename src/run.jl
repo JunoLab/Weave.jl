@@ -192,55 +192,40 @@ function run_inline(inline::InlineCode, doc::WeaveDoc, report::Report, mod::Modu
     return inline
 end
 
-reset_report(report::Report) = report.figures = String[]
-
 function run_code(doc::WeaveDoc, chunk::CodeChunk, report::Report, mod::Module)
-    ss = parse_input(chunk.content)
-    n = length(ss)
-    results = ChunkOutput[]
-    for (i, s) in enumerate(ss)
-        reset_report(report)
-        obj, out = capture_output(
-            mod,
-            s,
-            doc.path,
-            chunk.options[:term],
-            i == n,
-            chunk.options[:error],
-        )
-        figures = report.figures # Captured figures
-        result = ChunkOutput(s, out, report.rich_output, figures)
-        report.rich_output = ""
-        push!(results, result)
-    end
-    return results
+    code = chunk.content
+    path = doc.path
+    error = chunk.options[:error]
+    codes = chunk.options[:term] ? split_code(code) : [code]
+    capture = code -> capture_output(code, mod, path, error, report)
+    return capture.(codes)
 end
 
-# Parse chunk input to array of expressions
-function parse_input(s)
+function split_code(code)
     res = String[]
-    s = lstrip(s)
-    n = sizeof(s)
-    pos = 1
-    while (oldpos = pos) ≤ n
-        _, pos = Meta.parse(s, pos)
-        push!(res, s[oldpos:pos-1])
+    e = 1
+    ex = :init
+    while true
+        s = e
+        ex, e = Meta.parse(code, s)
+        isnothing(ex) && break
+        push!(res, strip(code[s:e-1]))
     end
     return res
 end
 
-function capture_output(mod, s, path, term, lastline, error)
-    local out = nothing
-    local obj = nothing
+function capture_output(code, mod, path, error, report)
+    reset_report!(report)
 
     old = stdout
     rw, wr = redirect_stdout()
     reader = @async read(rw, String)
 
+    local out = nothing
     task_local_storage(:SOURCE_PATH, path) do
         try
-            obj = include_string(mod, s, path) # TODO: fix line number
-            !isnothing(obj) && (term || lastline) && display(obj)
+            obj = include_string(mod, code, path) # TODO: fix line number
+            !isnothing(obj) && display(obj)
         catch _err
             err = unwrap_load_err(_err)
             error || throw(err)
@@ -254,12 +239,18 @@ function capture_output(mod, s, path, term, lastline, error)
         end
     end
 
-    out = replace(out, r"\u001b\[.*?m" => "") # remove ANSI color codes
-    return (obj, out)
+    return ChunkOutput(code, remove_ansi_code(out), report.rich_output, report.figures)
+end
+
+function reset_report!(report)
+    report.rich_output = ""
+    report.figures = String[]
 end
 
 unwrap_load_err(err) = return err
 unwrap_load_err(err::LoadError) = return err.error
+
+remove_ansi_code(s) = replace(s, r"\u001b\[.*?m" => "")
 
 function eval_chunk(doc::WeaveDoc, chunk::CodeChunk, report::Report, mod::Module)
     if !chunk.options[:eval]
@@ -399,7 +390,7 @@ function collect_term_results(chunk::CodeChunk)
     prompt = chunk.options[:prompt]
     result_chunks = CodeChunk[]
     for r in chunk.result
-        output *= string(prompt, r.code, r.stdout)
+        output *= string('\n', indent_term_code(prompt, r.code), '\n', r.stdout)
         if !isempty(r.figures)
             rchunk = CodeChunk(
                 "",
@@ -427,6 +418,15 @@ function collect_term_results(chunk::CodeChunk)
     end
 
     return result_chunks
+end
+
+function indent_term_code(prompt, code)
+    prompt_with_space = string(prompt, ' ')
+    n = length(prompt_with_space)
+    pads = ' ' ^ n
+    return map(enumerate(split(code, '\n'))) do (i,line)
+        isone(i) ? string(prompt_with_space, line) : string(pads, line)
+    end |> joinlines
 end
 
 function collect_hold_results(chunk::CodeChunk)

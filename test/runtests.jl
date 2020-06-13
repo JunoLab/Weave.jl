@@ -3,6 +3,7 @@
 # - test for `include_weave`
 # - fire horrible tests
 # - test for ipynb integration
+# - test for integrations with other libraries, especially for Plots.jl and Gadfly.jl
 
 # %%
 using Weave, Test
@@ -56,26 +57,10 @@ end
         include("test_display.jl")
     end
 
-    @testset "Formatters" begin
+    @testset "legacy" begin
         include("formatter_test.jl")
         include("markdown_test.jl")
         include("figureformatter_test.jl")
-    end
-
-    @testset "cache" begin
         include("cache_test.jl")
-    end
-
-    # trigger only on CI
-    if get(ENV, "CI", nothing) == "true"
-        @testset "Plots" begin
-            include("plotsjl_test.jl")
-        end
-
-        @testset "Gadfly" begin
-            include("gadfly_formats.jl")
-        end
-    else
-        @info "skipped Plots.jl and Gadfly.jl integration test"
     end
 end

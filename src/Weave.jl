@@ -30,6 +30,7 @@ end
 
 # utilitity functions
 take2string!(io) = String(take!(io))
+joinlines(lines) = join(lines, '\n')
 
 """
     list_out_formats()
@@ -217,7 +218,7 @@ function weave(
         rm(intermediate)
     elseif doctype == "md2pdf"
         run_latex(doc, out_path, latex_cmd)
-        out_path = get_out_path(doc, out_path, ext = "pdf")
+        out_path = get_out_path(doc, out_path, "pdf")
     end
 
     @info "Weaved to $(out_path)"
