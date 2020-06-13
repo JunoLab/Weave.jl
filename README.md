@@ -1,6 +1,6 @@
 # Weave
 
-[![Build Status](https://travis-ci.org/JunoLab/Weave.jl.svg?branch=master)](https://travis-ci.org/JunoLab/Weave.jl)
+![CI](https://github.com/JunoLab/Weave.jl/workflows/CI/badge.svg)
 [![codecov](https://codecov.io/gh/JunoLab/Weave.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JunoLab/Weave.jl)
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](http://weavejl.mpastell.com/stable/)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](http://weavejl.mpastell.com/dev/)
