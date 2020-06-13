@@ -321,18 +321,6 @@ end
 
 include_weave(source, informat = nothing) = include_weave(Main, source, informat)
 
-# Hooks to run before and after chunks, this is form IJulia,
-# but note that Weave hooks take the chunk as input
-const preexecute_hooks = Function[]
-push_preexecute_hook(f::Function) = push!(preexecute_hooks, f)
-pop_preexecute_hook(f::Function) =
-    splice!(preexecute_hooks, findfirst(x -> x == f, preexecute_hooks))
-
-const postexecute_hooks = Function[]
-push_postexecute_hook(f::Function) = push!(postexecute_hooks, f)
-pop_postexecute_hook(f::Function) =
-    splice!(postexecute_hooks, findfirst(x -> x == f, postexecute_hooks))
-
 include("types.jl")
 include("config.jl")
 include("WeaveMarkdown/markdown.jl")
