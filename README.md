@@ -1,6 +1,7 @@
 # Weave
 
 [![Build Status](https://travis-ci.org/JunoLab/Weave.jl.svg?branch=master)](https://travis-ci.org/JunoLab/Weave.jl)
+[![codecov](https://codecov.io/gh/JunoLab/Weave.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JunoLab/Weave.jl)
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](http://weavejl.mpastell.com/stable/)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](http://weavejl.mpastell.com/dev/)
 [![](http://joss.theoj.org/papers/10.21105/joss.00204/status.svg)](http://dx.doi.org/10.21105/joss.00204)
