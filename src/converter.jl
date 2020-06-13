@@ -102,8 +102,6 @@ function convert_to_notebook(doc)
                     "source" => [strip(join([repr(c) for c in chunk.content], ""))],
                 ),
             )
-        elseif haskey(chunk.options, :skip) && chunk.options[:skip] == "notebook"
-            continue
         else
             push!(
                 cells,

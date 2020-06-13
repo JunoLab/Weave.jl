@@ -14,7 +14,6 @@ const _DEFAULT_PARAMS = Dict{Symbol,Any}(
     :fig_path => DEFAULT_FIG_PATH,
     :dpi => 96,
     :term => false,
-    :display => false,
     :prompt => "\njulia> ",
     :label => nothing,
     :wrap => true,
@@ -25,7 +24,6 @@ const _DEFAULT_PARAMS = Dict{Symbol,Any}(
     :fig_env => nothing,
     :out_width => nothing,
     :out_height => nothing,
-    :skip => false,
 )
 const DEFAULT_PARAMS = deepcopy(_DEFAULT_PARAMS) # might be changed at runtime
 
