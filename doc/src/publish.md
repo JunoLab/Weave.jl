@@ -41,8 +41,8 @@ e.g.: `weave("FIR_design_plots.jl", template = "custom.tpl"`.
 
 As starting point, you can use the existing templates:
 
-- HTML (`md2html`): [`md2html.tpl`](https://github.com/mpastell/Weave.jl/blob/master/templates/md2html.tpl)
-- LaTex (`md2pdf`): [`md2pdf.tpl`](https://github.com/mpastell/Weave.jl/blob/master/templates/md2pdf.tpl)
+- HTML (`md2html`): [`md2html.tpl`](https://github.com/JunoLab/Weave.jl/blob/master/templates/md2html.tpl)
+- LaTex (`md2pdf`): [`md2pdf.tpl`](https://github.com/JunoLab/Weave.jl/blob/master/templates/md2pdf.tpl)
 
 Templates are rendered using [Mustache.jl](https://github.com/jverzani/Mustache.jl).
 

@@ -29,10 +29,10 @@
 \section{Intro}
 
 This is a minimal example on using PGF format with Gadfly plots in
-\href{https://github.com/mpastell/Weave.jl}{Weave.jl} document.
+\href{https://github.com/JunoLab/Weave.jl}{Weave.jl} document.
 The source is in github:
 
-\url{https://github.com/mpastell/Weave.jl/blob/master/examples/gadfly_pgf.texw}.
+\url{https://github.com/JunoLab/Weave.jl/blob/master/examples/gadfly_pgf.texw}.
 
 You can run this example with first weaving it from Julia using:
 

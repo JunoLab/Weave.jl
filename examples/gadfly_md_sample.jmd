@@ -7,7 +7,7 @@ date : 13th December 2016
 # Intro
 
 This a sample [Julia](http://julialang.org/) markdown document that can
-be executed using [Weave.jl](https://github.com/mpastell/Weave.jl).
+be executed using [Weave.jl](https://github.com/JunoLab/Weave.jl).
 
 The code is delimited from docs using markdown fenced code blocks
 markup which can be seen looking at the source document
@@ -73,4 +73,4 @@ Read the documentation:
   - stable: [http://mpastell.github.io/Weave.jl/stable/](http://mpastell.github.io/Weave.jl/stable/)
   - latest: [http://mpastell.github.io/Weave.jl/latest/](http://mpastell.github.io/Weave.jl/latest/)
 
-See other examples in the [GitHub repo](https://github.com/mpastell/Weave.jl/tree/master/examples)
+See other examples in the [GitHub repo](https://github.com/JunoLab/Weave.jl/tree/master/examples)

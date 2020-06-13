@@ -5,7 +5,7 @@
 # Introduction
 
 This a sample [Julia](http://julialang.org/) noweb document that can
-be executed using [Weave.jl](https://github.com/mpastell/Weave.jl).
+be executed using [Weave.jl](https://github.com/JunoLab/Weave.jl).
 
 The code is delimited from docs using `<<>>=` and `@` markup which can be seen
 looking at the source document `gadfly_sample.mdw` in the examples directory
@@ -67,4 +67,4 @@ Read the documentation:
   - stable: <http://mpastell.github.io/Weave.jl/stable/>
   - latest: <http://mpastell.github.io/Weave.jl/latest/>
 
-See other examples in: <https://github.com/mpastell/Weave.jl/tree/master/examples>
+See other examples in: <https://github.com/JunoLab/Weave.jl/tree/master/examples>
