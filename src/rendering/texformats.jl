@@ -76,31 +76,6 @@ function md_length_to_latex(def, reference)
     return def
 end
 
-# plain Tex
-# ---------
-
-Base.@kwdef mutable struct Tex <: TexFormat
-    description = "Latex with custom code environments"
-    extension = "tex"
-    codestart = "\\begin{juliacode}"
-    codeend = "\\end{juliacode}"
-    termstart = "\\begin{juliaterm}"
-    termend = "\\end{juliaterm}"
-    outputstart = "\\begin{juliaout}"
-    outputend = "\\end{juliaout}"
-    mimetypes = ["application/pdf", "image/png", "text/latex", "text/plain"]
-    fig_ext = ".pdf"
-    out_width = "\\linewidth"
-    out_height = nothing
-    fig_pos = "htpb"
-    fig_env = "figure"
-    # specials
-    keep_unicode = false
-    template = nothing
-    tex_deps = ""
-end
-register_format!("tex", Tex())
-
 # minted Tex
 # ----------
 
@@ -241,7 +216,7 @@ function uc2tex(::JMarkdown2tex, s, escape = false)
     end
     return s
 end
-# Convert unicode to tex, escape listings if needed
+
 function uc2tex(::TexFormat, s, escape = false)
     for key in keys(latex_symbols)
         if escape
