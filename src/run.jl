@@ -25,7 +25,7 @@ function run_doc(
 
     if isnothing(fig_path)
         fig_path = if (endswith(doctype, "2pdf") && cache === :off) || endswith(doctype, "2html")
-            basename(mktempdir(abspath(doc.cwd)))
+            basename(mktempdir(abspath(cwd)))
         else
             DEFAULT_FIG_PATH
         end
@@ -43,7 +43,9 @@ function run_doc(
 
     mimetypes = doc.format.mimetypes
 
-    report = Report(doc.cwd, doc.basename, doc.format, mimetypes, throw_errors)
+    report = Report(cwd, doc.basename, doc.format, mimetypes, throw_errors)
+    cd_back = let d = pwd(); () -> cd(d); end
+    cd(cwd)
     pushdisplay(report)
     try
         if cache !== :off && cache !== :refresh
@@ -86,6 +88,7 @@ function run_doc(
         rethrow(err)
     finally
         @info "Weaved all chunks" progress=1 _id=PROGRESS_ID
+        cd_back()
         popdisplay(report) # ensure display pops out even if internal error occurs
     end
 

@@ -18,6 +18,10 @@ include("test_include.jl")
 ```julia
 @__LINE__ # broken
 ```
+
+```julia
+read("./test_include.jl", String)
+```
 """
 doc_dir = joinpath(@__DIR__, "mocks")
 doc_path = joinpath(doc_dir, "test_meta.jmd")
@@ -38,3 +42,4 @@ check_output(i, s) = occursin(s, mock.chunks[i].output)
 @test check_output(3, doc_dir)
 @test check_output(4, doc_path)
 @test_broken check_output(5, 18)
+@test check_output(6, string('"', script_line, '"')) # current working directory
