@@ -18,6 +18,10 @@ If you're viewing the published version have a look at the
 [source](FIR_design_plots.jl) to see the markup.
 
 
+<!-- this setup dependencies, but doesn't appear in the generated document -->
+
+
+
 
 # FIR Filter Design
 
@@ -36,6 +40,7 @@ DSP.jl package doesn't (yet) have a method to calculate the
 the frequency response of a FIR filter so we define it:
 
 ~~~~{.julia}
+
 using Plots, DSP
 gr()
 
@@ -74,6 +79,7 @@ We will use the Hamming window, which is defined as:
 $w(n) = \alpha - \beta\cos\frac{2\pi n}{N-1}$, where $\alpha=0.54$ and $\beta=0.46$
 
 ~~~~{.julia}
+
 fs = 20
 f = digitalfilter(Lowpass(5, fs = fs), FIRWindow(hamming(61)))
 w = range(0, stop=pi, length=1024)
@@ -146,12 +152,13 @@ julia> ws = w/pi*(fs/2)
 
 
 ~~~~{.julia}
+
 plot(ws, h_db,
       xlabel = "Frequency (Hz)", ylabel = "Magnitude (db)")
 ~~~~~~~~~~~~~
 
 
-![](figures/FIR_design_4_1.png)\ 
+![](figures/FIR_design_5_1.png)\ 
 
 
 
@@ -159,11 +166,12 @@ plot(ws, h_db,
 And again with default options
 
 ~~~~{.julia}
+
 h_phase = unwrap(-atan.(imag.(h),real.(h)))
 plot(ws, h_phase,
     xlabel = "Frequency (Hz)", ylabel = "Phase (radians)")
 ~~~~~~~~~~~~~
 
 
-![](figures/FIR_design_5_1.png)\ 
+![](figures/FIR_design_6_1.png)\ 
 

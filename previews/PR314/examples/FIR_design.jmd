@@ -22,6 +22,13 @@ If you're viewing the published version have a look at the
 [source](FIR_design_plots.jl) to see the markup.
 
 
+<!-- this setup dependencies, but doesn't appear in the generated document -->
+```julia; echo = false; results = "hidden"
+using Pkg
+"Plots" ∉ keys(Pkg.project().dependencies) && Pkg.add("Plots")
+"DSP" ∉ keys(Pkg.project().dependencies) && Pkg.add("DSP")
+```
+
 
 # FIR Filter Design
 
