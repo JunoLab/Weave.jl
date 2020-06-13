@@ -1,3 +1,5 @@
+@testset "evaluation error handling" begin
+
 using Weave: unwrap_load_err
 
 
@@ -60,4 +62,4 @@ using NonExisting # will be thrown
 
 @test_throws ArgumentError mock_run(str; doctype = "github")
 
-# TODO: test error rendering in `rich_output`
+end  # @testset "evaluation error handling"

@@ -10,7 +10,7 @@ function plots_set_size!(chunk)
     Plots.default(size = (w, h))
 end
 
-Weave.push_preexecution_hook!(plots_set_size)
+Weave.push_preexecution_hook!(plots_set_size!)
 
 # PNG or SVG is not working, output html
 function Base.display(
