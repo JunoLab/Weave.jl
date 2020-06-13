@@ -1,3 +1,5 @@
+@testset "meta information for evaluation" begin
+
 doc_body = """
 ```julia
 include("test_include.jl")
@@ -23,13 +25,13 @@ include("test_include.jl")
 read("./test_include.jl", String)
 ```
 """
-doc_dir = joinpath(@__DIR__, "mocks")
-doc_path = joinpath(doc_dir, "test_meta.jmd")
+doc_dir = normpath(@__DIR__, "..", "mocks")
+doc_path = normpath(doc_dir, "test_meta.jmd")
 write(doc_path, doc_body)
 
 script_line = ":include_me"
 script_body = "$script_line"
-script_path = joinpath(@__DIR__, "mocks", "test_include.jl")
+script_path = normpath(@__DIR__, "..", "mocks", "test_include.jl")
 write(script_path, script_body)
 
 
@@ -43,3 +45,5 @@ check_output(i, s) = occursin(s, mock.chunks[i].output)
 @test check_output(4, doc_path)
 @test_broken check_output(5, 18)
 @test check_output(6, string('"', script_line, '"')) # current working directory
+
+end  # @testset "meta information for evaluation"

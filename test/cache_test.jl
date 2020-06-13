@@ -1,7 +1,4 @@
-using Weave
-using Test
-
-#Test if running document with and without cache works
+# Test if running document with and without cache works
 isdir("documents/cache") && rm("documents/cache", recursive = true)
 weave("documents/chunk_options.noweb", cache=:all)
 result =  read("documents/chunk_options.md", String)

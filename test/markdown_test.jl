@@ -1,6 +1,9 @@
-using Test
-import Weave: WeaveMarkdown
-import Markdown
+# TODO: make this more sensible:
+# - separate tests for
+#   1. features that are "copy-and-pasted" from `Markdown` module
+#   2. features that are extended by Weave
+
+using Weave: WeaveMarkdown, Markdown
 
 # Test markdown2html writer
 
