@@ -27,7 +27,7 @@ $err_stmt1
 $err_stmt2
 ```
 
-```julia; term=true
+```julia; term = true
 $err_stmt3
 ```
 """
@@ -47,6 +47,17 @@ let doc = mock_run(str; doctype = "github")
     @test occursin(err_str3_2, get_output(3))
 end
 
-@test_throws ArgumentError mock_run(str; doctype = "github", throw_errors = true)
+# TODO: move this into chunk option tests
+str = """
+```julia; error = true
+using  # won't be thrown
+```
+
+```julia; error = false
+using NonExisting # will be thrown
+```
+"""
+
+@test_throws ArgumentError mock_run(str; doctype = "github")
 
 # TODO: test error rendering in `rich_output`

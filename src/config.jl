@@ -5,6 +5,7 @@ const _DEFAULT_PARAMS = Dict{Symbol,Any}(
     :hold => false,
     :fig => true,
     :eval => true,
+    :error => true,
     :tangle => true,
     :cache => false,
     :fig_cap => nothing,

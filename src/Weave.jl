@@ -96,7 +96,6 @@ Weave an input document to output file.
   * `:all` caches everything
   * `:user` caches based on chunk options
   * `:refresh` runs all code chunks and save new cache
-- `throw_errors::Bool = false`: If `false` errors are included in output document and the whole document is executed. If `true` errors are thrown when they occur
 - `template::Union{Nothing,AbstractString,Mustache.MustacheTokens} = nothing`: Template (file path) or `Mustache.MustacheTokens`s for `md2html` or `md2tex` formats
 - `css::Union{Nothing,AbstractString} = nothing`: Path of a CSS file used for md2html format
 - `highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing`: Theme used for syntax highlighting (defaults to `Highlights.Themes.DefaultTheme`)
@@ -118,7 +117,6 @@ function weave(
     fig_ext::Union{Nothing,AbstractString} = nothing,
     cache_path::AbstractString = "cache",
     cache::Symbol = :off,
-    throw_errors::Bool = false,
     template::Union{Nothing,AbstractString,Mustache.MustacheTokens} = nothing,
     css::Union{Nothing,AbstractString} = nothing, # TODO: rename to `stylesheet`
     highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing,
@@ -158,7 +156,6 @@ function weave(
         fig_ext = get(weave_options, "fig_ext", fig_ext)
         cache_path = get(weave_options, "cache_path", cache_path)
         cache = Symbol(get(weave_options, "cache", cache))
-        throw_errors = get(weave_options, "throw_errors", throw_errors)
     end
 
     doc = run_doc(
@@ -171,7 +168,6 @@ function weave(
         fig_ext = fig_ext,
         cache_path = cache_path,
         cache = cache,
-        throw_errors = throw_errors,
     )
 
     # render document
