@@ -98,6 +98,9 @@ Base.@kwdef mutable struct TexMinted <: TexFormat
     keep_unicode = false
     template = nothing
     tex_deps = "\\usepackage{minted}"
+    # how to escape latex in verbatim/code environment
+    start_escape = "|\$"
+    close_escape = "\$|"
 end
 register_format!("texminted", TexMinted())
 
@@ -125,6 +128,9 @@ Base.@kwdef mutable struct JMarkdown2tex <: TexFormat
     template = nothing
     keep_unicode = false
     tex_deps = ""
+    # how to escape latex in verbatim/code environment
+    start_escape = "(*@"
+    close_escape = "@*)"
 end
 register_format!("md2tex", JMarkdown2tex())
 register_format!("md2pdf", JMarkdown2tex())
@@ -176,12 +182,11 @@ function format_chunk(chunk::DocChunk, docformat::TexFormat)
     end
     clear_buffer_and_format!(io, out, WeaveMarkdown.latex)
     out = take2string!(out)
-    return docformat.keep_unicode ? out : uc2tex(docformat, out)
+    return unicode2tex(docformat, out)
 end
 
 function format_output(result, docformat::TexFormat)
-    docformat.keep_unicode || return uc2tex(docformat, result, true)
-    return result
+    return unicode2tex(docformat, result, true)
 end
 
 function format_output(result, docformat::JMarkdown2tex)
@@ -191,39 +196,26 @@ function format_output(result, docformat::JMarkdown2tex)
             Highlights.Format.escape(io, MIME("text/latex"), x, charescape = true),
         result,
     )
-    docformat.keep_unicode || return uc2tex(docformat, result_escaped, true)
-    return result_escaped
+    return unicode2tex(docformat, result_escaped, true)
 end
 
 function format_code(code, docformat::TexFormat)
-    docformat.keep_unicode || return uc2tex(docformat, code, true)
-    return ret
+    return unicode2tex(docformat, code, true)
 end
 function format_code(code, docformat::JMarkdown2tex)
     ret = highlight_code(MIME("text/latex"), code, docformat.highlight_theme)
-    docformat.keep_unicode || return uc2tex(docformat, ret, false)
-    return ret
+    unicode2tex(docformat, ret, false)
 end
 
-# Convert unicode to tex, escape listings if needed
-function uc2tex(::JMarkdown2tex, s, escape = false)
+function unicode2tex(docformat::TexFormat, s, escape = false)
+    # Check whether to convert at all and return input if not4
+    docformat.keep_unicode && return s
+    starter = docformat.escape_starter
+    closer  = docformat.escape_closer
     for key in keys(latex_symbols)
-        if escape
-            s = replace(s, latex_symbols[key] => "(*@\\ensuremath{$(texify(key))}@*)")
-        else
-            s = replace(s, latex_symbols[key] => "\\ensuremath{$(texify(key))}")
-        end
-    end
-    return s
-end
-
-function uc2tex(::TexFormat, s, escape = false)
-    for key in keys(latex_symbols)
-        if escape
-            s = replace(s, latex_symbols[key] => "|\$\\ensuremath{$(texify(key))}\$|")
-        else
-            s = replace(s, latex_symbols[key] => "\\ensuremath{$(texify(key))}")
-        end
+        body = "\\ensuremath{$(texify(key))}"
+        target = escape ? string(starter, body, closer) : body
+        s = replace(s, latex_symbols[key] => body)
     end
     return s
 end
