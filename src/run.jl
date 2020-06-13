@@ -21,7 +21,7 @@ function run_doc(
     doc.format = deepcopy(FORMATS[doctype])
 
     cwd = doc.cwd = get_cwd(doc, out_path)
-    isdir(cwd) || mkpath(cwd)
+    isdir(cwd) || mkdir(cwd)
 
     if isnothing(fig_path)
         fig_path = if (endswith(doctype, "2pdf") && cache === :off) || endswith(doctype, "2html")
@@ -112,6 +112,21 @@ function detect_doctype(path)
     ext == ".txt" && return "asciidoc"
 
     return "pandoc"
+end
+
+function get_cwd(doc, out_path)
+    return if out_path === :doc
+        dirname(doc.path)
+    elseif out_path === :pwd
+        pwd()
+    else
+        path, ext = splitext(out_path)
+        if isempty(ext) # directory given
+            path
+        else # file given
+            dirname(path)
+        end
+    end |> abspath
 end
 
 function run_chunk(chunk::CodeChunk, doc, report, mod)
@@ -327,24 +342,6 @@ function get_figname(report::Report, chunk; fignum = nothing, ext = nothing)
     full_name = normpath(report.cwd, chunk.options[:fig_path], basename)
     rel_name = string(chunk.options[:fig_path], '/', basename) # Relative path is used in output
     return full_name, rel_name
-end
-
-function get_cwd(doc::WeaveDoc, out_path)
-    # Set the output directory
-    if out_path === :doc
-        cwd = dirname(doc.path)
-    elseif out_path === :pwd
-        cwd = pwd()
-    else
-        # If there is no extension, use as path
-        splitted = splitext(out_path)
-        if splitted[2] == ""
-            cwd = expanduser(out_path)
-        else
-            cwd = splitdir(expanduser(out_path))[1]
-        end
-    end
-    return cwd
 end
 
 """Get output file name based on out_path"""
