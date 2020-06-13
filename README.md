@@ -6,8 +6,7 @@
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](http://weavejl.mpastell.com/dev/)
 [![](http://joss.theoj.org/papers/10.21105/joss.00204/status.svg)](http://dx.doi.org/10.21105/joss.00204)
 
-Weave is a scientific report generator/literate programming tool
-for Julia.
+Weave is a scientific report generator/literate programming tool for the [Julia programming language](https://julialang.org/).
 It resembles
 [Pweave](http://mpastell.com/pweave),
 [knitr](https://yihui.org/knitr/),
