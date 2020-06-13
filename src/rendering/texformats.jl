@@ -210,12 +210,12 @@ end
 function unicode2tex(docformat::TexFormat, s, escape = false)
     # Check whether to convert at all and return input if not4
     docformat.keep_unicode && return s
-    starter = docformat.escape_starter
-    closer  = docformat.escape_closer
+    starter = docformat.start_escape
+    closer  = docformat.close_escape
     for key in keys(latex_symbols)
         body = "\\ensuremath{$(texify(key))}"
         target = escape ? string(starter, body, closer) : body
-        s = replace(s, latex_symbols[key] => body)
+        s = replace(s, latex_symbols[key] => target)
     end
     return s
 end
