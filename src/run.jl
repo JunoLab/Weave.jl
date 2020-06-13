@@ -344,23 +344,6 @@ function get_figname(report::Report, chunk; fignum = nothing, ext = nothing)
     return full_name, rel_name
 end
 
-"""Get output file name based on out_path"""
-function get_outname(out_path::Symbol, doc::WeaveDoc; ext = nothing)
-    isnothing(ext) && (ext = doc.format.extension)
-    outname = "$(doc.cwd)/$(doc.basename).$ext"
-end
-
-"""Get output file name based on out_path"""
-function get_outname(out_path::AbstractString, doc::WeaveDoc; ext = nothing)
-    isnothing(ext) && (ext = doc.format.extension)
-    splitted = splitext(out_path)
-    if (splitted[2]) == ""
-        outname = "$(doc.cwd)/$(doc.basename).$ext"
-    else
-        outname = expanduser(out_path)
-    end
-end
-
 function set_rc_params(doc::WeaveDoc, fig_path, fig_ext)
     if isnothing(fig_ext)
         doc.chunk_defaults[:fig_ext] = doc.format.fig_ext
