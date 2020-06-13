@@ -2,7 +2,8 @@ using YAML
 
 
 function WeaveDoc(source, informat = nothing)
-    path, fname = splitdir(abspath(source))
+    path = abspath(source)
+    _, fname = splitdir(path)
     basename = splitext(fname)[1]
 
     isnothing(informat) && (informat = detect_informat(source))

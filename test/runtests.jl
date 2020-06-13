@@ -44,6 +44,10 @@ end
         include("test_chunk_options.jl")
     end
 
+    @testset "evaluation's meta info" begin
+        include("test_meta.jl")
+    end
+
     @testset "error rendering" begin
         include("test_error_rendering.jl")
     end
