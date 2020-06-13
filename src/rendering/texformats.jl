@@ -107,11 +107,11 @@ register_format!("tex", Tex())
 Base.@kwdef mutable struct TexMinted <: TexFormat
     description = "Latex using minted for highlighting"
     extension = "tex"
-    codestart = "\\begin{minted}[mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}"
+    codestart = "\\begin{minted}[escapeinside=||, mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}"
     codeend = "\\end{minted}"
-    termstart = "\\begin{minted}[fontsize=\\footnotesize, xleftmargin=0.5em, mathescape]{jlcon}"
+    termstart = "\\begin{minted}[escapeinside=||, mathescape, fontsize=\\footnotesize, xleftmargin=0.5em]{jlcon}"
     termend = "\\end{minted}"
-    outputstart = "\\begin{minted}[fontsize=\\small, xleftmargin=0.5em, mathescape, frame = leftline]{text}"
+    outputstart = "\\begin{minted}[escapeinside=||, mathescape, fontsize=\\small, xleftmargin=0.5em, frame = leftline]{text}"
     outputend = "\\end{minted}"
     mimetypes = ["application/pdf", "image/png", "text/latex", "text/plain"]
     fig_ext = ".pdf"
@@ -163,15 +163,21 @@ end
 get_tex_template(::Nothing) = get_template(normpath(TEMPLATE_DIR, "md2pdf.tpl"))
 get_tex_template(x) = get_template(x)
 
-highlight_str(docformat::TexFormat) = ""
-highlight_str(docformat::JMarkdown2tex) =
-    get_highlight_stylesheet(MIME("text/latex"), docformat.highlight_theme)
-
 function render_doc(docformat::TexFormat, body, doc)
     return Mustache.render(
         docformat.template;
         body = body,
-        highlight = highlight_str(docformat),
+        highlight = "",
+        tex_deps = docformat.tex_deps,
+        [Pair(Symbol(k), v) for (k, v) in doc.header]...,
+    )
+end
+
+function render_doc(docformat::JMarkdown2tex, body, doc)
+    return Mustache.render(
+        docformat.template;
+        body = body,
+        highlight = get_highlight_stylesheet(MIME("text/latex"), docformat.highlight_theme),
         tex_deps = docformat.tex_deps,
         [Pair(Symbol(k), v) for (k, v) in doc.header]...,
     )
@@ -195,36 +201,51 @@ function format_chunk(chunk::DocChunk, docformat::TexFormat)
     end
     clear_buffer_and_format!(io, out, WeaveMarkdown.latex)
     out = take2string!(out)
-    return docformat.keep_unicode ? out : uc2tex(out)
+    return docformat.keep_unicode ? out : uc2tex(docformat, out)
 end
 
 function format_output(result, docformat::TexFormat)
+    docformat.keep_unicode || return uc2tex(docformat, result, true)
+    return result
+end
+
+function format_output(result, docformat::JMarkdown2tex)
     # Highligts has some extra escaping defined, eg of $, ", ...
     result_escaped = sprint(
         (io, x) ->
             Highlights.Format.escape(io, MIME("text/latex"), x, charescape = true),
         result,
     )
-    docformat.keep_unicode || return uc2tex(result_escaped, true)
+    docformat.keep_unicode || return uc2tex(docformat, result_escaped, true)
     return result_escaped
 end
 
-# Highlight code is currently only compatible with lstlistings (JMarkdown2tex)
-highlight_code(code, docformat::TexFormat) = code
-highlight_code(code, docformat::JMarkdown2tex) =
-    highlight_code(MIME("text/latex"), code, docformat.highlight_theme)
-
 function format_code(code, docformat::TexFormat)
-    ret = highlight_code(code, docformat)
-    docformat.keep_unicode || return uc2tex(ret)
+    docformat.keep_unicode || return uc2tex(docformat, code, true)
+    return ret
+end
+function format_code(code, docformat::JMarkdown2tex)
+    ret = highlight_code(MIME("text/latex"), code, docformat.highlight_theme)
+    docformat.keep_unicode || return uc2tex(docformat, ret, false)
     return ret
 end
 
 # Convert unicode to tex, escape listings if needed
-function uc2tex(s, escape = false)
+function uc2tex(::JMarkdown2tex, s, escape = false)
     for key in keys(latex_symbols)
         if escape
             s = replace(s, latex_symbols[key] => "(*@\\ensuremath{$(texify(key))}@*)")
+        else
+            s = replace(s, latex_symbols[key] => "\\ensuremath{$(texify(key))}")
+        end
+    end
+    return s
+end
+# Convert unicode to tex, escape listings if needed
+function uc2tex(::TexFormat, s, escape = false)
+    for key in keys(latex_symbols)
+        if escape
+            s = replace(s, latex_symbols[key] => "|\$\\ensuremath{$(texify(key))}\$|")
         else
             s = replace(s, latex_symbols[key] => "\\ensuremath{$(texify(key))}")
         end
