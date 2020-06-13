@@ -260,7 +260,7 @@ using [`nbconvert`](https://nbconvert.readthedocs.io/en/latest/).
 
 !!! warning
     The code is _**not**_ executed by Weave, but by [`nbconvert`](https://nbconvert.readthedocs.io/en/latest/).
-    This means that the output doesn't necessarily always work properly; see [#116](https://github.com/mpastell/Weave.jl/issues/116).
+    This means that the output doesn't necessarily always work properly; see [#116](https://github.com/JunoLab/Weave.jl/issues/116).
 
 !!! note
     In order to _just_ convert Weave document to Jupyter Notebook,

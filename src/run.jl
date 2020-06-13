@@ -239,7 +239,7 @@ function capture_output(code, mod, path, error, report)
         end
     end
 
-    return ChunkOutput(code, remove_ansi_code(out), report.rich_output, report.figures)
+    return ChunkOutput(code, remove_ansi_control_chars(out), report.rich_output, report.figures)
 end
 
 function reset_report!(report)
@@ -250,7 +250,8 @@ end
 unwrap_load_err(err) = return err
 unwrap_load_err(err::LoadError) = return err.error
 
-remove_ansi_code(s) = replace(s, r"\u001b\[.*?m" => "")
+# https://stackoverflow.com/a/33925425/12113178
+remove_ansi_control_chars(s) = replace(s, r"(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]" => "")
 
 function eval_chunk(doc::WeaveDoc, chunk::CodeChunk, report::Report, mod::Module)
     if !chunk.options[:eval]
