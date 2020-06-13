@@ -12,24 +12,10 @@ mutable struct Report <: AbstractDisplay
     mimetypes::Vector{String}
     first_plot::Bool
     header_script::String
-    throw_errors::Bool
 end
 
-function Report(cwd, basename, format, mimetypes, throw_errors)
-    Report(
-        cwd,
-        basename,
-        format,
-        "",
-        1,
-        String[],
-        nothing,
-        mimetypes,
-        true,
-        "",
-        throw_errors,
-    )
-end
+Report(cwd, basename, format, mimetypes) =
+    Report(cwd, basename, format, "", 1, String[], nothing, mimetypes, true, "")
 
 # Default mimetypes in order, can be overridden for some inside `run method` formats
 const default_mime_types = ["image/svg+xml", "image/png", "text/html", "text/plain"]

@@ -13,7 +13,6 @@ function run_doc(
     fig_ext::Union{Nothing,AbstractString} = nothing,
     cache_path::AbstractString = "cache",
     cache::Symbol = :off,
-    throw_errors::Bool = false,
 )
     # cache :all, :user, :off, :refresh
 
@@ -43,7 +42,7 @@ function run_doc(
 
     mimetypes = doc.format.mimetypes
 
-    report = Report(cwd, doc.basename, doc.format, mimetypes, throw_errors)
+    report = Report(cwd, doc.basename, doc.format, mimetypes)
     cd_back = let d = pwd(); () -> cd(d); end
     cd(cwd)
     pushdisplay(report)
@@ -207,7 +206,7 @@ function run_code(doc::WeaveDoc, chunk::CodeChunk, report::Report, mod::Module)
             doc.path,
             chunk.options[:term],
             i == n,
-            report.throw_errors,
+            chunk.options[:error],
         )
         figures = report.figures # Captured figures
         result = ChunkOutput(s, out, report.rich_output, figures)
@@ -230,7 +229,7 @@ function parse_input(s)
     return res
 end
 
-function capture_output(mod, s, path, term, lastline, throw_errors = false)
+function capture_output(mod, s, path, term, lastline, error)
     local out = nothing
     local obj = nothing
 
@@ -244,7 +243,7 @@ function capture_output(mod, s, path, term, lastline, throw_errors = false)
             !isnothing(obj) && (term || lastline) && display(obj)
         catch _err
             err = unwrap_load_err(_err)
-            throw_errors && throw(err)
+            error || throw(err)
             display(err)
             @warn "ERROR: $(typeof(err)) occurred, including output in Weaved document"
         finally
