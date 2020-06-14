@@ -33,6 +33,7 @@ we've mostly followed [RMarkdown's namings](http://yihui.name/knitr/options), bu
 ### Evaluation
 
 - `eval = true`: Evaluate the code chunk. If `false` the chunk won’t be executed.
+- `error = true`: If `true` [`weave`](@ref) won't stop on errors and rather they will be included in output document. If `false`, [`weave`](@ref) will halt on any of un-caught errors.
 - `cache = false`: Cache results, depending on `cache` parameter on [`weave`](@ref) function.
 - `tangle = true`: Set tangle to `false` to exclude chunk from tangled code.
 

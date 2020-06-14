@@ -1,19 +1,6 @@
 language: julia
 
-julia:
-  - 1     # current stable
-  - nightly
-
-script:
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia --check-bounds=yes -e 'using Pkg; Pkg.build()'
-  - xvfb-run julia -e 'using Pkg; Pkg.test("Weave", coverage=true)'
-after_success:
-  - julia -e 'using Pkg; cd(Pkg.dir("Weave")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
-
 jobs:
-  allow_failures:
-    - julia: nightly
   include:
     - stage: "Documentation"
       julia: 1

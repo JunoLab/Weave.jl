@@ -152,8 +152,8 @@ Weave will remove the first empty space from each line of documentation.
 
 !!! tip
     - Here are sample documents:
-      + [markdown format](https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jmd)
-      + [script format](https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jl)
+      + [markdown format](https://github.com/JunoLab/Weave.jl/blob/master/examples/FIR_design.jmd)
+      + [script format](https://github.com/JunoLab/Weave.jl/blob/master/examples/FIR_design.jl)
     - [Details about chunk options](@ref chunk-options)
 
 

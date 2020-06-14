@@ -4,14 +4,13 @@ using Base64, ..Plots, ..Weave
 
 
 # Pre-execute hooks to set the plot size for the chunk
-function plots_set_size(chunk)
+function plots_set_size!(chunk)
     w = chunk.options[:fig_width] * chunk.options[:dpi]
     h = chunk.options[:fig_height] * chunk.options[:dpi]
     Plots.default(size = (w, h))
-    return chunk
 end
 
-Weave.push_preexecute_hook(plots_set_size)
+Weave.push_preexecution_hook!(plots_set_size!)
 
 # PNG or SVG is not working, output html
 function Base.display(

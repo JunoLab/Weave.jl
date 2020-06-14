@@ -30,6 +30,7 @@ end
 
 # utilitity functions
 take2string!(io) = String(take!(io))
+joinlines(lines) = join(lines, '\n')
 
 """
     list_out_formats()
@@ -96,7 +97,6 @@ Weave an input document to output file.
   * `:all` caches everything
   * `:user` caches based on chunk options
   * `:refresh` runs all code chunks and save new cache
-- `throw_errors::Bool = false`: If `false` errors are included in output document and the whole document is executed. If `true` errors are thrown when they occur
 - `template::Union{Nothing,AbstractString,Mustache.MustacheTokens} = nothing`: Template (file path) or `Mustache.MustacheTokens`s for `md2html` or `md2tex` formats
 - `css::Union{Nothing,AbstractString} = nothing`: Path of a CSS file used for md2html format
 - `highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing`: Theme used for syntax highlighting (defaults to `Highlights.Themes.DefaultTheme`)
@@ -118,7 +118,6 @@ function weave(
     fig_ext::Union{Nothing,AbstractString} = nothing,
     cache_path::AbstractString = "cache",
     cache::Symbol = :off,
-    throw_errors::Bool = false,
     template::Union{Nothing,AbstractString,Mustache.MustacheTokens} = nothing,
     css::Union{Nothing,AbstractString} = nothing, # TODO: rename to `stylesheet`
     highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing,
@@ -158,7 +157,6 @@ function weave(
         fig_ext = get(weave_options, "fig_ext", fig_ext)
         cache_path = get(weave_options, "cache_path", cache_path)
         cache = Symbol(get(weave_options, "cache", cache))
-        throw_errors = get(weave_options, "throw_errors", throw_errors)
     end
 
     doc = run_doc(
@@ -171,7 +169,6 @@ function weave(
         fig_ext = fig_ext,
         cache_path = cache_path,
         cache = cache,
-        throw_errors = throw_errors,
     )
 
     # render document
@@ -221,7 +218,7 @@ function weave(
         rm(intermediate)
     elseif doctype == "md2pdf"
         run_latex(doc, out_path, latex_cmd)
-        out_path = get_out_path(doc, out_path, ext = "pdf")
+        out_path = get_out_path(doc, out_path, "pdf")
     end
 
     @info "Weaved to $(out_path)"
@@ -263,7 +260,7 @@ using [`nbconvert`](https://nbconvert.readthedocs.io/en/latest/).
 
 !!! warning
     The code is _**not**_ executed by Weave, but by [`nbconvert`](https://nbconvert.readthedocs.io/en/latest/).
-    This means that the output doesn't necessarily always work properly; see [#116](https://github.com/mpastell/Weave.jl/issues/116).
+    This means that the output doesn't necessarily always work properly; see [#116](https://github.com/JunoLab/Weave.jl/issues/116).
 
 !!! note
     In order to _just_ convert Weave document to Jupyter Notebook,
@@ -320,18 +317,6 @@ function include_weave(
 end
 
 include_weave(source, informat = nothing) = include_weave(Main, source, informat)
-
-# Hooks to run before and after chunks, this is form IJulia,
-# but note that Weave hooks take the chunk as input
-const preexecute_hooks = Function[]
-push_preexecute_hook(f::Function) = push!(preexecute_hooks, f)
-pop_preexecute_hook(f::Function) =
-    splice!(preexecute_hooks, findfirst(x -> x == f, preexecute_hooks))
-
-const postexecute_hooks = Function[]
-push_postexecute_hook(f::Function) = push!(postexecute_hooks, f)
-pop_postexecute_hook(f::Function) =
-    splice!(postexecute_hooks, findfirst(x -> x == f, postexecute_hooks))
 
 include("types.jl")
 include("config.jl")

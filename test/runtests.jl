@@ -1,9 +1,14 @@
+# TODO:
+# - reorganize this
+# - test for `include_weave`
+# - fire horrible tests
+# - test for ipynb integration
+# - test for integrations with other libraries, especially for Plots.jl and Gadfly.jl
+
+# %%
 using Weave, Test
 using Weave: WeaveDoc, run_doc
 
-
-# TODO: add test for header processsing
-# TODO: add test for `include_weave`
 
 function mock_doc(str, informat = "markdown")
     f = tempname()
@@ -27,29 +32,21 @@ function test_mock_weave(test_function, str; kwargs...)
 end
 
 
+# %%
 @testset "Weave" begin
-    @testset "module evaluation" begin
-        include("test_module_evaluation.jl")
+    @testset "reader" begin
+        include("reader/test_chunk_options.jl")
+        include("reader/test_inline.jl")
     end
 
-    @testset "header" begin
+    @testset "header processing" begin
         include("test_header.jl")
     end
 
-    @testset "inline" begin
-        include("test_inline.jl")
-    end
-
-    @testset "chunk options" begin
-        include("test_chunk_options.jl")
-    end
-
-    @testset "evaluation's meta info" begin
-        include("test_meta.jl")
-    end
-
-    @testset "error rendering" begin
-        include("test_error_rendering.jl")
+    @testset "run" begin
+        include("run/test_module.jl")
+        include("run/test_meta.jl")
+        include("run/test_error.jl")
     end
 
     @testset "conversions" begin
@@ -60,39 +57,10 @@ end
         include("test_display.jl")
     end
 
-    @testset "Formatters" begin
+    @testset "legacy" begin
         include("formatter_test.jl")
         include("markdown_test.jl")
         include("figureformatter_test.jl")
-    end
-
-    @testset "Cache" begin
         include("cache_test.jl")
-    end
-
-    # @testset "Notebooks" begin
-    #     @info("Testing Jupyter options")
-    #     include("notebooks.jl")
-    # end
-
-    # trigger only on CI
-    if get(ENV, "CI", nothing) == "true"
-        @testset "Plots" begin
-            include("plotsjl_test.jl")
-        end
-
-        @testset "Gadfly" begin
-            include("gadfly_formats.jl")
-        end
-    else
-        @info "skipped Plots.jl and Gadfly.jl integration test"
-    end
-
-    try
-        @testset "end2end (maybe fail)" begin
-            include("end2end.jl")
-        end
-    catch err
-        @error err
     end
 end

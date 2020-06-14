@@ -1,12 +1,12 @@
 # Weave
 
-[![Build Status](https://travis-ci.org/JunoLab/Weave.jl.svg?branch=master)](https://travis-ci.org/JunoLab/Weave.jl)
+![CI](https://github.com/JunoLab/Weave.jl/workflows/CI/badge.svg)
+[![codecov](https://codecov.io/gh/JunoLab/Weave.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JunoLab/Weave.jl)
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](http://weavejl.mpastell.com/stable/)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](http://weavejl.mpastell.com/dev/)
 [![](http://joss.theoj.org/papers/10.21105/joss.00204/status.svg)](http://dx.doi.org/10.21105/joss.00204)
 
-Weave is a scientific report generator/literate programming tool
-for Julia.
+Weave is a scientific report generator/literate programming tool for the [Julia programming language](https://julialang.org/).
 It resembles
 [Pweave](http://mpastell.com/pweave),
 [knitr](https://yihui.org/knitr/),
