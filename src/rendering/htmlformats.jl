@@ -12,8 +12,8 @@ render_termchunk(docformat::HTMLFormat, chunk) =
 # Julia markdown
 # --------------
 
-Base.@kwdef mutable struct JMarkdown2HTML <: HTMLFormat
-    description = "Julia markdown to html"
+Base.@kwdef mutable struct WeaveHTML <: HTMLFormat
+    description = "Weave-style HTML"
     extension = "html"
     codestart = "\n"
     codeend = "\n"
@@ -33,9 +33,9 @@ Base.@kwdef mutable struct JMarkdown2HTML <: HTMLFormat
     stylesheet = nothing
     highlight_theme = nothing
 end
-register_format!("md2html", JMarkdown2HTML())
+register_format!("md2html", WeaveHTML())
 
-function set_format_options!(docformat::JMarkdown2HTML; template = nothing, css = nothing, highlight_theme = nothing, _kwargs...)
+function set_format_options!(docformat::WeaveHTML; template = nothing, css = nothing, highlight_theme = nothing, _kwargs...)
     template_path = isnothing(template) ? normpath(TEMPLATE_DIR, "md2html.tpl") : template
     docformat.template = get_mustache_template(template_path)
     stylesheet_path = isnothing(css) ? normpath(STYLESHEET_DIR, "skeleton.css") : css
@@ -44,7 +44,7 @@ function set_format_options!(docformat::JMarkdown2HTML; template = nothing, css 
 end
 
 # very similar to tex version of function
-function render_chunk(docformat::JMarkdown2HTML, chunk::DocChunk)
+function render_chunk(docformat::WeaveHTML, chunk::DocChunk)
     out = IOBuffer()
     io = IOBuffer()
     for inline in chunk.content
@@ -63,9 +63,9 @@ function render_chunk(docformat::JMarkdown2HTML, chunk::DocChunk)
     return take2string!(out)
 end
 
-render_output(docformat::JMarkdown2HTML, output) = Markdown.htmlesc(output)
+render_output(docformat::WeaveHTML, output) = Markdown.htmlesc(output)
 
-function render_figures(docformat::JMarkdown2HTML, chunk)
+function render_figures(docformat::WeaveHTML, chunk)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
     width = chunk.options[:out_width]
@@ -104,7 +104,7 @@ function render_figures(docformat::JMarkdown2HTML, chunk)
     return result
 end
 
-function render_doc(docformat::JMarkdown2HTML, body, doc; css = nothing)
+function render_doc(docformat::WeaveHTML, body, doc; css = nothing)
     _, weave_source = splitdir(abspath(doc.source))
     weave_version, weave_date = weave_info()
 
@@ -125,7 +125,7 @@ end
 # ------
 
 Base.@kwdef mutable struct Pandoc2HTML <: HTMLFormat
-    description = "Markdown to HTML (requires Pandoc 2)"
+    description = "HTML via intermediate Pandoc Markdown (requires Pandoc 2)"
     extension = "md"
     codestart = "\n"
     codeend = "\n"

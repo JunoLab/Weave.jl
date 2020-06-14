@@ -34,7 +34,7 @@ function render_figures(docformat::PandocFormat, chunk)
 end
 
 Base.@kwdef mutable struct Pandoc <: PandocFormat
-    description = "Pandoc markdown"
+    description = "Pandoc Markdown"
     extension = "md"
     codestart = "~~~~{.julia}"
     codeend = "~~~~~~~~~~~~~\n\n"
@@ -57,7 +57,7 @@ register_format!("pandoc", Pandoc())
 const DEFAULT_PANDOC_OPTIONS = String[]
 
 Base.@kwdef mutable struct Pandoc2PDF <: PandocFormat
-    description = "Pandoc markdown to PDF"
+    description = "PDF via intermediate Pandoc Markdown"
     extension = "md"
     codestart = "~~~~{.julia}"
     codeend = "~~~~~~~~~~~~~\n\n"
