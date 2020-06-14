@@ -27,5 +27,5 @@ end
 include("common.jl")
 include("htmlformats.jl")
 include("texformats.jl")
-include("variousformats.jl")
-include("markdownformats.jl")
+include("pandocformats.jl")
+include("miscformats.jl")

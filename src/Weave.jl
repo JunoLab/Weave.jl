@@ -115,7 +115,7 @@ Weave an input document to output file.
 - `template::Union{Nothing,AbstractString,Mustache.MustacheTokens} = nothing`: Template (file path) or `Mustache.MustacheTokens`s for `md2html` or `md2tex` formats
 - `css::Union{Nothing,AbstractString} = nothing`: Path of a CSS file used for md2html format
 - `highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing`: Theme used for syntax highlighting (defaults to `Highlights.Themes.DefaultTheme`)
-- `pandoc_options::Vector{<:AbstractString} = String[]`: `String`s of options to pass to pandoc for `pandoc2html` and `pandoc2pdf` formats, e.g. `["--toc", "-N"]`
+- `pandoc_options::Vector{<:AbstractString} = $(DEFAULT_PANDOC_OPTIONS)`: `String`s of options to pass to pandoc for `pandoc2html` and `pandoc2pdf` formats, e.g. `["--toc", "-N"]`
 - `latex_cmd::Vector{<:AbstractString} = $(DEFAULT_LATEX_CMD)`: The command used to make PDF file from .tex
 - `keep_unicode::Bool = false`: If `true`, do not convert unicode characters to their respective latex representation. This is especially useful if a font and tex-engine with support for unicode characters are used
 
@@ -136,7 +136,7 @@ function weave(
     template::Union{Nothing,AbstractString,Mustache.MustacheTokens} = nothing,
     css::Union{Nothing,AbstractString} = nothing, # TODO: rename to `stylesheet`
     highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing,
-    pandoc_options::Vector{<:AbstractString} = String[],
+    pandoc_options::Vector{<:AbstractString} = DEFAULT_PANDOC_OPTIONS,
     latex_cmd::Vector{<:AbstractString} = DEFAULT_LATEX_CMD,
     keep_unicode::Bool = false,
 )

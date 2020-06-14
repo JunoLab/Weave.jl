@@ -1,9 +1,7 @@
-abstract type MarkdownFormat <: WeaveFormat end
-
 # GitHub markdown
 # ---------------
 
-Base.@kwdef mutable struct GitHubMarkdown <: MarkdownFormat
+Base.@kwdef mutable struct GitHubMarkdown <: WeaveFormat
     description = "GitHub markdown"
     extension = "md"
     codestart = "````julia"
@@ -49,7 +47,7 @@ end
 # Hugo markdown
 # -------------
 
-Base.@kwdef mutable struct Hugo <: MarkdownFormat
+Base.@kwdef mutable struct Hugo <: WeaveFormat
     description = "Hugo markdown (using shortcodes)"
     extension = "md"
     codestart = "````julia"
@@ -87,7 +85,7 @@ end
 # multi language markdown
 # -----------------------
 
-Base.@kwdef mutable struct MultiMarkdown <: MarkdownFormat
+Base.@kwdef mutable struct MultiMarkdown <: WeaveFormat
     description = "MultiMarkdown"
     extension = "md"
     codestart = "````julia"
@@ -138,85 +136,89 @@ function render_figures(docformat::MultiMarkdown, chunk)
     return result
 end
 
-# pandoc
-# ------
+# Rest
+# ----
 
-abstract type PandocFormat <: MarkdownFormat end
-
-function render_figures(docformat::PandocFormat, chunk)
-    fignames = chunk.figures
-    length(fignames) > 0 || (return "")
-
-    caption = chunk.options[:fig_cap]
-    label = get(chunk.options, :label, nothing)
-    result = ""
-    figstring = ""
-    attribs = ""
-    width = chunk.options[:out_width]
-    height = chunk.options[:out_height]
-
-    # Build figure attibutes
-    attribs = String[]
-    isnothing(width) || push!(attribs, "width=$width")
-    isnothing(height) || push!(attribs, "height=$height")
-    isnothing(label) || push!(attribs, "#fig:$label")
-    attribs = isempty(attribs) ? "" : "{" * join(attribs, " ") * "}"
-
-    if !isnothing(caption)
-        result *= "![$caption]($(fignames[1]))$attribs\n"
-        for fig in fignames[2:end]
-            result *= "![]($fig)$attribs\n"
-            println("Warning, only the first figure gets a caption\n")
-        end
-    else
-        for fig in fignames
-            result *= "![]($fig)$attribs\\ \n\n"
-        end
-    end
-    return result
-end
-
-Base.@kwdef mutable struct Pandoc <: PandocFormat
-    description = "Pandoc markdown"
-    extension = "md"
-    codestart = "~~~~{.julia}"
-    codeend = "~~~~~~~~~~~~~\n\n"
+Base.@kwdef mutable struct Rest <: WeaveFormat
+    description = "reStructuredText and Sphinx"
+    extension = "rst"
+    codestart = ".. code-block:: julia\n"
+    codeend = "\n\n"
     termstart = codestart
     termend = codeend
-    outputstart = "~~~~"
-    outputend = "~~~~\n\n"
-    # Prefer png figures for markdown conversion, svg doesn't work with latex
-    mimetypes = ["image/png", "image/jpg", "image/svg+xml", "text/markdown", "text/plain"]
+    outputstart = "::\n"
+    outputend = "\n\n"
+    mimetypes = default_mime_types
     fig_ext = ".png"
-    out_width = nothing
-    out_height = nothing
-    fig_pos = nothing
-    fig_env = nothing
-end
-register_format!("pandoc", Pandoc())
-
-Base.@kwdef mutable struct Pandoc2PDF <: PandocFormat
-    description = "Pandoc markdown to PDF"
-    extension = "md"
-    codestart = "~~~~{.julia}"
-    codeend = "~~~~~~~~~~~~~\n\n"
-    termstart = codestart
-    termend = codeend
-    outputstart = "~~~~"
-    outputend = "~~~~\n\n"
-    # Prefer png figures for markdown conversion, svg doesn't work with latex
-    mimetypes = ["image/png", "image/jpg", "image/svg+xml", "text/markdown", "text/plain"]
-    fig_ext = ".png"
-    out_width = nothing
+    out_width = "15 cm"
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
     # specials
-    header_template = normpath(TEMPLATE_DIR, "pandoc2pdf_header.txt")
-    pandoc_options = String[]
+    indent = 4
 end
-register_format!("pandoc2pdf", Pandoc2PDF())
+register_format!("rst", Rest())
 
-function set_format_options!(docformat::Pandoc2PDF; pandoc_options = String[], _kwargs...)
-    docformat.pandoc_options = pandoc_options
+function render_figures(docformat::Rest, chunk)
+    fignames = chunk.figures
+    caption = chunk.options[:fig_cap]
+    width = chunk.options[:out_width]
+    result = ""
+    figstring = ""
+
+    for fig in fignames
+        figstring *= @sprintf(".. image:: %s\n   :width: %s\n\n", fig, width)
+    end
+
+    if !isnothing(caption)
+        result *= string(
+            ".. figure:: $(fignames[1])\n",
+            "   :width: $width\n\n",
+            "   $caption\n\n",
+        )
+    else
+        result *= figstring
+        return result
+    end
+end
+
+# Ansii
+# -----
+
+# asciidoc -b html5 -a source-highlighter=pygments ...
+Base.@kwdef mutable struct AsciiDoc <: WeaveFormat
+    description = "AsciiDoc"
+    extension = "txt"
+    codestart = "[source,julia]\n--------------------------------------"
+    codeend = "--------------------------------------\n\n"
+    termstart = codestart
+    termend = codeend
+    outputstart = "--------------------------------------"
+    outputend = "--------------------------------------\n\n"
+    mimetypes = default_mime_types
+    fig_ext = ".png"
+    out_width = "600"
+    out_height = nothing
+    fig_pos = nothing
+    fig_env = nothing
+end
+register_format!("asciidoc", AsciiDoc())
+
+function render_figures(docformat::AsciiDoc, chunk)
+    fignames = chunk.figures
+    caption = chunk.options[:fig_cap]
+    width = chunk.options[:out_width]
+    result = ""
+    figstring = ""
+
+    for fig in fignames
+        figstring *= @sprintf("image::%s[width=%s]\n", fig, width)
+    end
+
+    if !isnothing(caption)
+        result *= string("image::$(fignames[1])", "[width=$width,", "title=\"$caption\"]")
+    else
+        result *= figstring
+        return result
+    end
 end
