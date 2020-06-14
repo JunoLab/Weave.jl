@@ -1,3 +1,8 @@
+---
+author: "Matti Pastell"
+title: "FIR filter design with Julia"
+date: "21th April 2016"
+---
 
 
 
