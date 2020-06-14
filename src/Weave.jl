@@ -1,6 +1,6 @@
 module Weave
 
-using Highlights, Mustache, Requires, Pkg
+using Highlights, Mustache, Requires, Pkg, REPL
 
 
 # directories
@@ -31,6 +31,8 @@ end
 # utilitity functions
 take2string!(io) = String(take!(io))
 joinlines(lines) = join(lines, '\n')
+
+get_format(doctype::AbstractString) = FORMATS[doctype]
 
 """
     list_out_formats()

@@ -7,7 +7,7 @@
 
 # %%
 using Weave, Test
-using Weave: WeaveDoc, run_doc
+using Weave: WeaveDoc, run_doc, get_format
 
 
 function mock_doc(str, informat = "markdown")
@@ -49,6 +49,10 @@ end
         include("run/test_error.jl")
     end
 
+    @testset "render" begin
+        include("render/texformats.jl")
+    end
+
     @testset "conversions" begin
         include("test_converter.jl")
     end
@@ -58,7 +62,6 @@ end
     end
 
     @testset "legacy" begin
-        include("formatter_test.jl")
         include("markdown_test.jl")
         include("figureformatter_test.jl")
         include("cache_test.jl")

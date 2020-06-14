@@ -17,7 +17,7 @@ function run_doc(
     # cache :all, :user, :off, :refresh
 
     doc.doctype = isnothing(doctype) ? (doctype = detect_doctype(doc.source)) : doctype
-    doc.format = deepcopy(FORMATS[doctype])
+    doc.format = deepcopy(get_format(doctype))
 
     cwd = doc.cwd = get_cwd(doc, out_path)
     isdir(cwd) || mkdir(cwd)
