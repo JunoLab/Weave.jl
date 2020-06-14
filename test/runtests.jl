@@ -61,6 +61,10 @@ end
         include("test_display.jl")
     end
 
+    @testset "end2end" begin
+        include("end2end/test_end2end.jl")
+    end
+
     @testset "legacy" begin
         include("markdown_test.jl")
         include("render_figures_test.jl")
