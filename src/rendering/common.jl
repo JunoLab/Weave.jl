@@ -3,7 +3,7 @@
 # fallback methods
 # ----------------
 
-set_rendering_options!(docformat::WeaveFormat; kwargs...) = return
+set_format_options!(docformat::WeaveFormat; _kwargs...) = return
 
 function restore_header!(doc)
     (hasproperty(doc.format, :preserve_header) && doc.format.preserve_header) || return
@@ -149,8 +149,8 @@ end
 
 addlines(op, inline) = inline.ctype === :line ? string('\n', op, '\n') : op
 
-get_template(path::AbstractString) = Mustache.template_from_file(path)
-get_template(tpl::Mustache.MustacheTokens) = tpl
+get_mustache_template(path::AbstractString) = Mustache.template_from_file(path)
+get_mustache_template(tpl::Mustache.MustacheTokens) = tpl
 
 get_highlight_stylesheet(mime, highlight_theme) =
     get_highlight_stylesheet(mime, get_highlight_theme(highlight_theme))

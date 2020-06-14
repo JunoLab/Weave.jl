@@ -141,28 +141,9 @@ end
 # pandoc
 # ------
 
-Base.@kwdef mutable struct Pandoc <: MarkdownFormat
-    description = "Pandoc markdown"
-    extension = "md"
-    codestart = "~~~~{.julia}"
-    codeend = "~~~~~~~~~~~~~\n\n"
-    termstart = codestart
-    termend = codeend
-    outputstart = "~~~~"
-    outputend = "~~~~\n\n"
-    # Prefer png figures for markdown conversion, svg doesn't work with latex
-    mimetypes = ["image/png", "image/jpg", "image/svg+xml",
-                "text/markdown", "text/plain"]
-    fig_ext = ".png"
-    out_width = nothing
-    out_height = nothing
-    fig_pos = nothing
-    fig_env = nothing
-end
-register_format!("pandoc", Pandoc())
-register_format!("pandoc2pdf", Pandoc())
+abstract type PandocFormat <: MarkdownFormat end
 
-function formatfigures(chunk, docformat::Pandoc)
+function formatfigures(chunk, docformat::PandocFormat)
     fignames = chunk.figures
     length(fignames) > 0 || (return "")
 
@@ -193,4 +174,49 @@ function formatfigures(chunk, docformat::Pandoc)
         end
     end
     return result
+end
+
+Base.@kwdef mutable struct Pandoc <: PandocFormat
+    description = "Pandoc markdown"
+    extension = "md"
+    codestart = "~~~~{.julia}"
+    codeend = "~~~~~~~~~~~~~\n\n"
+    termstart = codestart
+    termend = codeend
+    outputstart = "~~~~"
+    outputend = "~~~~\n\n"
+    # Prefer png figures for markdown conversion, svg doesn't work with latex
+    mimetypes = ["image/png", "image/jpg", "image/svg+xml", "text/markdown", "text/plain"]
+    fig_ext = ".png"
+    out_width = nothing
+    out_height = nothing
+    fig_pos = nothing
+    fig_env = nothing
+end
+register_format!("pandoc", Pandoc())
+
+Base.@kwdef mutable struct Pandoc2PDF <: PandocFormat
+    description = "Pandoc markdown to PDF"
+    extension = "md"
+    codestart = "~~~~{.julia}"
+    codeend = "~~~~~~~~~~~~~\n\n"
+    termstart = codestart
+    termend = codeend
+    outputstart = "~~~~"
+    outputend = "~~~~\n\n"
+    # Prefer png figures for markdown conversion, svg doesn't work with latex
+    mimetypes = ["image/png", "image/jpg", "image/svg+xml", "text/markdown", "text/plain"]
+    fig_ext = ".png"
+    out_width = nothing
+    out_height = nothing
+    fig_pos = nothing
+    fig_env = nothing
+    # specials
+    header_template = normpath(TEMPLATE_DIR, "pandoc2pdf_header.txt")
+    pandoc_options = String[]
+end
+register_format!("pandoc2pdf", Pandoc2PDF())
+
+function set_format_options!(docformat::Pandoc2PDF; pandoc_options = String[], _kwargs...)
+    docformat.pandoc_options = pandoc_options
 end
