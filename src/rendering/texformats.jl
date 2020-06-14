@@ -3,13 +3,13 @@
 
 abstract type TexFormat <: WeaveFormat end
 
-function set_rendering_options!(docformat::TexFormat; keep_unicode = false, template=nothing, kwargs...)
+function set_format_options!(docformat::TexFormat; keep_unicode = false, template=nothing, _kwargs...)
     docformat.keep_unicode |= keep_unicode
     docformat.template = get_tex_template(template)
 end
 
-get_tex_template(::Nothing) = get_template(normpath(TEMPLATE_DIR, "md2pdf.tpl"))
-get_tex_template(x) = get_template(x)
+get_tex_template(::Nothing) = get_mustache_template(normpath(TEMPLATE_DIR, "md2pdf.tpl"))
+get_tex_template(x) = get_mustache_template(x)
 
 # very similar to export to html
 function format_chunk(chunk::DocChunk, docformat::TexFormat)
@@ -203,7 +203,7 @@ end
 register_format!("md2tex", JMarkdown2PDF())
 register_format!("md2pdf", JMarkdown2PDF())
 
-function set_rendering_options!(docformat::JMarkdown2PDF; template = nothing, highlight_theme = nothing, keep_unicode = false, kwargs...)
+function set_format_options!(docformat::JMarkdown2PDF; template = nothing, highlight_theme = nothing, keep_unicode = false, _kwargs...)
     docformat.template = get_tex_template(template)
     docformat.highlight_theme = get_highlight_theme(highlight_theme)
     docformat.keep_unicode |= keep_unicode

@@ -35,14 +35,14 @@ Base.@kwdef mutable struct JMarkdown2HTML <: HTMLFormat
 end
 register_format!("md2html", JMarkdown2HTML())
 
-function set_rendering_options!(docformat::JMarkdown2HTML; template = nothing, css = nothing, highlight_theme = nothing, kwargs...)
+function set_format_options!(docformat::JMarkdown2HTML; template = nothing, css = nothing, highlight_theme = nothing, _kwargs...)
     docformat.template = get_html_template(template)
     docformat.stylesheet = get_stylesheet(css)
     docformat.highlight_theme = get_highlight_theme(highlight_theme)
 end
 
-get_html_template(::Nothing) = get_template(normpath(TEMPLATE_DIR, "md2html.tpl"))
-get_html_template(x) = get_template(x)
+get_html_template(::Nothing) = get_mustache_template(normpath(TEMPLATE_DIR, "md2html.tpl"))
+get_html_template(x) = get_mustache_template(x)
 
 get_stylesheet(::Nothing) = get_stylesheet(normpath(STYLESHEET_DIR, "skeleton.css"))
 get_stylesheet(path::AbstractString) = read(path, String)

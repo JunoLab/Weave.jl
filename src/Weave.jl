@@ -194,7 +194,7 @@ function weave(
         keep_unicode = get(weave_options, "keep_unicode", keep_unicode)
     end
 
-    set_rendering_options!(doc; template = template, highlight_theme = highlight_theme, css = css, keep_unicode = keep_unicode)
+    set_format_options!(doc; template = template, highlight_theme = highlight_theme, css = css, keep_unicode = keep_unicode)
     rendered = render_doc(doc)
 
     out_path = get_out_path(doc, out_path)

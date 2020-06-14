@@ -16,13 +16,13 @@
         ```
         """
         doc = mock_run(str; doctype = "md2tex")
-        Weave.set_rendering_options!(doc.format)
+        Weave.set_format_options!(doc.format)
         rendered = Weave.render_doc(doc)
         @test occursin("alpha", rendered)
         @test !occursin("α", rendered)
 
         doc = mock_run(str; doctype = "md2tex")
-        Weave.set_rendering_options!(doc.format; keep_unicode = true)
+        Weave.set_format_options!(doc.format; keep_unicode = true)
         rendered = Weave.render_doc(doc)
         @test !occursin("alpha", rendered)
         @test occursin("α", rendered)
