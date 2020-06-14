@@ -2,7 +2,7 @@
 # ---------------
 
 Base.@kwdef mutable struct GitHubMarkdown <: WeaveFormat
-    description = "GitHub markdown"
+    description = "GitHub Markdown"
     extension = "md"
     codestart = "````julia"
     codeend = "````\n\n"
@@ -48,7 +48,7 @@ end
 # -------------
 
 Base.@kwdef mutable struct Hugo <: WeaveFormat
-    description = "Hugo markdown (using shortcodes)"
+    description = "Hugo Markdown (using shortcodes)"
     extension = "md"
     codestart = "````julia"
     codeend = "````\n\n"

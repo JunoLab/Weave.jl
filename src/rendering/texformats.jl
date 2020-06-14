@@ -1,16 +1,16 @@
 # Tex
 # ---
 
-abstract type TexFormat <: WeaveFormat end
+abstract type LaTeXFormat <: WeaveFormat end
 
-function set_format_options!(docformat::TexFormat; keep_unicode = false, template = nothing, _kwargs...)
+function set_format_options!(docformat::LaTeXFormat; keep_unicode = false, template = nothing, _kwargs...)
     docformat.keep_unicode |= keep_unicode
     docformat.template =
         get_mustache_template(isnothing(template) ? normpath(TEMPLATE_DIR, "md2pdf.tpl") : template)
 end
 
 # very similar to export to html
-function render_chunk(docformat::TexFormat, chunk::DocChunk)
+function render_chunk(docformat::LaTeXFormat, chunk::DocChunk)
     out = IOBuffer()
     io = IOBuffer()
     for inline in chunk.content
@@ -30,11 +30,11 @@ function render_chunk(docformat::TexFormat, chunk::DocChunk)
     return unicode2latex(docformat, out)
 end
 
-render_output(docformat::TexFormat, output) = unicode2latex(docformat, output, true)
+render_output(docformat::LaTeXFormat, output) = unicode2latex(docformat, output, true)
 
-render_code(docformat::TexFormat, code) = unicode2latex(docformat, code, true)
+render_code(docformat::LaTeXFormat, code) = unicode2latex(docformat, code, true)
 
-render_termchunk(docformat::TexFormat, chunk) = string(docformat.termstart, chunk.output, docformat.termend, "\n")
+render_termchunk(docformat::LaTeXFormat, chunk) = string(docformat.termstart, chunk.output, docformat.termend, "\n")
 
 # from julia symbols (e.g. "\bfhoge") to valid latex
 const UNICODE2LATEX = let
@@ -54,7 +54,7 @@ const UNICODE2LATEX = let
     Dict(unicode => texify(sym) for (sym, unicode) in REPL.REPLCompletions.latex_symbols)
 end
 
-function unicode2latex(docformat::TexFormat, s, escape = false)
+function unicode2latex(docformat::LaTeXFormat, s, escape = false)
     # Check whether to convert at all and return input if not
     docformat.keep_unicode && return s
     for (unicode, latex) in UNICODE2LATEX
@@ -65,7 +65,7 @@ function unicode2latex(docformat::TexFormat, s, escape = false)
     return s
 end
 
-function render_figures(docformat::TexFormat, chunk)
+function render_figures(docformat::LaTeXFormat, chunk)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
     width = chunk.options[:out_width]
@@ -133,7 +133,7 @@ function md_length_to_latex(def, reference)
     return def
 end
 
-function render_doc(docformat::TexFormat, body, doc)
+function render_doc(docformat::LaTeXFormat, body, doc)
     return Mustache.render(
         docformat.template;
         body = body,
@@ -146,8 +146,8 @@ end
 # minted Tex
 # ----------
 
-Base.@kwdef mutable struct TexMinted <: TexFormat
-    description = "Latex using minted for highlighting"
+Base.@kwdef mutable struct LaTeXMinted <: LaTeXFormat
+    description = "LaTeX using minted package for code highlighting"
     extension = "tex"
     codestart = "\\begin{minted}[escapeinside=||, mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}"
     codeend = "\\end{minted}"
@@ -169,21 +169,21 @@ Base.@kwdef mutable struct TexMinted <: TexFormat
     escape_starter = "|\$"
     escape_closer = reverse(escape_starter)
 end
-register_format!("texminted", TexMinted())
+register_format!("texminted", LaTeXMinted())
 
 # Tex (directly to PDF)
 # ---------------------
 
-abstract type JMarkdownTexFormat <: TexFormat end
+abstract type WeaveLaTeXFormat <: LaTeXFormat end
 
-function set_format_options!(docformat::JMarkdownTexFormat; template = nothing, highlight_theme = nothing, keep_unicode = false, _kwargs...)
+function set_format_options!(docformat::WeaveLaTeXFormat; template = nothing, highlight_theme = nothing, keep_unicode = false, _kwargs...)
     docformat.template =
         get_mustache_template(isnothing(template) ? normpath(TEMPLATE_DIR, "md2pdf.tpl") : template)
     docformat.highlight_theme = get_highlight_theme(highlight_theme)
     docformat.keep_unicode |= keep_unicode
 end
 
-function render_output(docformat::JMarkdownTexFormat, output)
+function render_output(docformat::WeaveLaTeXFormat, output)
     # Highligts has some extra escaping defined, eg of $, ", ...
     output_escaped = sprint(
         (io, x) ->
@@ -193,15 +193,15 @@ function render_output(docformat::JMarkdownTexFormat, output)
     return unicode2latex(docformat, output_escaped, true)
 end
 
-function render_code(docformat::JMarkdownTexFormat, code)
+function render_code(docformat::WeaveLaTeXFormat, code)
     ret = highlight_code(MIME("text/latex"), code, docformat.highlight_theme)
     unicode2latex(docformat, ret, false)
 end
 
-render_termchunk(docformat::JMarkdownTexFormat, chunk) =
+render_termchunk(docformat::WeaveLaTeXFormat, chunk) =
     should_render(chunk) ? highlight_term(MIME("text/latex"), chunk.output, docformat.highlight_theme) : ""
 
-function render_doc(docformat::JMarkdownTexFormat, body, doc)
+function render_doc(docformat::WeaveLaTeXFormat, body, doc)
     return Mustache.render(
         docformat.template;
         body = body,
@@ -211,8 +211,8 @@ function render_doc(docformat::JMarkdownTexFormat, body, doc)
     )
 end
 
-Base.@kwdef mutable struct JMarkdown2Tex <: JMarkdownTexFormat
-    description = "Julia markdown to LaTeX"
+Base.@kwdef mutable struct WeaveLaTeX <: WeaveLaTeXFormat
+    description = "Weave-styled LaTeX"
     extension = "tex"
     codestart = ""
     codeend = ""
@@ -235,13 +235,13 @@ Base.@kwdef mutable struct JMarkdown2Tex <: JMarkdownTexFormat
     escape_starter = "(*@"
     escape_closer = reverse(escape_starter)
 end
-register_format!("md2tex", JMarkdown2Tex())
+register_format!("md2tex", WeaveLaTeX())
 
 # will be used by `write_doc`
 const DEFAULT_LATEX_CMD = ["xelatex", "-shell-escape", "-halt-on-error"]
 
-Base.@kwdef mutable struct JMarkdown2PDF <: JMarkdownTexFormat
-    description = "Julia markdown to LaTeX"
+Base.@kwdef mutable struct WeaveLaTeX2PDF <: WeaveLaTeXFormat
+    description = "PDF via Weave-styled LaTeX"
     extension = "tex"
     codestart = ""
     codeend = ""
@@ -265,9 +265,9 @@ Base.@kwdef mutable struct JMarkdown2PDF <: JMarkdownTexFormat
     escape_starter = "(*@"
     escape_closer = reverse(escape_starter)
 end
-register_format!("md2pdf", JMarkdown2PDF())
+register_format!("md2pdf", WeaveLaTeX2PDF())
 
-function set_format_options!(docformat::JMarkdown2PDF; template = nothing, highlight_theme = nothing, keep_unicode = false, latex_cmd = DEFAULT_LATEX_CMD, _kwargs...)
+function set_format_options!(docformat::WeaveLaTeX2PDF; template = nothing, highlight_theme = nothing, keep_unicode = false, latex_cmd = DEFAULT_LATEX_CMD, _kwargs...)
     docformat.template =
         get_mustache_template(isnothing(template) ? normpath(TEMPLATE_DIR, "md2pdf.tpl") : template)
     docformat.highlight_theme = get_highlight_theme(highlight_theme)
