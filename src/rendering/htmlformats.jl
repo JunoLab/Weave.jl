@@ -3,10 +3,10 @@
 
 abstract type HTMLFormat <: WeaveFormat end
 
-format_code(code, docformat::HTMLFormat) =
+render_code(docformat::HTMLFormat, code) =
     highlight_code(MIME("text/html"), code, docformat.highlight_theme)
 
-format_termchunk(chunk, docformat::HTMLFormat) =
+render_termchunk(docformat::HTMLFormat, chunk) =
     should_render(chunk) ? highlight_term(MIME("text/html"), chunk.output, docformat.highlight_theme) : ""
 
 # Julia markdown
@@ -44,7 +44,7 @@ function set_format_options!(docformat::JMarkdown2HTML; template = nothing, css 
 end
 
 # very similar to tex version of function
-function format_chunk(chunk::DocChunk, docformat::JMarkdown2HTML)
+function render_chunk(docformat::JMarkdown2HTML, chunk::DocChunk)
     out = IOBuffer()
     io = IOBuffer()
     for inline in chunk.content
@@ -63,9 +63,9 @@ function format_chunk(chunk::DocChunk, docformat::JMarkdown2HTML)
     return take2string!(out)
 end
 
-format_output(result, docformat::JMarkdown2HTML) = Markdown.htmlesc(result)
+render_output(docformat::JMarkdown2HTML, output) = Markdown.htmlesc(output)
 
-function formatfigures(chunk, docformat::JMarkdown2HTML)
+function render_figures(docformat::JMarkdown2HTML, chunk)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
     width = chunk.options[:out_width]
@@ -156,4 +156,4 @@ function set_format_options!(docformat::Pandoc2HTML; template = nothing, css = n
     docformat.pandoc_options = pandoc_options
 end
 
-formatfigures(chunk, docformat::Pandoc2HTML) = formatfigures(chunk, Pandoc())
+render_figures(docformat::Pandoc2HTML, chunk) = render_figures(chunk, Pandoc())

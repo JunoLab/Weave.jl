@@ -24,7 +24,7 @@ Base.@kwdef mutable struct GitHubMarkdown <: MarkdownFormat
 end
 register_format!("github", GitHubMarkdown())
 
-function formatfigures(chunk, docformat::GitHubMarkdown)
+function render_figures(docformat::GitHubMarkdown, chunk)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
     result = ""
@@ -70,7 +70,7 @@ Base.@kwdef mutable struct Hugo <: MarkdownFormat
 end
 register_format!("hugo", Hugo())
 
-function formatfigures(chunk, docformat::Hugo)
+function render_figures(docformat::Hugo, chunk)
     relpath = docformat.uglyURLs ? "" : ".."
     mapreduce(*, enumerate(chunk.figures), init = "") do (index, fig)
         if index > 1
@@ -107,7 +107,7 @@ Base.@kwdef mutable struct MultiMarkdown <: MarkdownFormat
 end
 register_format!("multimarkdown", MultiMarkdown())
 
-function formatfigures(chunk, docformat::MultiMarkdown)
+function render_figures(docformat::MultiMarkdown, chunk)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
     result = ""
@@ -143,7 +143,7 @@ end
 
 abstract type PandocFormat <: MarkdownFormat end
 
-function formatfigures(chunk, docformat::PandocFormat)
+function render_figures(docformat::PandocFormat, chunk)
     fignames = chunk.figures
     length(fignames) > 0 || (return "")
 

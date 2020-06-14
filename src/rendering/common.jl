@@ -1,5 +1,3 @@
-# TODO: fix terminologies: `format_foo` -> `render_foo`
-
 # fallback methods
 # ----------------
 
@@ -21,17 +19,17 @@ function restore_header!(doc)
     pushfirst!(doc.chunks, DocChunk(header_text, 0, 0))
 end
 
-format_chunk(chunk::DocChunk, docformat) = join((format_inline(c) for c in chunk.content))
+render_chunk(docformat::WeaveFormat, chunk::DocChunk) = join((render_inline(c) for c in chunk.content))
 
-format_inline(inline::InlineText) = inline.content
+render_inline(inline::InlineText) = inline.content
 
-function format_inline(inline::InlineCode)
+function render_inline(inline::InlineCode)
     isempty(inline.rich_output) || return inline.rich_output
     isempty(inline.figures) || return inline.figures[end]
     return inline.output
 end
 
-function format_chunk(chunk::CodeChunk, docformat)
+function render_chunk(docformat::WeaveFormat, chunk::CodeChunk)
 
     # Fill undefined options with format specific defaults
     isnothing(chunk.options[:out_width]) && (chunk.options[:out_width] = docformat.out_width)
@@ -44,7 +42,7 @@ function format_chunk(chunk::CodeChunk, docformat)
 
     hasproperty(docformat, :indent) && (chunk.content = indent(chunk.content, docformat.indent))
 
-    chunk.content = format_code(chunk.content, docformat)
+    chunk.content = render_code(docformat, chunk.content)
 
     if !chunk.options[:eval]
         return if chunk.options[:echo]
@@ -55,7 +53,7 @@ function format_chunk(chunk::CodeChunk, docformat)
     end
 
     if chunk.options[:term]
-        result = format_termchunk(chunk, docformat)
+        result = render_termchunk(docformat, chunk)
     else
         result = if chunk.options[:echo]
             # Convert to output format and highlight (html, tex...) if needed
@@ -73,10 +71,10 @@ function format_chunk(chunk::CodeChunk, docformat)
                 if chunk.options[:wrap]
                     chunk.output =
                         '\n' * wraplines(chunk.output, chunk.options[:line_width])
-                    chunk.output = format_output(chunk.output, docformat)
+                    chunk.output = render_output(docformat, chunk.output)
                 else
                     chunk.output = '\n' * rstrip(chunk.output)
-                    chunk.output = format_output(chunk.output, docformat)
+                    chunk.output = render_output(docformat, chunk.output)
                 end
 
                 hasproperty(docformat, :indent) && (chunk.output = indent(chunk.output, docformat.indent))
@@ -91,13 +89,13 @@ function format_chunk(chunk::CodeChunk, docformat)
 
     # Handle figures
     if chunk.options[:fig] && length(chunk.figures) > 0
-        result *= formatfigures(chunk, docformat)
+        result *= render_figures(docformat, chunk)
     end
 
     return result
 end
 
-format_code(code, docformat) = code
+render_code(docformat::WeaveFormat, code) = code
 
 indent(text, nindent) = join(map(x -> string(repeat(' ', nindent), x), split(text, '\n')), '\n')
 
@@ -124,9 +122,9 @@ function wrapline(text, line_width = 75)
     result *= text
 end
 
-format_output(result, docformat) = result
+render_output(docformat::WeaveFormat, output) = output
 
-function format_termchunk(chunk, docformat)
+function render_termchunk(docformat::WeaveFormat, chunk)
     return if should_render(chunk)
         string(docformat.termstart, chunk.output, '\n', docformat.termend, '\n')
     else

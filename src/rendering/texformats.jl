@@ -10,7 +10,7 @@ function set_format_options!(docformat::TexFormat; keep_unicode = false, templat
 end
 
 # very similar to export to html
-function format_chunk(chunk::DocChunk, docformat::TexFormat)
+function render_chunk(docformat::TexFormat, chunk::DocChunk)
     out = IOBuffer()
     io = IOBuffer()
     for inline in chunk.content
@@ -30,11 +30,11 @@ function format_chunk(chunk::DocChunk, docformat::TexFormat)
     return unicode2latex(docformat, out)
 end
 
-format_output(result, docformat::TexFormat) = unicode2latex(docformat, result, true)
+render_output(docformat::TexFormat, output) = unicode2latex(docformat, output, true)
 
-format_code(code, docformat::TexFormat) = unicode2latex(docformat, code, true)
+render_code(docformat::TexFormat, code) = unicode2latex(docformat, code, true)
 
-format_termchunk(chunk, docformat::TexFormat) = string(docformat.termstart, chunk.output, docformat.termend, "\n")
+render_termchunk(docformat::TexFormat, chunk) = string(docformat.termstart, chunk.output, docformat.termend, "\n")
 
 # from julia symbols (e.g. "\bfhoge") to valid latex
 const UNICODE2LATEX = let
@@ -65,7 +65,7 @@ function unicode2latex(docformat::TexFormat, s, escape = false)
     return s
 end
 
-function formatfigures(chunk, docformat::TexFormat)
+function render_figures(docformat::TexFormat, chunk)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
     width = chunk.options[:out_width]
@@ -183,22 +183,22 @@ function set_format_options!(docformat::JMarkdownTexFormat; template = nothing, 
     docformat.keep_unicode |= keep_unicode
 end
 
-function format_output(result, docformat::JMarkdownTexFormat)
+function render_output(docformat::JMarkdownTexFormat, output)
     # Highligts has some extra escaping defined, eg of $, ", ...
-    result_escaped = sprint(
+    output_escaped = sprint(
         (io, x) ->
             Highlights.Format.escape(io, MIME("text/latex"), x, charescape = true),
-        result,
+        output,
     )
-    return unicode2latex(docformat, result_escaped, true)
+    return unicode2latex(docformat, output_escaped, true)
 end
 
-function format_code(code, docformat::JMarkdownTexFormat)
+function render_code(docformat::JMarkdownTexFormat, code)
     ret = highlight_code(MIME("text/latex"), code, docformat.highlight_theme)
     unicode2latex(docformat, ret, false)
 end
 
-format_termchunk(chunk, docformat::JMarkdownTexFormat) =
+render_termchunk(docformat::JMarkdownTexFormat, chunk) =
     should_render(chunk) ? highlight_term(MIME("text/latex"), chunk.output, docformat.highlight_theme) : ""
 
 function render_doc(docformat::JMarkdownTexFormat, body, doc)

@@ -21,7 +21,7 @@ Base.@kwdef mutable struct Rest <: WeaveFormat
 end
 register_format!("rst", Rest())
 
-function formatfigures(chunk, docformat::Rest)
+function render_figures(docformat::Rest, chunk)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
     width = chunk.options[:out_width]
@@ -66,7 +66,7 @@ Base.@kwdef mutable struct AsciiDoc <: WeaveFormat
 end
 register_format!("asciidoc", AsciiDoc())
 
-function formatfigures(chunk, docformat::AsciiDoc)
+function render_figures(docformat::AsciiDoc, chunk)
     fignames = chunk.figures
     caption = chunk.options[:fig_cap]
     width = chunk.options[:out_width]

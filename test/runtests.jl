@@ -63,7 +63,7 @@ end
 
     @testset "legacy" begin
         include("markdown_test.jl")
-        include("figureformatter_test.jl")
+        include("render_figures_test.jl")
         include("cache_test.jl")
     end
 end

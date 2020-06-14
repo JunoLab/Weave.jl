@@ -19,10 +19,7 @@ function render_doc(doc::WeaveDoc)
     restore_header!(doc)
 
     docformat = doc.format
-    lines = map(copy(doc.chunks)) do chunk
-        format_chunk(chunk, docformat)
-    end
-    body = join(lines, '\n')
+    body = joinlines(render_chunk.(Ref(docformat), copy(doc.chunks)))
     return render_doc(docformat, body, doc)
 end
 
