@@ -1,5 +1,7 @@
 Manifest.toml
 
+/docs/build/
+
 examples/figures/
 examples/*.md
 examples/*.pdf
@@ -18,9 +20,6 @@ test/**/*.png
 test/**/chunk_options.jl
 test/**/*.ipynb
 !test/**/*ref.*
-
-doc/build
-doc/site
 
 .idea
 *.*~
