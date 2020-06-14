@@ -32,6 +32,19 @@ end
 take2string!(io) = String(take!(io))
 joinlines(lines) = join(lines, '\n')
 
+
+include("types.jl")
+include("config.jl")
+include("WeaveMarkdown/markdown.jl")
+include("display_methods.jl")
+include("reader/reader.jl")
+include("run.jl")
+include("cache.jl")
+include("rendering/rendering.jl")
+include("writer/writer.jl")
+include("converter.jl")
+
+
 get_format(doctype::AbstractString) = FORMATS[doctype]
 
 """
@@ -103,7 +116,7 @@ Weave an input document to output file.
 - `css::Union{Nothing,AbstractString} = nothing`: Path of a CSS file used for md2html format
 - `highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing`: Theme used for syntax highlighting (defaults to `Highlights.Themes.DefaultTheme`)
 - `pandoc_options::Vector{<:AbstractString} = String[]`: `String`s of options to pass to pandoc for `pandoc2html` and `pandoc2pdf` formats, e.g. `["--toc", "-N"]`
-- `latex_cmd::AbstractString = "xelatex"`: The command used to make PDF file from .tex
+- `latex_cmd::Vector{<:AbstractString} = $(DEFAULT_LATEX_CMD)`: The command used to make PDF file from .tex
 - `keep_unicode::Bool = false`: If `true`, do not convert unicode characters to their respective latex representation. This is especially useful if a font and tex-engine with support for unicode characters are used
 
 !!! note
@@ -124,7 +137,7 @@ function weave(
     css::Union{Nothing,AbstractString} = nothing, # TODO: rename to `stylesheet`
     highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing,
     pandoc_options::Vector{<:AbstractString} = String[],
-    latex_cmd::AbstractString = "xelatex",
+    latex_cmd::Vector{<:AbstractString} = DEFAULT_LATEX_CMD,
     keep_unicode::Bool = false,
 )
     doc = WeaveDoc(source, informat)
@@ -173,10 +186,7 @@ function weave(
         cache = cache,
     )
 
-    # render document
-    # ---------------
-
-    # overwrites options with those specified in header, that are needed for rendering document
+    # overwrites options with those specified in header, that are needed for rendering/writing document
     # NOTE: these YAML options can be given dynamically
     if !isnothing(weave_options)
         if haskey(weave_options, "template")
@@ -190,38 +200,31 @@ function weave(
             css isa AbstractString && (css = normpath(dirname(source), css))
         end
         highlight_theme = get(weave_options, "highlight_theme", highlight_theme)
-        latex_cmd = get(weave_options, "latex_cmd", latex_cmd)
         keep_unicode = get(weave_options, "keep_unicode", keep_unicode)
-    end
-
-    set_format_options!(doc; template = template, highlight_theme = highlight_theme, css = css, keep_unicode = keep_unicode)
-    rendered = render_doc(doc)
-
-    out_path = get_out_path(doc, out_path)
-    write(out_path, rendered)
-
-    # document generation via external programs
-    # -----------------------------------------
-
-    if !isnothing(weave_options)
+        latex_cmd = get(weave_options, "latex_cmd", latex_cmd)
         pandoc_options = get(weave_options, "pandoc_options", pandoc_options)
     end
 
-    doctype = doc.doctype
-    if doctype == "pandoc2html"
-        intermediate = out_path
-        out_path = get_out_path(doc, out_path, "html")
-        pandoc2html(rendered, doc, highlight_theme, out_path, pandoc_options)
-        rm(intermediate)
-    elseif doctype == "pandoc2pdf"
-        intermediate = out_path
-        out_path = get_out_path(doc, out_path, "pdf")
-        pandoc2pdf(rendered, doc, out_path, pandoc_options)
-        rm(intermediate)
-    elseif doctype == "md2pdf"
-        run_latex(doc, out_path, latex_cmd)
-        out_path = get_out_path(doc, out_path, "pdf")
-    end
+    set_format_options!(
+        doc;
+        # general
+        template = template,
+        highlight_theme = highlight_theme,
+        css = css,
+        # pandoc
+        pandoc_options = pandoc_options,
+        # latex
+        keep_unicode = keep_unicode,
+        latex_cmd = latex_cmd,
+    )
+
+    # render document
+    # ---------------
+    rendered = render_doc(doc)
+
+    # write documents
+    # ---------------
+    out_path = write_doc(doc, rendered, get_out_path(doc, out_path))
 
     @info "Weaved to $(out_path)"
     return out_path
@@ -320,16 +323,6 @@ end
 
 include_weave(source, informat = nothing) = include_weave(Main, source, informat)
 
-include("types.jl")
-include("config.jl")
-include("WeaveMarkdown/markdown.jl")
-include("display_methods.jl")
-include("reader/reader.jl")
-include("run.jl")
-include("cache.jl")
-include("rendering/rendering.jl")
-include("pandoc.jl")
-include("converter.jl")
 
 export weave,
     list_out_formats,

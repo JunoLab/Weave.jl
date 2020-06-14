@@ -3,13 +3,11 @@
 
 abstract type TexFormat <: WeaveFormat end
 
-function set_format_options!(docformat::TexFormat; keep_unicode = false, template=nothing, _kwargs...)
+function set_format_options!(docformat::TexFormat; keep_unicode = false, template = nothing, _kwargs...)
     docformat.keep_unicode |= keep_unicode
-    docformat.template = get_tex_template(template)
+    docformat.template =
+        get_mustache_template(isnothing(template) ? normpath(TEMPLATE_DIR, "md2pdf.tpl") : template)
 end
-
-get_tex_template(::Nothing) = get_mustache_template(normpath(TEMPLATE_DIR, "md2pdf.tpl"))
-get_tex_template(x) = get_mustache_template(x)
 
 # very similar to export to html
 function format_chunk(chunk::DocChunk, docformat::TexFormat)
@@ -31,11 +29,12 @@ function format_chunk(chunk::DocChunk, docformat::TexFormat)
     out = take2string!(out)
     return unicode2latex(docformat, out)
 end
-format_termchunk(chunk, docformat::TexFormat) = string(docformat.termstart, chunk.output, docformat.termend, "\n")
 
 format_output(result, docformat::TexFormat) = unicode2latex(docformat, result, true)
 
 format_code(code, docformat::TexFormat) = unicode2latex(docformat, code, true)
+
+format_termchunk(chunk, docformat::TexFormat) = string(docformat.termstart, chunk.output, docformat.termend, "\n")
 
 # from julia symbols (e.g. "\bfhoge") to valid latex
 const UNICODE2LATEX = let
@@ -175,8 +174,45 @@ register_format!("texminted", TexMinted())
 # Tex (directly to PDF)
 # ---------------------
 
-Base.@kwdef mutable struct JMarkdown2PDF <: TexFormat
-    description = "Julia markdown to latex"
+abstract type JMarkdownTexFormat <: TexFormat end
+
+function set_format_options!(docformat::JMarkdownTexFormat; template = nothing, highlight_theme = nothing, keep_unicode = false, _kwargs...)
+    docformat.template =
+        get_mustache_template(isnothing(template) ? normpath(TEMPLATE_DIR, "md2pdf.tpl") : template)
+    docformat.highlight_theme = get_highlight_theme(highlight_theme)
+    docformat.keep_unicode |= keep_unicode
+end
+
+function format_output(result, docformat::JMarkdownTexFormat)
+    # Highligts has some extra escaping defined, eg of $, ", ...
+    result_escaped = sprint(
+        (io, x) ->
+            Highlights.Format.escape(io, MIME("text/latex"), x, charescape = true),
+        result,
+    )
+    return unicode2latex(docformat, result_escaped, true)
+end
+
+function format_code(code, docformat::JMarkdownTexFormat)
+    ret = highlight_code(MIME("text/latex"), code, docformat.highlight_theme)
+    unicode2latex(docformat, ret, false)
+end
+
+format_termchunk(chunk, docformat::JMarkdownTexFormat) =
+    should_render(chunk) ? highlight_term(MIME("text/latex"), chunk.output, docformat.highlight_theme) : ""
+
+function render_doc(docformat::JMarkdownTexFormat, body, doc)
+    return Mustache.render(
+        docformat.template;
+        body = body,
+        highlight = get_highlight_stylesheet(MIME("text/latex"), docformat.highlight_theme),
+        tex_deps = docformat.tex_deps,
+        [Pair(Symbol(k), v) for (k, v) in doc.header]...,
+    )
+end
+
+Base.@kwdef mutable struct JMarkdown2Tex <: JMarkdownTexFormat
+    description = "Julia markdown to LaTeX"
     extension = "tex"
     codestart = ""
     codeend = ""
@@ -184,8 +220,7 @@ Base.@kwdef mutable struct JMarkdown2PDF <: TexFormat
     termend = codeend
     outputstart = "\\begin{lstlisting}"
     outputend = "\\end{lstlisting}\n"
-    mimetypes = ["application/pdf", "image/png", "image/jpg",
-        "text/latex", "text/markdown", "text/plain"]
+    mimetypes = ["application/pdf", "image/png", "image/jpg", "text/latex", "text/markdown", "text/plain"]
     fig_ext = ".pdf"
     out_width = "\\linewidth"
     out_height = nothing
@@ -200,39 +235,42 @@ Base.@kwdef mutable struct JMarkdown2PDF <: TexFormat
     escape_starter = "(*@"
     escape_closer = reverse(escape_starter)
 end
-register_format!("md2tex", JMarkdown2PDF())
+register_format!("md2tex", JMarkdown2Tex())
+
+# will be used by `write_doc`
+const DEFAULT_LATEX_CMD = ["xelatex", "-shell-escape", "-halt-on-error"]
+
+Base.@kwdef mutable struct JMarkdown2PDF <: JMarkdownTexFormat
+    description = "Julia markdown to LaTeX"
+    extension = "tex"
+    codestart = ""
+    codeend = ""
+    termstart = codestart
+    termend = codeend
+    outputstart = "\\begin{lstlisting}"
+    outputend = "\\end{lstlisting}\n"
+    mimetypes = ["application/pdf", "image/png", "image/jpg", "text/latex", "text/markdown", "text/plain"]
+    fig_ext = ".pdf"
+    out_width = "\\linewidth"
+    out_height = nothing
+    fig_pos = nothing
+    fig_env = nothing
+    # specials
+    highlight_theme = nothing
+    template = nothing
+    keep_unicode = false
+    tex_deps = ""
+    latex_cmd = DEFAULT_LATEX_CMD
+    # how to escape latex in verbatim/code environment
+    escape_starter = "(*@"
+    escape_closer = reverse(escape_starter)
+end
 register_format!("md2pdf", JMarkdown2PDF())
 
-function set_format_options!(docformat::JMarkdown2PDF; template = nothing, highlight_theme = nothing, keep_unicode = false, _kwargs...)
-    docformat.template = get_tex_template(template)
+function set_format_options!(docformat::JMarkdown2PDF; template = nothing, highlight_theme = nothing, keep_unicode = false, latex_cmd = DEFAULT_LATEX_CMD, _kwargs...)
+    docformat.template =
+        get_mustache_template(isnothing(template) ? normpath(TEMPLATE_DIR, "md2pdf.tpl") : template)
     docformat.highlight_theme = get_highlight_theme(highlight_theme)
     docformat.keep_unicode |= keep_unicode
+    docformat.latex_cmd = latex_cmd
 end
-
-function render_doc(docformat::JMarkdown2PDF, body, doc)
-    return Mustache.render(
-        docformat.template;
-        body = body,
-        highlight = get_highlight_stylesheet(MIME("text/latex"), docformat.highlight_theme),
-        tex_deps = docformat.tex_deps,
-        [Pair(Symbol(k), v) for (k, v) in doc.header]...,
-    )
-end
-
-function format_output(result, docformat::JMarkdown2PDF)
-    # Highligts has some extra escaping defined, eg of $, ", ...
-    result_escaped = sprint(
-        (io, x) ->
-            Highlights.Format.escape(io, MIME("text/latex"), x, charescape = true),
-        result,
-    )
-    return unicode2latex(docformat, result_escaped, true)
-end
-
-function format_code(code, docformat::JMarkdown2PDF)
-    ret = highlight_code(MIME("text/latex"), code, docformat.highlight_theme)
-    unicode2latex(docformat, ret, false)
-end
-
-format_termchunk(chunk, docformat::JMarkdown2PDF) =
-    should_render(chunk) ? highlight_term(MIME("text/latex"), chunk.output, docformat.highlight_theme) : ""

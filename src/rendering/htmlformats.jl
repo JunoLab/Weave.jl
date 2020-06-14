@@ -36,16 +36,12 @@ end
 register_format!("md2html", JMarkdown2HTML())
 
 function set_format_options!(docformat::JMarkdown2HTML; template = nothing, css = nothing, highlight_theme = nothing, _kwargs...)
-    docformat.template = get_html_template(template)
-    docformat.stylesheet = get_stylesheet(css)
+    template_path = isnothing(template) ? normpath(TEMPLATE_DIR, "md2html.tpl") : template
+    docformat.template = get_mustache_template(template_path)
+    stylesheet_path = isnothing(css) ? normpath(STYLESHEET_DIR, "skeleton.css") : css
+    docformat.stylesheet = read(stylesheet_path, String)
     docformat.highlight_theme = get_highlight_theme(highlight_theme)
 end
-
-get_html_template(::Nothing) = get_mustache_template(normpath(TEMPLATE_DIR, "md2html.tpl"))
-get_html_template(x) = get_mustache_template(x)
-
-get_stylesheet(::Nothing) = get_stylesheet(normpath(STYLESHEET_DIR, "skeleton.css"))
-get_stylesheet(path::AbstractString) = read(path, String)
 
 # very similar to tex version of function
 function format_chunk(chunk::DocChunk, docformat::JMarkdown2HTML)
@@ -137,14 +133,27 @@ Base.@kwdef mutable struct Pandoc2HTML <: HTMLFormat
     termend = codeend
     outputstart = "\n"
     outputend = "\n"
-    mimetypes = ["image/png", "image/svg+xml", "image/jpg",
-                "text/html", "text/markdown", "text/plain"]
+    mimetypes = ["image/png", "image/svg+xml", "image/jpg", "text/html", "text/markdown", "text/plain"]
     fig_ext = ".png"
     out_width = nothing
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
+    # specials
+    template_path = nothing
+    stylesheet_path = nothing
+    highlight_theme = nothing
+    pandoc_options = String[]
 end
 register_format!("pandoc2html", Pandoc2HTML())
+
+function set_format_options!(docformat::Pandoc2HTML; template = nothing, css = nothing, highlight_theme = nothing, pandoc_options = String[], _kwargs...)
+    docformat.template_path =
+        isnothing(template) ? normpath(TEMPLATE_DIR, "pandoc2html.html") : template
+    docformat.stylesheet_path =
+        isnothing(css) ? normpath(STYLESHEET_DIR, "pandoc2html_skeleton.css") : css
+    docformat.highlight_theme = get_highlight_theme(highlight_theme)
+    docformat.pandoc_options = pandoc_options
+end
 
 formatfigures(chunk, docformat::Pandoc2HTML) = formatfigures(chunk, Pandoc())
