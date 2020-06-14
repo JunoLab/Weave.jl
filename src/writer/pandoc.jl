@@ -1,3 +1,6 @@
+using pandoc_jll
+
+
 function write_doc(docformat::Pandoc2HTML, doc, rendered, out_path)
     _, weave_source = splitdir(abspath(doc.source))
     weave_version, weave_date = weave_info()
@@ -20,21 +23,23 @@ function write_doc(docformat::Pandoc2HTML, doc, rendered, out_path)
     try
         out = basename(out_path)
         highlight_stylesheet = get_highlight_stylesheet(MIME("text/html"), docformat.highlight_theme)
-        cmd = `pandoc -f markdown+raw_html -s --mathjax=""
-        $filt $citeproc $(docformat.pandoc_options)
-        --template $(docformat.template_path)
-        -H $(docformat.stylesheet_path)
-        $(self_contained)
-        -V highlight_stylesheet=$(highlight_stylesheet)
-        -V weave_version=$(weave_version)
-        -V weave_date=$(weave_date)
-        -V weave_source=$(weave_source)
-        -V headerscript=$(header_script)
-        -o $(out)`
-        proc = open(cmd, "r+")
-        println(proc.in, rendered)
-        close(proc.in)
-        proc_output = read(proc.out, String)
+        pandoc() do pandoc_exe
+            cmd = `$(pandoc_exe) -f markdown+raw_html -s --mathjax=""
+            $filt $citeproc $(docformat.pandoc_options)
+            --template $(docformat.template_path)
+            -H $(docformat.stylesheet_path)
+            $(self_contained)
+            -V highlight_stylesheet=$(highlight_stylesheet)
+            -V weave_version=$(weave_version)
+            -V weave_date=$(weave_date)
+            -V weave_source=$(weave_source)
+            -V headerscript=$(header_script)
+            -o $(out)`
+            proc = open(cmd, "r+")
+            println(proc.in, rendered)
+            close(proc.in)
+            read(proc.out, String)
+        end
     catch
         rethrow() # TODO: just show error content instead of rethrow the err
     finally
@@ -58,14 +63,16 @@ function write_doc(docformat::Pandoc2PDF, doc, rendered, out_path)
     cd(dirname(out_path))
     try
         out = basename(out_path)
-        cmd = `pandoc -f markdown+raw_tex -s  --pdf-engine=xelatex --highlight-style=tango
-         $filt $citeproc $(docformat.pandoc_options)
-         --include-in-header=$(docformat.header_template)
-         -V fontsize=12pt -o $(out)`
-        proc = open(cmd, "r+")
-        println(proc.in, rendered)
-        close(proc.in)
-        proc_output = read(proc.out, String)
+        pandoc() do pandoc_exe
+            cmd = `$(pandoc_exe) -f markdown+raw_tex -s  --pdf-engine=xelatex --highlight-style=tango
+             $filt $citeproc $(docformat.pandoc_options)
+             --include-in-header=$(docformat.header_template)
+             -V fontsize=12pt -o $(out)`
+            proc = open(cmd, "r+")
+            println(proc.in, rendered)
+            close(proc.in)
+            read(proc.out, String)
+        end
     catch
         rethrow()
     finally

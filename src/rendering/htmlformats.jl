@@ -125,7 +125,7 @@ end
 # ------
 
 Base.@kwdef mutable struct Pandoc2HTML <: HTMLFormat
-    description = "HTML via intermediate Pandoc Markdown (requires Pandoc 2)"
+    description = "HTML via intermediate Pandoc Markdown"
     extension = "md"
     codestart = "\n"
     codeend = "\n"
