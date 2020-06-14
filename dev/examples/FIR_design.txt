@@ -5,7 +5,7 @@
 
 
 This an example of a julia script that can be published using
-[Weave](http://mpastell.github.io/Weave.jl/latest/usage/).
+[Weave](http://weavejl.mpastell.com/dev/usage/).
 The script can be executed normally using Julia
 or published to HTML or pdf with Weave.
 Text is written in markdown in lines starting with "`#'` " and code
