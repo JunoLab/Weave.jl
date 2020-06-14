@@ -140,6 +140,7 @@ Base.@kwdef mutable struct Pandoc2HTML <: HTMLFormat
     fig_pos = nothing
     fig_env = nothing
     # specials
+    preserve_header = true
     template_path = nothing
     stylesheet_path = nothing
     highlight_theme = nothing

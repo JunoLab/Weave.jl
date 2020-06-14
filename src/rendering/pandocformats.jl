@@ -49,6 +49,8 @@ Base.@kwdef mutable struct Pandoc <: PandocFormat
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
+    # specials
+    preserve_header = true
 end
 register_format!("pandoc", Pandoc())
 
@@ -71,6 +73,7 @@ Base.@kwdef mutable struct Pandoc2PDF <: PandocFormat
     fig_pos = nothing
     fig_env = nothing
     # specials
+    preserve_header = true
     header_template = normpath(TEMPLATE_DIR, "pandoc2pdf_header.txt")
     pandoc_options = DEFAULT_PANDOC_OPTIONS
 end
