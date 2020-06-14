@@ -1,4 +1,4 @@
-test_formatfigures(chunk, format) = Weave.formatfigures(chunk, Weave.FORMATS[format])
+test_formatfigures(chunk, format) = Weave.formatfigures(chunk, get_format(format))
 
 
 # Make a dummy codehunk with figure

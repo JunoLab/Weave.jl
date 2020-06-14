@@ -32,6 +32,8 @@ end
 take2string!(io) = String(take!(io))
 joinlines(lines) = join(lines, '\n')
 
+get_format(doctype::AbstractString) = FORMATS[doctype]
+
 """
     list_out_formats()
 

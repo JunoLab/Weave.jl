@@ -222,7 +222,7 @@ const UNICODE2LATEX = let
             s
         end
     end
-    return Dict(unicode => texify(sym) for (sym, unicode) in REPL.REPLCompletions.latex_symbols)
+    Dict(unicode => texify(sym) for (sym, unicode) in REPL.REPLCompletions.latex_symbols)
 end
 
 function unicode2latex(docformat::TexFormat, s, escape = false)
