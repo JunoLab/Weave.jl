@@ -144,7 +144,12 @@ Base.@kwdef mutable struct Pandoc2HTML <: HTMLFormat
     out_height = nothing
     fig_pos = nothing
     fig_env = nothing
+    highlight_theme = nothing
 end
 register_format!("pandoc2html", Pandoc2HTML())
 
 formatfigures(chunk, docformat::Pandoc2HTML) = formatfigures(chunk, Pandoc())
+
+function set_rendering_options!(docformat::Pandoc2HTML; highlight_theme = nothing, kwargs...)
+    docformat.highlight_theme = get_highlight_theme(highlight_theme)
+end

@@ -171,7 +171,7 @@ Base.@kwdef mutable struct TexMinted <: TexFormat
     escape_closer = reverse(escape_starter)
 end
 register_format!("texminted", TexMinted())
-
+register_format!("mintedpdf", LatexPDF(TexMinted(), "xelatex --shell-escape"))
 # Tex (directly to PDF)
 # ---------------------
 
@@ -198,10 +198,10 @@ Base.@kwdef mutable struct JMarkdown2PDF <: TexFormat
     tex_deps = ""
     # how to escape latex in verbatim/code environment
     escape_starter = "(*@"
-    escape_closer = reverse(escape_starter)
+    escape_closer = "@*)"
 end
 register_format!("md2tex", JMarkdown2PDF())
-register_format!("md2pdf", JMarkdown2PDF())
+register_format!("md2pdf", LatexPDF(JMarkdown2PDF(), "xelatex"))
 
 function set_rendering_options!(docformat::JMarkdown2PDF; template = nothing, highlight_theme = nothing, keep_unicode = false, kwargs...)
     docformat.template = get_tex_template(template)

@@ -27,6 +27,7 @@ function render_doc(doc::WeaveDoc)
 end
 
 
+include("secondaryformats.jl")
 include("common.jl")
 include("htmlformats.jl")
 include("texformats.jl")

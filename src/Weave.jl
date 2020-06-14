@@ -192,9 +192,15 @@ function weave(
         highlight_theme = get(weave_options, "highlight_theme", highlight_theme)
         latex_cmd = get(weave_options, "latex_cmd", latex_cmd)
         keep_unicode = get(weave_options, "keep_unicode", keep_unicode)
+        pandoc_options = get(weave_options, "pandoc_options", pandoc_options)
     end
 
-    set_rendering_options!(doc; template = template, highlight_theme = highlight_theme, css = css, keep_unicode = keep_unicode)
+    set_rendering_options!(doc; template = template,
+                                highlight_theme = highlight_theme,
+                                css = css,
+                                keep_unicode = keep_unicode,
+                                options = pandoc_options,
+                                latex_cmd = latex_cmd)
     rendered = render_doc(doc)
 
     out_path = get_out_path(doc, out_path)
@@ -202,26 +208,7 @@ function weave(
 
     # document generation via external programs
     # -----------------------------------------
-
-    if !isnothing(weave_options)
-        pandoc_options = get(weave_options, "pandoc_options", pandoc_options)
-    end
-
-    doctype = doc.doctype
-    if doctype == "pandoc2html"
-        intermediate = out_path
-        out_path = get_out_path(doc, out_path, "html")
-        pandoc2html(rendered, doc, highlight_theme, out_path, pandoc_options)
-        rm(intermediate)
-    elseif doctype == "pandoc2pdf"
-        intermediate = out_path
-        out_path = get_out_path(doc, out_path, "pdf")
-        pandoc2pdf(rendered, doc, out_path, pandoc_options)
-        rm(intermediate)
-    elseif doctype == "md2pdf"
-        run_latex(doc, out_path, latex_cmd)
-        out_path = get_out_path(doc, out_path, "pdf")
-    end
+    out_path = postprocessing(doc, out_path)
 
     @info "Weaved to $(out_path)"
     return out_path
