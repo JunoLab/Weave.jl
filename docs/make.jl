@@ -5,8 +5,7 @@ CI_FLG = get(ENV, "CI", nothing) == "true"
 makedocs(
     modules = [Weave],
     format = Documenter.HTML(
-        prettyurls = CI_FLG,
-        canonical = "http://weavejl.mpastell.com/stable/",
+        prettyurls = CI_FLG
     ),
     sitename = "Weave.jl",
     pages = [
