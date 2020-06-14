@@ -65,6 +65,6 @@ plot(y = cumsum(randn(1000, 1)), Geom.line)
 Read the documentation:
 
   - stable: <http://mpastell.github.io/Weave.jl/stable/>
-  - latest: <http://mpastell.github.io/Weave.jl/latest/>
+  - latest: <http://weavejl.mpastell.com/dev/>
 
 See other examples in: <https://github.com/JunoLab/Weave.jl/tree/master/examples>
