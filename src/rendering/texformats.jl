@@ -99,8 +99,8 @@ Base.@kwdef mutable struct TexMinted <: TexFormat
     template = nothing
     tex_deps = "\\usepackage{minted}"
     # how to escape latex in verbatim/code environment
-    start_escape = "|\$"
-    close_escape = "\$|"
+    escape_starter = "|\$"
+    escape_closer = "\$|"
 end
 register_format!("texminted", TexMinted())
 
@@ -129,8 +129,8 @@ Base.@kwdef mutable struct JMarkdown2tex <: TexFormat
     keep_unicode = false
     tex_deps = ""
     # how to escape latex in verbatim/code environment
-    start_escape = "(*@"
-    close_escape = "@*)"
+    escape_starter = "(*@"
+    escape_closer = "@*)"
 end
 register_format!("md2tex", JMarkdown2tex())
 register_format!("md2pdf", JMarkdown2tex())
@@ -182,11 +182,11 @@ function format_chunk(chunk::DocChunk, docformat::TexFormat)
     end
     clear_buffer_and_format!(io, out, WeaveMarkdown.latex)
     out = take2string!(out)
-    return unicode2tex(docformat, out)
+    return unicode2latex(docformat, out)
 end
 
 function format_output(result, docformat::TexFormat)
-    return unicode2tex(docformat, result, true)
+    return unicode2latex(docformat, result, true)
 end
 
 function format_output(result, docformat::JMarkdown2tex)
@@ -196,26 +196,42 @@ function format_output(result, docformat::JMarkdown2tex)
             Highlights.Format.escape(io, MIME("text/latex"), x, charescape = true),
         result,
     )
-    return unicode2tex(docformat, result_escaped, true)
+    return unicode2latex(docformat, result_escaped, true)
 end
 
 function format_code(code, docformat::TexFormat)
-    return unicode2tex(docformat, code, true)
+    return unicode2latex(docformat, code, true)
 end
 function format_code(code, docformat::JMarkdown2tex)
     ret = highlight_code(MIME("text/latex"), code, docformat.highlight_theme)
-    unicode2tex(docformat, ret, false)
+    unicode2latex(docformat, ret, false)
 end
 
-function unicode2tex(docformat::TexFormat, s, escape = false)
-    # Check whether to convert at all and return input if not4
+# from julia symbols (e.g. "\bfhoge") to valid latex
+const UNICODE2LATEX = let
+    function texify(s)
+        return if occursin(r"^\\bf[A-Z]$", s)
+            replace(s, "\\bf" => "\\bm{\\mathrm{") * "}}"
+        elseif startswith(s, "\\bfrak")
+            replace(s, "\\bfrak" => "\\bm{\\mathfrak{") * "}}"
+        elseif startswith(s, "\\bf")
+            replace(s, "\\bf" => "\\bm{\\") * "}"
+        elseif startswith(s, "\\frak")
+            replace(s, "\\frak" => "\\mathfrak{") * "}"
+        else
+            s
+        end
+    end
+    return Dict(unicode => texify(sym) for (sym, unicode) in REPL.REPLCompletions.latex_symbols)
+end
+
+function unicode2latex(docformat::TexFormat, s, escape = false)
+    # Check whether to convert at all and return input if not
     docformat.keep_unicode && return s
-    starter = docformat.start_escape
-    closer  = docformat.close_escape
-    for key in keys(latex_symbols)
-        body = "\\ensuremath{$(texify(key))}"
-        target = escape ? string(starter, body, closer) : body
-        s = replace(s, latex_symbols[key] => target)
+    for (unicode, latex) in UNICODE2LATEX
+        body = "\\ensuremath{$(latex)}"
+        target = escape ? string(docformat.escape_starter, body, docformat.escape_closer) : body
+        s = replace(s, unicode => target)
     end
     return s
 end
@@ -225,18 +241,3 @@ format_termchunk(chunk, docformat::TexFormat) =
 
 format_termchunk(chunk, docformat::JMarkdown2tex) =
     should_render(chunk) ? highlight_term(MIME("text/latex"), chunk.output, docformat.highlight_theme) : ""
-
-# Make julia symbols (\bf* etc.) valid latex
-function texify(s)
-    return if occursin(r"^\\bf[A-Z]$", s)
-        replace(s, "\\bf" => "\\bm{\\mathrm{") * "}}"
-    elseif startswith(s, "\\bfrak")
-        replace(s, "\\bfrak" => "\\bm{\\mathfrak{") * "}}"
-    elseif startswith(s, "\\bf")
-        replace(s, "\\bf" => "\\bm{\\") * "}"
-    elseif startswith(s, "\\frak")
-        replace(s, "\\frak" => "\\mathfrak{") * "}"
-    else
-        s
-    end
-end

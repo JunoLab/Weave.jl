@@ -1,6 +1,6 @@
 module Weave
 
-using Highlights, Mustache, Requires, Pkg
+using Highlights, Mustache, Requires, Pkg, REPL
 
 
 # directories

@@ -5,7 +5,6 @@
 # - 4. Document Interface
 
 using Mustache, Highlights, .WeaveMarkdown, Markdown, Dates, Printf
-using REPL.REPLCompletions: latex_symbols
 
 
 const FORMATS = Dict{String,WeaveFormat}()
