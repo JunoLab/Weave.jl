@@ -250,7 +250,7 @@ register_format!("md2tex", WeaveLaTeX())
 const DEFAULT_LATEX_CMD = ["xelatex", "-shell-escape", "-halt-on-error"]
 
 
-Base.@kwdef mutable struct LaTeX2PDF <: LaTeXFormat
+Base.@kwdef mutable struct LaTeX2PDF <: ExportFormat
     primaryformat = WeaveLaTeX()
     description = "PDF via LaTeX"
     latex_cmd = DEFAULT_LATEX_CMD
@@ -258,29 +258,7 @@ end
 register_format!("md2pdf", LaTeX2PDF())
 register_format!("minted2pdf", LaTeX2PDF(primaryformat=LaTeXMinted()))
 
-function Base.getproperty(sf::LaTeX2PDF, s::Symbol)
-    hasfield(typeof(sf), s) && return getfield(sf, s)
-    return getproperty(sf.primaryformat, s)
-end
-function Base.setproperty!(sf::LaTeX2PDF, s::Symbol, v)
-    if hasfield(typeof(sf), s)
-        setfield!(sf, s, v)
-    else
-        setproperty!(sf.primaryformat, s, v)
-    end
-end
-function Base.hasproperty(sf::LaTeX2PDF, s::Symbol)
-    hasfield(typeof(sf), s) || hasfield(typeof(sf.primaryformat), s)
-end
-
 function set_format_options!(docformat::LaTeX2PDF; latex_cmd = DEFAULT_LATEX_CMD, _kwargs...)
     docformat.latex_cmd = latex_cmd
     set_format_options!(docformat.primaryformat; _kwargs...)
 end
-
-render_doc(df::LaTeX2PDF, body, doc) = render_doc(df.primaryformat, body, doc)
-
-render_chunk(df::LaTeX2PDF, chunk) = render_chunk(df.primaryformat, chunk)
-# Need to define these to avoid ambiguities
-render_chunk(df::LaTeX2PDF, chunk::DocChunk) = render_chunk(df.primaryformat, chunk)
-render_chunk(df::LaTeX2PDF, chunk::CodeChunk) = render_chunk(df.primaryformat, chunk)

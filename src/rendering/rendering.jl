@@ -23,9 +23,9 @@ function render_doc(doc::WeaveDoc)
     return render_doc(docformat, body, doc)
 end
 
-
+include("exportformat.jl")
 include("common.jl")
+include("pandocformats.jl")
 include("htmlformats.jl")
 include("texformats.jl")
-include("pandocformats.jl")
 include("miscformats.jl")
