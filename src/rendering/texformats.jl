@@ -233,44 +233,45 @@ Base.@kwdef mutable struct WeaveLaTeX <: WeaveLaTeXFormat
     tex_deps = ""
     # how to escape latex in verbatim/code environment
     escape_starter = "(*@"
-    escape_closer = reverse(escape_starter)
+    escape_closer = "@*)"
 end
 register_format!("md2tex", WeaveLaTeX())
 
 # will be used by `write_doc`
 const DEFAULT_LATEX_CMD = ["xelatex", "-shell-escape", "-halt-on-error"]
 
-Base.@kwdef mutable struct WeaveLaTeX2PDF <: WeaveLaTeXFormat
-    description = "PDF via Weave-styled LaTeX"
-    extension = "tex"
-    codestart = ""
-    codeend = ""
-    termstart = codestart
-    termend = codeend
-    outputstart = "\\begin{lstlisting}"
-    outputend = "\\end{lstlisting}\n"
-    mimetypes = ["application/pdf", "image/png", "image/jpg", "text/latex", "text/markdown", "text/plain"]
-    fig_ext = ".pdf"
-    out_width = "\\linewidth"
-    out_height = nothing
-    fig_pos = nothing
-    fig_env = nothing
-    # specials
-    highlight_theme = nothing
-    template = nothing
-    keep_unicode = false
-    tex_deps = ""
-    latex_cmd = DEFAULT_LATEX_CMD
-    # how to escape latex in verbatim/code environment
-    escape_starter = "(*@"
-    escape_closer = reverse(escape_starter)
-end
-register_format!("md2pdf", WeaveLaTeX2PDF())
 
-function set_format_options!(docformat::WeaveLaTeX2PDF; template = nothing, highlight_theme = nothing, keep_unicode = false, latex_cmd = DEFAULT_LATEX_CMD, _kwargs...)
-    docformat.template =
-        get_mustache_template(isnothing(template) ? normpath(TEMPLATE_DIR, "md2pdf.tpl") : template)
-    docformat.highlight_theme = get_highlight_theme(highlight_theme)
-    docformat.keep_unicode |= keep_unicode
-    docformat.latex_cmd = latex_cmd
+Base.@kwdef mutable struct LaTeX2PDF <: LaTeXFormat
+    primaryformat = WeaveLaTeX()
+    description = "PDF via LaTeX"
+    latex_cmd = DEFAULT_LATEX_CMD
 end
+register_format!("md2pdf", LaTeX2PDF())
+register_format!("minted2pdf", LaTeX2PDF(primaryformat=LaTeXMinted()))
+
+function Base.getproperty(sf::LaTeX2PDF, s::Symbol)
+    hasfield(typeof(sf), s) && return getfield(sf, s)
+    return getproperty(sf.primaryformat, s)
+end
+function Base.setproperty!(sf::LaTeX2PDF, s::Symbol, v)
+    if hasfield(typeof(sf), s)
+        setfield!(sf, s, v)
+    else
+        setproperty!(sf.primaryformat, s, v)
+    end
+end
+function Base.hasproperty(sf::LaTeX2PDF, s::Symbol)
+    hasfield(typeof(sf), s) || hasfield(typeof(sf.primaryformat), s)
+end
+
+function set_format_options!(docformat::LaTeX2PDF; latex_cmd = DEFAULT_LATEX_CMD, _kwargs...)
+    docformat.latex_cmd = latex_cmd
+    set_format_options!(docformat.primaryformat; _kwargs...)
+end
+
+render_doc(df::LaTeX2PDF, body, doc) = render_doc(df.primaryformat, body, doc)
+
+render_chunk(df::LaTeX2PDF, chunk) = render_chunk(df.primaryformat, chunk)
+# Need to define these to avoid ambiguities
+render_chunk(df::LaTeX2PDF, chunk::DocChunk) = render_chunk(df.primaryformat, chunk)
+render_chunk(df::LaTeX2PDF, chunk::CodeChunk) = render_chunk(df.primaryformat, chunk)

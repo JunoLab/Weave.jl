@@ -1,4 +1,4 @@
-function write_doc(docformat::WeaveLaTeX2PDF, doc, rendered, out_path)
+function write_doc(docformat::LaTeX2PDF, doc, rendered, out_path)
     cd_back = let d = pwd(); () -> cd(d); end
     cd(doc.cwd)
     try
