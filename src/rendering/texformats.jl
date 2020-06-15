@@ -34,7 +34,10 @@ render_output(docformat::LaTeXFormat, output) = unicode2latex(docformat, output,
 
 render_code(docformat::LaTeXFormat, code) = unicode2latex(docformat, code, true)
 
-render_termchunk(docformat::LaTeXFormat, chunk) = string(docformat.termstart, chunk.output, docformat.termend, "\n")
+render_termchunk(docformat::LaTeXFormat, chunk) =
+    string(docformat.termstart,
+            unicode2latex(docformat, chunk.output, true),
+            docformat.termend, "\n")
 
 # from julia symbols (e.g. "\bfhoge") to valid latex
 const UNICODE2LATEX = let
@@ -198,8 +201,14 @@ function render_code(docformat::WeaveLaTeXFormat, code)
     unicode2latex(docformat, ret, false)
 end
 
-render_termchunk(docformat::WeaveLaTeXFormat, chunk) =
-    should_render(chunk) ? highlight_term(MIME("text/latex"), chunk.output, docformat.highlight_theme) : ""
+function render_termchunk(docformat::WeaveLaTeXFormat, chunk)
+    if should_render(chunk)
+        ret = highlight_term(MIME("text/latex"), chunk.output, docformat.highlight_theme)
+        unicode2latex(docformat, ret, true)
+    else
+        ""
+    end
+end
 
 function render_doc(docformat::WeaveLaTeXFormat, body, doc)
     return Mustache.render(
