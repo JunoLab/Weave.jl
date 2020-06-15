@@ -54,28 +54,14 @@ Base.@kwdef mutable struct Pandoc <: PandocFormat
 end
 register_format!("pandoc", Pandoc())
 
+
 const DEFAULT_PANDOC_OPTIONS = String[]
 
-Base.@kwdef mutable struct Pandoc2PDF <: PandocFormat
+Base.@kwdef mutable struct Pandoc2PDF <: ExportFormat
     description = "PDF via intermediate Pandoc Markdown"
-    extension = "md"
-    codestart = "~~~~{.julia}"
-    codeend = "~~~~~~~~~~~~~\n\n"
-    termstart = codestart
-    termend = codeend
-    outputstart = "~~~~"
-    outputend = "~~~~\n\n"
-    # Prefer png figures for markdown conversion, svg doesn't work with latex
-    mimetypes = ["image/png", "image/jpg", "image/svg+xml", "text/markdown", "text/plain"]
-    fig_ext = ".png"
-    out_width = nothing
-    out_height = nothing
-    fig_pos = nothing
-    fig_env = nothing
-    # specials
-    preserve_header = true
-    header_template = normpath(TEMPLATE_DIR, "pandoc2pdf_header.txt")
+    primaryformat = Pandoc()
     pandoc_options = DEFAULT_PANDOC_OPTIONS
+    header_template = normpath(TEMPLATE_DIR, "pandoc2pdf_header.txt")
 end
 register_format!("pandoc2pdf", Pandoc2PDF())
 
