@@ -34,7 +34,8 @@ const defaultParams =
                                 :fig_env=> nothing,
                                 :out_width=> nothing,
                                 :out_height=> nothing,
-                                :skip=>false
+                                :skip=>false,
+                                :print=>false
                                 )
                             )
 #This one can be changed at runtime, initially a copy of defaults
