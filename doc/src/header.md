@@ -43,7 +43,7 @@ Note that `Date` is available since the chunk is evaluated first.
  ---
 
  ```julia; echo = false
- using Datas
+ using Dates
  ```
 ```
 
