@@ -1,3 +1,8 @@
+---
+author: "Matti Pastell"
+title: "FIR filter design with Julia"
+date: "21th April 2016"
+---
 
 
 
@@ -5,7 +10,7 @@
 
 
 This an example of a julia script that can be published using
-[Weave](http://mpastell.github.io/Weave.jl/latest/usage/).
+[Weave](http://weavejl.mpastell.com/dev/usage/).
 The script can be executed normally using Julia
 or published to HTML or pdf with Weave.
 Text is written in markdown in lines starting with "`#'` " and code
@@ -40,6 +45,7 @@ DSP.jl package doesn't (yet) have a method to calculate the
 the frequency response of a FIR filter so we define it:
 
 ~~~~{.julia}
+
 using Plots, DSP
 gr()
 
@@ -78,6 +84,7 @@ We will use the Hamming window, which is defined as:
 $w(n) = \alpha - \beta\cos\frac{2\pi n}{N-1}$, where $\alpha=0.54$ and $\beta=0.46$
 
 ~~~~{.julia}
+
 fs = 20
 f = digitalfilter(Lowpass(5, fs = fs), FIRWindow(hamming(61)))
 w = range(0, stop=pi, length=1024)
@@ -150,6 +157,7 @@ julia> ws = w/pi*(fs/2)
 
 
 ~~~~{.julia}
+
 plot(ws, h_db,
       xlabel = "Frequency (Hz)", ylabel = "Magnitude (db)")
 ~~~~~~~~~~~~~
@@ -163,6 +171,7 @@ plot(ws, h_db,
 And again with default options
 
 ~~~~{.julia}
+
 h_phase = unwrap(-atan.(imag.(h),real.(h)))
 plot(ws, h_phase,
     xlabel = "Frequency (Hz)", ylabel = "Phase (radians)")
