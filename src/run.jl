@@ -225,7 +225,7 @@ function capture_output(code, mod, path, error, report)
     task_local_storage(:SOURCE_PATH, path) do
         try
             obj = include_string(mod, code, path) # TODO: fix line number
-            !isnothing(obj) && display(obj)
+            !isnothing(obj) && !REPL.ends_with_semicolon(code) && display(obj)
         catch _err
             err = unwrap_load_err(_err)
             error || throw(err)
