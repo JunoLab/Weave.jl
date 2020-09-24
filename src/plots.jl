@@ -17,7 +17,7 @@ function Base.display(
     report::Weave.Report,
     m::MIME"image/svg+xml",
     data::Plots.Plot{Plots.PlotlyBackend},
-)#
+)
     # Remove extra spaces from start of line for pandoc
     s = repr(MIME("text/html"), data)
     splitted = split(s, "\n")
@@ -39,7 +39,7 @@ function Base.display(
     report::Weave.Report,
     m::MIME"image/png",
     data::Plots.Plot{Plots.PlotlyBackend},
-)#
+)
     display(report, MIME("image/svg+xml"), data)
 end
 
