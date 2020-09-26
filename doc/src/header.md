@@ -39,7 +39,7 @@ Note that `Date` is available since the chunk is evaluated first.
  ---
  title : Header Example
  author : Shuhei Kadowaki
- date: `j Date(now())`
+ date: `j import Dates; Dates.Date(Dates.now())`
  ---
 
  ```julia; echo = false
