@@ -4,12 +4,12 @@
 Base.@kwdef mutable struct GitHubMarkdown <: WeaveFormat
     description = "GitHub Markdown"
     extension = "md"
-    codestart = "````julia"
-    codeend = "````\n\n"
+    codestart = "```julia"
+    codeend = "```\n\n"
     termstart = codestart
     termend = codeend
-    outputstart = "````"
-    outputend = "````\n\n"
+    outputstart = "```"
+    outputend = "```\n\n"
     fig_ext = ".png"
     mimetypes = ["image/png", "image/svg+xml", "image/jpg",
                 "text/markdown", "text/plain"]
@@ -50,12 +50,12 @@ end
 Base.@kwdef mutable struct Hugo <: WeaveFormat
     description = "Hugo Markdown (using shortcodes)"
     extension = "md"
-    codestart = "````julia"
-    codeend = "````\n\n"
+    codestart = "```julia"
+    codeend = "```\n\n"
     termstart = codestart
     termend = codeend
-    outputstart = "````"
-    outputend = "````\n\n"
+    outputstart = "```"
+    outputend = "```\n\n"
     mimetypes = default_mime_types
     fig_ext = ".png"
     out_width = nothing
@@ -88,12 +88,12 @@ end
 Base.@kwdef mutable struct MultiMarkdown <: WeaveFormat
     description = "MultiMarkdown"
     extension = "md"
-    codestart = "````julia"
-    codeend = "````\n\n"
+    codestart = "```julia"
+    codeend = "```\n\n"
     termstart = codestart
     termend = codeend
-    outputstart = "````"
-    outputend = "````\n\n"
+    outputstart = "```"
+    outputend = "```\n\n"
     mimetypes = default_mime_types
     fig_ext = ".png"
     out_width = nothing
