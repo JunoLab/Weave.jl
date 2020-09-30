@@ -20,8 +20,9 @@ function run_doc(
     doc.format = deepcopy(get_format(doctype))
 
     cwd = doc.cwd = get_cwd(doc, out_path)
-    isdir(cwd) || mkdir(cwd)
+    mkpath(cwd)
 
+    # TODO: provide a way not to create `fig_path` ?
     if isnothing(fig_path)
         fig_path = if (endswith(doctype, "2pdf") && cache === :off) || endswith(doctype, "2html")
             basename(mktempdir(abspath(cwd)))
@@ -29,7 +30,7 @@ function run_doc(
             DEFAULT_FIG_PATH
         end
     end
-    let d = normpath(cwd, fig_path); isdir(d) || mkdir(d); end
+    mkpath(normpath(cwd, fig_path))
     # This is needed for latex and should work on all output formats
     @static Sys.iswindows() && (fig_path = replace(fig_path, "\\" => "/"))
     set_rc_params(doc, fig_path, fig_ext)
