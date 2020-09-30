@@ -7,7 +7,7 @@ function run_doc(
     doc::WeaveDoc;
     doctype::Union{Nothing,AbstractString} = nothing,
     out_path::Union{Symbol,AbstractString} = :doc,
-    args::Dict = Dict(),
+    args::Any = Dict(),
     mod::Union{Module,Nothing} = nothing,
     fig_path::Union{Nothing,AbstractString} = nothing,
     fig_ext::Union{Nothing,AbstractString} = nothing,
@@ -39,7 +39,7 @@ function run_doc(
 
     # New sandbox for each document with args exposed
     isnothing(mod) && (mod = sandbox = Core.eval(Main, :(module $(gensym(:WeaveSandBox)) end))::Module)
-    @eval mod WEAVE_ARGS = $args
+    Core.eval(mod, :(const WEAVE_ARGS = $(args)))
 
     mimetypes = doc.format.mimetypes
 

@@ -165,29 +165,12 @@ See [Header Configuration](@ref) section for more details.
 
 ## Passing Runtime Arguments to Documents
 
-You can pass arguments as `Dict` to the weaved document using the `args` argument
-to `weave`. The arguments will be available as `WEAVE_ARGS` variable in the document.
+You can pass arbitrary object to the weaved document using [`weave`](@ref)'s optional argument `args`.
+It will be available as `WEAVE_ARGS` variable in the `weave`d document.
 
-This makes it possible to create the same report easily for e.g. different
-date ranges of input data from a database or from files with similar format giving the
-filename as input.
+This makes it possible to create the same report easily for e.g. different date ranges of input data from a database or from files with similar format giving the filename as input.
 
-In order to pass a filename to a document you need call `weave` using:
-
-```julia
-weave("mydoc.jmd", args = Dict("filename" => "somedata.h5"))
-```
-
-and you can access the filename from document as follows:
-
-```
-    ```julia
-    print(WEAVE_ARGS["filename"])
-    ```
-```
-
-You can use the `out_path` argument to control the name of the
-output document.
+E.g. if you call `weave("weavefile.jmd", args = (datalocation = "somedata.h5",))`, and then you can retrieve `datalocation` in `weavefile.jmd` as follows: `WEAVE_ARGS.datalocation`
 
 
 ## `include_weave`

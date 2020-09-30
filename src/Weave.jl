@@ -102,7 +102,7 @@ Weave an input document to output file.
   * `:doc`: Path of the source document (default)
   * `:pwd`: Julia working directory
   * `"somepath"`: `String` of output directory e.g. `"~/outdir"`, or of filename e.g. `"~/outdir/outfile.tex"`
-- `args::Dict = Dict()`: Arguments to be passed to the weaved document; will be available as `WEAVE_ARGS` in the document
+- `args::Any = Dict()`: A runtime object that is available as `WEAVE_ARGS` while `weave`ing
 - `mod::Union{Module,Nothing} = nothing`: Module where Weave `eval`s code. You can pass a `Module` object, otherwise create an new sandbox module.
 - `fig_path::Union{Nothing,AbstractString} = nothing`: Where figures will be generated, relative to `out_path`. By default (i.e. given `nothing`), Weave will automatically create `$(DEFAULT_FIG_PATH)` directory.
 - `fig_ext::Union{Nothing,AbstractString} = nothing`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`
@@ -127,7 +127,7 @@ function weave(
     doctype::Union{Nothing,AbstractString} = nothing,
     informat::Union{Nothing,AbstractString} = nothing,
     out_path::Union{Symbol,AbstractString} = :doc,
-    args::Dict = Dict(),
+    args::Any = Dict(),
     mod::Union{Module,Nothing} = nothing,
     fig_path::Union{Nothing,AbstractString} = nothing,
     fig_ext::Union{Nothing,AbstractString} = nothing,
