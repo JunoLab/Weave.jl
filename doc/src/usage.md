@@ -170,7 +170,7 @@ It will be available as `WEAVE_ARGS` variable in the `weave`d document.
 
 This makes it possible to create the same report easily for e.g. different date ranges of input data from a database or from files with similar format giving the filename as input.
 
-E.g. if you call `weave("weavefile.jmd", args = (datalocation = "somedata.h5",))`, and then you can retrieve `datalocation` in `weavefile.jmd` as follows: `WEAVE_ARGS.datalocation`
+E.g. if you call `weave("weavefile.jmd", args = (datalocation = "somedata.h5",))`, and then you can retrieve the `datalocation` in `weavefile.jmd` as follows: `WEAVE_ARGS.datalocation`
 
 
 ## `include_weave`

@@ -3,7 +3,7 @@ language: julia
 jobs:
   include:
     - stage: "Documentation"
-      julia: 1
+      julia: 1.5
       os: linux
       script:
         - julia --project=doc/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
