@@ -353,11 +353,9 @@ function collect_results(chunk::CodeChunk)
     content = ""
     result_chunks = CodeChunk[]
     for r in chunk.result
+        content *= r.code
         # Check if there is any output from chunk
-        if strip(r.stdout) == "" && isempty(r.figures) && strip(r.rich_output) == ""
-            content *= r.code
-        else
-            content = "\n" * content * r.code
+        if any(!isempty ∘ strip, (r.stdout, r.rich_output)) || !isempty(r.figures)
             rchunk = CodeChunk(
                 content,
                 chunk.number,
@@ -365,15 +363,14 @@ function collect_results(chunk::CodeChunk)
                 chunk.optionstring,
                 copy(chunk.options),
             )
-            content = ""
             rchunk.figures = r.figures
             rchunk.output = r.stdout
             rchunk.rich_output = r.rich_output
             push!(result_chunks, rchunk)
+            content = ""
         end
     end
     if !isempty(content)
-        startswith(content, "\n") || (content = "\n" * content)
         rchunk = CodeChunk(
             content,
             chunk.number,
