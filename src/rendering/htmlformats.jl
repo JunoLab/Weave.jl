@@ -15,8 +15,8 @@ render_termchunk(docformat::HTMLFormat, chunk) =
 Base.@kwdef mutable struct WeaveHTML <: HTMLFormat
     description = "Weave-style HTML"
     extension = "html"
-    codestart = "\n"
-    codeend = "\n"
+    codestart = '\n'
+    codeend = '\n'
     termstart = codestart
     termend = codeend
     outputstart = "<pre class=\"output\">"
@@ -127,12 +127,12 @@ end
 Base.@kwdef mutable struct Pandoc2HTML <: HTMLFormat
     description = "HTML via intermediate Pandoc Markdown (requires Pandoc 2)"
     extension = "md"
-    codestart = "\n"
-    codeend = "\n"
+    codestart = '\n'
+    codeend = '\n'
     termstart = codestart
     termend = codeend
-    outputstart = "\n"
-    outputend = "\n"
+    outputstart = '\n'
+    outputend = '\n'
     mimetypes = ["image/png", "image/svg+xml", "image/jpg", "text/html", "text/markdown", "text/plain"]
     fig_ext = ".png"
     out_width = nothing

@@ -5,7 +5,7 @@ Base.@kwdef mutable struct GitHubMarkdown <: WeaveFormat
     description = "GitHub Markdown"
     extension = "md"
     codestart = "```julia"
-    codeend = "```\n\n"
+    codeend = "```\n"
     termstart = codestart
     termend = codeend
     outputstart = "```"
@@ -51,7 +51,7 @@ Base.@kwdef mutable struct Hugo <: WeaveFormat
     description = "Hugo Markdown (using shortcodes)"
     extension = "md"
     codestart = "```julia"
-    codeend = "```\n\n"
+    codeend = "```\n"
     termstart = codestart
     termend = codeend
     outputstart = "```"
@@ -89,7 +89,7 @@ Base.@kwdef mutable struct MultiMarkdown <: WeaveFormat
     description = "MultiMarkdown"
     extension = "md"
     codestart = "```julia"
-    codeend = "```\n\n"
+    codeend = "```\n"
     termstart = codestart
     termend = codeend
     outputstart = "```"
@@ -143,7 +143,7 @@ Base.@kwdef mutable struct Rest <: WeaveFormat
     description = "reStructuredText and Sphinx"
     extension = "rst"
     codestart = ".. code-block:: julia\n"
-    codeend = "\n\n"
+    codeend = "\n"
     termstart = codestart
     termend = codeend
     outputstart = "::\n"
@@ -190,7 +190,7 @@ Base.@kwdef mutable struct AsciiDoc <: WeaveFormat
     description = "AsciiDoc"
     extension = "txt"
     codestart = "[source,julia]\n--------------------------------------"
-    codeend = "--------------------------------------\n\n"
+    codeend = "--------------------------------------\n"
     termstart = codestart
     termend = codeend
     outputstart = "--------------------------------------"

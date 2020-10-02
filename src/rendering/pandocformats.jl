@@ -37,7 +37,7 @@ Base.@kwdef mutable struct Pandoc <: PandocFormat
     description = "Pandoc Markdown"
     extension = "md"
     codestart = "~~~~{.julia}"
-    codeend = "~~~~~~~~~~~~~\n\n"
+    codeend = "~~~~~~~~~~~~~\n"
     termstart = codestart
     termend = codeend
     outputstart = "~~~~"
@@ -60,7 +60,7 @@ Base.@kwdef mutable struct Pandoc2PDF <: PandocFormat
     description = "PDF via intermediate Pandoc Markdown"
     extension = "md"
     codestart = "~~~~{.julia}"
-    codeend = "~~~~~~~~~~~~~\n\n"
+    codeend = "~~~~~~~~~~~~~\n"
     termstart = codestart
     termend = codeend
     outputstart = "~~~~"
