@@ -2,8 +2,8 @@ using Weave.Dates
 
 
 test_doctypes = filter(first.(Weave.list_out_formats())) do doctype
-    # don't test doctypes which need external programs
-    doctype ∉ ("pandoc2html", "pandoc2pdf", "md2pdf")
+    # don't test doctypes which need LaTeX to be installed
+    doctype ∉ ("pandoc2pdf", "md2pdf")
 end
 
 function test_func(body)
