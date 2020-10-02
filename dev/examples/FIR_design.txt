@@ -45,7 +45,6 @@ DSP.jl package doesn't (yet) have a method to calculate the
 the frequency response of a FIR filter so we define it:
 
 ~~~~{.julia}
-
 using Plots, DSP
 gr()
 
@@ -63,7 +62,6 @@ function FIRfreqz(b::Array, w = range(0, stop=π, length=1024))
     return h
 end
 ~~~~~~~~~~~~~
-
 
 ~~~~
 FIRfreqz (generic function with 2 methods)
@@ -84,13 +82,11 @@ We will use the Hamming window, which is defined as:
 $w(n) = \alpha - \beta\cos\frac{2\pi n}{N-1}$, where $\alpha=0.54$ and $\beta=0.46$
 
 ~~~~{.julia}
-
 fs = 20
 f = digitalfilter(Lowpass(5, fs = fs), FIRWindow(hamming(61)))
 w = range(0, stop=pi, length=1024)
 h = FIRfreqz(f, w)
 ~~~~~~~~~~~~~
-
 
 ~~~~
 1024-element Array{Complex{Float32},1}:
@@ -130,17 +126,12 @@ julia> h_db = log10.(abs.(h));
 
 julia> ws = w/pi*(fs/2)
 0.0:0.009775171065493646:10.0
-
 ~~~~~~~~~~~~~
 
-
-
 ~~~~{.julia}
-
 plot(ws, h_db,
       xlabel = "Frequency (Hz)", ylabel = "Magnitude (db)")
 ~~~~~~~~~~~~~
-
 
 ![](figures/FIR_design_5_1.png)\ 
 
@@ -150,12 +141,10 @@ plot(ws, h_db,
 And again with default options
 
 ~~~~{.julia}
-
 h_phase = unwrap(-atan.(imag.(h),real.(h)))
 plot(ws, h_phase,
     xlabel = "Frequency (Hz)", ylabel = "Phase (radians)")
 ~~~~~~~~~~~~~
-
 
 ![](figures/FIR_design_6_1.png)\ 
 
