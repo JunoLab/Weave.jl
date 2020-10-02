@@ -1,6 +1,19 @@
 ## Release notes for Weave.jl
 
-### v0.10 - 2020/05/18
+### v0.10.6 – 2020/10/03
+
+improvements:
+- cleaned up chunk rendering (removed unnecessary extra newlines): #401
+- `WEAVE_ARGS` now can take arbitrary objects: https://github.com/JunoLab/Weave.jl/commit/c24a2621359b5d0af1bb6825f488e58cc11b8a9e
+- improved docs: #397 by @baggepinnen
+
+bug fixes
+- fixed #398: #399
+- removed unnecessary quote for markdown output: https://github.com/JunoLab/Weave.jl/commit/a1830e05029f33195627ec5dedbacb30af23947e
+- fixed #386: #396 by @torfjelde
+
+
+### v0.10 – 2020/05/18
 
 improvements:
 - `weave` is now integrated with Juno's progress bar; just call `weave` function inside Juno or use `julia-client: weave-to-html(pdf)` command (#331)
