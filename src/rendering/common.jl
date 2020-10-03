@@ -44,18 +44,14 @@ function render_chunk(docformat::WeaveFormat, chunk::CodeChunk)
 
     chunk.content = render_code(docformat, chunk.content)
 
-    if !chunk.options[:eval]
-        return if chunk.options[:echo]
-            string(docformat.codestart, '\n', chunk.content, docformat.codeend)
-        else
-            ""
-        end
-    end
+    echo = chunk.options[:echo]
+
+    chunk.options[:eval] || return echo ? string(docformat.codestart, chunk.content, docformat.codeend) : ""
 
     if chunk.options[:term]
         result = render_termchunk(docformat, chunk)
     else
-        result = if chunk.options[:echo]
+        result = if echo
             # Convert to output format and highlight (html, tex...) if needed
             string(docformat.codestart, chunk.content, docformat.codeend, '\n')
         else
@@ -126,7 +122,7 @@ render_output(docformat::WeaveFormat, output) = output
 
 function render_termchunk(docformat::WeaveFormat, chunk)
     return if should_render(chunk)
-        string(docformat.termstart, chunk.output, '\n', docformat.termend, '\n')
+        string(docformat.termstart, chunk.output, docformat.termend)
     else
         ""
     end

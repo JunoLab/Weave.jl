@@ -15,8 +15,8 @@ render_termchunk(docformat::HTMLFormat, chunk) =
 Base.@kwdef mutable struct WeaveHTML <: HTMLFormat
     description = "Weave-style HTML"
     extension = "html"
-    codestart = "\n"
-    codeend = "\n"
+    codestart = '\n'
+    codeend = '\n'
     termstart = codestart
     termend = codeend
     outputstart = "<pre class=\"output\">"
