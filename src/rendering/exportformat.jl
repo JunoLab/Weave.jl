@@ -1,18 +1,18 @@
 abstract type ExportFormat <: WeaveFormat end
 
-function Base.getproperty(sf::ExportFormat, s::Symbol)
-    hasfield(typeof(sf), s) && return getfield(sf, s)
+function Base.getproperty(sf::T, s::Symbol) where {T<:ExportFormat}
+    hasfield(T, s) && return getfield(sf, s)
     return getproperty(sf.primaryformat, s)
 end
-function Base.setproperty!(sf::ExportFormat, s::Symbol, v)
-    if hasfield(typeof(sf), s)
+function Base.setproperty!(sf::T, s::Symbol, v) where {T<:ExportFormat}
+    if hasfield(T, s)
         setfield!(sf, s, v)
     else
         setproperty!(sf.primaryformat, s, v)
     end
 end
-function Base.hasproperty(sf::ExportFormat, s::Symbol)
-    hasfield(typeof(sf), s) || hasfield(typeof(sf.primaryformat), s)
+function Base.hasproperty(sf::T, s::Symbol) where {T<:ExportFormat}
+    hasfield(T, s) || hasproperty(sf.primaryformat, s)
 end
 
 render_doc(df::ExportFormat, body, doc) = render_doc(df.primaryformat, body, doc)
