@@ -143,4 +143,4 @@ function set_format_options!(docformat::Pandoc2HTML; template = nothing, css = n
     docformat.pandoc_options = pandoc_options
 end
 
-#render_figures(docformat::Pandoc2HTML, chunk) = render_figures(Pandoc(), chunk)
+render_figures(docformat::Pandoc2HTML, chunk) = render_figures(Pandoc(), chunk)
