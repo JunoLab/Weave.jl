@@ -39,7 +39,7 @@ function run_doc(
 
     # New sandbox for each document with args exposed
     isnothing(mod) && (mod = sandbox = Core.eval(Main, :(module $(gensym(:WeaveSandBox)) end))::Module)
-    Core.eval(mod, :(const WEAVE_ARGS = $(args)))
+    Core.eval(mod, :(WEAVE_ARGS = $(args)))
 
     mimetypes = doc.format.mimetypes
 
@@ -140,27 +140,17 @@ function embed_figures!(chunk::CodeChunk, cwd)
         chunk.figures[i] = img2base64(fig, cwd)
     end
 end
-
-function embed_figures!(chunks::Vector{CodeChunk}, cwd)
-    for chunk in chunks
-        embed_figures!(chunk, cwd)
-    end
-end
+embed_figures!(chunks, cwd) = embed_figures!.(chunks, Ref(cwd))
 
 function img2base64(fig, cwd)
     ext = splitext(fig)[2]
     f = open(joinpath(cwd, fig), "r")
     raw = read(f)
     close(f)
-    if ext == ".png"
-        return "data:image/png;base64," * stringmime(MIME("image/png"), raw)
-    elseif ext == ".svg"
-        return "data:image/svg+xml;base64," * stringmime(MIME("image/svg"), raw)
-    elseif ext == ".gif"
-        return "data:image/gif;base64," * stringmime(MIME("image/gif"), raw)
-    else
-        return (fig)
-    end
+    return ext == ".png" ? "data:image/png;base64," * stringmime(MIME("image/png"), raw) :
+           ext == ".svg" ? "data:image/svg+xml;base64," * stringmime(MIME("image/svg"), raw) :
+           ext == ".gif" ? "data:image/gif;base64," * stringmime(MIME("image/gif"), raw) :
+           fig
 end
 
 function run_chunk(chunk::DocChunk, doc, report, mod)
@@ -274,15 +264,9 @@ function eval_chunk(doc::WeaveDoc, chunk::CodeChunk, report::Report, mod::Module
 
     execute_posthooks!(chunk)
 
-    chunks = if chunk.options[:term]
-        collect_term_results(chunk)
-    elseif chunk.options[:hold]
-        collect_hold_results(chunk)
-    else
-        collect_results(chunk)
-    end
-
-    return chunks
+    return chunk.options[:term] ? collect_term_results(chunk) :
+           chunk.options[:hold] ? collect_hold_results(chunk) :
+           collect_results(chunk)
 end
 
 # Hooks to run before and after chunks, this is form IJulia,
@@ -293,7 +277,11 @@ function pop_preexecution_hook!(f::Function)
     isnothing(i) && error("this function has not been registered in the pre-execution hook yet")
     return splice!(preexecution_hooks, i)
 end
-execute_prehooks!(chunk::CodeChunk) = for prehook in preexecution_hooks; Base.invokelatest(prehook, chunk); end
+function execute_prehooks!(chunk::CodeChunk)
+    for prehook in preexecution_hooks
+        Base.invokelatest(prehook, chunk)
+    end
+end
 
 const postexecution_hooks = Function[]
 push_postexecution_hook!(f::Function) = push!(postexecution_hooks, f)
@@ -302,7 +290,11 @@ function pop_postexecution_hook!(f::Function)
     isnothing(i) && error("this function has not been registered in the post-execution hook yet")
     return splice!(postexecution_hooks, i)
 end
-execute_posthooks!(chunk::CodeChunk) = for posthook in postexecution_hooks; Base.invokelatest(posthook, chunk); end
+function execute_posthooks!(chunk::CodeChunk)
+    for posthook in postexecution_hooks
+        Base.invokelatest(posthook, chunk)
+    end
+end
 
 """
     clear_module!(mod::Module)
@@ -341,11 +333,7 @@ function get_figname(report::Report, chunk; fignum = nothing, ext = nothing)
 end
 
 function set_rc_params(doc::WeaveDoc, fig_path, fig_ext)
-    if isnothing(fig_ext)
-        doc.chunk_defaults[:fig_ext] = doc.format.fig_ext
-    else
-        doc.chunk_defaults[:fig_ext] = fig_ext
-    end
+    doc.chunk_defaults[:fig_ext] = isnothing(fig_ext) ? doc.format.fig_ext : fig_ext
     doc.chunk_defaults[:fig_path] = fig_path
 end
 
@@ -363,9 +351,9 @@ function collect_results(chunk::CodeChunk)
                 chunk.optionstring,
                 copy(chunk.options),
             )
-            rchunk.figures = r.figures
             rchunk.output = r.stdout
             rchunk.rich_output = r.rich_output
+            rchunk.figures = r.figures
             push!(result_chunks, rchunk)
             content = ""
         end
