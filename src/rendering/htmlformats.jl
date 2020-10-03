@@ -124,23 +124,9 @@ end
 # Pandoc
 # ------
 
-Base.@kwdef mutable struct Pandoc2HTML <: HTMLFormat
+Base.@kwdef mutable struct Pandoc2HTML <: ExportFormat
     description = "HTML via intermediate Pandoc Markdown (requires Pandoc 2)"
-    extension = "md"
-    codestart = '\n'
-    codeend = '\n'
-    termstart = codestart
-    termend = codeend
-    outputstart = '\n'
-    outputend = '\n'
-    mimetypes = ["image/png", "image/svg+xml", "image/jpg", "text/html", "text/markdown", "text/plain"]
-    fig_ext = ".png"
-    out_width = nothing
-    out_height = nothing
-    fig_pos = nothing
-    fig_env = nothing
-    # specials
-    preserve_header = true
+    primaryformat = Pandoc()
     template_path = nothing
     stylesheet_path = nothing
     highlight_theme = nothing

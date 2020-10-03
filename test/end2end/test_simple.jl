@@ -3,7 +3,7 @@ using Weave.Dates
 
 test_doctypes = filter(first.(Weave.list_out_formats())) do doctype
     # don't test doctypes which need external programs
-    doctype ∉ ("pandoc2html", "pandoc2pdf", "md2pdf")
+    doctype ∉ ("pandoc2html", "pandoc2pdf", "md2pdf", "minted2pdf")
 end
 
 function test_func(body)
@@ -24,7 +24,6 @@ using Dates
 Date(now())
 ```
 """
-
 for doctype in test_doctypes
     test_mock_weave(test_func, julia_markdown_body; informat = "markdown", doctype = doctype)
 end

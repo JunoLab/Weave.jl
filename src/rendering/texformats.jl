@@ -34,7 +34,10 @@ render_output(docformat::LaTeXFormat, output) = unicode2latex(docformat, output,
 
 render_code(docformat::LaTeXFormat, code) = unicode2latex(docformat, code, true)
 
-render_termchunk(docformat::LaTeXFormat, chunk) = string(docformat.termstart, chunk.output, docformat.termend, "\n")
+render_termchunk(docformat::LaTeXFormat, chunk) =
+    string(docformat.termstart,
+            unicode2latex(docformat, chunk.output, true),
+            docformat.termend, "\n")
 
 # from julia symbols (e.g. "\bfhoge") to valid latex
 const UNICODE2LATEX = let
@@ -198,8 +201,14 @@ function render_code(docformat::WeaveLaTeXFormat, code)
     unicode2latex(docformat, ret, false)
 end
 
-render_termchunk(docformat::WeaveLaTeXFormat, chunk) =
-    should_render(chunk) ? highlight_term(MIME("text/latex"), chunk.output, docformat.highlight_theme) : ""
+function render_termchunk(docformat::WeaveLaTeXFormat, chunk)
+    if should_render(chunk)
+        ret = highlight_term(MIME("text/latex"), chunk.output, docformat.highlight_theme)
+        unicode2latex(docformat, ret, true)
+    else
+        ""
+    end
+end
 
 function render_doc(docformat::WeaveLaTeXFormat, body, doc)
     return Mustache.render(
@@ -233,44 +242,23 @@ Base.@kwdef mutable struct WeaveLaTeX <: WeaveLaTeXFormat
     tex_deps = ""
     # how to escape latex in verbatim/code environment
     escape_starter = "(*@"
-    escape_closer = reverse(escape_starter)
+    escape_closer = "@*)"
 end
 register_format!("md2tex", WeaveLaTeX())
 
 # will be used by `write_doc`
 const DEFAULT_LATEX_CMD = ["xelatex", "-shell-escape", "-halt-on-error"]
 
-Base.@kwdef mutable struct WeaveLaTeX2PDF <: WeaveLaTeXFormat
-    description = "PDF via Weave-styled LaTeX"
-    extension = "tex"
-    codestart = ""
-    codeend = ""
-    termstart = codestart
-    termend = codeend
-    outputstart = "\\begin{lstlisting}"
-    outputend = "\\end{lstlisting}\n"
-    mimetypes = ["application/pdf", "image/png", "image/jpg", "text/latex", "text/markdown", "text/plain"]
-    fig_ext = ".pdf"
-    out_width = "\\linewidth"
-    out_height = nothing
-    fig_pos = nothing
-    fig_env = nothing
-    # specials
-    highlight_theme = nothing
-    template = nothing
-    keep_unicode = false
-    tex_deps = ""
-    latex_cmd = DEFAULT_LATEX_CMD
-    # how to escape latex in verbatim/code environment
-    escape_starter = "(*@"
-    escape_closer = reverse(escape_starter)
-end
-register_format!("md2pdf", WeaveLaTeX2PDF())
 
-function set_format_options!(docformat::WeaveLaTeX2PDF; template = nothing, highlight_theme = nothing, keep_unicode = false, latex_cmd = DEFAULT_LATEX_CMD, _kwargs...)
-    docformat.template =
-        get_mustache_template(isnothing(template) ? normpath(TEMPLATE_DIR, "md2pdf.tpl") : template)
-    docformat.highlight_theme = get_highlight_theme(highlight_theme)
-    docformat.keep_unicode |= keep_unicode
+Base.@kwdef mutable struct LaTeX2PDF <: ExportFormat
+    primaryformat = WeaveLaTeX()
+    description = "PDF via LaTeX"
+    latex_cmd = DEFAULT_LATEX_CMD
+end
+register_format!("md2pdf", LaTeX2PDF())
+register_format!("minted2pdf", LaTeX2PDF(primaryformat=LaTeXMinted()))
+
+function set_format_options!(docformat::LaTeX2PDF; latex_cmd = DEFAULT_LATEX_CMD, _kwargs...)
     docformat.latex_cmd = latex_cmd
+    set_format_options!(docformat.primaryformat; _kwargs...)
 end
