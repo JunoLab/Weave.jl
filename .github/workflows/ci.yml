@@ -1,0 +1,67 @@
+# TODO: build docs via github-actions
+
+name: CI
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+jobs:
+  test:
+    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }}
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.allow-failure }}
+    strategy:
+      fail-fast: false # don't stop CI even when one of them fails
+      matrix:
+        version:
+          - '1.5'
+        os:
+          - ubuntu-latest
+          - macOS-latest
+          # - windows-latest # TODO: test on Windows
+        arch:
+          - x64
+          - x86
+        allow-failure: [false]
+        include:
+          # this is so verbose... any other way to simplify this ?
+          - version: 'nightly'
+            os: ubuntu-latest
+            arch: x64
+            allow-failure: true
+          - version: 'nightly'
+            os: ubuntu-latest
+            arch: x86
+            allow-failure: true
+          - version: 'nightly'
+            os: macOS-latest
+            arch: x64
+            allow-failure: true
+          # - version: 'nightly'
+          #   os: windows-latest
+          #   arch: x64
+          #   allow-failure: true
+          # - version: 'nightly'
+          #   os: windows-latest
+          #   arch: x86
+          #   allow-failure: true
+        exclude:
+          - os: macOS-latest
+            arch: x86
+    steps:
+      - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+      - uses: julia-actions/julia-buildpkg@latest
+      - uses: julia-actions/julia-runtest@latest
+      - uses: julia-actions/julia-processcoverage@v1
+      - uses: codecov/codecov-action@v1
+        with:
+          file: ./lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}

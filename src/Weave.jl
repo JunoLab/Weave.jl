@@ -1,254 +1,337 @@
 module Weave
-import Highlights
-using Requires
+
+using Highlights, Mustache, Requires, Pkg, REPL
+
+
+# directories
+const PKG_DIR = normpath(@__DIR__, "..")
+const TEMPLATE_DIR = normpath(PKG_DIR, "templates")
+const STYLESHEET_DIR = normpath(PKG_DIR, "stylesheets")
+# keeps paths of sample documents for easy try
+const EXAMPLE_FOLDER = normpath(PKG_DIR, "examples")
+
+# constant names
+const WEAVE_OPTION_NAME = "weave_options"
+const WEAVE_OPTION_NAME_DEPRECATED = "options" # remove this when tagging v0.11
+const WEAVE_OPTION_DEPRECATE_ID = "weave_option_duplicate_id"
+const DEFAULT_FIG_PATH = "figures"
+
+const WEAVE_VERSION = try
+    'v' * Pkg.TOML.parsefile(normpath(PKG_DIR, "Project.toml"))["version"]
+catch
+    ""
+end
+weave_info() = WEAVE_VERSION, string(Date(now()))
 
 function __init__()
-    @require Plots="91a5bcdd-55d7-5caf-9e0b-520d859cae80" Base.include(Main, joinpath(@__DIR__, "plots.jl"))
-    @require Gadfly="c91e804a-d5a3-530f-b6f0-dfbca275c004" Base.include(Main, joinpath(@__DIR__, "gadfly.jl"))
+    @require Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80" include("plots.jl")
+    @require Gadfly = "c91e804a-d5a3-530f-b6f0-dfbca275c004" include("gadfly.jl")
 end
 
-"""
-`list_out_formats()`
-
-List supported output formats
-"""
-function list_out_formats()
-  for format = keys(formats)
-      println(string(format,": ",  formats[format].description))
-  end
-end
+# utilitity functions
+take2string!(io) = String(take!(io))
+joinlines(lines) = join(lines, '\n')
 
 
+include("types.jl")
+include("config.jl")
+include("WeaveMarkdown/markdown.jl")
+include("display_methods.jl")
+include("reader/reader.jl")
+include("run.jl")
+include("cache.jl")
+include("rendering/rendering.jl")
+include("writer/writer.jl")
+include("converter.jl")
+
+
+get_format(doctype::AbstractString) = FORMATS[doctype]
+
 """
-`tangle(source ; out_path=:doc, informat="noweb")`
+    list_out_formats()
+
+List supported output formats with its description.
+"""
+list_out_formats() = [k => v.description for (k,v) in FORMATS]
+
+"""
+    tangle(source::AbstractString; kwargs...)
 
 Tangle source code from input document to .jl file.
 
-* `informat`: `"noweb"` of `"markdown"`
-* `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`: Julia working directory,  `"somepath"`, directory name as a string e.g `"/home/mpastell/weaveout"`
-or filename as string e.g. ~/outpath/outfile.jl.
+## Keyword options
+
+- `informat::Union{Nothing,AbstractString} = nothing`: Input document format. By default (i.e. given `nothing`), Weave will set it automatically based on file extension. You can also specify either of `"script"`, `"markdown"`, `"notebook"`, or `"noweb"`
+- `out_path::Union{Symbol,AbstractString} = :doc`: Path where the output is generated can be either of:
+  * `:doc`: Path of the source document (default)
+  * `:pwd`: Julia working directory
+  * `"somepath"`: `String` of output directory e.g. `"~/outdir"`, or of filename e.g. `"~/outdir/outfile.tex"`
 """
-function tangle(source ; out_path=:doc, informat=:auto)
-    doc = read_doc(source, informat)
+function tangle(
+    source::AbstractString;
+    out_path::Union{Symbol,AbstractString} = :doc,
+    informat::Union{Nothing,AbstractString} = nothing,
+)
+    doc = WeaveDoc(source, informat)
     doc.cwd = get_cwd(doc, out_path)
 
-    outname = get_outname(out_path, doc, ext = "jl")
+    out_path = get_out_path(doc, out_path, "jl")
 
-    open(outname, "w") do io
-    for chunk in doc.chunks
-      if typeof(chunk) == CodeChunk
-          options = merge(doc.chunk_defaults, chunk.options)
-          if options[:tangle]
-            write(io, chunk.content*"\n")
-          end
-      end
+    open(out_path, "w") do io
+        for chunk in doc.chunks
+            if typeof(chunk) == CodeChunk
+                options = merge(doc.chunk_defaults, chunk.options)
+                options[:tangle] && write(io, chunk.content * "\n")
+            end
+        end
     end
-  end
-  doc.cwd == pwd()  && (outname = basename(outname))
-  @info("Writing to file $outname")
+
+    @info "Tangled to $(out_path)"
 end
 
-
 """
-    weave(source ; doctype = :auto,
-        informat=:auto, out_path=:doc, args = Dict(),
-        mod::Union{Module, Symbol} = Main,
-        fig_path = "figures", fig_ext = nothing,
-        cache_path = "cache", cache=:off,
-        template = nothing, highlight_theme = nothing, css = nothing,
-        pandoc_options = "",
-        latex_cmd = "xelatex")
+    weave(source::AbstractString; kwargs...)
 
 Weave an input document to output file.
 
-* `doctype`: :auto = set based on file extension or specify one of the supported formats.
-  See `list_out_formats()`
-* `informat`: :auto = set based on file extension or set to  `"noweb"`, `"markdown"` or  `script`
-* `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document, `:pwd`:
-   Julia working directory, `"somepath"`: output directory as a String e.g `"/home/mpastell/weaveout"` or filename as
-   string e.g. ~/outpath/outfile.tex.
-* `args`: dictionary of arguments to pass to document. Available as WEAVE_ARGS
-* `mod`: Module where Weave `eval`s code. Defaults to `:sandbox`
-   to create new sandbox module, you can also pass a module e.g. `Main`.
-* `fig_path`: where figures will be generated, relative to out_path
-* `fig_ext`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`.
-* `cache_path`: where of cached output will be saved.
-* `cache`: controls caching of code: `:off` = no caching, `:all` = cache everything,
-  `:user` = cache based on chunk options, `:refresh`, run all code chunks and save new cache.
-* `throw_errors`: if `false` errors are included in output document and the whole document is
-    executed. if `true` errors are thrown when they occur.
-* `template`: Template (file path) or MustacheTokens for md2html or md2tex formats.
-* `highlight_theme`: Theme (Highlights.AbstractTheme) for used syntax highlighting
-* `css`: CSS (file path) used for md2html format
-* `pandoc_options`: String array of options to pass to pandoc for `pandoc2html` and
-   `pandoc2pdf` formats e.g. ["--toc", "-N"]
-* `latex_cmd`: the command used to make pdf from .tex
-* `latex_keep_unicode`: if set to true (default is false), do not convert unicode characters to their
-respective latex representation. This is especially useful if a font and tex-engine with support for unicode
-characters are used.
+## Keyword options
 
-**Note:** Run Weave from terminal and not using IJulia, Juno or ESS, they tend to mess with capturing output.
+- `doctype::Union{Nothing,AbstractString} = nothing`: Output document format. By default (i.e. given `nothing`), Weave will set it automatically based on file extension. You can also manually specify it; see [`list_out_formats()`](@ref) for the supported formats
+- `informat::Union{Nothing,AbstractString} = nothing`: Input document format. By default (i.e. given `nothing`), Weave will set it automatically based on file extension. You can also specify either of `"script"`, `"markdown"`, `"notebook"`, or `"noweb"`
+- `out_path::Union{Symbol,AbstractString} = :doc`: Path where the output is generated can be either of:
+  * `:doc`: Path of the source document (default)
+  * `:pwd`: Julia working directory
+  * `"somepath"`: `String` of output directory e.g. `"~/outdir"`, or of filename e.g. `"~/outdir/outfile.tex"`
+- `args::Any = Dict()`: A runtime object that is available as `WEAVE_ARGS` while `weave`ing
+- `mod::Union{Module,Nothing} = nothing`: Module where Weave `eval`s code. You can pass a `Module` object, otherwise create an new sandbox module.
+- `fig_path::Union{Nothing,AbstractString} = nothing`: Where figures will be generated, relative to `out_path`. By default (i.e. given `nothing`), Weave will automatically create `$(DEFAULT_FIG_PATH)` directory.
+- `fig_ext::Union{Nothing,AbstractString} = nothing`: Extension for saved figures e.g. `".pdf"`, `".png"`. Default setting depends on `doctype`
+- `cache_path::AbstractString = "cache"`: Where of cached output will be saved
+- `cache::Symbol = :off`: Controls caching of code:
+  * `:off` means no caching (default)
+  * `:all` caches everything
+  * `:user` caches based on chunk options
+  * `:refresh` runs all code chunks and save new cache
+- `template::Union{Nothing,AbstractString,Mustache.MustacheTokens} = nothing`: Template (file path) or `Mustache.MustacheTokens`s for `md2html` or `md2tex` formats
+- `css::Union{Nothing,AbstractString} = nothing`: Path of a CSS file used for md2html format
+- `highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing`: Theme used for syntax highlighting (defaults to `Highlights.Themes.DefaultTheme`)
+- `pandoc_options::Vector{<:AbstractString} = $(DEFAULT_PANDOC_OPTIONS)`: `String`s of options to pass to pandoc for `pandoc2html` and `pandoc2pdf` formats, e.g. `["--toc", "-N"]`
+- `latex_cmd::Vector{<:AbstractString} = $(DEFAULT_LATEX_CMD)`: The command used to make PDF file from .tex
+- `keep_unicode::Bool = false`: If `true`, do not convert unicode characters to their respective latex representation. This is especially useful if a font and tex-engine with support for unicode characters are used
+
+!!! note
+    Run Weave from terminal and try to avoid weaving from IJulia or ESS; they tend to mess with capturing output.
 """
-function weave(source ; doctype = :auto,
-        informat=:auto, out_path=:doc, args = Dict(),
-        mod::Union{Module, Symbol} = :sandbox,
-        fig_path = "figures", fig_ext = nothing,
-        cache_path = "cache", cache=:off,
-        throw_errors = false,
-        template = nothing, highlight_theme = nothing, css = nothing,
-        pandoc_options = String[]::Array{String},
-        latex_cmd = "xelatex",latex_keep_unicode=false)
+function weave(
+    source::AbstractString;
+    doctype::Union{Nothing,AbstractString} = nothing,
+    informat::Union{Nothing,AbstractString} = nothing,
+    out_path::Union{Symbol,AbstractString} = :doc,
+    args::Any = Dict(),
+    mod::Union{Module,Nothing} = nothing,
+    fig_path::Union{Nothing,AbstractString} = nothing,
+    fig_ext::Union{Nothing,AbstractString} = nothing,
+    cache_path::AbstractString = "cache",
+    cache::Symbol = :off,
+    template::Union{Nothing,AbstractString,Mustache.MustacheTokens} = nothing,
+    css::Union{Nothing,AbstractString} = nothing, # TODO: rename to `stylesheet`
+    highlight_theme::Union{Nothing,Type{<:Highlights.AbstractTheme}} = nothing,
+    pandoc_options::Vector{<:AbstractString} = DEFAULT_PANDOC_OPTIONS,
+    latex_cmd::Vector{<:AbstractString} = DEFAULT_LATEX_CMD,
+    keep_unicode::Bool = false,
+)
+    doc = WeaveDoc(source, informat)
 
-    doc = read_doc(source, informat)
-    doctype == :auto && (doctype = detect_doctype(doc.source))
-    doc.doctype = doctype
+    # run document
+    # ------------
 
-
-    # Read args from document header, overrides command line args
-    if haskey(doc.header, "options")
-        (doctype, informat, out_path, args, mod, fig_path, fig_ext,
-        cache_path, cache, throw_errors, template, highlight_theme, css,
-        pandoc_options, latex_cmd) = header_args(doc, out_path, mod,
-                                    fig_ext, fig_path,
-                                    cache_path, cache, throw_errors,
-                                    template, highlight_theme, css,
-                                    pandoc_options, latex_cmd)
+    # overwrites options with those specified in header, that are needed for running document
+    # NOTE: these YAML options can NOT be given dynamically
+    weave_options = get(doc.header, WEAVE_OPTION_NAME, nothing)
+    if haskey(doc.header, WEAVE_OPTION_NAME_DEPRECATED)
+        @warn "Weave: `options` key is deprecated. Use `weave_options` key instead." _id = WEAVE_OPTION_DEPRECATE_ID maxlog = 1
+        weave_options = get(doc.header, WEAVE_OPTION_NAME_DEPRECATED, nothing)
     end
 
-    template != nothing && (doc.template = template)
-    highlight_theme != nothing && (doc.highlight_theme = highlight_theme)
-    #theme != nothing && (doc.theme = theme) #Reserved for themes
-    css != nothing && (doc.css = css)
+    if !isnothing(weave_options)
+        doctype = get(weave_options, "doctype", doctype)
+        specific_options!(weave_options, doctype)
+        if haskey(weave_options, "out_path")
+            out_path = let
+                out_path = weave_options["out_path"]
+                if out_path == ":doc" || out_path == ":pwd"
+                    Symbol(out_path)
+                else
+                    normpath(dirname(source), out_path) # resolve relative to this document
+                end
+            end
+        end
+        mod = get(weave_options, "mod", mod)
+        mod isa AbstractString && (mod = Main.eval(Meta.parse(mod)))
+        fig_path = get(weave_options, "fig_path", fig_path)
+        fig_ext = get(weave_options, "fig_ext", fig_ext)
+        cache_path = get(weave_options, "cache_path", cache_path)
+        cache = Symbol(get(weave_options, "cache", cache))
+    end
 
-    try
-      doc = run(doc, doctype = doctype,
-              mod = mod,
-              out_path=out_path, args = args,
-              fig_path = fig_path, fig_ext = fig_ext, cache_path = cache_path, cache=cache,
-              throw_errors = throw_errors,latex_keep_unicode=latex_keep_unicode)
-      formatted = format(doc)
+    doc = run_doc(
+        doc;
+        doctype = doctype,
+        mod = mod,
+        out_path = out_path,
+        args = args,
+        fig_path = fig_path,
+        fig_ext = fig_ext,
+        cache_path = cache_path,
+        cache = cache,
+    )
 
-      outname = get_outname(out_path, doc)
+    # overwrites options with those specified in header, that are needed for rendering/writing document
+    # NOTE: these YAML options can be given dynamically
+    if !isnothing(weave_options)
+        if haskey(weave_options, "template")
+            template = weave_options["template"]
+            # resolve relative to this document
+            template isa AbstractString && (template = normpath(dirname(source), template))
+        end
+        if haskey(weave_options, "css")
+            css = weave_options["css"]
+            # resolve relative to this document
+            css isa AbstractString && (css = normpath(dirname(source), css))
+        end
+        highlight_theme = get(weave_options, "highlight_theme", highlight_theme)
+        keep_unicode = get(weave_options, "keep_unicode", keep_unicode)
+        latex_cmd = get(weave_options, "latex_cmd", latex_cmd)
+        pandoc_options = get(weave_options, "pandoc_options", pandoc_options)
+    end
 
-      open(outname, "w") do io
-          write(io, formatted)
-      end
+    set_format_options!(
+        doc;
+        # general
+        template = template,
+        highlight_theme = highlight_theme,
+        css = css,
+        # pandoc
+        pandoc_options = pandoc_options,
+        # latex
+        keep_unicode = keep_unicode,
+        latex_cmd = latex_cmd,
+    )
 
-      #Special for that need external programs
-      if doc.doctype == "pandoc2html"
-          mdname = outname
-          outname = get_outname(out_path, doc, ext = "html")
-          pandoc2html(formatted, doc, outname, pandoc_options)
-          rm(mdname)
-      elseif doc.doctype == "pandoc2pdf"
-          mdname = outname
-          outname = get_outname(out_path, doc, ext = "pdf")
-          pandoc2pdf(formatted, doc, outname, pandoc_options)
-          rm(mdname)
-      elseif doc.doctype == "md2pdf"
-          success = run_latex(doc, outname, latex_cmd)
-          success && rm(doc.fig_path, force = true, recursive = true)
-          success || return
-          outname = get_outname(out_path, doc, ext = "pdf")
-      end
+    # render document
+    # ---------------
+    rendered = render_doc(doc)
 
-      doc.cwd == pwd() && (outname = basename(outname))
-      @info("Report weaved to $outname")
-      return abspath(outname)
-    #catch err
-    #    @warn("Something went wrong during weaving")
-    #    @error(sprint(showerror, err))
-    #    return nothing
-    finally
-        doctype == :auto && (doctype = detect_doctype(doc.source))
-        if occursin("2pdf", doctype)
-            rm(doc.fig_path, force = true, recursive = true)
-        elseif occursin("2html", doctype)
-            rm(doc.fig_path, force = true, recursive = true)
+    # write documents
+    # ---------------
+    out_path = write_doc(doc, rendered, get_out_path(doc, out_path))
+
+    @info "Weaved to $(out_path)"
+    return out_path
+end
+
+weave(doc::AbstractString, doctype::Union{Symbol,AbstractString}; kwargs...) =
+    weave(doc; doctype = doctype, kwargs...)
+
+function specific_options!(weave_options, doctype)
+    fmts = keys(FORMATS)
+    for (k,v) in weave_options
+        if k in fmts
+            k == doctype && merge!(weave_options, v)
+            delete!(weave_options, k)
         end
     end
 end
 
-function weave(doc::AbstractString, doctype::AbstractString)
-    weave(doc, doctype=doctype)
+get_out_path(doc, out_path, ext::Nothing = nothing) = get_out_path(doc, out_path, doc.format.extension)
+get_out_path(doc, out_path, ext) = abspath(get_cwd(doc, out_path), string(doc.basename , '.', ext))
+
+"""
+    notebook(source::AbstractString; kwargs...)
+
+Convert Weave document `source` to Jupyter Notebook and execute the code
+using [`nbconvert`](https://nbconvert.readthedocs.io/en/latest/).
+**Ignores** all chunk options.
+
+## Keyword options
+
+- `out_path::Union{Symbol,AbstractString} = :pwd`: Path where the output is generated can be either of:
+  * `:doc`: Path of the source document
+  * `:pwd`: Julia working directory (default)
+  * `"somepath"`: `String` of output directory e.g. `"~/outdir"`, or of filename e.g. `"~/outdir/outfile.tex"`
+- `timeout = -1`: nbconvert cell timeout in seconds. Defaults to `-1` (no timeout)
+- `nbconvert_options::AbstractString = ""`: `String` of additional options to pass to nbconvert, such as `"--allow-errors"`
+- `jupyter_path::AbstractString = "jupyter"`: Path/command for the Jupyter you want to use. Defaults to `"jupyter"`, which runs whatever is linked/alias to that
+
+!!! warning
+    The code is _**not**_ executed by Weave, but by [`nbconvert`](https://nbconvert.readthedocs.io/en/latest/).
+    This means that the output doesn't necessarily always work properly; see [#116](https://github.com/JunoLab/Weave.jl/issues/116).
+
+!!! note
+    In order to _just_ convert Weave document to Jupyter Notebook,
+    use [`convert_doc`](@ref) instead.
+"""
+function notebook(
+    source::AbstractString;
+    out_path::Union{Symbol,AbstractString} = :pwd,
+    timeout = -1,
+    nbconvert_options::AbstractString = "",
+    jupyter_path::AbstractString = "jupyter",
+)
+    doc = WeaveDoc(source)
+    converted = convert_to_notebook(doc)
+    doc.cwd = get_cwd(doc, out_path)
+    out_path = get_out_path(doc, out_path, "ipynb")
+
+    write(out_path, converted)
+
+    @info "Running nbconvert ..."
+    return read(
+        `$jupyter_path nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $(out_path)  $nbconvert_options --output $(out_path)`,
+        String,
+    )
 end
 
 """
-    notebook(source::String; out_path=:pwd, timeout=-1, nbconvert_options="", jupyter_path = "jupyter")
+    include_weave(source::AbstractString, informat::Union{Nothing,AbstractString} = nothing)
+    include_weave(m::Module, source::AbstractString, informat::Union{Nothing,AbstractString} = nothing)
 
-Convert Weave document `source` to Jupyter notebook and execute the code
-using nbconvert. **Ignores** all chunk options
-
-* `out_path`: Path where the output is generated. Can be: `:doc`: Path of the source document,
-   `:pwd`: Julia working directory, `"somepath"`: Path as a
-    String e.g `"/home/mpastell/weaveout"`
-* `timeout`: nbconvert cell timeout in seconds. Defaults to -1 (no timeout)
-* `nbconvert_options`: string of additional options to pass to nbconvert, such as `--allow-errors`
-* `jupyter_path`: Path/command for the Jupyter you want to use. Defaults to "jupyter," which runs whatever is linked/alias to that.
+Include code from Weave document calling `include_string` on all code from doc.
+Code is run in the path of the include document.
 """
-function notebook(source::String; out_path=:pwd, timeout=-1, nbconvert_options=[], jupyter_path = "jupyter")
-  doc = read_doc(source)
-  converted = convert_doc(doc, NotebookOutput())
-  doc.cwd = get_cwd(doc, out_path)
-  outfile = get_outname(out_path, doc, ext="ipynb")
-
-  open(outfile, "w") do f
-    write(f, converted)
-  end
-
-  @info("Running nbconvert")
-  out = read(`$jupyter_path nbconvert --ExecutePreprocessor.timeout=$timeout --to notebook --execute $outfile  $nbconvert_options --output $outfile`, String)
-end
-
-
-"""
-    include_weave(doc, informat=:auto)
-    include_weave(m::Module, doc, informat=:auto)
-
-Include code from Weave document calling `include_string` on
-all code from doc. Code is run in the path of the include document.
-"""
-function include_weave(m::Module, source, informat=:auto)
+function include_weave(
+    m::Module,
+    source::AbstractString,
+    informat::Union{Nothing,AbstractString} = nothing,
+)
     old_path = pwd()
-    doc = read_doc(source, informat)
-    cd(doc.path)
+    doc = WeaveDoc(source, informat)
+    cd(dirname(doc.path))
     try
-        code = join([x.content for x in
-            filter(x -> isa(x,Weave.CodeChunk), doc.chunks)], "\n")
+        code = join(
+            [x.content for x in filter(x -> isa(x, Weave.CodeChunk), doc.chunks)],
+            "\n",
+        )
         include_string(m, code)
-    catch e
-        throw(e)
+    catch err
+        throw(err)
     finally
         cd(old_path)
     end
+    return nothing
 end
 
-include_weave(source, informat=:auto) = include_weave(Main, source, informat)
-
-#Hooks to run before and after chunks, this is form IJulia,
-#but note that Weave hooks take the chunk as input
-const preexecute_hooks = Function[]
-push_preexecute_hook(f::Function) = push!(preexecute_hooks, f)
-pop_preexecute_hook(f::Function) = splice!(preexecute_hooks, findfirst(x -> x == f, preexecute_hooks))
-
-const postexecute_hooks = Function[]
-push_postexecute_hook(f::Function) = push!(postexecute_hooks, f)
-pop_postexecute_hook(f::Function) = splice!(postexecute_hooks, findfirst(x -> x == f, postexecute_hooks))
-
-include("chunks.jl")
-include("config.jl")
-include("WeaveMarkdown/markdown.jl")
-include("display_methods.jl")
-include("readers.jl")
-include("run.jl")
-include("cache.jl")
-include("formatters.jl")
-include("format.jl")
-include("pandoc.jl")
-include("writers.jl")
+include_weave(source, informat = nothing) = include_weave(Main, source, informat)
 
 
-export weave, list_out_formats, tangle, convert_doc, notebook,
-        set_chunk_defaults, get_chunk_defaults, restore_chunk_defaults,
-        include_weave
+export weave,
+    list_out_formats,
+    tangle,
+    convert_doc,
+    notebook,
+    set_chunk_defaults!,
+    get_chunk_defaults,
+    restore_chunk_defaults!,
+    include_weave
+
 end

@@ -1,10 +1,12 @@
-# Publishing to html and pdf
+# Publishing to HTML and PDF
 
-You can also publish any supported input format using markdown for doc chunks to html and pdf documents. Producing pdf output requires that you have pdflatex installed and in your path.
+You can also publish any supported input format to HTML and PDF documents.
 
-You can use a YAML header in the beginning of the input document delimited with "---"
-to set the document title, author and date e.g.
+!!! note
+    Producing PDF output requires that you have XeLaTex installed and in your path.
 
+You can use a YAML header in the beginning of the input document delimited with `---`
+to set the document title, author and date, e.g.:
 ```
 ---
 title : Weave example
@@ -13,37 +15,48 @@ date: 15th December 2016
 ---
 ```
 
-Here is a a sample document and output:
+Here are sample input and outputs:
+- input (Julia markdown format): [`FIR_design_plots.jl`](../examples/FIR_design_plots.jl) (its path is bound to `Weave.SAMPLE_JL_DOC`)
+- HTML output: [`FIR_design_plots.html`](../examples/FIR_design_plots.html)
+-  PDF output: [`FIR_design_plots.pdf`](../examples/FIR_design_plots.pdf)
 
-[FIR_design_plots.jl](../examples/FIR_design_plots.jl), [FIR_design_plots.html](../examples/FIR_design_plots.html) , [FIR_design_plots.pdf](../examples/FIR_design_plots.pdf).
-
+They are generated as follows:
 ```julia
-weave("FIR_design_plots.jl")
-weave("FIR_design_plots.jl", docformat = "md2pdf")
+weave(Weave.SAMPLE_JL_DOC)) # default to md2html output format
+weave(Weave.SAMPLE_JL_DOC; doctype = "md2pdf")
 ```
 
-**Note:** docformats `md2pdf` and `md2html` use Julia markdown and `pandoc2pdf` and `pandoc2html`
-use Pandoc.
+!!! tips
+    `Weave.SAMPLE_JL_DOC` is the path of [FIR_design.jl](../examples/FIR_design.jl).
+
+!!! note
+    `"md2html"` and `"md2pdf"` assume Julia markdown format as an input,
+    while `pandoc2pdf` and `pandoc2html` assume Noweb input format (i.e. Pandoc markdown).
+
 
 ## Templates
 
-You can use a custom template with `md2pdf` and `md2html` formats with `template`
-argument (e.g) `weave("FIR_design_plots.jl", template = "custom.tpl"`). You can use
-the existing templates as starting point.
+You can use a custom template with `md2html` and `md2pdf` formats with `template` keyword option,
+e.g.: `weave("FIR_design_plots.jl", template = "custom.tpl"`.
 
-For HTML: [julia_html.tpl](https://github.com/mpastell/Weave.jl/blob/master/templates/julia_html.tpl) and LaTex: [julia_tex.tpl](https://github.com/mpastell/Weave.jl/blob/master/templates/julia_tex.tpl)
+As starting point, you can use the existing templates:
+
+- HTML (`md2html`): [`md2html.tpl`](https://github.com/JunoLab/Weave.jl/blob/master/templates/md2html.tpl)
+- LaTex (`md2pdf`): [`md2pdf.tpl`](https://github.com/JunoLab/Weave.jl/blob/master/templates/md2pdf.tpl)
 
 Templates are rendered using [Mustache.jl](https://github.com/jverzani/Mustache.jl).
 
+
 ## Supported Markdown syntax
 
-The markdown variant used by Weave is [Julia markdown](https://docs.julialang.org/en/v1/stdlib/Markdown/#). In addition Weave supports few additional Markdown features:
+The markdown variant used by Weave is [Julia markdown](https://docs.julialang.org/en/v1/stdlib/Markdown/#).
+In addition Weave supports few additional Markdown features:
 
-**Comments**
+### Comments
 
 You can add comments using html syntax: `<!-- -->`
 
-**Multiline equations**
+### Multiline equations
 
 You can add multiline equations using:
 

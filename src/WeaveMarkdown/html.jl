@@ -1,16 +1,28 @@
-#module Markdown2HTML
 # Markdown to HTML writer, Modified from Julia Base.Markdown html writer
-using Markdown: MD, Header, Code, Paragraph, BlockQuote, Footnote, Table,
-      Admonition, List, HorizontalRule, Bold, Italic, Image, Link, LineBreak,
-      LaTeX, isordered
 
-function tohtml(io::IO, m::MIME"text/html", x)
-    show(io, m, x)
-end
+using Markdown:
+    MD,
+    Header,
+    Code,
+    Paragraph,
+    BlockQuote,
+    Footnote,
+    Table,
+    Admonition,
+    List,
+    HorizontalRule,
+    Bold,
+    Italic,
+    Image,
+    Link,
+    LineBreak,
+    LaTeX,
+    isordered
 
-function tohtml(io::IO, m::MIME"text/plain", x)
-    htmlesc(io, sprint(show, m, x))
-end
+
+tohtml(io::IO, m::MIME"text/html", x) = show(io, m, x)
+
+tohtml(io::IO, m::MIME"text/plain", x) = htmlesc(io, sprint(show, m, x))
 
 function tohtml(io::IO, m::MIME"image/png", img)
     print(io, """<img src="data:image/png;base64,""")
@@ -18,11 +30,7 @@ function tohtml(io::IO, m::MIME"image/png", img)
     print(io, "\" />")
 end
 
-function tohtml(m::MIME"image/svg+xml", img)
-    show(io, m, img)
-end
-
-
+tohtml(m::MIME"image/svg+xml", img) = show(io, m, img)
 
 # AbstractDisplay infrastructure
 
@@ -34,7 +42,6 @@ function bestmime(val)
 end
 
 tohtml(io::IO, x) = tohtml(io, bestmime(x), x)
-
 
 # Utils
 
@@ -56,10 +63,13 @@ end
 
 tag(io::IO, tag, attrs...) = withtag(nothing, io, tag, attrs...)
 
-const _htmlescape_chars = Dict('<'=>"&lt;",   '>'=>"&gt;",
-                               '"'=>"&quot;", '&'=>"&amp;",
-                               # ' '=>"&nbsp;",
-                               )
+const _htmlescape_chars = Dict(
+    '<' => "&lt;",
+    '>' => "&gt;",
+    '"' => "&quot;",
+    '&' => "&amp;",
+    # ' '=>"&nbsp;",
+)
 for ch in "'`!\$%()=+{}[]"
     _htmlescape_chars[ch] = "&#$(Int(ch));"
 end
@@ -93,7 +103,7 @@ end
 
 html(io::IO, md::MD) = html(io, md.content)
 
-function html(io::IO, header::Header{l}) where l
+function html(io::IO, header::Header{l}) where {l}
     withtag(io, "h$l") do
         htmlinline(io, header.text)
     end
@@ -141,7 +151,7 @@ function html(io::IO, md::Admonition)
 end
 
 function html(io::IO, md::List)
-    maybe_attr = md.ordered > 1 ? Any[:start => string(md.ordered)] : []
+    maybe_attr = md.ordered > 1 ? Any[:start=>string(md.ordered)] : []
     withtag(io, isordered(md) ? :ol : :ul, maybe_attr...) do
         for item in md.items
             println(io)
@@ -153,9 +163,7 @@ function html(io::IO, md::List)
     end
 end
 
-function html(io::IO, md::HorizontalRule)
-    tag(io, :hr)
-end
+html(io::IO, md::HorizontalRule) = tag(io, :hr)
 
 function html(io::IO, tex::LaTeX)
     withtag(io, :p, :class => "math") do
@@ -163,9 +171,7 @@ function html(io::IO, tex::LaTeX)
     end
 end
 
-function html(io::IO, comment::Comment)
-    write(io, "\n<!-- $(comment.text) -->\n")
-end
+html(io::IO, comment::Comment) = write(io, "\n<!-- $(comment.text) -->\n")
 
 function html(io::IO, md::Table)
     withtag(io, :table) do
@@ -203,9 +209,7 @@ function htmlinline(io::IO, tex::LaTeX)
     end
 end
 
-function htmlinline(io::IO, md::Union{Symbol,AbstractString})
-    htmlesc(io, md)
-end
+htmlinline(io::IO, md::Union{Symbol,AbstractString}) = htmlesc(io, md)
 
 function htmlinline(io::IO, md::Bold)
     withtag(io, :strong) do
@@ -219,10 +223,7 @@ function htmlinline(io::IO, md::Italic)
     end
 end
 
-function htmlinline(io::IO, md::Image)
-    tag(io, :img, :src=>md.url, :alt=>md.alt)
-end
-
+htmlinline(io::IO, md::Image) = tag(io, :img, :src => md.url, :alt => md.alt)
 
 function htmlinline(io::IO, f::Footnote)
     withtag(io, :a, :href => "#footnote-$(f.id)", :class => "footnote") do
@@ -231,23 +232,17 @@ function htmlinline(io::IO, f::Footnote)
 end
 
 function htmlinline(io::IO, link::Link)
-    withtag(io, :a, :href=>link.url) do
+    withtag(io, :a, :href => link.url) do
         htmlinline(io, link.text)
     end
 end
 
-function htmlinline(io::IO, br::LineBreak)
-    tag(io, :br)
-end
+htmlinline(io::IO, br::LineBreak) = tag(io, :br)
 
-function htmlinline(io::IO, comment::Comment)
-    write(io, "<!-- $(comment.text) -->")
-end
+htmlinline(io::IO, comment::Comment) = write(io, "<!-- $(comment.text) -->")
 
 htmlinline(io::IO, x) = tohtml(io, x)
 
 # API
 
 html(md) = sprint(html, md)
-
-#end

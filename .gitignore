@@ -1,6 +1,5 @@
+Manifest.toml
 
-src/*.cov
-test.jl
 examples/figures/
 examples/*.md
 examples/*.pdf
@@ -22,15 +21,9 @@ test/**/*.ipynb
 
 doc/build
 doc/site
-stable/
-doc/Manifest.toml
-Manifest.toml
 
-tmp/
 .idea
 *.*~
 *.aux
 *.log
 *.out
-\#*\#
-.juliahistory

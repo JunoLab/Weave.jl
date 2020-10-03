@@ -14,14 +14,14 @@ ap = ArgParseSettings("Weave Julia documents using Weave.jl",
         help = "source document(s)"
         required = true
     "--doctype"
-        default = :auto
+        default = nothing
         help = "output format"
     "--plotlib"
         arg_type = String
         default = "Gadfly"
         help = "output format"
     "--informat"
-        default = :auto
+        default = nothing
         help = "output format"
     "--out_path"
         arg_type = String
@@ -42,9 +42,6 @@ delete!(args, "source")
 args_col = []
 
 #Check for special values of out_path
-
-#args["informat"] == ":auto" && (args["informat"] = :auto)
-#args["doctype"] == ":auto" && (args["informat"] = :auto)
 
 if args["out_path"] == ":doc"
     args["out_path"] = :doc

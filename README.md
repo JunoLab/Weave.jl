@@ -1,27 +1,30 @@
 # Weave
 
-[![Build Status](https://travis-ci.org/JunoLab/Weave.jl.svg?branch=master)](https://travis-ci.org/JunoLab/Weave.jl)
+![CI](https://github.com/JunoLab/Weave.jl/workflows/CI/badge.svg)
+[![codecov](https://codecov.io/gh/JunoLab/Weave.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JunoLab/Weave.jl)
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](http://weavejl.mpastell.com/stable/)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](http://weavejl.mpastell.com/dev/)
 [![](http://joss.theoj.org/papers/10.21105/joss.00204/status.svg)](http://dx.doi.org/10.21105/joss.00204)
 
-Weave is a scientific report generator/literate programming tool
-for Julia. It resembles [Pweave](http://mpastell.com/pweave), Knitr, rmarkdown
-and Sweave.
+Weave is a scientific report generator/literate programming tool for the [Julia programming language](https://julialang.org/).
+It resembles
+[Pweave](http://mpastell.com/pweave),
+[knitr](https://yihui.org/knitr/),
+[R Markdown](https://rmarkdown.rstudio.com/),
+and [Sweave](https://stat.ethz.ch/R-manual/R-patched/library/utils/doc/Sweave.pdf).
 
-You can write your documentation and code in input document using Noweb,
-Markdown, Script syntax and use `weave` function to execute to document to capture results
-and figures.
+You can write your documentation and code in input document using Markdown, Noweb or ordinal Julia script syntax,
+and then use `weave` function to execute code and generate an output document while capturing results and figures.
 
 **Current features**
 
-* Publish markdown directly to html and pdf using Julia or Pandoc markdown.
-* Markdown, script of Noweb syntax for input documents.
-* Execute code as terminal or "script" chunks.
-* Capture Plots.jl or  Gadfly.jl figures
-* Supports LaTex, Pandoc, Github markdown, MultiMarkdown, Asciidoc and reStructuredText output
-* Simple caching of results
-* Convert to and from IJulia notebooks
+- Publish markdown directly to HTML and PDF using Julia or [Pandoc](https://pandoc.org/MANUAL.html)
+- Execute code as in terminal or in a unit of code chunk
+- Capture [Plots.jl](https://github.com/JuliaPlots/Plots.jl) or [Gadfly.jl](https://github.com/GiovineItalia/Gadfly.jl) figures
+- Supports various input format: Markdown, [Noweb](https://www.cs.tufts.edu/~nr/noweb/), [Jupyter Notebook](https://jupyter.org/), and ordinal Julia script
+- Conversions between those input formats
+- Supports various output document formats: HTML, PDF, GitHub markdown, Jupyter Notebook, MultiMarkdown, Asciidoc and reStructuredText
+- Simple caching of results
 
 **Citing Weave:** *Pastell, Matti. 2017. Weave.jl: Scientific Reports Using Julia. The Journal of Open Source Software. http://dx.doi.org/10.21105/joss.00204*
 
@@ -37,24 +40,28 @@ using Pkg
 Pkg.add("Weave")
 ```
 
+
 ## Usage
 
-Run from julia using Plots.jl for plots:
-
 ```julia
-#First add depencies for the example
-using Pkg; Pkg.add.(["Plots", "DSP"])
-#Use Weave
 using Weave
-weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"), out_path=:pwd)
+
+# add depencies for the example
+using Pkg; Pkg.add(["Plots", "DSP"])
+
+filename = normpath(Weave.EXAMPLE_FOLDER, "FIR_design.jmd")
+weave(filename, out_path = :pwd)
 ```
 
 If you have LaTeX installed you can also weave directly to pdf.
 
 ```julia
-weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"),
-    out_path=:pwd, doctype="md2pdf")
+filename = normpath(Weave.EXAMPLE_FOLDER, "FIR_design.jmd")
+weave(filename, out_path = :pwd, doctype = "md2pdf")
 ```
+
+NOTE: `Weave.EXAMPLE_FOLDER` just points to [`examples` directory](./examples).
+
 
 ## Documentation
 
@@ -62,6 +69,7 @@ Documenter.jl with MKDocs generated documentation:
 
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](http://weavejl.mpastell.com/stable/)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](http://weavejl.mpastell.com/dev/)
+
 
 ## Editor support
 
@@ -72,13 +80,18 @@ html and pdf output.
 The [Julia extension for Visual Studio Code](https://www.julia-vscode.org/)
 adds Weave support to [Visual Studio Code](https://code.visualstudio.com/).
 
+
 ## Contributing
 
-I will probably add new features to Weave when I need them myself or if they are requested and not too difficult to implement. You can contribute by opening issues on Github or implementing things yourself and making a pull request. I'd also appreciate example documents written using Weave to add to examples.
+You can contribute to this package by opening issues on GitHub or implementing things yourself and making a pull request.
+We'd also appreciate more example documents written using Weave.
+
 
 ## Contributors
 
-You can see the list of contributors on Github: https://github.com/mpastell/Weave.jl/graphs/contributors. Thanks for the important additions, fixes and comments.
+You can see the list of contributors on GitHub: https://github.com/JunoLab/Weave.jl/graphs/contributors .
+Thanks for the important additions, fixes and comments.
+
 
 ## Example projects using Weave
 

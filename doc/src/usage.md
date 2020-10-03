@@ -1,58 +1,65 @@
 # Using Weave
 
 You can write your documentation and code in input document using Markdown, Noweb or script
-syntax and use `weave` function to execute to document to capture results and figures.
+syntax and use [`weave`](@ref) function to execute to document to capture results and figures.
 
-## Weave
+## `weave`
 
 Weave document with markup and julia code using `Plots.jl` for plots,
 `out_path = :pwd` makes the results appear in the current working directory.
 
+> A prepared example: [`Weave.SAMPLE_JL_DOC`](../examples/FIR_design.jmd)
+
 ```julia
-#First add depencies for the example
+# First add depencies for the example
 using Pkg; Pkg.add.(["Plots", "DSP"])
 using Weave
-weave(joinpath(dirname(pathof(Weave)), "../examples", "FIR_design.jmd"), out_path=:pwd)
+weave(Weave.SAMPLE_JL_DOC; out_path=:pwd)
 ```
 
 ```@docs
-weave(source)
+weave
 ```
 
-## Tangle
+## `tangle`
 
 Tangling extracts the code from document:
 
 ```@docs
-tangle(source)
+tangle
 ```
 
-## Supported output formats
+## Supported Output Formats
 
-Weave sets the output format based on the file extension, but you can also set
-it using `doctype` option. The rules for detecting the format are:
+Weave automatically detects the output format based on the file extension.
+The auto output format detection is handled by `detect_doctype(path::AbstractString)`:
 
 ```julia
-ext == ".jl" && return "md2html"
-contains(ext, ".md") && return "md2html"
-contains(ext, ".rst") && return "rst"
-contains(ext, ".tex") && return "texminted"
-contains(ext, ".txt") && return "asciidoc"
-return "pandoc"
+function detect_doctype(path::AbstractString)
+    _, ext = lowercase.(splitext(path))
+
+    match(r"^\.(jl|.?md|ipynb)", ext) !== nothing && return "md2html"
+    ext == ".rst" && return "rst"
+    ext == ".tex" && return "texminted"
+    ext == ".txt"  && return "asciidoc"
+
+    return "pandoc"
+end
 ```
 
+You can also manually specify it using the `doctype` keyword option.
 You can get a list of supported output formats:
+
+```@docs
+list_out_formats
+```
 
 ```@example
 using Weave # hide
 list_out_formats()
 ```
 
-```@docs
-list_out_formats()
-```
-
-## Document syntax
+## [Document Syntax](@id document-syntax)
 
 Weave uses markdown, Noweb or script syntax for defining the code chunks and
 documentation chunks. You can also weave Jupyter notebooks. The format is detected based on the file extension, but you can also set it manually using the `informat` parameter.
@@ -66,137 +73,109 @@ ext == ".ipynb" && return "notebook"
 return "noweb"
 ```
 
-## Documentation chunks
 
-In Markdown and Noweb input formats documentation chunks are the parts that aren't inside code delimiters. Documentation chunks can be written with several different markup languages.
+### Documentation Chunks
 
-## Code chunks
+In markdown and Noweb input formats documentation chunks are the parts that aren't inside code delimiters. Documentation chunks can be written with several different markup languages.
 
-### Markdown format
 
-Markdown code chunks are defined using fenced code blocks with options following on the same line. e.g. to hide code from output you can use:
+### [Code Chunks](@id code-chunks)
 
+Code chunks are written in different ways in different formats.
+
+#### Markdown Format
+
+Weave code chunks are defined using fenced code blocks, same as with [common markdown](https://spec.commonmark.org/0.29/#fenced-code-blocks):
+```markdown
+ ```julia
+ code
+ ...
+ ```
 ```
- ```julia; echo=false
+
+Weave code chunks can optionally be followed by [chunk options](@ref) on the same line.
+E.g. the chunk below will hide code itself from generated output:
+```markdown
+ ```julia, echo = false
+ code
+ ...
+ ```
 ```
 
-[Sample document]( https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jmd)
+#### Noweb Format
 
-## Inline code
+Code chunks start with a line marked with `<<>>=` or `<<options>>=` and end with line marked with `@`.
+The code between the start and end markers is executed and the output is captured to the output document.
+
+### [Inline Code](@id inline-code)
 
 You can also add inline code to your documents using
-
 ```
 `j juliacode`
 ```
-
 or
-
 ```
 ! juliacode
 ```
+syntax.
 
-syntax. Using the `j code` syntax you can insert code anywhere in a line and with  
-the `!` syntax the whole line after `!` will be executed. The code will be replaced
-with captured output in the weaved document.
+The former syntax allows you to insert code _anywhere_ in a line
+while the `!` syntax treats the whole line as code,
+and the code will be replaced with captured output in the weaved document.
 
-If the code produces figures the filename or base64 encoded string will be
-added to output e.g. to include a Plots figure in markdown you can use:
-
+If the code produces figures, the filename or base64 encoded string will be added to output,
+e.g. to include a Plots figure in markdown you can use:
 ```
 ![A plot](`j plot(1:10)`)
 ```
-
-or to produce any html output:
-
+or to produce any HTML output:
 ```
 ! display("text/html", "Header from julia");
 ```
 
+### Script Format
 
-### Noweb format
+Weave also supports script input format with a markup in comments.
+These scripts can be executed normally using Julia or published with Weave.
 
-Code chunks start with a line marked with `<<>>=` or `<<options>>=` and end with line marked with `@`. The code between the start and end markers is executed and the output is captured to the output document. See [chunk options](../chunk_options/).
+Lines starting with `#'`, `#%%` or `# %%` are treated as document.
 
+All non-document lines are treated as code.
+You can set chunk options using lines starting with `#+` just before code e.g:
+```julia
+#+ term=true
+hoge # some code comes here
+```
 
-### Script format
-
-Weave also support script input format with a markup in comments.
-These scripts can be executed normally using Julia or published with
-Weave.  Documentation is in lines starting with
-`#'`, `#%%` or `# %%`, and code is executed and results are included
-in the weaved document.
-
-All lines that are not documentation are treated as code. You can set chunk options
-using lines starting with `#+` just before code e.g. `#+ term=true`.
-
-The format is identical to [Pweave](http://mpastell.com/pweave/pypublish.html)
-and the concept is similar to publishing documents with MATLAB or
-using Knitr's [spin](http://yihui.name/knitr/demo/stitch/).
+The format is identical to [Pweave](http://mpastell.com/pweave/pypublish.html) and the concept is similar to publishing documents with MATLAB or using Knitr's [spin](http://yihui.name/knitr/demo/stitch/).
 Weave will remove the first empty space from each line of documentation.
 
+!!! tip
+    - Here are sample documents:
+      + [markdown format](https://github.com/JunoLab/Weave.jl/blob/master/examples/FIR_design.jmd)
+      + [script format](https://github.com/JunoLab/Weave.jl/blob/master/examples/FIR_design.jl)
+    - [Details about chunk options](@ref chunk-options)
 
-[See sample document:](https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jl)
 
-## Setting document options in header
+## Configuration via YAML Header
 
-You can use a YAML header in the beginning of the input document delimited with "---" to set the document title, author and date e.g. and default document options. Each of Weave command line arguments and chunk options can be set in header using `options` field. Below is an example that sets document `out_path` and `doctype` using the header.
+When `weave`ing markdown files, you can use YAML header to provide additional metadata and configuration options.
+See [Header Configuration](@ref) section for more details.
 
 
-```yaml
----
-title : Weave example
-author : Matti Pastell
-date: 15th December 2016
-options:
-  out_path : reports/example.md
-  doctype :  github
----
-```
+## Passing Runtime Arguments to Documents
 
-You can also set format specific options. Here is how to set different `out_path` for `md2html` and `md2pdf` and set `fig_ext` for both:
+You can pass arbitrary object to the weaved document using [`weave`](@ref)'s optional argument `args`.
+It will be available as `WEAVE_ARGS` variable in the `weave`d document.
 
-```
----
-options:
-    md2html:
-        out_path : html
-    md2pdf:
-        out_path : pdf
-    fig_ext : .png
----
-```
+This makes it possible to create the same report easily for e.g. different date ranges of input data from a database or from files with similar format giving the filename as input.
 
-## Passing arguments to documents
+E.g. if you call `weave("weavefile.jmd", args = (datalocation = "somedata.h5",))`, and then you can retrieve the `datalocation` in `weavefile.jmd` as follows: `WEAVE_ARGS.datalocation`
 
-You can pass arguments as dictionary to the weaved document using the `args` argument
-to `weave`. The dictionary will be available as `WEAVE_ARGS` variable in the document.
 
-This makes it possible to create the same report easily for e.g. different
-date ranges of input data from a database or from files with similar format giving the
-filename as input.
+## `include_weave`
 
-In order to pass a filename to a document you need call `weave` using:
-
-```julia
-weave("mydoc.jmd", args = Dict("filename" => "somedata.h5"))
-```
-
-and you can access the filename from document as follows:
-
-```
- ```julia
- print(WEAVE_ARGS["filename"])
- ```
-```
-
-You can use the `out_path` argument to control the name of the
-output document.
-
-## Include Weave document in Julia
-
-You can call `include_weave` on a Weave document to run the contents
-of all code chunks in Julia.
+You can call `include_weave` on a Weave document and run all code chunks within in the current session.
 
 ```@docs
 include_weave
