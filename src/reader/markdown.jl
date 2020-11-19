@@ -4,7 +4,7 @@ function parse_markdown(document_body; is_pandoc = false)
     code_start, code_end, code_script = if is_pandoc
         r"^<<(?<options>.*?)>>=\s*$",
         r"^@\s*$",
-        nothing #TODO
+        r"a^" # match nothing TODO
     else
         r"^[`~]{3}(\{?)julia\s*([;,]?)\s*(?<options>.*?)(\}|\s*)$",
         r"^[`~]{3}\s*$",
