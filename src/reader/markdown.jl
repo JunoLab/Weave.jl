@@ -1,14 +1,16 @@
 function parse_markdown(document_body; is_pandoc = false)
     header_text, document_body, offset = separate_header_text(document_body)
     header = parse_header(header_text)
-    code_start, code_end = if is_pandoc
+    code_start, code_end, code_script = if is_pandoc
         r"^<<(?<options>.*?)>>=\s*$",
-        r"^@\s*$"
+        r"^@\s*$",
+        nothing #TODO
     else
         r"^[`~]{3}(\{?)julia\s*([;,]?)\s*(?<options>.*?)(\}|\s*)$",
-        r"^[`~]{3}\s*$"
+        r"^[`~]{3}\s*$",
+        r"^[`~]{1}(?<options>js\s.*?)[`~]{1}"
     end
-    return header, parse_markdown_body(document_body, code_start, code_end, offset)
+    return header, parse_markdown_body(document_body, code_start, code_end, code_script, offset)
 end
 
 # headers
@@ -46,7 +48,7 @@ end
 # body
 # ----
 
-function parse_markdown_body(document_body, code_start, code_end, offset)
+function parse_markdown_body(document_body, code_start, code_end, code_script, offset)
     lines = split(document_body, '\n')
 
     state = :doc
@@ -61,6 +63,7 @@ function parse_markdown_body(document_body, code_start, code_end, offset)
     chunks = WeaveChunk[]
     for (line_no, line) in enumerate(lines)
         m = match(code_start, line)
+        sm = match(code_script, line)
         if !isnothing(m) && state === :doc
             state = :code
 
@@ -70,6 +73,26 @@ function parse_markdown_body(document_body, code_start, code_end, offset)
             haskey(options, :name) || (options[:name] = nothing)
 
             isempty(strip(content)) || push!(chunks, DocChunk(content, doc_no += 1, start_line))
+
+            start_line = line_no + offset
+            content = ""
+            continue
+        end
+
+        if !isnothing(sm) && state === :doc
+            option_string = isnothing(sm[:options]) ? "" : strip(sm[:options])
+            options = parse_options(option_string)
+            haskey(options, :label) && (options[:name] = options[:label])
+            haskey(options, :name) || (options[:name] = nothing)
+
+            isempty(strip(content)) || push!(chunks, DocChunk(content, doc_no += 1, start_line))
+
+            script_path = abspath(options[:js].first)
+            script_lines = split(read(script_path, String), "\n")
+            indices = options[:js].second
+
+            content = join(script_lines[indices], "\n")
+            push!(chunks, CodeChunk(content, code_no += 1, start_line, option_string, options))
 
             start_line = line_no + offset
             content = ""
