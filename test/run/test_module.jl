@@ -46,4 +46,14 @@ Core.eval(m, :(const a = $ary))
 Weave.clear_module!(m)
 @test_broken Base.summarysize(m) < size
 
+julia_markdown_body = """
+this is just to test the `out_path` option
+"""
+
+f_in = tempname()
+f_out = tempname() * ".md"
+write(f_in, julia_markdown_body)
+f = weave(f_in; out_path=f_out)
+@test isfile(f_out)
+
 end # @testset "clear_module!"
