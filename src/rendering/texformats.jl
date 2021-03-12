@@ -152,11 +152,11 @@ end
 Base.@kwdef mutable struct LaTeXMinted <: LaTeXFormat
     description = "LaTeX using minted package for code highlighting"
     extension = "tex"
-    codestart = "\\begin{minted}[escapeinside=||, mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}"
+    codestart = "\\begin{minted}[texcomments = true, mathescape, fontsize=\\small, xleftmargin=0.5em]{julia}"
     codeend = "\\end{minted}"
-    termstart = "\\begin{minted}[escapeinside=||, mathescape, fontsize=\\footnotesize, xleftmargin=0.5em]{jlcon}"
+    termstart = "\\begin{minted}[texcomments = true, mathescape, fontsize=\\footnotesize, xleftmargin=0.5em]{jlcon}"
     termend = "\\end{minted}"
-    outputstart = "\\begin{minted}[escapeinside=||, mathescape, fontsize=\\small, xleftmargin=0.5em, frame = leftline]{text}"
+    outputstart = "\\begin{minted}[texcomments = true, mathescape, fontsize=\\small, xleftmargin=0.5em, frame = leftline]{text}"
     outputend = "\\end{minted}"
     mimetypes = ["application/pdf", "image/png", "text/latex", "text/plain"]
     fig_ext = ".pdf"
