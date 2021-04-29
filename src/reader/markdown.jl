@@ -5,7 +5,7 @@ function parse_markdown(document_body; is_pandoc = false)
         r"^<<(?<options>.*?)>>=\s*$",
         r"^@\s*$"
     else
-        r"^[`~]{3}(\{?)julia\s*([;,]?)\s*(?<options>.*?)(\}|\s*)$",
+        r"^[`~]{3}(\{?)julia\s*([;,\{]?)\s*(?<options>.*?)(\}|\s*)$",
         r"^[`~]{3}\s*$"
     end
     return header, parse_markdown_body(document_body, code_start, code_end, offset)

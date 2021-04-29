@@ -72,6 +72,10 @@ let opts = get_options("```julia, opt1 = 1, opt2 = \"2\"\n```")
     @test (:opt1 => 1) in opts
     @test (:opt2 => "2") in opts
 end
+let opts = get_options("```julia{opt1 = 1, opt2 = \"2\"}\n```")
+    @test (:opt1 => 1) in opts
+    @test (:opt2 => "2") in opts
+end
 
 end
 
