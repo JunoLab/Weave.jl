@@ -6,7 +6,7 @@
 doc = mock_run("""
 ```julia
 using DataFrames
-DataFrame(rand(10,3))
+DataFrame(a=rand(10))
 ```
 """; doctype = "md2html")
 @test isdefined(doc.chunks[1], :rich_output)
@@ -17,7 +17,7 @@ n = 100000
 doc = mock_run("""
 ```julia
 using DataFrames
-DataFrame(rand($n,3))
+DataFrame(a=rand($n))
 ```
 """; doctype = "md2html")
 @test isdefined(doc.chunks[1], :rich_output)
