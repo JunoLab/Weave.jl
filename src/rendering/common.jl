@@ -153,6 +153,15 @@ get_highlight_stylesheet(mime, highlight_theme::Type{<:Highlights.AbstractTheme}
 
 get_highlight_theme(::Nothing) = Highlights.Themes.DefaultTheme
 get_highlight_theme(highlight_theme::Type{<:Highlights.AbstractTheme}) = highlight_theme
+function get_highlight_theme(s)
+    themes = list_highlight_themes()
+    s = string(s)
+    i = findfirst(themes) do theme
+        occursin(Regex(s, "i"), string(theme))
+    end
+    isnothing(i) && error("no highlight theme found for $s")
+    return themes[i]
+end
 
 highlight_code(mime, code, highlight_theme) =
     highlight(mime, strip(code), Highlights.Lexers.JuliaLexer, highlight_theme)
