@@ -5,9 +5,11 @@ using ..Weave: isnothing, take2string!
 using Markdown
 import Markdown: @trigger, @breaking, Code, MD, withstream, startswith, LaTeX
 
-# Note that this definition causes a "Method overwritten" warning,
-# but defining this function in __init__() is not legal in julia v1.5
-function Markdown.latex(io::IO, tex::Markdown.LaTeX)
+# HACK: that this definition is type-piracy. It is required since `Markdown`
+# does not have a built in system for contextual rendering by users. `io` here
+# should always be either `IOBuffer` or `IOContext` since it is reached via
+# `sprint` in all user-facing code paths in `Markdown`.
+function Markdown.latex(io::Union{IOBuffer,IOContext}, tex::Markdown.LaTeX)
     math_envs = ["align", "equation", "eqnarray"]
     use_dollars =
         !any([occursin("\\begin{$me", tex.formula) for me in math_envs])
