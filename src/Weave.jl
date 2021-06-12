@@ -2,13 +2,15 @@ module Weave
 
 using Highlights, Mustache, Requires, Pkg, REPL
 
+include("RelocatableFolders.jl")
+using .RelocatableFolders
 
 # directories
 const PKG_DIR = normpath(@__DIR__, "..")
-const TEMPLATE_DIR = normpath(PKG_DIR, "templates")
-const STYLESHEET_DIR = normpath(PKG_DIR, "stylesheets")
+const TEMPLATE_DIR = folder"../templates"
+const STYLESHEET_DIR = folder"../stylesheets"
 # keeps paths of sample documents for easy try
-const EXAMPLE_FOLDER = normpath(PKG_DIR, "examples")
+const EXAMPLE_FOLDER = folder"../examples"
 
 # constant names
 const WEAVE_OPTION_NAME = "weave_options"
