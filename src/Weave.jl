@@ -25,6 +25,7 @@ weave_info() = WEAVE_VERSION, string(Date(now()))
 function __init__()
     @require Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80" include("integrations/Plots.jl")
     @require Gadfly = "c91e804a-d5a3-530f-b6f0-dfbca275c004" include("integrations/Gadfly.jl")
+    @require PGFPlotsX = "8314cec4-20b6-5062-9cdb-752b83310925" include("integrations/PGFPlotsX.jl")
 end
 
 # utilitity functions
