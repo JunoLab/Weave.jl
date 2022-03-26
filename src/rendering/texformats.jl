@@ -173,6 +173,15 @@ Base.@kwdef mutable struct LaTeXMinted <: LaTeXFormat
     escape_closer = reverse(escape_starter)
 end
 register_format!("texminted", LaTeXMinted())
+    
+render_chunk(docformat::LaTeXMinted, chunk::DocChunk) = join((render_inline(c) for c in chunk.content))
+
+function render_doc(docformat::LaTeXMinted, body, doc)
+    return Mustache.render(
+        mt"{{{ :body }}}";
+        body = body
+    )
+end
 
 # Tex (directly to PDF)
 # ---------------------
