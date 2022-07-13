@@ -91,7 +91,7 @@ function run_doc(
         cd_back()
         popdisplay(report) # ensure display pops out even if internal error occurs
         # Temporary fig_path is not automatically removed because it contains files so...
-        startswith(fig_path, "jl_") && rm(normpath(cwd, fig_path), force=true, recursive=true)
+        !isnothing(fig_path) && startswith(fig_path, "jl_") && rm(normpath(cwd, fig_path), force=true, recursive=true)
     end
 
     return doc
