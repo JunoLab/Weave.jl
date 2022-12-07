@@ -1,6 +1,6 @@
 module Weave
 
-using Highlights, Mustache, Requires, Pkg, REPL, RelocatableFolders
+using Highlights, Mustache, Requires, Pkg, REPL, RelocatableFolders, Base64
 
 # directories
 const PKG_DIR = normpath(@__DIR__, "..")
@@ -243,12 +243,12 @@ function specific_options!(weave_options, doctype)
 end
 
 get_out_path(doc, out_path, ext::Nothing = nothing) = get_out_path(doc, out_path, doc.format.extension)
-function get_out_path(doc, out_path, ext) 
+function get_out_path(doc, out_path, ext)
     if (out_path === :doc) || (out_path === :pwd)
         abspath(get_cwd(doc, out_path), string(doc.basename, '.', ext))
     elseif isempty(splitext(out_path)[2]) # directory given
         abspath(get_cwd(doc, out_path), string(doc.basename, '.', ext))
-    else 
+    else
         # out_path is given, but if extension is explitly provided override this will override the extension
         abspath(string(splitext(out_path)[1], '.', ext))
     end

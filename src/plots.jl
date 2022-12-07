@@ -1,6 +1,6 @@
 module WeavePlots
 
-using Base64, ..Plots, ..Weave
+using ..Base64, ..Plots, ..Weave
 
 
 # Pre-execute hooks to set the plot size for the chunk
