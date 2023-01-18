@@ -97,3 +97,7 @@ Thanks for the important additions, fixes and comments.
 
 - [DiffEqTutorials.jl](https://github.com/JuliaDiffEq/DiffEqTutorials.jl) uses Weave to output tutorials (`.jmd` documents) to html, pdf and Jupyter notebooks.
 - [TuringTutorials](https://github.com/TuringLang/TuringTutorials) uses Weave to convert notebooks to html.
+
+## Related packages
+
+- [Literate.jl](https://github.com/fredrikekre/Literate.jl) can be used to generate Markdown and Jupyter notebooks directly from Julia source files with markdown in comments.
