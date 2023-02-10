@@ -130,7 +130,7 @@ e.g. to include a Plots figure in markdown you can use:
 ```
 or to produce any HTML output:
 ```
-! display("text/html", "Header from julia");
+! display("text/html", HTML("Header from julia"));
 ```
 
 ### Script Format
