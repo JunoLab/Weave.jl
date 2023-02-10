@@ -61,7 +61,7 @@ function write_doc(docformat::Pandoc2PDF, doc, rendered, out_path)
         cmd = `pandoc -f markdown+raw_tex -s  --pdf-engine=xelatex --highlight-style=tango
          $filt $citeproc $(docformat.pandoc_options)
          --include-in-header=$(docformat.header_template)
-         -V fontsize=12pt -o $(out)`
+         -o $(out)`
         proc = open(cmd, "r+")
         println(proc.in, rendered)
         close(proc.in)
