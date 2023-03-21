@@ -36,31 +36,31 @@ and then use `weave` function to execute code and generate an output document wh
 You can install the latest release using Julia package manager:
 
 ```julia
-using Pkg
-Pkg.add("Weave")
+julia> using Pkg
+julia> Pkg.add("Weave")
 ```
 
 
 ## Usage
 
 ```julia
-using Weave
+julia> using Weave
 
-# add depencies for the example
-using Pkg; Pkg.add(["Plots", "DSP"])
+# add dependencies for the example
+julia> using Pkg; Pkg.add(["Plots", "DSP"])
 
-filename = normpath(Weave.EXAMPLE_FOLDER, "FIR_design.jmd")
-weave(filename, out_path = :pwd)
+julia> filename = normpath(Weave.EXAMPLE_FOLDER, "FIR_design.jmd")
+julia> weave(filename, out_path = :pwd)
 ```
 
 If you have LaTeX installed you can also weave directly to pdf.
 
 ```julia
-filename = normpath(Weave.EXAMPLE_FOLDER, "FIR_design.jmd")
-weave(filename, out_path = :pwd, doctype = "md2pdf")
+julia> filename = normpath(Weave.EXAMPLE_FOLDER, "FIR_design.jmd")
+julia> weave(filename, out_path = :pwd, doctype = "md2pdf")
 ```
 
-NOTE: `Weave.EXAMPLE_FOLDER` just points to [`examples` directory](./examples).
+NOTE: `Weave.EXAMPLE_FOLDER` just points to [`examples`](./examples) directory.
 
 
 ## Documentation
@@ -89,7 +89,7 @@ We'd also appreciate more example documents written using Weave.
 
 ## Contributors
 
-You can see the list of contributors on GitHub: https://github.com/JunoLab/Weave.jl/graphs/contributors .
+You can see the list of contributors on GitHub: https://github.com/JunoLab/Weave.jl/graphs/contributors.
 Thanks for the important additions, fixes and comments.
 
 
