@@ -189,8 +189,9 @@ function run_code(doc::WeaveDoc, chunk::CodeChunk, report::Report, mod::Module)
     code = chunk.content
     path = doc.path
     error = chunk.options[:error]
+    softscope = chunk.options[:softscope]
     codes = chunk.options[:term] ? split_code(code) : [code]
-    capture = code -> capture_output(code, mod, path, error, report)
+    capture = code -> capture_output(code, mod, path, error, report, softscope)
     return capture.(codes)
 end
 
@@ -207,7 +208,7 @@ function split_code(code)
     return res
 end
 
-function capture_output(code, mod, path, error, report)
+function capture_output(code, mod, path, error, report, softscope=false)
     reset_report!(report)
 
     old = stdout
@@ -217,7 +218,7 @@ function capture_output(code, mod, path, error, report)
     local out = nothing
     task_local_storage(:SOURCE_PATH, path) do
         try
-            obj = include_string(mod, code, path) # TODO: fix line number
+            obj = softscope ? softscope_include_string(mod, code, path) : include_string(mod, code, path) # TODO: fix line number
             !isnothing(obj) && !REPL.ends_with_semicolon(code) && display(obj)
         catch _err
             err = unwrap_load_err(_err)
