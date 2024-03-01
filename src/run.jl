@@ -255,7 +255,6 @@ function eval_chunk(doc::WeaveDoc, chunk::CodeChunk, report::Report, mod::Module
 
     execute_prehooks!(chunk)
 
-    report.fignum = 1
     report.cur_chunk = chunk
 
     if hasproperty(report.format, :out_width) && isnothing(chunk.options[:out_width])
@@ -325,7 +324,7 @@ end
 
 function get_figname(report::Report, chunk; fignum = nothing, ext = nothing)
     isnothing(ext) && (ext = chunk.options[:fig_ext])
-    isnothing(fignum) && (fignum = report.fignum)
+    isnothing(fignum) && (fignum = get(report.chunk_fignums, chunk.number, 1))
 
     chunkid = isnothing(chunk.options[:label]) ? chunk.number : chunk.options[:label]
     basename = string(report.basename, '_', chunkid, '_', fignum, ext)
