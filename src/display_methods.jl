@@ -6,7 +6,7 @@ mutable struct Report <: AbstractDisplay
     basename::String
     format::WeaveFormat
     rich_output::String
-    fignum::Int
+    chunk_fignums::Dict{Int,Int}
     figures::Vector{String}
     cur_chunk::Union{Nothing,CodeChunk}
     mimetypes::Vector{String}
@@ -15,7 +15,7 @@ mutable struct Report <: AbstractDisplay
 end
 
 Report(cwd, basename, format, mimetypes) =
-    Report(cwd, basename, format, "", 1, String[], nothing, mimetypes, true, "")
+    Report(cwd, basename, format, "", Dict(0 => 1), String[], nothing, mimetypes, true, "")
 
 # Default mimetypes in order, can be overridden for some inside `run method` formats
 const default_mime_types = ["image/svg+xml", "image/png", "text/html", "text/plain"]
@@ -127,7 +127,11 @@ function add_figure(report::Report, data, m, ext)
         end
     end
 
-    push!(report.figures, rel_name)
-    report.fignum += 1
+    register_chunk_fig!(report, chunk, rel_name)
     return full_name
+end
+
+function register_chunk_fig!(report::Report, chunk::CodeChunk, rel_name::AbstractString)
+    push!(report.figures, rel_name)
+    report.chunk_fignums[chunk.number] = get(report.chunk_fignums, chunk.number, 0) + 1
 end
