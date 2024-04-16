@@ -101,3 +101,4 @@ Thanks for the important additions, fixes and comments.
 ## Related packages
 
 - [Literate.jl](https://github.com/fredrikekre/Literate.jl) can be used to generate Markdown and Jupyter notebooks directly from Julia source files with markdown in comments.
+- [Quarto](https://quarto.org) can generate Jupyter notebooks, HTML, or PDF directly from a Markdown format containing Julia code blocks, and also works with R and Python.
