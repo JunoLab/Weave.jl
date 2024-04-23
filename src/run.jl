@@ -262,7 +262,11 @@ function eval_chunk(doc::WeaveDoc, chunk::CodeChunk, report::Report, mod::Module
         chunk.options[:out_width] = report.format.out_width
     end
 
-    chunk.result = run_code(doc, chunk, report, mod)
+    # Get the default `displaysize`.
+    lines, cols = chunk.options[:displaysize]
+    chunk.result = withenv("LINES" => lines, "COLUMNS" => cols) do
+        run_code(doc, chunk, report, mod)
+    end
 
     execute_posthooks!(chunk)
 
