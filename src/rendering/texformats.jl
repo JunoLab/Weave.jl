@@ -96,7 +96,7 @@ function render_figures(docformat::LaTeXFormat, chunk)
     end
 
     for fig in fignames
-        if splitext(fig)[2] == ".tex" # Tikz figures
+        if splitext(fig)[2] in [".tex", ".tikz"] # Tikz figures
             figstring *= "\\resizebox{$width}{!}{\\input{$fig}}\n"
         else
             if isempty(attribs)
