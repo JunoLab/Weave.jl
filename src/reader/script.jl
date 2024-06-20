@@ -1,4 +1,30 @@
 function parse_script(document_body)
+    header_text, document_body, offset = separate_header_text_jl(document_body)
+    header_text = replace(header_text, r"\n(#')|(#%%)|(# %%)" => "\n")
+    return parse_header(header_text), parse_script_body(document_body)
+end
+
+# headers
+# -------
+
+const HEADER_REGEX_JL = r"^(?:#'|#%%|# %%)\s*---$(?<header>((?!---).)+)^(?:#'|#%%|# %%)\s*---$"ms
+
+function separate_header_text_jl(text)
+    m = match(HEADER_REGEX_JL, text)
+    isnothing(m) && return "", text, 0
+    header_text = m[:header]
+    offset = @static if VERSION ≥ v"1.4"
+        count("\n", header_text)
+    else
+        count(c->c==='\n', header_text)
+    end
+    return header_text, replace(text, HEADER_REGEX_JL => ""; count = 1), offset
+end
+
+# body
+# ----
+
+function parse_script_body(document_body)
     lines = split(document_body, '\n')
 
     doc_line = r"(^#'.*)|(^#%%.*)|(^# %%.*)"
@@ -63,5 +89,5 @@ function parse_script(document_body)
         DocChunk(content, doc_no, start_line)
     push!(chunks, chunk)
 
-    return Dict(), chunks
+    return chunks
 end
