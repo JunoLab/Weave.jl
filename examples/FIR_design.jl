@@ -36,7 +36,7 @@ using Gadfly, DSP
 
 function FIRfreqz(b::Array, w = range(0, stop=π, length=1024))
     n = length(w)
-    h = Array{ComplexF32}(n)
+    h = Array{ComplexF32}(undef, n)
     sw = 0
     for i = 1:n
       for j = 1:length(b)
@@ -68,7 +68,7 @@ h = FIRfreqz(f, w)
 #' The next code chunk is executed in term mode, see the [script](FIR_design.jl) for syntax.
 #+ term=true
 
-h_db = log10(abs.(h));
+h_db = log10.(abs.(h));
 ws = w/pi*(fs/2)
 
 #+
@@ -78,6 +78,6 @@ plot(y = h_db, x = ws, Geom.line,
 
 #' And again with default options
 
-h_phase = unwrap(-atan(imag(h),real(h)))
+h_phase = unwrap(-atan.(imag(h),real(h)))
 plot(y = h_phase, x = ws, Geom.line,
     Guide.xlabel("Frequency (Hz)"), Guide.ylabel("Phase (radians)"))
