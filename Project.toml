@@ -19,7 +19,7 @@ YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 
 [compat]
 Highlights = "0.3.1, 0.4, 0.5"
-JSON = "0.21"
+JSON = "0.21, 1.4"
 Mustache = "0.4.1, 0.5, 1"
 Plots = "0.28, 0.29, 1.0"
 RelocatableFolders = "0.1,0.2,0.3,1"
