@@ -1,6 +1,6 @@
 module Weave
 
-using Highlights, Mustache, Requires, Pkg, REPL, RelocatableFolders, Base64
+using Highlights, Mustache, Requires, Pkg, REPL, RelocatableFolders, Base64, SoftGlobalScope
 
 # directories
 const PKG_DIR = normpath(@__DIR__, "..")
