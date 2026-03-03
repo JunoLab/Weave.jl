@@ -73,8 +73,7 @@ function add_plots_figure(report::Weave.Report, plot::Plots.Plot, ext)
     full_name, rel_name = Weave.get_figname(report, chunk, ext = ext)
 
     Plots.savefig(plot, full_name)
-    push!(report.figures, rel_name)
-    report.fignum += 1
+    Weave.register_chunk_fig!(report, chunk, rel_name)
     return full_name
 end
 
