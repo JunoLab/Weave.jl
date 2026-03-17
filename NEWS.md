@@ -1,5 +1,10 @@
 ## Release notes for Weave.jl
 
+### Unreleased
+
+improvements:
+- allow JSON.jl v1
+
 ### v0.10.6 – 2020/10/03
 
 improvements:
