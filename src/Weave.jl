@@ -72,7 +72,7 @@ function tangle(
     informat::Union{Nothing,AbstractString} = nothing,
 )
     doc = WeaveDoc(source, informat)
-    doc.cwd = get_cwd(doc, out_path)
+    doc.out_dir = get_out_dir(doc, out_path)
 
     out_path = get_out_path(doc, out_path, "jl")
 
@@ -101,6 +101,11 @@ Weave an input document to output file.
   * `:doc`: Path of the source document (default)
   * `:pwd`: Julia working directory
   * `"somepath"`: `String` of output directory e.g. `"~/outdir"`, or of filename e.g. `"~/outdir/outfile.tex"`
+- `run_path::Union{Nothing,Symbol,AbstractString} = nothing`: Directory where code is executed. By default (i.e. given `nothing`), code runs in the output directory (same as `out_path`). Can be either of:
+  * `nothing`: Use output directory (default, preserves previous behavior)
+  * `:doc`: Path of the source document
+  * `:pwd`: Julia working directory
+  * `"somepath"`: `String` of directory e.g. `"~/myproject"`
 - `args::Any = Dict()`: A runtime object that is available as `WEAVE_ARGS` while `weave`ing
 - `mod::Union{Module,Nothing} = nothing`: Module where Weave `eval`s code. You can pass a `Module` object, otherwise create an new sandbox module.
 - `fig_path::Union{Nothing,AbstractString} = nothing`: Where figures will be generated, relative to `out_path`. By default (i.e. given `nothing`), Weave will automatically create `$(DEFAULT_FIG_PATH)` directory.
@@ -126,6 +131,7 @@ function weave(
     doctype::Union{Nothing,AbstractString} = nothing,
     informat::Union{Nothing,AbstractString} = nothing,
     out_path::Union{Symbol,AbstractString} = :doc,
+    run_path::Union{Nothing,Symbol,AbstractString} = nothing,
     args::Any = Dict(),
     mod::Union{Module,Nothing} = nothing,
     fig_path::Union{Nothing,AbstractString} = nothing,
@@ -165,6 +171,16 @@ function weave(
                 end
             end
         end
+        if haskey(weave_options, "run_path")
+            run_path = let
+                run_path = weave_options["run_path"]
+                if run_path == ":doc" || run_path == ":pwd"
+                    Symbol(run_path)
+                else
+                    normpath(dirname(source), run_path) # resolve relative to this document
+                end
+            end
+        end
         mod = get(weave_options, "mod", mod)
         mod isa AbstractString && (mod = Main.eval(Meta.parse(mod)))
         fig_path = get(weave_options, "fig_path", fig_path)
@@ -178,6 +194,7 @@ function weave(
         doctype = doctype,
         mod = mod,
         out_path = out_path,
+        run_path = run_path,
         args = args,
         fig_path = fig_path,
         fig_ext = fig_ext,
@@ -245,9 +262,9 @@ end
 get_out_path(doc, out_path, ext::Nothing = nothing) = get_out_path(doc, out_path, doc.format.extension)
 function get_out_path(doc, out_path, ext)
     if (out_path === :doc) || (out_path === :pwd)
-        abspath(get_cwd(doc, out_path), string(doc.basename, '.', ext))
+        abspath(get_out_dir(doc, out_path), string(doc.basename, '.', ext))
     elseif isempty(splitext(out_path)[2]) # directory given
-        abspath(get_cwd(doc, out_path), string(doc.basename, '.', ext))
+        abspath(get_out_dir(doc, out_path), string(doc.basename, '.', ext))
     else
         # out_path is given, but if extension is explitly provided override this will override the extension
         abspath(string(splitext(out_path)[1], '.', ext))
@@ -287,7 +304,7 @@ function notebook(
 )
     doc = WeaveDoc(source)
     converted = convert_to_notebook(doc)
-    doc.cwd = get_cwd(doc, out_path)
+    doc.out_dir = get_out_dir(doc, out_path)
     out_path = get_out_path(doc, out_path, "ipynb")
 
     write(out_path, converted)

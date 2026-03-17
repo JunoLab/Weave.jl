@@ -1,6 +1,6 @@
 function write_doc(docformat::LaTeX2PDF, doc, rendered, out_path)
     cd_back = let d = pwd(); () -> cd(d); end
-    cd(doc.cwd)
+    cd(doc.out_dir)
     try
         tex_path = basename(out_path)
         write(tex_path, rendered)

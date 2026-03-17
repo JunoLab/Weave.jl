@@ -1,7 +1,7 @@
 # Serialization is imported only if cache is used
 
 function write_cache(doc::WeaveDoc, cache_path)
-    cache_dir = joinpath(doc.cwd, cache_path)
+    cache_dir = joinpath(doc.out_dir, cache_path)
     isdir(cache_dir) || mkpath(cache_dir)
     open(joinpath(cache_dir, doc.basename * ".cache"), "w") do io
         Serialization.serialize(io, doc)
@@ -10,7 +10,7 @@ function write_cache(doc::WeaveDoc, cache_path)
 end
 
 function read_cache(doc::WeaveDoc, cache_path)
-    name = joinpath(doc.cwd, cache_path, doc.basename * ".cache")
+    name = joinpath(doc.out_dir, cache_path, doc.basename * ".cache")
     isfile(name) || return nothing
     open(name, "r") do io
         doc = Serialization.deserialize(io)

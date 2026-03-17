@@ -7,6 +7,7 @@ function run_doc(
     doc::WeaveDoc;
     doctype::Union{Nothing,AbstractString} = nothing,
     out_path::Union{Symbol,AbstractString} = :doc,
+    run_path::Union{Nothing,Symbol,AbstractString} = nothing,
     args::Any = Dict(),
     mod::Union{Module,Nothing} = nothing,
     fig_path::Union{Nothing,AbstractString} = nothing,
@@ -19,18 +20,19 @@ function run_doc(
     doc.doctype = isnothing(doctype) ? (doctype = detect_doctype(doc.source)) : doctype
     doc.format = deepcopy(get_format(doctype))
 
-    cwd = doc.cwd = get_cwd(doc, out_path)
-    mkpath(cwd)
+    out_dir = doc.out_dir = get_out_dir(doc, out_path)
+    run_dir = doc.run_path = get_run_dir(doc, run_path, out_path)
+    mkpath(out_dir)
 
     # TODO: provide a way not to create `fig_path` ?
     if isnothing(fig_path)
         fig_path = if (endswith(doctype, "2pdf") && cache === :off) || endswith(doctype, "2html")
-            basename(mktempdir(abspath(cwd)))
+            basename(mktempdir(abspath(out_dir)))
         else
             DEFAULT_FIG_PATH
         end
     end
-    mkpath(normpath(cwd, fig_path))
+    mkpath(normpath(out_dir, fig_path))
     # This is needed for latex and should work on all output formats
     @static Sys.iswindows() && (fig_path = replace(fig_path, "\\" => "/"))
     set_rc_params(doc, fig_path, fig_ext)
@@ -43,9 +45,9 @@ function run_doc(
 
     mimetypes = doc.format.mimetypes
 
-    report = Report(cwd, doc.basename, doc.format, mimetypes)
+    report = Report(out_dir, doc.basename, doc.format, mimetypes)
     cd_back = let d = pwd(); () -> cd(d); end
-    cd(cwd)
+    cd(run_dir)
     pushdisplay(report)
     try
         if cache !== :off && cache !== :refresh
@@ -91,7 +93,7 @@ function run_doc(
         cd_back()
         popdisplay(report) # ensure display pops out even if internal error occurs
         # Temporary fig_path is not automatically removed because it contains files so...
-        !isnothing(fig_path) && startswith(fig_path, "jl_") && rm(normpath(cwd, fig_path), force=true, recursive=true)
+        !isnothing(fig_path) && startswith(fig_path, "jl_") && rm(normpath(out_dir, fig_path), force=true, recursive=true)
     end
 
     return doc
@@ -116,7 +118,7 @@ function detect_doctype(path)
     return "pandoc"
 end
 
-function get_cwd(doc, out_path)
+function get_out_dir(doc, out_path)
     return if out_path === :doc
         dirname(doc.path)
     elseif out_path === :pwd
@@ -129,6 +131,17 @@ function get_cwd(doc, out_path)
             dirname(path)
         end
     end |> abspath
+end
+
+function get_run_dir(doc, run_path, out_path)
+    isnothing(run_path) && return get_out_dir(doc, out_path)
+    return if run_path === :doc
+        dirname(doc.path)
+    elseif run_path === :pwd
+        pwd()
+    else
+        abspath(run_path)
+    end
 end
 
 function run_chunk(chunk::CodeChunk, doc, report, mod)
