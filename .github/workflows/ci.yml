@@ -20,9 +20,11 @@ jobs:
         version:
           - 'lts'
           - '1'
+          - '1.12'
         os:
           - ubuntu-latest
           - macOS-latest
+          - windows-latest
         allow-failure: [false]
         include:
           - version: 'pre'
@@ -30,6 +32,9 @@ jobs:
             allow-failure: true
           - version: 'pre'
             os: macOS-latest
+            allow-failure: true
+          - version: 'pre'
+            os: windows-latest
             allow-failure: true
     steps:
       - uses: actions/checkout@v6
