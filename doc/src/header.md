@@ -67,6 +67,16 @@ weave_options:
 ---
 ```
 
+You can use `run_path` to control where code is executed independently of `out_path`.
+For example, to output results to a `build` directory while running code from the document's directory:
+```yaml
+---
+weave_options:
+  out_path: build
+  run_path: :doc
+---
+```
+
 !!! note
     - configurations specified within the YAML header have higher precedence than those specified via `weave` keyword arguments
     - chunk options specified within each chunk have higher precedence than the global global chunk options specified within the YAML header

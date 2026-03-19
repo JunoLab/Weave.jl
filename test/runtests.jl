@@ -47,6 +47,7 @@ end
         include("run/test_module.jl")
         include("run/test_meta.jl")
         include("run/test_error.jl")
+        include("run/test_run_path.jl")
     end
 
     @testset "render" begin

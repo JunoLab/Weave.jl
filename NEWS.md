@@ -1,5 +1,14 @@
 ## Release notes for Weave.jl
 
+### Unreleased
+
+improvements:
+- added `run_path` keyword argument to `weave()` to control the code execution directory independently of the output directory (`out_path`). Supported values are `:doc`, `:pwd`, a path string, or `nothing` (default, preserves previous behavior). Also available as `run_path` in the YAML `weave_options` header.
+
+internal:
+- renamed `WeaveDoc.cwd` field to `out_dir` and `get_cwd` to `get_out_dir`. Backward compatibility for `doc.cwd` is preserved via property overrides.
+
+
 ### v0.10.6 – 2020/10/03
 
 improvements:

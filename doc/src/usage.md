@@ -7,6 +7,8 @@ syntax and use [`weave`](@ref) function to execute to document to capture result
 
 Weave document with markup and julia code using `Plots.jl` for plots,
 `out_path = :pwd` makes the results appear in the current working directory.
+Use `run_path` to control where code is executed independently of the output directory,
+e.g. `run_path = :doc` runs code from the source document's directory.
 
 > A prepared example: [`Weave.SAMPLE_JL_DOC`](../examples/FIR_design.jmd)
 
