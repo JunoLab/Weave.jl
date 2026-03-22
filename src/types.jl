@@ -9,12 +9,29 @@ mutable struct WeaveDoc
     basename::AbstractString
     path::AbstractString
     chunks::Vector{WeaveChunk}
-    cwd::AbstractString
+    out_dir::AbstractString
+    run_path::AbstractString
     format::Any
     doctype::String
     header_script::String
     header::Dict
     chunk_defaults::Dict{Symbol,Any}
+end
+
+# Backward compatibility: the field was renamed from `cwd` to `out_dir`,
+# but external code may still use `doc.cwd`.
+function Base.getproperty(doc::WeaveDoc, name::Symbol)
+    name === :cwd && return getfield(doc, :out_dir)
+    return getfield(doc, name)
+end
+
+# Backward compatibility: redirect `doc.cwd = ...` to `doc.out_dir = ...`.
+
+function Base.setproperty!(doc::WeaveDoc, name::Symbol, value)
+    name === :cwd && (name = :out_dir)
+    # The convert call replicates what the default setproperty! does,
+    # since our override calls setfield! directly (which does not convert).
+    return setfield!(doc, name, convert(fieldtype(WeaveDoc, name), value))
 end
 
 struct ChunkOutput
