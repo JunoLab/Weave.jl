@@ -15,6 +15,7 @@ REPL = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 RelocatableFolders = "05181044-ff0b-4ac5-8273-598c1e38db00"
 Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 Serialization = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
+SoftGlobalScope = "b85f4697-e234-5449-a836-ec8e2f98b302"
 YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 
 [compat]
