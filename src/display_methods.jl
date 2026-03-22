@@ -32,6 +32,7 @@ const mimetype_ext = Dict(
     ".pdf" => "application/pdf",
     ".ps" => "application/postscript",
     ".tex" => "text/latex",
+    ".tikz" => "text/tikz",
 )
 
 function Base.display(report::Report, data)
