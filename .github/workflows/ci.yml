@@ -20,6 +20,7 @@ jobs:
         version:
           - 'lts'
           - '1'
+          - '1.12'
         os:
           - ubuntu-latest
           - macOS-latest
@@ -30,6 +31,9 @@ jobs:
             allow-failure: true
           - version: 'pre'
             os: macOS-latest
+            allow-failure: true
+          - version: 'pre'
+            os: windows-latest
             allow-failure: true
     steps:
       - uses: actions/checkout@v6
