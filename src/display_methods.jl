@@ -43,7 +43,11 @@ function Base.display(report::Report, data)
                 if !istextmime(m)
                     Base.invokelatest(display, report, m, data)
                 elseif report.cur_chunk.options[:term]
-                    Base.invokelatest(display, report, "text/plain", data)
+                    if report.cur_chunk.options[:print]
+                        print(data)
+                    else
+                        Base.invokelatest(display, report, "text/plain", data)
+                    end
                 else
                     Base.invokelatest(display, report, m, data)
                 end
