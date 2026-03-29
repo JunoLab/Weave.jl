@@ -7,7 +7,7 @@ function parse_notebook(document_body)
     doc_no = 0
 
     # TODO: handle some of options ?
-    options = Dict{Symbol,Any}()
+    options = Dict{Symbol,Any}(:softscope => true)
     opt_string = ""
 
     chunks = map(nb["cells"]) do cell

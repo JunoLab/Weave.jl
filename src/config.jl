@@ -24,6 +24,7 @@ const _DEFAULT_PARAMS = Dict{Symbol,Any}(
     :fig_env => nothing,
     :out_width => nothing,
     :out_height => nothing,
+    :softscope => false,
 )
 const DEFAULT_PARAMS = deepcopy(_DEFAULT_PARAMS) # might be changed at runtime
 
