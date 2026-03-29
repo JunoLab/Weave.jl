@@ -28,8 +28,7 @@ function Base.display(report::Weave.Report, m::MIME"image/svg+xml", p::Gadfly.Pl
 
     full_name, rel_name = Weave.get_figname(report, chunk, ext = format)
 
-    push!(report.figures, rel_name)
-    report.fignum += 1
+    Weave.register_chunk_fig!(report, chunk, rel_name)
 
     if format == ".svg"
         Gadfly.draw(Gadfly.SVG(full_name, w, h), p)
